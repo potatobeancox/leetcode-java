@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.lcs.p0002;
+package com.potato.study.leetcodecn.other.lcs.p0002;
 
 
 import java.util.Arrays;
