@@ -54,53 +54,53 @@ public class Solution {
      * @return
      */
     public boolean findRotation(int[][] mat, int[][] target) {
-        int n = mat.length;
-        boolean isDiff = false;
-        k0:
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (mat[i][j] != target[i][j]) {
-                    isDiff = true;
-                    break k0;
+        for (int i = 0; i < 4; i++) {
+            // 将 mat 顺时针转 90度 转4次
+            mat = rotation90(mat);
+            // 每转一次 与target 进行对比
+            boolean isSame = true;
+            kk:
+            for (int j = 0; j < mat.length; j++) {
+                for (int k = 0; k < mat[0].length; k++) {
+                    if (mat[j][k] != target[j][k]) {
+                        isSame = false;
+                        break kk;
+                    }
                 }
             }
-        }
-        if (!isDiff) {
-            return true;
-        }
-        k90:
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (mat[i][j] != target[i][j]) {
-                    isDiff = true;
-                    break k90;
-                }
+            if (isSame) {
+                return true;
             }
         }
-        if (!isDiff) {
-            return true;
-        }
-
-        k180:
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-//                if () {
-//                    break k;
-//                }
-            }
-        }
-        if (!isDiff) {
-            return true;
-        }
-        k270:
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-//                if () {
-//                    break k;
-//                }
-            }
-        }
-        return !isDiff;
+        return false;
     }
+
+
+    /**
+     * 将 mat 顺时针旋转90度 返回
+     * @param mat
+     * @return
+     */
+    private int[][] rotation90(int[][] mat) {
+        // 上线翻转
+        for (int i = 0; i < mat.length / 2; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                int tmp = mat[i][j];
+                mat[i][j] = mat[mat.length - 1 - i][j];
+                mat[mat.length - 1 - i][j] = tmp;
+            }
+        }
+        // 沿着对角线翻转
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < i; j++) {
+                int tmp = mat[i][j];
+                mat[i][j] = mat[j][i];
+                mat[j][i] = tmp;
+            }
+        }
+        return mat;
+    }
+
+
 
 }
