@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.lcp.p0001.t001;
+package com.potato.study.leetcodecn.other.lcp.p0001.t001;
 
 /**
  * LCP 01. 猜数字

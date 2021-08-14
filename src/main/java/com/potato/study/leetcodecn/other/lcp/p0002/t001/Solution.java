@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.lcp.p0002.t001;
+package com.potato.study.leetcodecn.other.lcp.p0002.t001;
 
 import org.junit.Assert;
 

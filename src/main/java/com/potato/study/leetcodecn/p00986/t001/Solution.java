@@ -58,25 +58,30 @@ public class Solution {
     public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
         int index1 = 0;
         int index2 = 0;
-        List<int[]> list = new ArrayList<>();
+        List<int[]> result = new ArrayList<>();
         while (index1 < firstList.length && index2 < secondList.length) {
-            if (firstList[index1][0] <= secondList[index2][0]) {
-                // firstList[index1][0] <= secondList[index2][0]
-                if (secondList[index2][0] >= firstList[index1][1]) {
-//                    list.add(secondList[index2][0], secondList[index2][0]);
-                }
+            int[] interval1 = firstList[index1];
+            int[] interval2 = secondList[index1];
+            int[] target = new int[] {
+                    Math.max(interval1[0], interval2[0]),
+                    Math.min(interval1[1], interval2[1])
+            };
+            if (target[0] <= target[1]) {
+                result.add(target);
+            }
+            // 移动
+            if (interval1[1] <= interval2[1]) {
+                index1++;
             } else {
-                // firstList[index1][0] > secondList[index2][0]
-//                if () {
-//
-//                }
+                index2++;
             }
         }
-        int[][] res = new int[list.size()][2];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = list.get(i);
+        int[][] resultArray = new int[result.size()][2];
+        for (int i = 0; i < resultArray.length; i++) {
+            resultArray[i] = result.get(i);
         }
-        return res;
+        return resultArray;
     }
+
 
 }

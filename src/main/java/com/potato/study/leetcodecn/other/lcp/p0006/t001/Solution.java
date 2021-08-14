@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.lcp.p0006.t001;
+package com.potato.study.leetcodecn.other.lcp.p0006.t001;
 
 /**
  * LCP 06. 拿硬币
