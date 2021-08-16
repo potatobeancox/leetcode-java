@@ -69,6 +69,11 @@ public class Solution {
      * @return
      */
     public List<List<Integer>> queensAttacktheKing(int[][] queens, int[] king) {
+        // 将queue 做成key 方法哦set 中
+
+        // 声明 8个方向
+
+        // 对king 进行8个方向的查找 找到 set 第一个包含的 直接返回
 
         return null;
     }
