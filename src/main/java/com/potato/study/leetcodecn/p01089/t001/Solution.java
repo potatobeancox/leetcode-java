@@ -1,5 +1,11 @@
 package com.potato.study.leetcodecn.p01089.t001;
 
+import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 1089. 复写零
  *
@@ -42,6 +48,46 @@ public class Solution {
      */
     public void duplicateZeros(int[] arr) {
         int actIndexLen = 0;
+        int index = 0;
+        while (actIndexLen < arr.length) {
+            if (arr[index] == 0) {
+                actIndexLen += 2;
+            } else {
+                actIndexLen++;
+            }
+            index++;
+        }
 
+        int startIndex = index - 1;
+        int tmp = arr.length - 1;
+        // 如果多了 说明多了一个0
+        if (actIndexLen > arr.length) {
+            arr[tmp] = 0;
+            tmp--;
+            startIndex--;
+        }
+        // 不多就正式开始
+        while (startIndex >= 0) {
+            int num = arr[startIndex];
+            if (num == 0) {
+                arr[tmp--] = 0;
+                arr[tmp--] = 0;
+            } else {
+                arr[tmp] = num;
+                tmp--;
+            }
+            startIndex--;
+        }
+        return;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                1,0,2,3,0,4,5,0
+        };
+        solution.duplicateZeros(arr);
+        System.out.println(Arrays.toString(arr));
+        Assert.assertArrayEquals(new int[] {1,0,0,2,3,0,0,4}, arr);
     }
 }
