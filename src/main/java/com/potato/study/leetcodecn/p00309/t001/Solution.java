@@ -30,6 +30,21 @@ public class Solution {
      * @return
      */
     public int maxProfit(int[] prices) {
-        return -1;
+        int[][] dp = new int[prices.length][3];
+        dp[0][0] = 0 - prices[0];
+        dp[0][1] = 0;
+        dp[0][2] = 0;
+        // dp i0 第i天处于 已经买入状态最大值 dp i0 = max (dpi-1 0,  dp i-1 2 - value i)
+        // dp i1 第i天处于 冷却状态的最大值 dp i1 = max (dp i-10 + val i， dp i-1，1)
+        // dp i2 第i天处于 非冷冻状态卖出的最大值 dp i2 = max (dp i-1 2， dpi-1, 1)
+        for (int i = 1; i < prices.length; i++) {
+            // 之前买了，今天买
+            dp[i][0] = Math.max(dp[i-1][0], dp[i-1][2] - prices[i]);
+            // 今天卖了，之前就卖了
+            dp[i][1] = Math.max(dp[i-1][0] + prices[i], dp[i-1][1]);
+            // 之前冷却了，之前卖了
+            dp[i][2] = Math.max(dp[i-1][1], dp[i-1][2]);
+        }
+        return Math.max(dp[prices.length - 1][1], dp[prices.length - 1][2]);
     }
 }
