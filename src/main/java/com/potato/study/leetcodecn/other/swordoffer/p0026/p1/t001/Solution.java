@@ -44,11 +44,20 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
 
+    /**
+     * https://leetcode-cn.com/problems/shu-de-zi-jie-gou-lcof/solution/mian-shi-ti-26-shu-de-zi-jie-gou-xian-xu-bian-li-p/
+     * @param a
+     * @param b
+     * @return
+     */
     public boolean isSubStructure(TreeNode a, TreeNode b) {
-        if (null == a) {
+        // a 或者 b 是空树 直接返回false
+        if (a == null || b == null) {
             return false;
         }
-        return eachIsSubStructure(a, b);
+        // 判断 b是不是 a的子树 或者，递归找 b 是不是 a的左右孩子的子树
+        return eachIsSubStructure(a, b) ||
+                isSubStructure (a.left, b) || isSubStructure(a.right, b);
     }
 
     /**
@@ -59,30 +68,19 @@ public class Solution {
      * @return
      */
     public boolean eachIsSubStructure(TreeNode a, TreeNode b) {
-        // 终止条件 空树 直接返回false
+        // b 已经没有节点了 说明已经找到了
         if (b == null) {
+            return true;
+        }
+        // 否则 a没有节点了 说明 a照完了 直接返回
+        if (a == null) {
             return false;
         }
-        if (a == null && b != null) {
-            return false;
-        }
-
-
-
-        //  ab 都非空 ab 不相等
+        // 不匹配 ab 都有结点
         if (a.val != b.val) {
-            if (a.left != null && a.right != null) {
-                return eachIsSubStructure(a.left, b) || eachIsSubStructure(a.right, b);
-            } else if (a.left != null) {
-                return eachIsSubStructure(a.left, b);
-            } else if (a.right != null) {
-                return eachIsSubStructure(a.right, b);
-            } else {
-                return false;
-            }
-
+            return false;
         }
-        // 继续进行递归判断 相等了 我擦
+        // 递归比较 ab的孩子
         return eachIsSubStructure(a.left, b.left) && eachIsSubStructure(a.right, b.right);
     }
 
