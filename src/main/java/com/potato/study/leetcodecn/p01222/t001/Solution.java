@@ -1,7 +1,10 @@
 package com.potato.study.leetcodecn.p01222.t001;
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 1222. 可以攻击国王的皇后
@@ -69,12 +72,40 @@ public class Solution {
      * @return
      */
     public List<List<Integer>> queensAttacktheKing(int[][] queens, int[] king) {
-        // 将queue 做成key 方法哦set 中
-
+        // 将queue 做成key 方法哦set中
+        Set<String> queenPosition = new HashSet<>();
+        for (int i = 0; i < queens.length; i++) {
+            queenPosition.add(queens[i][0] + "_" + queens[i][1]);
+        }
         // 声明 8个方向
-
+        int[][] direction = new int[][] {
+                {-1, 0},
+                {1, 0},
+                {0, -1},
+                {0, 1},
+                {1, 1},
+                {1, -1},
+                {-1, -1},
+                {-1, 1}
+        };
         // 对king 进行8个方向的查找 找到 set 第一个包含的 直接返回
-
-        return null;
+        List<List<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < direction.length; i++) {
+            // 每个方向找到第一个 queen
+            int x = king[0];
+            int y = king[1];
+            for (int j = 0; j < 8; j++) {
+                x += direction[i][0];
+                y += direction[i][1];
+                if (queenPosition.contains(x + "_" + y)) {
+                    List<Integer> pos = new ArrayList<>();
+                    pos.add(x);
+                    pos.add(y);
+                    result.add(pos);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }
