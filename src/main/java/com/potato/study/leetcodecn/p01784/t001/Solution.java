@@ -41,17 +41,35 @@ public class Solution {
      * @return
      */
     public boolean checkOnesSegment(String s) {
-        if (null == s || s.length() < 1) {
-            return false;
+        if (s.length() == 1) {
+            return s.equals("1");
         }
-        if ("1".equals(s)) {
+        // 找到1开始的地方
+        int start = 0;
+        while (start < s.length() && s.charAt(start) != '1') {
+            start++;
+        }
+        // 找到1结束的地方
+        int end = start + 1;
+        while (end < s.length() && s.charAt(end) == '1') {
+            end++;
+        }
+        if (end == s.length()) {
             return true;
         }
-        for (int i = 1; i < s.length(); i++) {
-            if (s.charAt(i) == '1' && s.charAt(i-1) == '1') {
-                return true;
-            }
+        // 找新开始
+        int newStart = end + 1;
+        while (newStart < s.length() && s.charAt(newStart) != '1') {
+            newStart++;
         }
-        return false;
+        return newStart == s.length();
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        boolean b = solution.checkOnesSegment("10");
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 }
