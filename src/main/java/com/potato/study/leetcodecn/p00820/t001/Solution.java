@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p00820.t001;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
+
 /**
  * 820. 单词的压缩编码
  *
@@ -50,15 +52,44 @@ public class Solution {
      * @return
      */
     public int minimumLengthEncoding(String[] words) {
+        // 1.将 words 存在set中
         Set<String> set = new HashSet();
         for (String word : words) {
             set.add(word);
         }
-        int len = 0;
-        for (String word : set) {
-            len += word.length();
-            len += 1;
+        // 2. 遍历 words ，对于每个word 生成后缀，去除后缀对应set中的单词
+        for (String word : words) {
+            // 每个后缀
+            for (int i = 1; i < word.length(); i++) {
+                String suffix = word.substring(i);
+                if (set.contains(suffix)) {
+                    set.remove(suffix);
+                }
+            }
         }
-        return len;
+        // 3.计数 set，最终的字符串数量等于 单词数量的len + 1 的和
+        int total = 0;
+        for (String word : set) {
+            total += (word.length() + 1);
+        }
+        return total;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] words = new String[] {
+                "time", "me", "bell"
+        };
+        int i = solution.minimumLengthEncoding(words);
+        System.out.println(i);
+        Assert.assertEquals(10, i);
+
+
+        words = new String[] {
+                "t"
+        };
+        i = solution.minimumLengthEncoding(words);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 }
