@@ -36,10 +36,10 @@ public class Solution {
 
     // mianshi 0206
     public boolean isPalindrome(ListNode head) {
-        List<Integer> list = new ArrayList<>();
         if (head == null) {
-            return false;
+            return true;
         }
+        List<Integer> list = new ArrayList<>();
         ListNode p = head;
         while (p != null) {
             list.add(p.val);
@@ -48,10 +48,21 @@ public class Solution {
         int left = 0;
         int right = list.size() - 1;
         while (left < right) {
-            if (list.get(left) != list.get(right)) {
+            if (list.get(left).intValue() != list.get(right).intValue()) {
                 return false;
             }
+            left++;
+            right--;
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        ListNode head = new ListNode(-129);
+        head.next = new ListNode(-129);
+
+        boolean palindrome = solution.isPalindrome(head);
+        System.out.println(palindrome);
     }
 }
