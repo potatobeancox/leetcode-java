@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+
 /**
  * 1508. 子数组和排序后的区间和
  *
@@ -63,5 +65,16 @@ public class Solution {
             totalSum %= mod;
         }
         return (int) totalSum;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {1,2,3,4};
+        int n = 4;
+        int left = 1;
+        int right = 5;
+        int i = solution.rangeSum(nums, n, left, right);
+        System.out.println(i);
+        Assert.assertEquals(13, i);
     }
 }
