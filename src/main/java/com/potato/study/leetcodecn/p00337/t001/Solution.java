@@ -1,10 +1,6 @@
 package com.potato.study.leetcodecn.p00337.t001;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-
-import org.junit.Assert;
+import java.util.*;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
@@ -49,53 +45,91 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
 
-    class RobTreeNode {
-        public RobTreeNode left;
-        public RobTreeNode right;
-        public int robThisVal;
-        public int notRobThisVal;
-        public TreeNode root;
-    }
+    private Map<TreeNode, Integer> selectMap = new HashMap();
+    private Map<TreeNode, Integer> unSelectMap = new HashMap();
+    private int max;
 
-    // 337
+
     public int rob(TreeNode root) {
-        int max = 0;
-        if (root == null) {
-            return max;
-        }
-        Queue<RobTreeNode> queue = new LinkedList<>();
-        RobTreeNode robRoot = new RobTreeNode();
-        robRoot.robThisVal = root.val;
-        robRoot.robThisVal = 0;
-        robRoot.root = root;
-        max = root.val;
-        queue.add(robRoot);
-        while (!queue.isEmpty()) {
-            RobTreeNode poll = queue.poll();
-            max = Math.max(max, poll.robThisVal);
-            max = Math.max(max, poll.notRobThisVal);
-
-            TreeNode pollRoot = poll.root;
-            if (pollRoot.left != null) {
-                RobTreeNode robRootLeft = new RobTreeNode();
-                robRootLeft.root = pollRoot.left;
-                poll.left = robRootLeft;
-                robRootLeft.robThisVal = poll.notRobThisVal + pollRoot.left.val;
-                robRootLeft.notRobThisVal = Math.max(poll.notRobThisVal, poll.robThisVal);
-                max = Math.max(max, robRootLeft.robThisVal);
-                max = Math.max(max, robRootLeft.notRobThisVal);
-            }
-
-            if (pollRoot.right != null) {
-                RobTreeNode robRootRight = new RobTreeNode();
-                poll.right = robRootRight;
-                robRootRight.root = pollRoot.right;
-                robRootRight.robThisVal = poll.notRobThisVal + pollRoot.right.val;
-                robRootRight.notRobThisVal = Math.max(poll.notRobThisVal, poll.robThisVal);
-                max = Math.max(max, robRootRight.robThisVal);
-                max = Math.max(max, robRootRight.notRobThisVal);
-            }
-        }
+        this.selectMap = new HashMap();
+        this.unSelectMap = new HashMap();
+        this.max = 0;
+        robEach(root);
         return max;
     }
+
+
+    public void robEach(TreeNode root) {
+        // 后续遍历孩子
+        if (root == null) {
+            return;
+        }
+        if (root.left != null) {
+            robEach(root.left);
+        }
+        if (root.right != null) {
+            robEach(root.right);
+        }
+        // 对于当前节点 选择当前节点 等于 当前值 + 不选两个孩子的值的和
+        int selectValue = root.val + unSelectMap.getOrDefault(root.left, 0)
+                + unSelectMap.getOrDefault(root.right, 0);
+        selectMap.put(root, selectValue);
+        // 不选当前节点 等于 max孩子选不选的和
+        int unSelectValue = Math.max(selectMap.getOrDefault(root.left, 0), unSelectMap.getOrDefault(root.left, 0))
+                + Math.max(selectMap.getOrDefault(root.right, 0), unSelectMap.getOrDefault(root.right, 0));
+        unSelectMap.put(root, unSelectValue);
+        max = Math.max(max, selectValue);
+        max = Math.max(max, unSelectValue);
+    }
+
+
+//    class RobTreeNode {
+//        public RobTreeNode left;
+//        public RobTreeNode right;
+//        public int robThisVal;
+//        public int notRobThisVal;
+//        public TreeNode root;
+//    }
+//
+//    // 337
+//    public int rob(TreeNode root) {
+//        int max = 0;
+//        if (root == null) {
+//            return max;
+//        }
+//        Queue<RobTreeNode> queue = new LinkedList<>();
+//        RobTreeNode robRoot = new RobTreeNode();
+//        robRoot.robThisVal = root.val;
+//        robRoot.robThisVal = 0;
+//        robRoot.root = root;
+//        max = root.val;
+//        queue.add(robRoot);
+//        while (!queue.isEmpty()) {
+//            RobTreeNode poll = queue.poll();
+//            max = Math.max(max, poll.robThisVal);
+//            max = Math.max(max, poll.notRobThisVal);
+//
+//            TreeNode pollRoot = poll.root;
+//            if (pollRoot.left != null) {
+//                RobTreeNode robRootLeft = new RobTreeNode();
+//                robRootLeft.root = pollRoot.left;
+//                poll.left = robRootLeft;
+//                robRootLeft.robThisVal = poll.notRobThisVal + pollRoot.left.val;
+//                robRootLeft.notRobThisVal = Math.max(poll.notRobThisVal, poll.robThisVal);
+//                max = Math.max(max, robRootLeft.robThisVal);
+//                max = Math.max(max, robRootLeft.notRobThisVal);
+//            }
+//
+//            if (pollRoot.right != null) {
+//                RobTreeNode robRootRight = new RobTreeNode();
+//                poll.right = robRootRight;
+//                robRootRight.root = pollRoot.right;
+//                robRootRight.robThisVal = poll.notRobThisVal + pollRoot.right.val;
+//                robRootRight.notRobThisVal = Math.max(poll.notRobThisVal, poll.robThisVal);
+//                max = Math.max(max, robRootRight.robThisVal);
+//                max = Math.max(max, robRootRight.notRobThisVal);
+//            }
+//        }
+//        return max;
+//    }
 }
