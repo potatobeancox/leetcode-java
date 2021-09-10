@@ -47,91 +47,86 @@ import org.junit.Assert;
  */
 public class WordDictionary {
 
+    class WordDictionaryNode {
+        // 当前节点 child
+        public WordDictionaryNode[] child;
+        public boolean isEnd;
+    }
+
     private WordDictionaryNode head;
 
     /** Initialize your data structure here. */
     public WordDictionary() {
         this.head = new WordDictionaryNode();
-        head.next = new WordDictionaryNode[26];
+        head.child = new WordDictionaryNode[26];
     }
 
+    /**
+     * 添加单词 递归添加
+     * @param word
+     */
     public void addWord(String word) {
-        head.addWord(word);
+        int index = 0;
+        addWordIteration(word, index, head);
     }
 
-    public boolean search(String word) {
-        return head.search(word);
-    }
-
-
-
-    class WordDictionaryNode {
-
-        // 当前字母
-        public char ch;
-
-        // 下一个字母
-        public WordDictionaryNode[] next;
-
-
-        public boolean isEndNode;
-
-
-        /**
-         * 将 word 插入 当前树
-         * @param word
-         */
-        public void addWord(String word) {
-            WordDictionaryNode node = this;
-            WordDictionaryNode[] next = node.next;
-            for (int i = 0; i < word.length(); i++) {
-                char ch = word.charAt(i);
-                if (next == null) {
-                    next = new WordDictionaryNode[26];
-                }
-                // 是否存在
-                int index = ch - 'a';
-                if (next[index] == null) {
-                    next[index] = new WordDictionaryNode();
-                    next[index].ch = ch;
-                    next[index].next = new WordDictionaryNode[26];
-                }
-                node = next[index];
-                next = node.next;
-                // 最后一个点
-                if (i == word.length() - 1) {
-                    node.isEndNode = true;
-                }
-            }
+    // 递归添加
+    private void addWordIteration(String word, int index, WordDictionaryNode root) {
+        if (index == word.length()) {
+            root.isEnd = true;
+            return;
         }
+        char c = word.charAt(index);
+        int childIndex = c - 'a';
+        if (root == null) {
+            root = new WordDictionaryNode();
+        }
+        WordDictionaryNode childNode = root.child[childIndex];
+        if (childNode == null) {
+            root.child[childIndex] = new WordDictionaryNode();
+        }
+        addWordIteration(word, index + 1, root.child[childIndex]);
+    }
 
-        /**
-         * 查找
-         * @param word
-         * @return
-         */
-        public boolean search(String word) {
-            WordDictionaryNode node = this;
-            WordDictionaryNode[] next = node.next;
-            for (int i = 0; i < word.length(); i++) {
-                char ch = word.charAt(i);
-                if (next == null) {
-                    return false;
-                }
-                // 处理 .
-                if ('.' == ch) {
+    /**
+     * 也得递归查找
+     * 需要注意 .  可以匹配任意字符
+     * @param word
+     * @return
+     */
+    public boolean search(String word) {
+        return searchIteration(word, 0, head);
+    }
 
-                } else {
-                    // 是否存在
-                    int index = ch - 'a';
-                    if (next[index] == null) {
-                        return false;
-                    }
-                    node = next[index];
-                    next = node.next;
+    /**
+     * 递归查找
+     * @param word
+     * @param index
+     * @param root
+     */
+    private boolean searchIteration(String word, int index, WordDictionaryNode root) {
+        // 找到最后一个节点
+        if (index == word.length()) {
+            return root.isEnd = true;
+        }
+        if (root == null || root.child == null) {
+            return false;
+        }
+        char c = word.charAt(index);
+        if ('.' == c) {
+            for (WordDictionaryNode child : root.child) {
+                if (searchIteration(word, index + 1, child)) {
+                    return true;
                 }
             }
-            return node.isEndNode;
+            return false;
+        } else {
+            int childIndex = c - 'a';
+            WordDictionaryNode childNode = root.child[childIndex];
+            if (childNode == null) {
+                return false;
+            }
+            return searchIteration(word, index + 1, root.child[childIndex]);
         }
     }
 
