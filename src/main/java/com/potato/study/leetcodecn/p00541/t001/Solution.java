@@ -3,6 +3,9 @@ package com.potato.study.leetcodecn.p00541.t001;
 
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 541. 反转字符串 II
  *
@@ -37,46 +40,48 @@ public class Solution {
      * @return
      */
     public String reverseStr(String s, int k) {
-        // 找到k 个字符 判断当前是第几个k ，奇数个遍进行 转换
         char[] chars = s.toCharArray();
-        int count = 0;
-        boolean needReverse = true;
-        for (int i = 0; i < chars.length; i++) {
-            count++;
-            if (count % k == 0) {
-                if (needReverse) {
-                    // 反转
-                    int left = i - k + 1;
-                    int right = i;
-                    while (left < right) {
-                        char tmp = chars[right];
-                        chars[right] = chars[left];
-                        chars[left] = tmp;
-                        // 往下走
-                        left++;
-                        right--;
-                    }
-                    needReverse = false;
+        // 使用一个 list 记录 需要调换的开始和结束位置
+        List<int[]> list = new ArrayList<>();
+        int index = 0;
+        int kCount = 0;
+        while (index < s.length()) {
+            if (kCount % 2 == 0) {
+                if (index + k <= s.length()) {
+                    list.add(new int[] {index, index + k - 1});
                 } else {
-                    needReverse = true;
+                    list.add(new int[] {index, s.length() - 1});
                 }
-            }
-        }
 
-        // 最后几个
-        if (needReverse && count <= k) {
-            int left = s.length() - count;
-            int right = s.length() - 1;
-            while (left < right) {
-                char tmp = chars[right];
-                chars[right] = chars[left];
-                chars[left] = tmp;
-                // 往下走
-                left++;
-                right--;
             }
+            index += k;
+            kCount++;
+        }
+        // 遍历 list 进行置换
+        for (int[] position : list) {
+            revert(position[0], position[1], chars);
         }
         return new String(chars);
+    }
+
+
+    /**
+     * 调换 target 中 start 到 end 的字符
+     * @param start
+     * @param end
+     * @param target
+     */
+    private void revert(int start, int end, char[] target) {
+        int left = start;
+        int right = end;
+        while (left < right) {
+            char tmp = target[right];
+            target[right] = target[left];
+            target[left] = tmp;
+            // 往下走
+            left++;
+            right--;
+        }
     }
 
     public static void main(String[] args) {
