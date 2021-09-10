@@ -61,15 +61,51 @@ public class Solution {
         Queue<int[]> queue = new LinkedList<>();
         int m = matrix.length;
         int n = matrix[0].length;
+        boolean[][] visit = new boolean[m][n];
+        // 1.先找 0的点 入队
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (true) {
-
-                    queue.add(null);
+                if (matrix[i][j] == 0) {
+                    queue.add(new int[]{i, j});
+                    visit[i][j] = true;
                 }
             }
         }
-        return null;
+        // 2. bfs 找相邻且没有访问过的点
+        int[][] direction = new int[][] {
+                {1, 0},
+                {0, 1},
+                {-1, 0},
+                {0, -1}
+        };
+        int[][] score = new int[m][n];
+        int level = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] poll = queue.poll();
+                // 四个方向找是否有未访问的且没记录过的入队
+                for (int j = 0; j < 4; j++) {
+                    int dx = poll[0] + direction[j][0];
+                    int dy = poll[1] + direction[j][1];
+
+                    // 坐标是否在边界范围之内
+                    if (dx < 0 || dx >= m || dy < 0 || dy >= n) {
+                        continue;
+                    }
+
+                    if (visit[dx][dy]) {
+                        continue;
+                    }
+                    // 没访问过 直接 入队
+                    visit[dx][dy] = true;
+                    score[dx][dy] = level;
+                    queue.add(new int[]{dx, dy});
+                }
+            }
+            level++;
+        }
+        return score;
     }
 
 
