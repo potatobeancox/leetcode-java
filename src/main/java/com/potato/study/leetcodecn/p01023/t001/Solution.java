@@ -79,6 +79,7 @@ public class Solution {
             }
             if (invalid) {
                 resultList.add(false);
+                continue;
             }
             // 如果 index 到了末尾  targetIndex 也完事了 返回 true 如果 targetIndex 之后没有大写字母 返回true 否则返回false
             if (index == pattern.length()) {
@@ -116,6 +117,13 @@ public class Solution {
         String pattern = "FB";
         // [false]
         List<Boolean> booleans = solution.camelMatch(queries, pattern);
+
+        queries = new String[] {
+                "FooBar","FooBarTest","FootBall","FrameBuffer","ForceFeedBack"
+        };
+        pattern = "FB";
+        // [true,false,true,true,false]
+        booleans = solution.camelMatch(queries, pattern);
         System.out.println(booleans);
     }
 }
