@@ -48,7 +48,7 @@ public class Solution {
 
     // 1508
     public int rangeSum(int[] nums, int n, int left, int right) {
-        int[] result = new int[n * (n-1)/ 2];
+        int[] result = new int[n * (n+1)/ 2];
         int index = 0;
         for (int i = 0; i < n; i++) {
             int sum = 0;
@@ -60,7 +60,7 @@ public class Solution {
         Arrays.sort(result);
         long totalSum = 0;
         int mod = 1000000000 + 7;
-        for (int i = left; i <= right; i++) {
+        for (int i = left-1; i <= right-1; i++) {
             totalSum += result[i];
             totalSum %= mod;
         }
