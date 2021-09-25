@@ -63,27 +63,45 @@ public class Solution {
         if (null == arr || arr.length == 0) {
             return -1;
         }
-        // 1. map 统计值出现次数 并找到最小值
-        Map<Integer, Integer> map = new HashMap<>();
-        int min = arr[0];
-        int max = arr[0];
+        // 1. 统计值出现次数 用一个数组统计 超过 arr len 按照len统计
+        int[] times = new int[arr.length + 1];
         for (int i = 0; i < arr.length; i++) {
-            Integer count = map.getOrDefault(arr[i], 0);
-            count++;
-            map.put(arr[i], count);
-            min = Math.min(min, arr[i]);
-            max = Math.max(max, arr[i]);
-        }
-        // 2. 从最小值开始 + 1遍历 如果当前值 数量 + 之前数量 大于等于 arr len 就是 这个值，否则++ 判断 至少为1
-        int total = 0;
-        for (int i = 1; i <= max; i++) {
-            Integer count = map.getOrDefault(i, 1);
-            total += count;
-            if (total >= arr.length) {
-                return i;
+            if (arr[i] <= arr.length) {
+                times[arr[i]]++;
+            } else {
+                times[arr.length]++;
             }
         }
-        return max;
+        // 2. 从1 找出现次数 并使用 miss 统计 之前有多少个 数字是占用了之后的资源
+        int missCount = 0;
+        int total = 0;
+        for (int i = 1; i <= arr.length; i++) {
+            // 3. 如果 当前出现次数 times = 0 那么需要miss 一下 ，
+            int currentTime = times[i];
+            if (currentTime > 0) {
+                if (currentTime >= missCount) {
+                    currentTime -= missCount;
+                    missCount = 0;
+                } else {
+                    missCount -= currentTime;
+                    currentTime = 0;
+                }
+            }
+
+            if (currentTime == 0) {
+                missCount++;
+                total++;
+            } else {
+                total += currentTime;
+            }
+            // 当前是不是已经判断完了
+
+            if (total == arr.length) {
+                return i;
+            }
+
+        }
+        return -1;
     }
 
     public static void main(String[] args) {
