@@ -50,11 +50,21 @@ import com.potato.study.leetcode.util.TreeNodeUtil;
  */
 public class Solution {
 
+
+    /**
+     * https://leetcode-cn.com/problems/delete-node-in-a-bst/solution/shan-chu-er-cha-sou-suo-shu-zhong-de-jie-dian-by-l/
+     *
+     * 递归删除 指定节点
+     *
+     * @param root
+     * @param key
+     * @return
+     */
     public TreeNode deleteNode(TreeNode root, int key) {
         if (null == root) {
             return root;
         }
-        // 已经找到了
+        // 往两侧找寻删除
         if (root.val < key) {
             // 左子树里边操作删除
             root.right = deleteNode(root.right, key);
@@ -64,26 +74,45 @@ public class Solution {
         } else {
             // 相等 找到了 待删除的节点
             if (root.left == null && root.right == null) {
-                // 叶子
+                // 叶子 直接深处
                 return null;
+            } else if (root.left != null) {
+                // 不是叶子 有左孩子，找到左孩子的最右的孩子，再递归删除
+                root.val = getPrecursorValue(root);
+                root.left = deleteNode(root.left, root.val);
+            } else {
+                // 不是叶子，有右孩子，找到右孩子最左边的孩子，再递归删除 (root.right != null)
+                root.val = getSuccessorValue(root);
+                root.right = deleteNode(root.right, root.val);
             }
-            // 只有一个孩子
-            if (root.left != null && root.right == null) {
-                return root.left;
-            }
-            if (root.left == null && root.right != null) {
-                return root.right;
-            }
-            // 2个孩子都有 找到右子树的 最左边的节点 替换
-            TreeNode target = root.right;
-            while (target.left != null) {
-                target = target.left;
-            }
-            // replace and delete
-            root.val = target.val;
-            deleteNode(root.right, target.val);
         }
         return root;
+    }
+
+
+    /**
+     * 返回当前root 之前的那个节点
+     * @return
+     */
+    private int getPrecursorValue(TreeNode root) {
+        TreeNode left = root.left;
+        while (null != left.right) {
+            left = left.right;
+        }
+        return left.val;
+    }
+
+
+    /**
+     * 找到当前root 后继节点的值
+     * @return
+     */
+    private int getSuccessorValue(TreeNode root) {
+        TreeNode right = root.right;
+        while (null != right.left) {
+            right = right.left;
+        }
+        return right.val;
     }
 
 
