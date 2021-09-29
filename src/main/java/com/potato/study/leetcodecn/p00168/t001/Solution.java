@@ -38,26 +38,36 @@ public class Solution {
 
     /**
      *
+     * 将 总的column 转换成从0开始
+     *
+     * 这样 通过余数定位 最后一个字母
+     *
+     * 然后n/=26 继续找其他字母
+     *
+     * 列名称对应列学好
+     *
+     * number =sum ai*26^i
+     *
+     * number-1 = sum ai*26^i i 范围【1，n） + a0 - 1
+     * i 范围【0，n）
+     *
+     * ai 1到26
+     *
+     * number 从1 开始
+     *
+     * 通过公式接一下
      * @param n
      * @return
      */
     public String convertToTitle(int n) {
         StringBuilder builder = new StringBuilder();
+        // 计算当前位置应该是什么字符串
         while (n > 0) {
-            if (n <= 26) {
-                builder.append((char)('A' + n - 1));
-                n = 0;
-            } else {
-                // 大于 26
-                int tmp = (n - 1) / 26;
-                while (tmp > 26) {
-                    tmp /= 26;
-                }
-                builder.append((char)('A' + tmp - 1));
-                n = n - (n-1)/26*26;
-            }
+            int a = (n - 1) % 26 + 1;
+            builder.append((char) ('A' + a - 1));
+            n = (n-1) / 26;
         }
-        return builder.toString();
+        return builder.reverse().toString();
     }
 
     public static void main(String[] args) {
