@@ -33,8 +33,7 @@ import java.util.Stack;
  * -105 <= mat[i][j] <= 105
  *
  * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/d
- * iagonal-traverse
+ * 链接：https://leetcode-cn.com/problems/diagonal-traverse
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
@@ -52,10 +51,15 @@ public class Solution {
         int index = 0;
         // 上半部分 遍历第0 行 作为开始节点
         for (int i = 0; i < n; i++) {
-            int start1 = 0;
-            int start2 = i;
             List<Integer> list = new ArrayList<>();
-            for (int j = 0; j < 11; j++) {
+            for (int start1 = 0; start1 <= index; start1++) {
+                int start2 = index - start1;
+                list.add(mat[start1][start2]);
+            }
+            // 判断是否需要 reverse 添加
+            if (i % 2 == 0) {
+
+            } else {
 
             }
 
@@ -63,11 +67,14 @@ public class Solution {
         // 下半部分
         for (int i = 1; i < m; i++) {
 
+
+            // 判断是否需要 reverse 添加 偶数需要翻转
+            if (i % 2 == 0) {
+
+            } else {
+
+            }
         }
-
-        // 判定当前是够是 奇数 如果是奇数的话 需要 reverse
-        List<Integer> list = new ArrayList<>();
-
 
         return null;
     }
