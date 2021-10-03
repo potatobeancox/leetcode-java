@@ -70,11 +70,10 @@ public class Solution {
             if (!countMap.containsKey(i + k)) {
                 continue;
             }
-            //
-
-
+            // 计算总对数
+            total += (countMap.get(i) * countMap.get(i+k));
         }
-        return 1;
+        return total;
     }
 //    public static void main(String[] args) {
 //        Solution solution = new Solution();
