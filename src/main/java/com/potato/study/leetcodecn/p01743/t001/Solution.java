@@ -100,5 +100,19 @@ public class Solution {
         };
         int[] ints = solution.restoreArray(adjacentPairs);
         System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+                1,2,3,4
+        }, ints);
+
+        adjacentPairs = new int[][] {
+                {4,-2},
+                {1,4},
+                {-3,1}
+        };
+        ints = solution.restoreArray(adjacentPairs);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+                -2,4,1,-3
+        }, ints);
     }
 }
