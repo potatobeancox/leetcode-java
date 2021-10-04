@@ -3,6 +3,10 @@ package com.potato.study.leetcodecn.p00725.t001;
 import com.potato.study.leetcode.domain.ListNode;
 import org.junit.Assert;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * 725. 分隔链表
  *
@@ -45,8 +49,52 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     * 生成一组几个的list 然后按照数量拆分
+     * @param head
+     * @param k
+     * @return
+     */
     public ListNode[] splitListToParts(ListNode head, int k) {
+        // 过一遍找到长度 放队列
+        Queue<ListNode> queue = new LinkedList<>();
+        int length = 0;
+        ListNode p = head;
+        while (p != null) {
+            length++;
+            queue.add(p);
+            p = p.next;
+        }
+        // 根据长度计算每个段需要多长
+        int[] size = new int[k];
+        int tmp = length / k;
+        Arrays.fill(size, tmp);
+        tmp = length % k;
+        for (int i = 0; i < size.length; i++) {
+            if (tmp == 0) {
+                break;
+            }
+            size[i]++;
+            tmp--;
+        }
+        // 遍历一遍列表 生成结果
+        ListNode[] result = new ListNode[k];
+        for (int i = 0; i < k; i++) {
+            // result i 位置
+            ListNode tail = result[i];
+            for (int j = 0; j < size[i]; j++) {
+                ListNode poll = queue.poll();
+                if (tail == null) {
+                    result[i] = poll;
+                } else {
+                    tail.next = poll;
+                }
+                poll.next = null;
+                tail = poll;
+            }
 
-        return null;
+
+        }
+        return result;
     }
 }
