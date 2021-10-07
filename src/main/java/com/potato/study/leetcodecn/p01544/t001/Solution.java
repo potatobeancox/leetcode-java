@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01544.t001;
 
+import org.junit.Assert;
+
 /**
  * 1544. 整理字符串
  *
@@ -53,6 +55,44 @@ public class Solution {
      * @return
      */
     public String makeGood(String s) {
-        return null;
+
+        // 从前往后 遍历 记录处理ok的字符串 如果当前字符与之前处理好的组成可删除组合
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (builder.length() == 0) {
+                builder.append(ch);
+                continue;
+            }
+            char lastCh = builder.charAt(builder.length() - 1);
+            if (Character.isUpperCase(lastCh) && Character.isUpperCase(ch)) {
+                builder.append(ch);
+                continue;
+            }
+            if (Character.isLowerCase(ch) && Character.isLowerCase(lastCh)) {
+                builder.append(ch);
+                continue;
+            }
+            // 一个大写一个小写
+            if (Character.isUpperCase(ch) && Character.toLowerCase(ch) == lastCh) {
+                builder.deleteCharAt(builder.length()-1);
+                continue;
+            }
+            // 删除这两个字符
+            if (Character.isUpperCase(lastCh) && Character.toLowerCase(lastCh) == ch) {
+                builder.deleteCharAt(builder.length()-1);
+                continue;
+            }
+            builder.append(ch);
+        }
+        return builder.toString();
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String word = "leEeetcode";
+        String s = solution.makeGood(word);
+        System.out.println(s);
+        Assert.assertEquals("leetcode", s);
     }
 }
