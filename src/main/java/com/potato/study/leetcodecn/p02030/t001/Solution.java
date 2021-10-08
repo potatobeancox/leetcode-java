@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02030.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -53,21 +55,108 @@ import java.util.Arrays;
  */
 public class Solution {
 
+    /**
+     * https://leetcode-cn.com/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/solution/cpython3java-1dan-diao-zhan-by-hanxin_ha-xwv7/
+     * @param s
+     * @param k
+     * @param letter
+     * @param repetition
+     * @return
+     */
     public String smallestSubsequence(String s, int k, char letter, int repetition) {
+        // 统计 每个位置之后 letter 的个数
+        int[] letterCount = new int[s.length()];
+        int count = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            char ch = s.charAt(i);
+            if (letter == ch) {
+                count++;
+            }
+            letterCount[i] = count;
+        }
+        // 存放字符串
+        StringBuilder builder = new StringBuilder();
+        // 当前builder 中有多少个 letter；
+        int builderLetterCount = 0;
+        // 从前往后遍历 如果还能pop就pop
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            // 如果 ch 比当前builder 小，满足字典序，看看能不能pop
+            while (builder.length() > 0 && ch < builder.charAt(builder.length() - 1)) {
+                // 判断最后一个字符 中 letter个数
+                boolean isLastBuilerLetter = false;
+                if (letter == builder.charAt(builder.length() - 1)) {
+                    isLastBuilerLetter = true;
+                }
+                // 当前 还有多少个字符串没有用
+                int remindTotalLetter = s.length() - i;
+                // 删除一个字符就会比k少直接不删除了
+                if (builder.length() + remindTotalLetter <= k) {
+                    break;
+                }
+                // 当前位置之后还有多少个 letter 不能继续弹出了, letter 了
+                if (isLastBuilerLetter
+                        && builderLetterCount + letterCount[i] <= repetition) {
+                    break;
+                }
+                // 弹出
+                builder.deleteCharAt(builder.length() - 1);
+                if (isLastBuilerLetter) {
+                    builderLetterCount--;
+                }
+            }
+            // 入栈的时候进行数量控制 1.当前是 letter 或者 当前的需要的字符数，比需要的 letter多 且 数量控制
+            if ((ch == letter || k - builder.length() > repetition - builderLetterCount) && builder.length() < k) {
+                builder.append(ch);
+                if (ch == letter) {
+                    builderLetterCount++;
+                }
+            }
 
-        return null;
+        }
+
+        // 如何判断能否pop 当前letter 还够 当前剩余的字符串还能弥补亏空 就可以pop 否则 只能 往里放
+        return builder.toString();
     }
 
 
-//    public static void main(String[] args) {
-//        Solution solution = new Solution();
-//        int[] rolls = new int[] {6,1,5,2};
-//        int mean = 4;
-//        int n = 4;
-//        int[] ints = solution.missingRolls(rolls, mean, n);
-//        System.out.println(Arrays.toString(ints));
-//
-//    }
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "leet";
+        int k = 3;
+        char letter = 'e';
+        int repetition = 1;
+        String s = solution.smallestSubsequence(str, k, letter, repetition);
+        System.out.println(s);
+        Assert.assertEquals("eet", s);
+
+
+        str = "leetcode";
+        k = 4;
+        letter = 'e';
+        repetition = 2;
+        s = solution.smallestSubsequence(str, k, letter, repetition);
+        System.out.println(s);
+        Assert.assertEquals("ecde", s);
+
+
+        str = "bb";
+        k = 2;
+        letter = 'b';
+        repetition = 2;
+        s = solution.smallestSubsequence(str, k, letter, repetition);
+        System.out.println(s);
+        Assert.assertEquals("bb", s);
+
+
+        str = "aaabbbcccddd";
+        k = 3;
+        letter = 'b';
+        repetition = 2;
+        s = solution.smallestSubsequence(str, k, letter, repetition);
+        System.out.println(s);
+        Assert.assertEquals("abb", s);
+    }
 
 }
 
