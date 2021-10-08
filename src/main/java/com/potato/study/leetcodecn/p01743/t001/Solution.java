@@ -52,7 +52,8 @@ import java.util.*;
  */
 public class Solution {
 
-    // 1743
+
+
     public int[] restoreArray(int[][] adjacentPairs) {
         // 使用 map 记录 相邻的节点 ，因为对应节点不同，所以相邻的节点 肯定少于2个
         Map<Integer, List<Integer>> map = new HashMap<>();
@@ -73,20 +74,21 @@ public class Solution {
                 break;
             }
         }
-        // 从第二个节点开始 找其相邻的点，看每次看之前有没有用到 没有用到的就是当前的点
+        // 从第二个节点开始 找其相邻的点，看每次看之前有没有用到
         result[1] = map.get(result[0]).get(0);
         for (int i = 2; i < result.length; i++) {
+            // 因为每个元素都不同 找到i位置的元素
             List<Integer> list = map.get(result[i-1]);
-            for (int j = 0; j < list.size(); j++) {
-                if (list.get(j) == result[i-1]) {
+            int target = 0;
+            for (int num : list) {
+                // 之前用过了
+                if (num == result[i-2]) {
                     continue;
                 }
-                if (map.get(list.get(j)).size() == 1 && i != result.length - 1) {
-                    continue;
-                }
-                result[i] = list.get(j);
+                target = num;
                 break;
             }
+            result[i] = target;
         }
         return result;
     }
