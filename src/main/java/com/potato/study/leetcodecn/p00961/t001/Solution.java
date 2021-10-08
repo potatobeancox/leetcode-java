@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p00961.t001;
 
 import java.util.Arrays;
 
+import org.junit.Assert;
+
 /**
  * 961. 重复 N 次的元素
  *
@@ -46,7 +48,35 @@ public class Solution {
      */
     public int repeatedNTimes(int[] arr) {
         Arrays.sort(arr);
-        return arr[(arr.length - 1)/ 2];
+        int n = arr.length / 2;
+        // 如果在左端点是 0 和 n-1位置相等
+        if (arr[0] == arr[n-1]) {
+            return arr[0];
+        }
+        // 如果是在右端点
+        if (arr[n] == arr[arr.length - 1]) {
+            return arr[n];
+        }
+        // 否则返回 n-1 个元素 （中间哪个）
+        return arr[n-1];
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                1,2,3,3
+        };
+        int i = solution.repeatedNTimes(nums);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        nums = new int[] {
+                5,1,5,2,5,3,5,4
+        };
+        i = solution.repeatedNTimes(nums);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
     }
 
 
