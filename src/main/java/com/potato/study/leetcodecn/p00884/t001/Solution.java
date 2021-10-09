@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p00884.t001;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -49,31 +53,39 @@ public class Solution {
         if (null == b) {
             return a.split(" ");
         }
-        Set<String> set1 = new HashSet<>();
+        // 统计出现次数
+        Map<String, Integer> map1 = new HashMap<>();
         for (String word : a.split(" ")) {
-            set1.add(word);
+            Integer count = map1.getOrDefault(word, 0);
+            count++;
+            map1.put(word, count);
         }
-        Set<String> set2 = new HashSet<>();
+        Map<String, Integer> map2 = new HashMap<>();
         for (String word : b.split(" ")) {
-            set2.add(word);
+            Integer count = map2.getOrDefault(word, 0);
+            count++;
+            map2.put(word, count);
         }
-        // 分别遍历 set1 和set2 找不常见次
-        Set<String> result = new HashSet<>();
-        for (String word : set1) {
-            if (!set2.contains(word)) {
-                result.add(word);
+        // 分别遍历 map1 和 map2 找不常见次
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : map1.entrySet()) {
+            if (entry.getValue() != 1) {
+                continue;
+            }
+            if (!map2.containsKey(entry.getKey())) {
+                result.add(entry.getKey());
             }
         }
-        for (String word : set2) {
-            if (!set1.contains(word)) {
-                result.add(word);
+        for (Map.Entry<String, Integer> entry : map2.entrySet()) {
+            if (entry.getValue() != 1) {
+                continue;
+            }
+            if (!map1.containsKey(entry.getKey())) {
+                result.add(entry.getKey());
             }
         }
-        String[] array = new String[result.size()];
-        int index = 0;
-        for (String word :result) {
-            array[index++] = word;
-        }
-        return array;
+        return result.toArray(new String[result.size()]);
     }
+
+
 }
