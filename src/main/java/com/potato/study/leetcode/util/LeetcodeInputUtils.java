@@ -90,7 +90,7 @@ public class LeetcodeInputUtils {
                 if ("".equals(numStr)) {
                     continue;
                 }
-                list.add(Integer.parseInt(numStr));
+                list.add(Integer.parseInt(numStr.trim()));
             }
             int[] arr = new int[list.size()];
             for (int j = 0; j < list.size(); j++) {
