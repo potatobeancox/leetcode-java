@@ -52,7 +52,7 @@ public class Solution {
                 }
             }
         }
-        return word1.length() + word2.length() - dp[word1.length()][word2.length()];
+        return word1.length() + word2.length() - dp[word1.length()][word2.length()] * 2;
     }
 
 }
