@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00678.t001;
 
+import org.junit.Assert;
+
 /**
  * 678. 有效的括号字符串
  *
@@ -66,9 +68,23 @@ public class Solution {
             return isValidString(s, index, state);
         }
         // * 处理
-        return isValidString(s, index + 1, state + 1)
-                || isValidString(s, index + 1, state - 1);
+        return isValidString(s, index, state + 1)
+                || isValidString(s, index, state - 1) || isValidString(s, index, state);
     }
 
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "()";
+        boolean b = solution.checkValidString(s);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+
+        s = "(*))";
+        b = solution.checkValidString(s);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+    }
 
 }
