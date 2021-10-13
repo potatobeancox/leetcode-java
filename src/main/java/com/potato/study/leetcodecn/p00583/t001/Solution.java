@@ -29,7 +29,7 @@ import java.util.Arrays;
  */
 public class Solution {
 
-    // 583
+
     public int minDistance(String word1, String word2) {
         // 其实是求最长公共子需求 然后用两个长度把最长公共子序列长度刨除
         if (word1 == null && word2 == null) {
