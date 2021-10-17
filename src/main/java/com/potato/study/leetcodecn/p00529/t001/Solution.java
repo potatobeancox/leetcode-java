@@ -2,7 +2,9 @@ package com.potato.study.leetcodecn.p00529.t001;
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import org.junit.Assert;
 
@@ -79,8 +81,84 @@ import org.junit.Assert;
 public class Solution {
 
 
+    /**
+     *
+     * @param board
+     * @param click
+     * @return
+     */
     public char[][] updateBoard(char[][] board, int[] click) {
+        // 如果如果是雷 直接改了
+        if (board[click[0]][click[1]] == 'M') {
+            board[click[0]][click[1]] = 'X';
+            return board;
+        }
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(click);
+        int[][] direction = new int[][] {
+                {-1, 0},
+                {1, 0},
+                {0, 1},
+                {0, -1},
+                {1, 1},
+                {1, -1},
+                {-1, -1},
+                {-1, 1}
+        };
+        while (!queue.isEmpty()) {
+            int[] poll = queue.poll();
+            char ch = board[poll[0]][poll[1]];
+            if (ch == 'E') {
+                // 没有雷 也还没有飞揭露
+                int count = 0 ;
+                // 8个方向
+                for (int i = 0; i < direction.length; i++) {
+                    int dx = poll[0] + direction[i][0];
+                    int dy = poll[1] + direction[i][1];
+                    if (dx < 0 || dx >= board.length) {
+                        continue;
+                    }
+                    if (dy < 0 || dy >= board[0].length) {
+                        continue;
+                    }
+                    if (board[dx][dy] == 'X' || board[dx][dy] == 'M') {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    for (int i = 0; i < direction.length; i++) {
+                        int dx = poll[0] + direction[i][0];
+                        int dy = poll[1] + direction[i][1];
+                        if (dx < 0 || dx >= board.length) {
+                            continue;
+                        }
+                        if (dy < 0 || dy >= board[0].length) {
+                            continue;
+                        }
+                        if (board[dx][dy] == 'X' || board[dx][dy] == 'M') {
+                            count++;
+                        }
+                        queue.add(new int[] {dx, dy});
+                    }
+                }
+                // 设置当前位置
+                if (count == 0) {
+                    board[poll[0]][poll[1]] = 'B';
+                } else {
+                    board[poll[0]][poll[1]] = (char) ('0' + count);
+                }
+            } else if (ch == 'B') {
+                continue;
+            } else if (ch == 'M') {
+                continue;
+            } else if (ch == 'X'){
+                continue;
+            } else {
+                // 数字
+                continue;
+            }
 
-        return null;
+        }
+        return board;
     }
 }
