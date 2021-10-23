@@ -3,76 +3,80 @@ package com.potato.study.leetcodecn.p01324.t001;
 
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 1323. 6 和 9 组成的最大数字
+ * 1324. 竖直打印单词
  *
- * 给你一个仅由数字 6 和 9 组成的正整数 num。
-
- 你最多只能翻转一位数字，将 6 变成 9，或者把 9 变成 6 。
-
- 请返回你可以得到的最大数字。
+ * 给你一个字符串 s。请你按照单词在 s 中的出现顺序将它们全部竖直返回。
+ 单词应该以字符串列表的形式返回，必要时用空格补位，但输出尾部的空格需要删除（不允许尾随空格）。
+ 每个单词只能放在一列上，每一列中也只能有一个单词。
 
   
 
  示例 1：
 
- 输入：num = 9669
- 输出：9969
- 解释：
- 改变第一位数字可以得到 6669 。
- 改变第二位数字可以得到 9969 。
- 改变第三位数字可以得到 9699 。
- 改变第四位数字可以得到 9666 。
- 其中最大的数字是 9969 。
+ 输入：s = "HOW ARE YOU"
+ 输出：["HAY","ORO","WEU"]
+ 解释：每个单词都应该竖直打印。
+ "HAY"
+  "ORO"
+  "WEU"
  示例 2：
 
- 输入：num = 9996
- 输出：9999
- 解释：将最后一位从 6 变到 9，其结果 9999 是最大的数。
+ 输入：s = "TO BE OR NOT TO BE"
+ 输出：["TBONTB","OEROOE","   T"]
+ 解释：题目允许使用空格补位，但不允许输出末尾出现空格。
+ "TBONTB"
+ "OEROOE"
+ "   T"
  示例 3：
 
- 输入：num = 9999
- 输出：9999
- 解释：无需改变就已经是最大的数字了。
+ 输入：s = "CONTEST IS COMING"
+ 输出：["CIC","OSO","N M","T I","E N","S G","T"]
   
 
  提示：
 
- 1 <= num <= 10^4
- num 每一位上的数字都是 6 或者 9 。
+ 1 <= s.length <= 200
+ s 仅含大写英文字母。
+ 题目数据保证两个单词之间只有一个空格。
 
  来源：力扣（LeetCode）
- 链接：https://leetcode-cn.com/problems/maximum-69-number
+ 链接：https://leetcode-cn.com/problems/print-words-vertically
  著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
 public class Solution {
 
-    /**
-     * 直接看代码吧
-     * @param num
-     * @return
-     */
-    public int maximum69Number (int num) {
-        int cha = 3;
-        int temp = num;
-        int max = 0;
-        while (temp > 0) {
-            int bit = temp % 10;
-            if (bit == 6) {
-                max = Math.max(max, cha);
-            }
-            cha *= 10;
-            temp /= 10;
-        }
-        return num + max;
-    }
 
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-        int res = solution.maximum69Number(9996);
-        // [1,3,3]
-        System.out.println(res);
-        Assert.assertEquals(9999, res);
+    public List<String> printVertically(String s) {
+        // 按照空格进行split
+        String[] split = s.split(" ");
+        // 遍历找到 最大长度
+        int max = 0;
+        for (String word : split) {
+            max = Math.max(max, word.length());
+        }
+        // 遍历 split 每个位置 如果是大于 长度 加空格 否则加单词
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < max; i++) {
+            StringBuilder builder = new StringBuilder();
+            // 每个 位置 遍历结束之后 去掉末尾的空格
+            for (int j = 0; j < split.length; j++) {
+                if (i < split[j].length()) {
+                    builder.append(split[j].charAt(i));
+                } else {
+                    builder.append(" ");
+                }
+            }
+            while (builder.charAt(builder.length() - 1) == ' ') {
+                builder.deleteCharAt(builder.length() -1);
+            }
+            // 加入list
+            result.add(builder.toString());
+        }
+        return result;
     }
 }
