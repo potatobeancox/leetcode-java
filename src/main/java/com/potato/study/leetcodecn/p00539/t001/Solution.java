@@ -1,6 +1,11 @@
 package com.potato.study.leetcodecn.p00539.t001;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import com.potato.study.leetcode.domain.TreeNode;
 
 /**
@@ -33,40 +38,29 @@ import com.potato.study.leetcode.domain.TreeNode;
  */
 public class Solution {
 
-    private TreeNode lastNode;
     /**
-     * 右子树 根 左子树
-     * @param root
+     *
+     * @param timePoints
      * @return
      */
-    public TreeNode convertBST(TreeNode root) {
-        if (root == null) {
-            return root;
+    public int findMinDifference(List<String> timePoints) {
+        List<Long> minuteList = new ArrayList<>();
+        for (String timePoint : timePoints) {
+            long minuteCount = 0;
+            String[] split = timePoint.split(":");
+            long hour = Long.parseLong(split[0]);
+            long minute = Long.parseLong(split[1]);
+            minuteCount += minute;
+            minuteCount += (60 * hour);
+            minuteList.add(minuteCount);
         }
-        convertBST(root.right);
-        if (lastNode != null) {
-            root.val += lastNode.val;
+        Collections.sort(minuteList);
+        long minDiff = Integer.MAX_VALUE;
+        for (int i = 1; i < minuteList.size(); i++) {
+            minDiff = Math.min(minDiff, minuteList.get(i) - minuteList.get(i-1));
         }
-        lastNode = root;
-        convertBST(root.left);
-        return root;
+        minDiff = Math.min(minDiff, minuteList.get(0) - minuteList.get(minuteList.size() - 1) + 24 * 60);
+        return (int) minDiff;
     }
-
-
-
-//    public static void main(String[] args) {
-//        Solution solution = new Solution();
-//        String a = "1+1i";
-//        String b = "1+1i";
-//        String s = solution.complexNumberMultiply(a, b);
-//        System.out.println(s);
-//        Assert.assertEquals("0+2i", s);
-//
-//        a = "1+-1i";
-//        b = "1+-1i";
-//        s = solution.complexNumberMultiply(a, b);
-//        System.out.println(s);
-//        Assert.assertEquals("0+-2i", s);
-//    }
 
 }
