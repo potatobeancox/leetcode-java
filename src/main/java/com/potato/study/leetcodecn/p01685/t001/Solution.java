@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p01685.t001;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,11 +66,21 @@ public class Solution {
             } else if (i == n-1) {
                 result[i] = nums[i] * i - left[i-1];
             } else {
-                result[i] = nums[i] * i - left[i-1] + right[i-1] - nums[i] * (n-i-1);
+                result[i] = nums[i] * i - left[i-1] + right[i+1] - nums[i] * (n-i-1);
             }
         }
         return result;
     }
 
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                2,3,5
+        };
+        // [4,3,5]
+        int[] sumAbsoluteDifferences = solution.getSumAbsoluteDifferences(arr);
+        System.out.println(Arrays.toString(sumAbsoluteDifferences));
+    }
 
 }
