@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p01447.t001;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,31 @@ import java.util.List;
 public class Solution {
 
     public List<String> simplifiedFractions(int n) {
+        // 两层循环找到 没有 公约数的 分数
+        List<String> result = new ArrayList<>();
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j < i; j++) {
+                if (gcd(i, j) != 1) {
+                    continue;
+                }
+                result.add(j + "/" + i);
+            }
+        }
+        return result;
+    }
 
-        return null;
+    /**
+     * 使用辗转相除法 求最大公约数
+     * 除数作为 被除数 余数作为除数 一直计算知道 余数为0
+     * @return
+     */
+    private int gcd(int a, int b) {
+        int tmp = a % b;
+        while (tmp != 0) {
+            a = b;
+            b = tmp;
+            tmp = a % b;
+        }
+        return b;
     }
 }
