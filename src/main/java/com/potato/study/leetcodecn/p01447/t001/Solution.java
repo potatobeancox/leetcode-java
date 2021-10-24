@@ -56,6 +56,7 @@ public class Solution {
         return result;
     }
 
+
     /**
      * 使用辗转相除法 求最大公约数
      * 除数作为 被除数 余数作为除数 一直计算知道 余数为0
