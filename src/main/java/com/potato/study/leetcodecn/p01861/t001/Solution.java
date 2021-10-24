@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01861.t001;
 
+import com.potato.study.leetcode.util.ArrayUtil;
+
 /**
  * 1861. 旋转盒子
  *
@@ -65,13 +67,78 @@ public class Solution {
 
 
     /**
-     * 1
+     * '#' 表示石头
+     *  '*' 表示固定的障碍物
+     *  '.' 表示空位置
      * @param box
      * @return
      */
     public char[][] rotateTheBox(char[][] box) {
+        // 按照每行开始遍历，每行内从后到前进行遍历 找到第一个石头和 改放置的位置
+        for (int i = 0; i < box.length; i++) {
+            // 从后往前遍历
+            // 是否确定移动位置
+            boolean isConfirmMove = false;
+            // 要移动到的index 如果当前石头
+            int moveIndex = -1;
+            for (int j = box[i].length - 1; j >= 0; j--) {
+                char ch = box[i][j];
+                if (ch == '.') {
+                    // 空位置 判断是否需要重置 开始放置的位置 需要的话重置 不需要continue
+                    if (!isConfirmMove) {
+                        moveIndex = j;
+                        isConfirmMove = true;
+                    }
+//                    rotateBox[j][i] = '.';
+                } else if (ch == '*') {
+                    // 障碍物需要 重置 是否已经确定了移动位置
+                    isConfirmMove = false;
+//                    rotateBox[j][i] = '*';
+                } else {
+                    // 石头 如果需要移动就移动 否则 重置 移动位置
+                    if (isConfirmMove) {
+                        // 移动
+                        box[i][moveIndex] = '#';
+                        moveIndex--;
+                        box[i][j] = '.';
+                    }
+                }
+            }
+        }
+        // 生成结果
+        char[][] rotateBox = new char[box[0].length][box.length];
+        for (int i = 0; i < box.length; i++) {
+            for (int j = 0; j < box[0].length; j++) {
+                rotateBox[j][i] = box[i][j];
+            }
+        }
+        // 数值中心线交换
+        for (int i = 0; i < rotateBox.length; i++) {
+            int left = 0;
+            int right = rotateBox[i].length - 1;
+            while (left < right) {
+                char ch = rotateBox[i][left];
+                rotateBox[i][left] = rotateBox[i][right];
+                rotateBox[i][right] = ch;
 
-        return null;
+                left++;
+                right--;
+            }
+        }
+        return rotateBox;
     }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        char[][] input = new char[][] {
+                {'#','.','*','.'},
+                {'#','#','*','.'}
+        };
+        // [["#",".","*","."],["#","#","*","."]]
+
+        char[][] chars = solution.rotateTheBox(input);
+        ArrayUtil.printMatrix(chars);
+    }
+
 
 }
