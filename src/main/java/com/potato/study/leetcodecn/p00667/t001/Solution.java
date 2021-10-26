@@ -36,14 +36,26 @@ import com.potato.study.leetcode.domain.TreeNode;
  */
 public class Solution {
 
-    /**
-     *
-     * @param n
-     * @param k
-     * @return
-     */
+    // 667
     public int[] constructArray(int n, int k) {
-        // 两侧拿 k-1
-        return null;
+        int[] result = new int[n];
+        for (int i = 0; i < n-k-1; i++) {
+            result[i] = i + 1;
+        }
+        // 需要雄 k+1 个数字 从max和min取  剩下的 n-k-1从 1开始往后
+        int left = n-k;
+        int right = n;
+        int index = 0;
+        for (int i = n-k-1; i < n; i++) {
+            if (index % 2 == 0) {
+                result[i] = left;
+                left++;
+            } else {
+                result[i] = right;
+                right--;
+            }
+            index++;
+        }
+        return result;
     }
 }
