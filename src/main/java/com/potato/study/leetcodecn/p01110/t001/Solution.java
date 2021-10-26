@@ -46,26 +46,43 @@ public class Solution {
 
 
     public List<TreeNode> delNodes(TreeNode root, int[] toDelete) {
-        Set<Integer> needDeleteNodeSet = new HashSet<>();
-        for (int deleteVal : toDelete) {
-            needDeleteNodeSet.add(deleteVal);
+        List<TreeNode> resultList = new ArrayList<>();
+        Set<Integer> deleteSet = new HashSet<>();
+        for (int delete : toDelete) {
+            deleteSet.add(delete);
         }
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(root);
-        List<TreeNode> newTreeRoot = new ArrayList<>();
-        if (!needDeleteNodeSet.contains(root.val)) {
-            newTreeRoot.add(root);
+        isRootDelete(root, resultList, true, deleteSet);
+        return resultList;
+    }
+
+    /**
+     * 判断当前节点是否被删除
+     * 并且 如果 当前节点没有被删除 且 父亲节点已经被删除 （没有父亲）
+     * 插入到结果集合中
+     * @param root          当前节点
+     * @param resultList    结果结合
+     * @param isParentMiss  父亲是否被删除了
+     * @param deleteSet 需要被删除的节点值
+     * @return  当前点是否被删除
+     */
+    private boolean isRootDelete(TreeNode root, List<TreeNode> resultList, boolean isParentMiss, Set<Integer> deleteSet) {
+        if (root == null) {
+            return false;
         }
-        // 层序遍历 如果当前节点作为跟需要被删除 那边就将两个子树 放到结果中（子树的根不能被删除）
-        while (!queue.isEmpty()) {
-            TreeNode poll = queue.poll();
-            if (poll.left != null) {
-                queue.add(poll.left);
-            }
-            if (poll.right != null) {
-                queue.add(poll.right);
-            }
+        boolean isRootDelete = deleteSet.contains(root.val);
+        // 处理孩子 左右孩子
+        boolean isLeftDel = isRootDelete(root.left, resultList, isRootDelete, deleteSet);
+        if (isLeftDel) {
+            root.left = null;
         }
-        return newTreeRoot;
+        boolean isRightDel = isRootDelete(root.right, resultList, isRootDelete, deleteSet);
+        if (isRightDel) {
+            root.right = null;
+        }
+        // 判断当前 root 是否可以被记录
+        if (!isRootDelete && isParentMiss) {
+            resultList.add(root);
+        }
+        return isRootDelete;
     }
 }
