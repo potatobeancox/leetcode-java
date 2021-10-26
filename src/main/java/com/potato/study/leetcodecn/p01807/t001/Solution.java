@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p01807.t001;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 1807. 替换字符串中的括号内容
@@ -65,8 +67,43 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     *
+     * @param s
+     * @param knowledge
+     * @return
+     */
     public String evaluate(String s, List<List<String>> knowledge) {
-
-        return null;
+        // key  value 用map 存起来  遍历一遍s
+        Map<String, String> paramMap = new HashMap<>();
+        for (List<String> list : knowledge) {
+            paramMap.put(list.get(0), list.get(1));
+        }
+        // 遍历 s 对于 （） 开始和结尾的字符进行替换
+        int index = 0;
+        StringBuilder totalBuilder = new StringBuilder();
+        while (index < s.length()) {
+            char ch = s.charAt(index);
+            if (ch == '(') {
+                // 找到第一个 ）
+                int startIndex = index + 1;
+                StringBuilder builder = new StringBuilder();
+                while (startIndex < s.length() && s.charAt(startIndex) != ')') {
+                    builder.append(s.charAt(startIndex));
+                    startIndex++;
+                }
+                // 替换
+                String sub = paramMap.get(builder.toString());
+                if (sub == null) {
+                    sub = "?";
+                }
+                totalBuilder.append(sub);
+                index = startIndex + 1;
+            } else {
+                totalBuilder.append(ch);
+                index++;
+            }
+        }
+        return totalBuilder.toString();
     }
 }
