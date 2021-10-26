@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
+
 /**
  * 1980. 找出不同的二进制字符串
  *
@@ -46,9 +48,9 @@ public class Solution {
     // 1980
     public String findDifferentBinaryString(String[] nums) {
         // 遍历 nums 对于每个 num 转换成 数字
-        Set<Long> set = new HashSet<>();
+        Set<Integer> set = new HashSet<>();
         for (String num : nums) {
-            long n = Long.valueOf(num, 2);
+            int n = Integer.valueOf(num, 2);
             set.add(n);
         }
         // 从 0 - 2^n 找到第一个 没有再set 中的数字
@@ -67,5 +69,24 @@ public class Solution {
         }
         return "";
     }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] nums = new String[] {
+                "01","10"
+        };
+        String differentBinaryString = solution.findDifferentBinaryString(nums);
+        System.out.println(differentBinaryString);
+
+        nums = new String[] {
+                "00","01"
+        };
+        differentBinaryString = solution.findDifferentBinaryString(nums);
+        System.out.println(differentBinaryString);
+        Assert.assertEquals("10", differentBinaryString);
+    }
+
+
+
 
 }
