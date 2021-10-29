@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01017.t001;
 
+import org.junit.Assert;
+
 /**
  * 1017. 负二进制转换
  *
@@ -37,8 +39,47 @@ package com.potato.study.leetcodecn.p01017.t001;
  */
 public class Solution {
 
-    public String baseNeg2(int n) {
 
-        return null;
+    /**
+     * 正常对 n 取余数
+     * 因为 n是 -2
+     * 如果余数是 -1 的话 商 + 1 余数转成 1
+     * @param n
+     * @return
+     */
+    public String baseNeg2(int n) {
+        if (n == 0) {
+            return "0";
+        }
+        StringBuilder builder = new StringBuilder();
+        while (n != 1) {
+            int remind = n % (-2);
+            n /= (-2);
+            if (remind == -1) {
+                remind = 1;
+                n++;
+            }
+            builder.append(remind);
+
+        }
+        // 最后 n == 1
+        builder.append("1");
+        return builder.reverse().toString();
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = solution.baseNeg2(2);
+        System.out.println(s);
+        Assert.assertEquals("110", s);
+
+
+        s = solution.baseNeg2(3);
+        System.out.println(s);
+        Assert.assertEquals("111", s);
+
+        s = solution.baseNeg2(4);
+        System.out.println(s);
+        Assert.assertEquals("100", s);
     }
 }
