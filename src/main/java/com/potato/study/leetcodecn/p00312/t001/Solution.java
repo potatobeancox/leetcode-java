@@ -43,13 +43,55 @@ import org.junit.Assert;
  */
 public class Solution {
 
-    public int maxCoins(int[] nums) {
 
-        return -1;
+    /**
+     * https://leetcode-cn.com/problems/burst-balloons/solution/chuo-qi-qiu-by-leetcode-solution/
+     * @param nums
+     * @return
+     */
+    public int maxCoins(int[] nums) {
+        // 处理 下 nums 在两边 补充 1 好处理
+        int[] values = new int[nums.length + 2];
+        values[0] = 1;
+        values[values.length - 1] = 1;
+        for (int i = 0; i < nums.length; i++) {
+            values[i+1] = nums[i];
+        }
+        //  dp ij ij 区间里边 最多 可以 获得多少个硬币   di ij 等于 选择k 位置 求每个的最大值
+        int[][] dp = new int[nums.length + 2][nums.length + 2];
+        // i 从 末尾遍历到 0 j 比i 多2  在ij中 枚举每个 k 并求解 每个k位置 值 找到ij中的最大值
+        for (int i = values.length - 1; i >= 0; i--) {
+            // 控制 左边断电
+            for (int j = i + 2; j < values.length; j++) {
+                // 控制右边端点
+                for (int k = i + 1; k < j; k++) {
+                    // 控制本次 打爆哪个气球 两边分别能获得多少
+                    int val = dp[i][k] + dp[k][j] + values[k] * values[i] * values[j];
+                    dp[i][j] = Math.max(dp[i][j], val);
+                }
+            }
+
+        }
+        return dp[0][values.length - 1];
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
+        int[] nums = new int[] {
+                3,1,5,8
+        };
+        int i = solution.maxCoins(nums);
+        System.out.println(i);
+        Assert.assertEquals( 167, i);
+
+
+
+        nums = new int[] {
+                1,5
+        };
+        i = solution.maxCoins(nums);
+        System.out.println(i);
+        Assert.assertEquals( 10, i);
 
     }
 }
