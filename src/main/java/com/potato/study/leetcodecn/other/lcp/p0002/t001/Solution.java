@@ -2,115 +2,83 @@ package com.potato.study.leetcodecn.other.lcp.p0002.t001;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 3. 无重复字符的最长子串
+ * LCP 02. 分式化简
  *
- * 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+ * 有一个同学在学习分式。他需要将一个连分数化成最简分数，你能帮助他吗？
+
+
+
+ 连分数是形如上图的分式。在本题中，所有系数都是大于等于0的整数。
 
   
 
- 示例 1:
+ 输入的cont代表连分数的系数（cont[0]代表上图的a0，以此类推）。返回一个长度为2的数组[n, m]，使得连分数的值等于n / m，且n, m最大公约数为1。
 
- 输入: s = "abcabcbb"
- 输出: 3
- 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
- 示例 2:
-
- 输入: s = "bbbbb"
- 输出: 1
- 解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
- 示例 3:
-
- 输入: s = "pwwkew"
- 输出: 3
- 解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
-      请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
- 示例 4:
-
- 输入: s = ""
- 输出: 0
   
 
- 提示：
+ 示例 1：
 
- 0 <= s.length <= 5 * 104
- s 由英文字母、数字、符号和空格组成
+ 输入：cont = [3, 2, 0, 2]
+ 输出：[13, 4]
+ 解释：原连分数等价于3 + (1 / (2 + (1 / (0 + 1 / 2))))。注意[26, 8], [-13, -4]都不是正确答案。
+ 示例 2：
+
+ 输入：cont = [0, 0, 3]
+ 输出：[3, 1]
+ 解释：如果答案是整数，令分母为1即可。
+  
+
+ 限制：
+
+ cont[i] >= 0
+ 1 <= cont的长度 <= 10
+ cont最后一个元素不等于0
+ 答案的n, m的取值都能被32位int整型存下（即不超过2 ^ 31 - 1）。
 
  来源：力扣（LeetCode）
- 链接：https://leetcode-cn.com/problems/longest-substring-without-repeating-characters
+ 链接：https://leetcode-cn.com/problems/deep-dark-fraction
  著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
 public class Solution {
+
+
     /**
-     * 第一个 字母 找到当前最大的窗口 ，
-     * 接下来 每次平移 找到窗口内的 重复数字 如果有的话，没有的话就继续添加窗口长度
      *
-     * 设置一个窗口
-     * map char lastIndex
-     * 每次找到一个字母时，从map 中找是否存在 index ，
-     *      如果不存在 map 方， 更新最大长度
-     *      如果存在 map 中 找到那个index 更新，并重新遍历map 清楚 之前index 前的信息
-     *
-     * 如何遍历 map 并删除 元素
-     * https://blog.csdn.net/wangmaohong0717/article/details/79286842
-     * @param s
+     * @param cont
      * @return
      */
-    public int lengthOfLongestSubstring(String s) {
-        if (null == s || s.length() == 0) {
-            return 0;
-        }
-        int maxLength = 0;
-        Map<Character, Integer> charLastIndexMap = new HashMap<>();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (!charLastIndexMap.containsKey(c)) {
-                charLastIndexMap.put(c, i);
-                maxLength = Math.max(maxLength, charLastIndexMap.size());
-            } else {
-                int lastIndex = charLastIndexMap.get(c);
-                // 更新 目前的map
-                charLastIndexMap.put(c, i);
-                Iterator<Map.Entry<Character, Integer>> it = charLastIndexMap.entrySet().iterator();
-                while(it.hasNext()){
-                    Map.Entry<Character, Integer> entry = it.next();
-                    if (entry.getValue() <= lastIndex) {
-                        //使用迭代器的remove()方法删除元素
-                        it.remove();
-                    }
-                }
-                maxLength = Math.max(maxLength, charLastIndexMap.size());
-            }
-        }
-        return maxLength;
+    public int[] fraction(int[] cont) {
+        return function(cont, 0);
     }
+
+
+   private int[] function(int[] cont, int index) {
+       // 终止条件
+       if (index == cont.length - 1) {
+           return new int[] {cont[cont.length - 1], 1};
+       }
+       // 获取 下一个位置的结果
+       int[] next = function(cont, index + 1);
+       // 注意还有个 1/
+       return new int[] {cont[index] * next[0] + next[1], next[0]};
+   }
+
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        String s = "abcabcbb";
-        int len = solution.lengthOfLongestSubstring(s);
-        System.out.println(len);
-        Assert.assertEquals(3, len);
-
-        s = "bbbbb";
-        len = solution.lengthOfLongestSubstring(s);
-        System.out.println(len);
-        Assert.assertEquals(1, len);
-
-        s = "pwwkew";
-        len = solution.lengthOfLongestSubstring(s);
-        System.out.println(len);
-        Assert.assertEquals(3, len);
-
-        s = "";
-        len = solution.lengthOfLongestSubstring(s);
-        System.out.println(len);
-        Assert.assertEquals(0, len);
+        int[] cont = new int[] {
+                3, 2, 0, 2
+        };
+        int[] fraction = solution.fraction(cont);
+        // [13,4]
+        System.out.println(Arrays.toString(fraction));
     }
 
 
