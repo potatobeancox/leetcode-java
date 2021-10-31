@@ -1,7 +1,6 @@
 package com.potato.study.leetcodecn.p00937.t001;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 937. 重新排列日志文件
@@ -49,7 +48,50 @@ import java.util.Queue;
 public class Solution {
 
     public String[] reorderLogFiles(String[] logs) {
+        // 数字保证相对顺序就行
+        List<String> numLog = new ArrayList<>();
+        // 字母
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>(
+                new Comparator<String>() {
+                    @Override
+                    public int compare(String log1, String log2) {
+                        int blankIndex1 = log1.indexOf(" ");
+                        String substring1 = log1.substring(blankIndex1);
+                        int blankIndex2 = log2.indexOf(" ");
+                        String substring2 = log2.substring(blankIndex2);
 
-        return null;
+                        int compare = substring1.compareTo(substring2);
+                        if (compare != 0) {
+                            return compare;
+                        }
+                        return log1.compareTo(log2);
+                    }
+                }
+        );
+
+        // 区分日志 放入不同容器
+        for (String log : logs) {
+            int blankIndex = log.indexOf(" ");
+            String substring = log.substring(blankIndex + 1);
+            char charAt = substring.charAt(0);
+            if (Character.isDigit(charAt)) {
+                numLog.add(log);
+            } else {
+                priorityQueue.add(log);
+            }
+        }
+
+
+        String[] result = new String[logs.length];
+        // 先字母 再数字
+        int index = 0;
+        while (!priorityQueue.isEmpty()) {
+            result[index++] = priorityQueue.poll();
+        }
+
+        for (int i = 0; i < numLog.size(); i++) {
+            result[index++] = numLog.get(i);
+        }
+        return result;
     }
 }
