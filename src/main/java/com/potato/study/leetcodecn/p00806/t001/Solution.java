@@ -50,15 +50,17 @@ public class Solution {
         if (null == s) {
             return new int[] {0,0};
         }
-        int nums = 0;
+        int line = 1;
+        int currnetSize = 0;
         for (char ch : s.toCharArray()) {
-            nums += widths[ch - 'a'];
+            int len = widths[ch - 'a'];
+            if (currnetSize + len <= 100) {
+                currnetSize += len;
+            } else {
+                line++;
+                currnetSize = len;
+            }
         }
-        int line = nums / 100;
-        int col = nums % 100;
-        if (col > 0) {
-            line++;
-        }
-        return new int[] {line, col};
+        return new int[] {line, currnetSize};
     }
 }
