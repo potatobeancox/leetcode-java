@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p00638.t001;
 
+import com.potato.study.leetcode.domain.ListNode;
 import com.potato.study.leetcode.domain.TreeNode;
 
 import java.util.*;
@@ -66,9 +67,19 @@ public class Solution {
     public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
         this.costMap = new HashMap<>();
         //  处理 special 确保优惠
-
+        Iterator<List<Integer>> iterator = special.iterator();
+        while (iterator.hasNext()) {
+            List<Integer> next = iterator.next();
+            int basePrice = 0;
+            for (int i = 0; i < next.size() - 1; i++) {
+                basePrice += next.get(i) * price.get(i);
+            }
+            if (basePrice <= next.get(next.size() - 1)) {
+                iterator.remove();
+            }
+        }
         // dfs 获取最小值
-        return -1;
+        return dfs(price, special, needs);
     }
 
     /**
@@ -79,8 +90,51 @@ public class Solution {
      * @return
      */
     private int dfs(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
-        int minCost = 0;
+        int minCost = Integer.MAX_VALUE;
+        List<Integer> newNeed = new ArrayList<>(needs);
+        // 终态判断
+        if (isAllNeedClear(newNeed)) {
+            return 0;
+        }
+        for (List<Integer> spe : special) {
+            if (!isFitForSpecial(spe, newNeed)) {
+                continue;
+            }
+            // 减去相应的
+            for (int i = 0; i < newNeed.size(); i++) {
+                newNeed.set(i, newNeed.get(i) - spe.get(i));
+            }
+            minCost = Math.min(minCost, dfs(price, special, newNeed) + spe.get(spe.size() - 1));
+            // 加上相应的
+            for (int i = 0; i < newNeed.size(); i++) {
+                newNeed.set(i, newNeed.get(i) + spe.get(i));
+            }
+        }
+        // 判断是不是 只能使用 单个计算
+        if (minCost == Integer.MAX_VALUE) {
+            minCost = 0;
+            for (int i = 0; i < newNeed.size(); i++) {
+                minCost += newNeed.get(i) * price.get(i);
+            }
+        }
+        return minCost;
+    }
 
-        return 2;
+    private boolean isFitForSpecial(List<Integer> spe, List<Integer> newNeed) {
+        for (int i = 0; i < newNeed.size(); i++) {
+            if (spe.get(i) > newNeed.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isAllNeedClear(List<Integer> needs) {
+        for (int need : needs) {
+            if (need > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
