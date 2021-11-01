@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p01130.t001;
 
 
+import org.junit.Assert;
+
 import java.util.Stack;
 
 /**
@@ -42,10 +44,48 @@ import java.util.Stack;
  */
 public class Solution {
 
+    /**
+     *
+     https://leetcode-cn.com/problems/minimum-cost-tree-from-leaf-values/solution/xiang-xi-jie-shi-dong-tai-gui-hua-dan-diao-zhan-ji/
+     * @param arr
+     * @return
+     */
     public int mctFromLeafValues(int[] arr) {
         // 单调栈 从top到 botton 单调递减 每次找到 最小的2个进行合并 累加结果
-        Stack<Long> stack = new Stack<>();
-//        stack.add()
-        return -1;
+        Stack<Integer> stack = new Stack<>();
+        // 放进去一个最大值 便于处理
+        stack.add(Integer.MAX_VALUE);
+        // 第一个元素进去
+        stack.add(arr[0]);
+        // 遍历 每个元素  对于每个位置 比较下看
+        int total = 0;
+        for (int i = 1; i < arr.length; i++) {
+            int current = arr[i];
+            // 如果当前 current 大于 stack 那么 stack 顶需要被消耗
+            while (current > stack.peek()) {
+                Integer smallest = stack.pop();
+                total += (smallest * Math.min(stack.peek(), current));
+            }
+            // 如果当前 current 小于 stack 先不进行消耗
+            stack.push(current);
+        }
+
+        // 遍历 stack 每次消耗一个叶子 记得头部 还有一个int 最大值
+        while (stack.size() > 2) {
+            Integer pop = stack.pop();
+            total += (pop * stack.peek());
+        }
+
+        return total;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                6,2,4
+        };
+        int i = solution.mctFromLeafValues(arr);
+        System.out.println(i);
+        Assert.assertEquals(32, i);
     }
 }
