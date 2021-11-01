@@ -1,7 +1,11 @@
 package com.potato.study.leetcodecn.p00859.t001;
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 859. 亲密字符串
@@ -62,12 +66,24 @@ public class Solution {
         if (a.length() != b.length()) {
             return false;
         }
+        Set<Character> charSet = new HashSet<>();
         List<Integer> mismatchIndex = new ArrayList<>();
+        boolean hasSame = false;
         for (int i = 0; i < a.length(); i++) {
             if (a.charAt(i) != b.charAt(i)) {
                 mismatchIndex.add(i);
             }
+            char ch = a.charAt(i);
+            if (charSet.contains(ch)) {
+                hasSame = true;
+            }
+            charSet.add(ch);
         }
+        // 有两个一样的字符
+        if (mismatchIndex.size() == 0 && hasSame) {
+            return true;
+        }
+
         if (mismatchIndex.size() != 2) {
             return false;
         }
@@ -76,5 +92,21 @@ public class Solution {
             return true;
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String a = "ab";
+        String b = "ba";
+        boolean res = solution.buddyStrings(a, b);
+        System.out.println(res);
+        Assert.assertEquals(true, res);
+
+
+        a = "ab";
+        b = "ab";
+        res = solution.buddyStrings(a, b);
+        System.out.println(res);
+        Assert.assertEquals(false, res);
     }
 }
