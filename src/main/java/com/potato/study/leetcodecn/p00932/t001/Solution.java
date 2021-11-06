@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p00932.t001;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 
 /**
@@ -38,8 +41,40 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    private Map<Integer, int[]> value2BeautifulArrayMap;
+    // 932
     public int[] beautifulArray(int n) {
-        return null;
+        this.value2BeautifulArrayMap = new HashMap<>();
+        // 递归求
+        return getBeautifulArray(n);
+    }
+
+    /**
+     * 获取 排列
+     * @param n
+     * @return
+     */
+    private int[] getBeautifulArray(int n) {
+        if (value2BeautifulArrayMap.containsKey(n)) {
+            return value2BeautifulArrayMap.get(n);
+        }
+        // 终止条件
+        if (n == 1) {
+            return new int[] {1};
+        }
+        // 递归获取奇数 放在前边
+        int[] result = new int[n];
+        int index = 0;
+        int[] beautifulArrayOdd = getBeautifulArray((n + 1) / 2);
+        // 递归获取偶数 放在后边
+        for (int num : beautifulArrayOdd) {
+            result[index++] = 2 * num - 1;
+        }
+        int[] beautifulArrayEven = getBeautifulArray(n / 2);
+        for (int num : beautifulArrayEven) {
+            result[index++] = 2 * num;
+        }
+        return result;
     }
 
 
