@@ -1,11 +1,8 @@
 package com.potato.study.leetcodecn.p02053.t001;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.junit.Assert;
+
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -57,29 +54,39 @@ public class Solution {
 
     // 2053
     public String kthDistinct(String[] arr, int k) {
-        // 使用 map 记录 只出现一次 记录出现的index
-        Map<String, Integer> valueIndexMap = new HashMap<>();
-        for (int i = arr.length - 1; i >= 0; i--) {
-            if (valueIndexMap.containsKey(arr[i])) {
-                valueIndexMap.remove(arr[i]);
-            } else {
-                valueIndexMap.put(arr[i], i);
+        // 使用 map 记录 只出现一次 记录出现的index lru 遍历有序
+        Map<String, Integer> wordTimesMap = new LinkedHashMap<>();
+        for (String word : arr) {
+            Integer count = wordTimesMap.getOrDefault(word, 0);
+            count++;
+            wordTimesMap.put(word, count);
+        }
+        int index = 0;
+        for (Map.Entry<String, Integer> entry : wordTimesMap.entrySet()) {
+            if (entry.getValue() != 1) {
+                continue;
+            }
+            String key = entry.getKey();
+            index++;
+            if (index == k) {
+                return key;
             }
         }
-        List<java.util.Map.Entry<String, Integer>> list = new ArrayList<>();
-        list.addAll(valueIndexMap.entrySet());
-        // 遍历 map 进行排序 然后找到 第k个
-        Collections.sort(list, new Comparator<java.util.Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(java.util.Map.Entry<String, Integer> o1, java.util.Map.Entry<String, Integer> o2) {
-                return Integer.compare(o1.getValue(), o2.getValue());
-            }
-        });
-        if (list.size() < k) {
-            return "";
-        }
-        return list.get(k).getKey();
+        return "";
     }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] arr = new String[] {
+                "d","b","c","b","c","a"
+        };
+        int k = 2;
+        String s = solution.kthDistinct(arr, k);
+        System.out.println(s);
+        Assert.assertEquals("a", s);
+    }
+
 
 
 }
