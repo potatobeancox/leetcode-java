@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p00677.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcodecn.p00402.t001.Solution;
+import org.junit.Assert;
+
+import java.util.logging.SocketHandler;
 
 /**
  * 677. 键值映射
@@ -45,14 +49,15 @@ public class MapSum {
     /**
      * 字典树 目录
      */
-    private Node[] nodes;
+    private Node root;
 
 
     /**
      *
      */
     public MapSum() {
-        this.nodes = new Node[26];
+        this.root = new Node();
+        root.nodes = new Node[26];
     }
 
     /**
@@ -61,19 +66,16 @@ public class MapSum {
      * @param val
      */
     public void insert(String key, int val) {
-        Node[] p = this.nodes;
-        Node last = null;
+        Node node = this.root;
         for (int i = 0; i < key.length(); i++) {
             char ch = key.charAt(i);
             int index = ch - 'a';
-            if (p[index] == null) {
-                p[index] = new Node();
-                p[index].nodes = new Node[26];
+            if (node.nodes[index] == null) {
+                node.nodes[index] = new Node();
             }
-            last = p[index];
-            p = p[index].nodes;
+            node = node.nodes[index];
         }
-        last.val = val;
+        node.val = val;
     }
 
     /**
@@ -82,34 +84,23 @@ public class MapSum {
      * @return
      */
     public int sum(String prefix) {
-        // 找到对应的根
-        Node[] p = this.nodes;
+        Node node = this.root;
         for (int i = 0; i < prefix.length(); i++) {
             char ch = prefix.charAt(i);
             int index = ch - 'a';
-            Node node = p[index];
-            if (node == null) {
-                node = new Node();
-                node.nodes = new Node[26];
-                p = nodes;
+            if (node.nodes[index] == null) {
+                node.nodes[index] = new Node();
             }
+            node = node.nodes[index];
         }
-        // 遍历 p 求和
-        int val = 0;
-        for (int i = 0; i < 26; i++) {
-            if (p[i] == null) {
-                continue;
-            }
-            val += dfsSum(p[i]);
-        }
-        return val;
+        return dfsSum(node);
     }
 
     private int dfsSum(Node node) {
         if (node == null) {
             return 0;
         }
-        int total = 0;
+        int total = node.val;
         for (int i = 0; i < 26; i++) {
             Node child = node.nodes[i];
             if (child == null) {
@@ -124,5 +115,16 @@ public class MapSum {
     class Node {
         public Node[] nodes;
         public int val;
+
+        public Node() {
+            this.nodes = new Node[26];
+        }
+    }
+
+    public static void main(String[] args) {
+//        Solution solution = new Solution();
+//        String s = solution.removeKdigits();
+//        System.out.println(s);
+//        Assert.assertEquals(, s);
     }
 }
