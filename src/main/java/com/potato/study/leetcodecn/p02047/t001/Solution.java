@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02047.t001;
 
+import org.junit.Assert;
+
 /**
  * 2047. 句子中的有效单词数
  *
@@ -61,13 +63,88 @@ public class Solution {
      */
     public int countValidWords(String sentence) {
         char[] chars = sentence.toCharArray();
+        int count = 0;
+        StringBuilder builder = new StringBuilder();
         for (char ch : chars) {
-            if (Character.isUpperCase(ch)) {
-
+            // 遍历 单词 积累 直到遇到空格 开始结算之前单词
+            if (' ' != ch) {
+                builder.append(ch);
+            } else {
+                if (isValid(builder.toString())) {
+                    count++;
+//                    System.out.println(count + "###" + builder.toString());
+                }
+                builder = new StringBuilder();
             }
         }
-        return 1;
+
+        if (builder.length() > 0 && isValid(builder.toString())) {
+            count++;
+        }
+
+        return count;
     }
 
+
+    private boolean isValid(String word) {
+        if (null == word || word.length() == 0) {
+            return false;
+        }
+        char[] chars = word.toCharArray();
+        int digitCount = 0;
+        int charMinusCount = 0;
+        // 标点数量
+        int punctuationCount = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (Character.isDigit(chars[i])) {
+                digitCount++;
+            } else if ('-' == chars[i]) {
+                charMinusCount++;
+            } else if (Character.isAlphabetic(chars[i])) {
+                continue;
+            } else {
+                punctuationCount++;
+            }
+        }
+        // 仅由小写字母、连字符和/或标点（不含数字）
+        if (digitCount > 0) {
+            return false;
+        }
+        // 至多一个 连字符 '-' 。如果存在，连字符两侧应当都存在小写字母（"a-b" 是一个有效单词，但 "-ab" 和 "ab-" 不是有效单词）
+        if (charMinusCount > 1) {
+            return false;
+        }
+        if (charMinusCount == 1) {
+            int index = word.indexOf('-');
+            if (index == 0 || index == word.length() - 1) {
+                return false;
+            }
+            if (!Character.isAlphabetic(word.charAt(index - 1))
+                    || !Character.isAlphabetic(word.charAt(index + 1))) {
+                return false;
+            }
+        }
+        // 至多一个 标点符号。如果存在，标点符号应当位于 token 的 末尾 。
+        if (punctuationCount > 1
+                || punctuationCount == 1 && (Character.isAlphabetic(chars[chars.length-1]) || chars[chars.length-1] == '-')) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String word = "he bought 2 pencils, 3 erasers, and 1  pencil-sharpener.";
+        int i = solution.countValidWords(word);
+        System.out.println(i);
+        Assert.assertEquals(6, i);
+
+        word = " 62   nvtk0wr4f  8 qt3r! w1ph 1l ,e0d 0n 2v 7c.  n06huu2n9 s9   ui4 nsr!d7olr  q-, vqdo!btpmtmui.bb83lf g .!v9-lg 2fyoykex uy5a 8v whvu8 .y sc5 -0n4 zo pfgju 5u 4 3x,3!wl  fv4   s  aig cf j1 a i  8m5o1  !u n!.1tz87d3 .9    n a3  .xb1p9f  b1i a j8s2 cugf l494cx1! hisceovf3 8d93 sg 4r.f1z9w   4- cb r97jo hln3s h2 o .  8dx08as7l!mcmc isa49afk i1 fk,s e !1 ln rt2vhu 4ks4zq c w  o- 6  5!.n8ten0 6mk 2k2y3e335,yj  h p3 5 -0  5g1c  tr49, ,qp9 -v p  7p4v110926wwr h x wklq u zo 16. !8  u63n0c l3 yckifu 1cgz t.i   lh w xa l,jt   hpi ng-gvtk8 9 j u9qfcd!2  kyu42v dmv.cst6i5fo rxhw4wvp2 1 okc8!  z aribcam0  cp-zp,!e x  agj-gb3 !om3934 k vnuo056h g7 t-6j! 8w8fncebuj-lq    inzqhw v39,  f e 9. 50 , ru3r  mbuab  6  wz dw79.av2xp . gbmy gc s6pi pra4fo9fwq k   j-ppy -3vpf   o k4hy3 -!..5s ,2 k5 j p38dtd   !i   b!fgj,nx qgif ";
+        i = solution.countValidWords(word);
+        System.out.println(i);
+        Assert.assertEquals(49, i);
+    }
 
 }
