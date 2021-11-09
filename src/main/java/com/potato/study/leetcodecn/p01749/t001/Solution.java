@@ -48,16 +48,14 @@ public class Solution {
     public int maxAbsoluteSum(int[] nums) {
         long[] sum = new long[nums.length+1];
         sum[1] = nums[0];
+        long max = nums[0];
+        long min = nums[0];
         for (int i = 2; i < sum.length; i++) {
             sum[i] = sum[i-1] + nums[i-1];
+            max = Math.max(sum[i], max);
+            min = Math.min(sum[i], min);
         }
-        int max = 0;
-        for (int i = 0; i < sum.length; i++) {
-            for (int j = i + 1; j < sum.length; j++) {
-                max = Math.max(max, Math.abs((int)(sum[j] - sum[i])));
-            }
-        }
-        return max;
+        return (int) Math.max(Math.abs(max), Math.max(Math.abs(min), Math.abs(max - min)));
     }
 
     public static void main(String[] args) {
