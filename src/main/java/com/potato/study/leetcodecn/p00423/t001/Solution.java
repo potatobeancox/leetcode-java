@@ -54,7 +54,7 @@ public class Solution {
             count['e' - 'a'] -= count[25];
             count['r' - 'a'] -= count[25];
             count['o' - 'a'] -= count[25];
-            count[25] = 0;
+            count['z' - 'a'] = 0;
         }
         if (count['w' - 'a'] > 0) {
             digit[2] = count['w' - 'a'];
@@ -72,7 +72,7 @@ public class Solution {
             count['u' - 'a'] = 0;
         }
         if (count['f' - 'a'] > 0) {
-            digit[5] = count['u' - 'a'];
+            digit[5] = count['f' - 'a'];
             // five
             count['i' - 'a'] -= count['f' - 'a'];
             count['v' - 'a'] -= count['f' - 'a'];
@@ -80,14 +80,14 @@ public class Solution {
             count['f' - 'a'] = 0;
         }
         if (count['x' - 'a'] > 0) {
-            digit[6] = count['u' - 'a'];
+            digit[6] = count['x' - 'a'];
             // six
             count['s' - 'a'] -= count['x' - 'a'];
             count['i' - 'a'] -= count['x' - 'a'];
             count['x' - 'a'] = 0;
         }
         if (count['o' - 'a'] > 0) {
-            digit[1] = count['u' - 'a'];
+            digit[1] = count['o' - 'a'];
             // one
             count['n' - 'a'] -= count['o' - 'a'];
             count['e' - 'a'] -= count['o' - 'a'];
@@ -103,7 +103,7 @@ public class Solution {
             count['r' - 'a'] = 0;
         }
         if (count['v' - 'a'] > 0) {
-            digit[7] = count['r' - 'a'];
+            digit[7] = count['v' - 'a'];
             // seven
             count['s' - 'a'] -= count['v' - 'a'];
             count['e' - 'a'] -= count['v' - 'a'];
@@ -134,9 +134,9 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        String input = "";
+        String input = "owoztneoer";
         String s = solution.originalDigits(input);
         System.out.println(s);
-        Assert.assertEquals("", s);
+        Assert.assertEquals("012", s);
     }
 }
