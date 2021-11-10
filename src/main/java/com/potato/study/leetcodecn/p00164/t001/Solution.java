@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00164.t001;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 
 /**
@@ -45,52 +47,12 @@ public class Solution {
      * @return
      */
     public int maximumGap(int[] nums) {
-        if (null == nums || nums.length < 2) {
-            return 0;
+        Arrays.sort(nums);
+        int max = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            max = Math.max(max, nums[i+1] - nums[i]);
         }
-        // 遍历一遍 max min n个数
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        for (int num : nums) {
-            min = Math.min(min, num);
-            max = Math.max(max, num);
-        }
-
-        if (min == max) {
-            return 0;
-        }
-
-        // n 个数字，如果均匀分配有 n-1 个空间
-        int n = nums.length;
-        // 计算每个空间长度
-        int length = (max - min) / (n-1);
-        // 0 - min, 1 - max
-        int[][] minMax = new int[n+1][2];
-        for (int i = 0; i < minMax.length; i++) {
-            minMax[i][0] = Integer.MAX_VALUE;
-            minMax[i][1] = Integer.MIN_VALUE;
-
-        }
-        // 遍历nums 将 其中 每个 数字 num 定位到上述的空间中
-        for (int num : nums) {
-            int index = (num - min) / length;
-            if (minMax[index] == null) {
-                minMax[index] = new int[] {num, num};
-            } else {
-                minMax[index][0] = Math.min(minMax[index][0], num);
-                minMax[index][1] = Math.max(minMax[index][1], num);
-            }
-        }
-        // 遍历 之前 划分的空间 比较 该空间的最小值和 上一个空间最大值
-        int maxGap = 0;
-        int lastMax = minMax[0][1];
-        for (int i = 1; i < minMax.length; i++) {
-            if (minMax[i][0] != Integer.MAX_VALUE) {
-                maxGap = Math.max(maxGap, minMax[i][0] - lastMax);
-                lastMax = minMax[i][1];
-            }
-        }
-        return maxGap;
+        return max;
     }
 
     public static void main(String[] args) {
