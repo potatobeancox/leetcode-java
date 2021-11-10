@@ -3,7 +3,10 @@ package com.potato.study.leetcodecn.p00986.t001;
 import org.junit.Assert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 986. 区间列表的交集
@@ -61,7 +64,7 @@ public class Solution {
         List<int[]> result = new ArrayList<>();
         while (index1 < firstList.length && index2 < secondList.length) {
             int[] interval1 = firstList[index1];
-            int[] interval2 = secondList[index1];
+            int[] interval2 = secondList[index2];
             int[] target = new int[] {
                     Math.max(interval1[0], interval2[0]),
                     Math.min(interval1[1], interval2[1])
@@ -83,5 +86,15 @@ public class Solution {
         return resultArray;
     }
 
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        int[][] firstList = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,2],[5,10],[13,23],[24,25]]");
+        int[][] secondList = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,5],[8,12],[15,24],[25,26]]");
+
+        int[][] ints = solution.intervalIntersection(firstList, secondList);
+        System.out.println(Arrays.deepToString(ints));
+    }
 
 }
