@@ -28,24 +28,18 @@ import org.junit.Assert;
  */
 public class Solution {
     public int exchangeBits(int num) {
-        String s = Integer.toBinaryString(num);
-        char[] chars = s.toCharArray();
-        for (int i = 0; i < s.length(); i+=2) {
-            char ch = chars[i];
-            chars[i] = chars[i+1];
-            chars[i+1] = ch;
-        }
-        int index = 0;
-        // 先导0
-        while (chars[index] == '0') {
-            continue;
-        }
-        int target = 0;
-        for (int i = index; i < chars.length; i++) {
-            target += (chars[i] - '0');
-            target *= 2;
-        }
-        return target;
+        // 32位置
+        int oddBit = 0b01010101010101010101010101010101;
+        int evenBit = 0b10101010101010101010101010101010;
+
+        int oddNum = oddBit & num;
+        int evenNum = evenBit & num;
+
+        oddNum <<= 1;
+        evenNum >>>= 1;
+
+
+        return evenNum | oddNum;
     }
 
     public static void main(String[] args) {
