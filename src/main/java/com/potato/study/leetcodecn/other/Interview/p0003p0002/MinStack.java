@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.other.Interview.p0003p0002;
 
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -31,13 +29,13 @@ import java.util.Stack;
  */
 public class MinStack {
 
-
-    private Deque<Integer> deque;
+    // 最小值栈
+    private Stack<Integer> minStack;
     private Stack<Integer> stack;
 
     /** initialize your data structure here. */
     public MinStack() {
-        this.deque = new LinkedList<>();
+        this.minStack = new Stack<>();
         this.stack = new Stack<>();
     }
 
@@ -54,25 +52,24 @@ public class MinStack {
      */
     public void push(int x) {
         stack.push(x);
-        if (deque.isEmpty()) {
-            deque.push(x);
+        if (minStack.isEmpty()) {
+            minStack.push(x);
         } else {
-            // 后出现了 更小的 之前可以一直pop 没用了
-            Integer peek = deque.peekLast();
-            if (x > peek) {
-
+            // 后出现了 更小的 之前可以一直pop 没用了 当前值 小 插入deque 记录min
+            if (minStack.isEmpty()) {
+                minStack.add(x);
+                return;
             }
-            while (!deque.isEmpty() && x < deque.peekLast()) {
-                deque.pollLast();
+            if (minStack.peek() >= x) {
+                minStack.add(x);
             }
-            deque.addLast(x);
         }
     }
 
     public void pop() {
-        Integer target = stack.pop();
-        if (target == deque.peekFirst()) {
-            deque.pollFirst();
+        int target = stack.pop();
+        if (target == minStack.peek()) {
+            minStack.pop();
         }
     }
 
@@ -81,7 +78,7 @@ public class MinStack {
     }
 
     public int getMin() {
-        return deque.getFirst();
+        return minStack.peek();
     }
 
     public static void main(String[] args) {
@@ -95,6 +92,22 @@ public class MinStack {
         // --> 返回 0.
         minStack.top();
         // --> 返回 -2.
+        minStack.getMin();
+
+
+        minStack = new MinStack();
+        minStack.push(512);
+        minStack.push(-1024);
+        minStack.push(-1024);
+        minStack.push(512);
+        // --> 返回 -3.
+        minStack.pop();
+        minStack.getMin();
+        // --> 返回 0.
+        minStack.pop();
+        minStack.getMin();
+
+        minStack.pop();
         minStack.getMin();
     }
 }
