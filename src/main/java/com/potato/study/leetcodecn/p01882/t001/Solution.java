@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p01882.t001;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.PriorityQueue;
 
 import org.junit.Assert;
 
@@ -73,15 +74,14 @@ public class Solution {
     public int[] assignTasks(int[] servers, int[] tasks) {
         // 构造 arr Server 按照 weight 升序 id 升序排序
         Server[] serverArray = new Server[servers.length];
-        for (int i = 0; i < servers.length; i++) {
-            serverArray[i] = new Server();
-            serverArray[i].id = i;
-            serverArray[i].weight = servers[i];
-            serverArray[i].idleFromTime = 0;
-        }
-        Arrays.sort(serverArray, new Comparator<Server>() {
+        PriorityQueue<Server> priorityQueue = new PriorityQueue<>(new Comparator<Server>() {
             @Override
             public int compare(Server o1, Server o2) {
+                // 先按照空闲时间排序
+                int compareTime = Integer.compare(o1.idleFromTime, o2.idleFromTime);
+                if (compareTime != 0) {
+                    return compareTime;
+                }
                 int compare = Integer.compare(o1.weight, o2.weight);
                 if (compare != 0) {
                     return compare;
@@ -90,20 +90,32 @@ public class Solution {
                 return compare;
             }
         });
+        for (int i = 0; i < servers.length; i++) {
+            serverArray[i] = new Server();
+            serverArray[i].id = i;
+            serverArray[i].weight = servers[i];
+            serverArray[i].idleFromTime = 0;
+
+            priorityQueue.add(serverArray[i]);
+        }
+
+
+
         // 遍历 task 对于 并记录时间 也就是 index 从 arr 中 从头开始 遍历得到 第一个当前秒空闲的服务器 ，然后就用这个生成结果
         int[] res = new int[tasks.length];
-        int time = 0;
-        for (int i = 0; i < tasks.length; ) {
-            // find idle server
-            for (int j = 0; j < serverArray.length; j++) {
-                if (serverArray[j].idleFromTime <= time) {
-                    res[i] = serverArray[j].id;
-                    serverArray[j].idleFromTime = time + tasks[i];
-                    i++;
-                    break;
-                }
+        for (int i = 0; i < tasks.length; i++) {
+            Server poll = priorityQueue.poll();
+            res[i] = poll.id;
+
+            int idleFromTime = poll.idleFromTime;
+
+            if (idleFromTime + tasks[i] + 1 <= i + 1) {
+                poll.idleFromTime = 0;
+            } else {
+                poll.idleFromTime += tasks[i] + 1;
             }
-            time++;
+
+            priorityQueue.add(poll);
         }
         return res;
     }
@@ -128,15 +140,21 @@ public class Solution {
         int[] ints = solution.assignTasks(servers, tasks);
         // [2,2,0,2,1,2]
         System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+                2,2,0,2,1,2
+        }, ints);
 
         servers = new int[] {
-                10,63,95,16,85,57,83,95,6,29,71
+                5,1,4,3,2
         };
         tasks = new int[] {
-                70,31,83,15,32,67,98,65,56,48,38,90,5
+                2,1,2,4,5,2,1
         };
         ints = solution.assignTasks(servers, tasks);
         // [2,2,0,2,1,2]
         System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+                1,4,1,4,1,3,2
+        }, ints);
     }
 }
