@@ -85,19 +85,63 @@ public class Solution {
                 priorityQueue.add(new int[]{distance, i, j});
             }
         }
-        int minCost = 0;
-        Set<Integer> visited = new HashSet<>();
+
+        UnionFind unionFind = new UnionFind(len);
+        int cost = 0;
         while (!priorityQueue.isEmpty()) {
             int[] poll = priorityQueue.poll();
-            // 会出现一个问题 点满足了 但是没有连通 所以要解决连通性问题
-            if (visited.contains(poll[1]) && visited.contains(poll[2])) {
-                continue;
+            boolean isNotConnect = unionFind.union(poll[1], poll[2]);
+            if (isNotConnect) {
+                cost += poll[0];
             }
-            visited.add(poll[1]);
-            visited.add(poll[2]);
-            minCost += poll[0];
         }
-        return minCost;
+        return cost;
+    }
+
+    class UnionFind {
+        private int[] parent;
+        private int n;
+
+        public UnionFind(int n) {
+            this.n = n;
+            this.parent = new int[n];
+            // 初始化
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
+        }
+
+
+        /**
+         * 链接
+         * true 是当前需要连接
+         * false 是不需要
+         * @param target1
+         * @param target2
+         * @return
+         */
+        public boolean union(int target1, int target2) {
+            int p1 = find(target1);
+            int p2 = find(target2);
+            if (p1 == p2) {
+                return false;
+            }
+            parent[p1] = p2;
+            return true;
+        }
+
+        /**
+         * 找到 target 的父亲
+         * @param target
+         * @return
+         */
+        public int find(int target) {
+            while (parent[target] != target) {
+                target = parent[target];
+            }
+            // 相等了 就是终点
+            return target;
+        }
     }
 
     public static void main(String[] args) {
