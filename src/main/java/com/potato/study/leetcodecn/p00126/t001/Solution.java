@@ -49,118 +49,103 @@ import java.util.*;
  */
 public class Solution {
 
-    private List<List<String>> resultList;
-
-    private int maxPathLength;
 
     /**
-     * 递归处理 记录一个全局最最小值 和 全局结果
-     * @param beginWord 开始单词
-     * @param endWord   结束单词
-     * @param wordList  单词列表
+     * https://leetcode-cn.com/problems/word-ladder-ii/solution/dan-ci-jie-long-ii-by-leetcode-solution/
+     * @param beginWord
+     * @param endWord
+     * @param wordList
      * @return
      */
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
-        this.resultList = new ArrayList<>();
-        this.maxPathLength = Integer.MAX_VALUE;
-        // 预处理一下
-        Map<String, Set<String>> connectMap = new HashMap<>();
-        for (int i = 0; i < wordList.size(); i++) {
-            if (isSolitaire(beginWord, wordList.get(i))) {
-                Set<String> set = connectMap.getOrDefault(beginWord, new HashSet<>());
-                set.add(wordList.get(i));
-                connectMap.put(beginWord, set);
-            }
+        // 首先使用 set 缓存 wordList
+        Set<String> wordSet = new HashSet<>();
+        wordSet.addAll(wordList);
+        wordSet.remove(beginWord);
+        // 先对极端情况短路处理
+        if (!wordSet.contains(endWord)) {
+            return new ArrayList<>();
         }
-        for (int i = 0; i < wordList.size(); i++) {
-            for (int j = i + 1; j < wordList.size(); j++) {
-                if (isSolitaire(wordList.get(i), wordList.get(j))) {
-                    Set<String> set1 = connectMap.getOrDefault(wordList.get(i), new HashSet<>());
-                    set1.add(wordList.get(j));
-                    connectMap.put(wordList.get(i), set1);
-                    Set<String> set2 = connectMap.getOrDefault(wordList.get(j), new HashSet<>());
-                    set2.add(wordList.get(i));
-                    connectMap.put(wordList.get(j), set2);
+        // bfs 找到 最近的那一层  生成的时候 需要记录 当前 string 第一次遍历在第几层 每个单词可以由于那个单词生成
+        Queue<String> queue = new LinkedList<>();
+        queue.add(beginWord);
+        Map<String, Integer> firstAppearLayerMap = new HashMap<>();
+        int layerIndex = 0;
+        Map<String, Set<String>> fromWordMap = new HashMap<>();
+        boolean hasFoundEnd = false;
+        while (!queue.isEmpty()) {
+            // 当前层 遍历的数量 当前层的层号
+            int layerLength = queue.size();
+            // 对于当前层的每个单词都要获取下一个可以遍历的单词并放入 queue中
+            for (int i = 0; i < layerLength; i++) {
+                String wordParent = queue.poll();
+                // 遍历 wordParent 每一个位置 生成 下一个单词
+                char[] wordParentChars = wordParent.toCharArray();
+                for (int j = 0; j < wordParent.length(); j++) {
+                    char wordParentCharOriginal = wordParentChars[j];
+                    for (int k = 0; k < 26; k++) {
+                        char targetCh = (char) ('a' + k);
+                        // 相同
+                        if (targetCh == wordParentCharOriginal) {
+                            continue;
+                        }
+                        char[] tmp = wordParentChars.clone();
+                        tmp[j] = targetCh;
+                        String targetWord = new String(tmp);
+                        if (!wordSet.contains(targetWord)) {
+                            continue;
+                        }
+                        // 是候选单词时 需要判断下是否出现过 没出现过 或者 就是本行出现了
+                        if (firstAppearLayerMap.containsKey(targetWord) && firstAppearLayerMap.get(targetWord) < layerIndex) {
+                            continue;
+                        }
+
+                        // 生成关系map 并生成首次出现map
+                        firstAppearLayerMap.put(targetWord, layerIndex);
+
+                        Set<String> fromWord = fromWordMap.getOrDefault(targetWord, new HashSet<>());
+                        fromWord.add(wordParent);
+                        fromWordMap.put(targetWord, fromWord);
+
+                        // 放入队列 继续访问
+                        queue.add(targetWord);
+
+                        if (endWord.equals(targetWord)) {
+                            hasFoundEnd = true;
+                        }
+
+                    }
                 }
             }
+            // 本层找到结果了，就不用再找下一层了
+            if (hasFoundEnd) {
+                break;
+            }
+            layerIndex++;
         }
-        boolean[] usedStatus = new boolean[wordList.size()];
-        List<String> path = new ArrayList<>();
-        path.add(beginWord);
-        getLadders(beginWord, endWord, wordList, usedStatus, path, connectMap);
+        // 生成结果后 使用 dfs 从结果反推出 到开始点的位置
+        List<List<String>> resultList = new ArrayList<>();
+        dfsGetResult(resultList, new ArrayList<>(), endWord, beginWord, fromWordMap);
         return resultList;
     }
 
 
-    /**
-     * dfs 找最小
-     * @param current
-     * @param target
-     * @param wordList
-     * @param usedStatus
-     * @param path 走到 current 的路径 ，其中包括 current
-     */
-    private void getLadders(String current, String target, List<String> wordList, boolean[] usedStatus,
-            List<String> path, Map<String, Set<String>> connectMap) {
-        // 终止条件 如果当前 current 就是 target 比较一下 是否最小的path
+    private void dfsGetResult(List<List<String>> resultList, List<String> currentPath, String current, String target,
+                              Map<String, Set<String>> fromWordMap) {
+        // 终止条件 当前就是 开始的单词
+        List<String> path = new ArrayList<>(currentPath);
+        path.add(0, current);
         if (target.equals(current)) {
-            if (path.size() == maxPathLength) {
-                resultList.add(path);
-            } else if (path.size() < maxPathLength) {
-                resultList = new ArrayList<>();
-                resultList.add(path);
-                maxPathLength = path.size();
-            }
+            resultList.add(path);
             return;
         }
-        // 修改 current 对应 遍历 wordlist 如果 uesd contonue 否则 生成 新path 然后递归调用
-        for (int i = 0; i < wordList.size(); i++) {
-            // 之前用过
-            if (usedStatus[i]) {
-                continue;
-            }
-            // 预处理优化判定是否链接
-            Set<String> containSet = connectMap.get(current);
-            if (containSet == null) {
-                continue;
-            }
-            if (!containSet.contains(wordList.get(i))) {
-                continue;
-            }
-            // word i 需要被使用
-            String word = wordList.get(i);
-            usedStatus[i] = true;
-            List<String> newPath = new ArrayList<>(path);
-            newPath.add(word);
-            getLadders(word, target, wordList, usedStatus, newPath, connectMap);
-            usedStatus[i] = false;
+        // 父亲都有谁
+        Set<String> parents = fromWordMap.getOrDefault(current, new HashSet<>());
+        for (String parent : parents) {
+            dfsGetResult(resultList, path, parent, target, fromWordMap);
         }
     }
 
-    /**
-     * 两个单词是不是接龙关系
-     * @param word1
-     * @param word2
-     * @return
-     */
-    private boolean isSolitaire(String word1, String word2) {
-        if (null == word1 || word2 == null) {
-            return false;
-        }
-        if (word1.length() != word2.length()) {
-            return false;
-        }
-        int diffCount = 0;
-        for (int i = 0; i < word1.length(); i++) {
-            if (word1.charAt(i) != word2.charAt(i)) {
-                diffCount++;
-            }
-            if (diffCount > 1) {
-                return false;
-            }
-        }
-        return diffCount == 1;
-    }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
@@ -173,11 +158,11 @@ public class Solution {
         System.out.println(ladders);
 
 
-        beginWord = "red";
-        endWord = "tax";
-        wordList = Lists.newArrayList("ted","tex","red","tax","tad","den","rex","pee");
-        ladders = solution.findLadders(beginWord, endWord, wordList);
-        // [["red","ted","tad","tax"],["red","ted","tex","tax"],["red","rex","tex","tax"]]
-        System.out.println(ladders);
+//        beginWord = "red";
+//        endWord = "tax";
+//        wordList = Lists.newArrayList("ted","tex","red","tax","tad","den","rex","pee");
+//        ladders = solution.findLadders(beginWord, endWord, wordList);
+//        // [["red","ted","tad","tax"],["red","ted","tex","tax"],["red","rex","tex","tax"]]
+//        System.out.println(ladders);
     }
 }
