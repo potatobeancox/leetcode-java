@@ -1,7 +1,12 @@
 package com.potato.study.leetcodecn.p00847.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
+
+import javax.jws.soap.SOAPBinding;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * 847. 访问所有节点的最短路径
@@ -47,6 +52,59 @@ public class Solution {
 
     public int shortestPathLength(int[][] graph) {
 
+        // 层序遍历 使用 一个 queue 存 当前index 当前visit 的情况 和当前层数
+        Queue<int[]> queue = new LinkedList<>();
+        // 开始将每个位置放进去
+        int n = graph.length;
+        // 记录访问状态
+        int finalStatus = (1 << n) - 1;
+        boolean[][] visit = new boolean[n][finalStatus + 1];
+        for (int i = 0; i < n; i++) {
+            // 开始的话 这个位置是访问过的
+            int status = (1 << i);
+            queue.add(new int[] {i, status, 0});
+            visit[i][status] = true;
+        }
+        // 全是1的状态是都访问过的状态
+
+
+        // 开始每个届节点都是 距离为 0 遍历 每个bit为咩歌 index 是否访问过 0时没有访问过 1时访问过 一旦找到 直接返回距离
+        while (!queue.isEmpty()) {
+            // bfs
+            int[] poll = queue.poll();
+            int index = poll[0];
+            int status = poll[1];
+            int pathLength = poll[2];
+            if (status == finalStatus) {
+                return pathLength;
+            }
+            for (int i = 0; i < graph[index].length; i++) {
+                int targetIndex = graph[index][i];
+                int targetStatus = (status | ( 1 << targetIndex));
+                // 是否访问过
+                if (visit[targetIndex][targetStatus]) {
+                    continue;
+                }
+                int thisPathLength = pathLength + 1;
+                queue.add(new int[] {targetIndex, targetStatus, thisPathLength});
+                visit[targetIndex][targetStatus] = true;
+            }
+
+        }
         return -1;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] arrayTwoDimensional = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,2,3],[0],[0],[0]]");
+        int i = solution.shortestPathLength(arrayTwoDimensional);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
+
+        arrayTwoDimensional = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,2,3],[0],[0],[0]]");
+        i = solution.shortestPathLength(arrayTwoDimensional);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 }
