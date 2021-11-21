@@ -29,4 +29,8 @@
 -- 链接：https://leetcode-cn.com/problems/delete-duplicate-emails
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+-- https://leetcode-cn.com/problems/delete-duplicate-emails/solution/shan-chu-zhong-fu-de-dian-zi-you-xiang-by-leetcode/
 
+
+DELETE p1 FROM Person p1, Person p2
+  WHERE p1.Email = p2.Email AND p1.Id > p2.Id
