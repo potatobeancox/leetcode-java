@@ -34,6 +34,8 @@ https://leetcode-cn.com/problems/tenth-line/solution/shuang-bai-jie-da-by-ffretu
 
 https://www.cnblogs.com/Alpes/p/10288816.html
  # 不要前面10行的后面所有行
+https://blog.csdn.net/y_bccl27/article/details/87827540
+head 命令
 
 
 tail -n +10 file.txt | head -1
