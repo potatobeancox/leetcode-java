@@ -30,3 +30,9 @@
 -- 来源：力扣（LeetCode）
 -- 链接：https://leetcode-cn.com/problems/rank-scores
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+-- https://leetcode-cn.com/problems/rank-scores/solution/fen-cheng-liang-ge-bu-fen-xie-hui-rong-yi-hen-duo-/
+SELECT a.Score as Score,
+(select count(DISTINCT b.Score) from Scores b WHERE b.Score >= a.Score) as 'Rank'
+FROM Scores a
+ORDER BY a.Score DESC
