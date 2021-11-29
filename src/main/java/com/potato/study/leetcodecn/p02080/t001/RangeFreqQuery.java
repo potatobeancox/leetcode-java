@@ -72,13 +72,14 @@ public class RangeFreqQuery {
         if (list == null || list.size() == 0) {
             return 0;
         }
-        int rightIndex = getCeilIndex(right, list);
         int leftIndex = getCeilIndex(left, list);
-        if (leftIndex == -1) {
+        // 如果左边已经到头了 那么这个区间就没有值了 直接返回 0
+        if (leftIndex >= list.size()) {
             return 0;
         }
-        return rightIndex - leftIndex + 1;
 
+        int rightIndex = getCeilIndex(right, list);
+        return rightIndex - leftIndex + 1;
 
     }
 
