@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p01344.t001;
 
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +56,24 @@ public class Solution {
 
 
     public double angleClock(int hour, int minutes) {
-        return -1;
+        // 将 hour 换算成 minute 位置
+        double hourPosition = hour * 5 * 6;
+        // minutes 分钟之后 过了多少角度
+        hourPosition += ((double)minutes / 60 * 30);
+        // 找到夹角
+        double minuteDegree = minutes * 6;
+        return Math.min(Math.abs(hourPosition - minuteDegree), 360.0 - Math.abs(hourPosition - minuteDegree));
     }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int hour = 12;
+        int minutes = 30;
+        double v = solution.angleClock(hour, minutes);
+        System.out.println(v);
+        Assert.assertEquals(165, v, 10e-5);
+    }
+
+
 }
