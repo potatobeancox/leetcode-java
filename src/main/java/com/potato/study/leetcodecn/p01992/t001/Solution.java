@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p01992.t001;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 1992. 找到所有的农场组
  *
@@ -59,8 +62,38 @@ public class Solution {
      * @return
      */
     public int[][] findFarmland(int[][] land) {
-
-        return null;
+        List<int[]> list = new ArrayList<>();
+        // 从每个 农场点开始 作为 左上点枚举右下点，如果找到右下点 找到了将中间点变成0 输出结果
+        for (int i = 0; i < land.length; i++) {
+            for (int j = 0; j < land[0].length; j++) {
+                // 是否农场
+                if (land[i][j] == 0) {
+                    continue;
+                }
+                // 开始点 ij
+                int di = 1;
+                while (i + di < land.length && land[i + di][j] == 1) {
+                    di++;
+                }
+                int dj = 1;
+                while (j + dj < land[0].length && land[i][j + dj] == 1) {
+                    dj++;
+                }
+                // 从开始点往下找 结束点 找到记录 结果 中间的 点全部变成0
+                list.add(new int[] {i, j, i + di - 1, j + dj - 1});
+                // 变成0
+                for (int k = i; k < i + di; k++) {
+                    for (int l = j; l < j + dj; l++) {
+                        land[k][l] = 0;
+                    }
+                }
+            }
+        }
+        int[][] res = new int[list.size()][];
+        for (int i = 0; i < list.size(); i++) {
+            res[i] = list.get(i);
+        }
+        return res;
     }
 
 }
