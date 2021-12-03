@@ -51,6 +51,11 @@ public class WordDictionary {
         // 当前节点 child
         public WordDictionaryNode[] child;
         public boolean isEnd;
+
+
+        public WordDictionaryNode() {
+            this.child = new WordDictionaryNode[26];
+        }
     }
 
     private WordDictionaryNode head;
@@ -66,27 +71,18 @@ public class WordDictionary {
      * @param word
      */
     public void addWord(String word) {
-        int index = 0;
-        addWordIteration(word, index, head);
+        WordDictionaryNode node = this.head;
+        for (char ch : word.toCharArray()) {
+            int index = ch - 'a';
+            if (node.child[index] == null) {
+                node.child[index] = new WordDictionaryNode();
+            }
+            node = node.child[index];
+        }
+        node.isEnd = true;
     }
 
-    // 递归添加
-    private void addWordIteration(String word, int index, WordDictionaryNode root) {
-        if (index == word.length()) {
-            root.isEnd = true;
-            return;
-        }
-        char c = word.charAt(index);
-        int childIndex = c - 'a';
-        if (root == null) {
-            root = new WordDictionaryNode();
-        }
-        WordDictionaryNode childNode = root.child[childIndex];
-        if (childNode == null) {
-            root.child[childIndex] = new WordDictionaryNode();
-        }
-        addWordIteration(word, index + 1, root.child[childIndex]);
-    }
+
 
     /**
      * 也得递归查找
@@ -106,11 +102,11 @@ public class WordDictionary {
      */
     private boolean searchIteration(String word, int index, WordDictionaryNode root) {
         // 找到最后一个节点
-        if (index == word.length()) {
-            return root.isEnd = true;
-        }
         if (root == null || root.child == null) {
             return false;
+        }
+        if (index == word.length()) {
+            return root.isEnd;
         }
         char c = word.charAt(index);
         if ('.' == c) {
@@ -139,6 +135,17 @@ public class WordDictionary {
         System.out.println(wordDictionary.search("bad"));// return True
         System.out.println(wordDictionary.search(".ad"));// return True
         System.out.println(wordDictionary.search("b.."));// return True
+
+
+        wordDictionary = new WordDictionary();
+        wordDictionary.addWord("at");
+        wordDictionary.addWord("and");
+        wordDictionary.addWord("an");
+        wordDictionary.addWord("add");
+        System.out.println(wordDictionary.search("a"));// return False
+//        System.out.println(wordDictionary.search("bad"));// return True
+//        System.out.println(wordDictionary.search(".ad"));// return True
+//        System.out.println(wordDictionary.search("b.."));// return True
 
     }
 
