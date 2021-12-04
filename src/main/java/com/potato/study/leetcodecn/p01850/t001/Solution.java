@@ -81,12 +81,18 @@ public class Solution {
             if (chars1[i] == chars2[i]) {
                 continue;
             }
-            int j = i - 1;
-            while (j >= 1 && chars1[j] != chars2[i]) {
-                swap(j, j-1, chars1);
-                step++;
+            // 往前找j 找到与 chars2 match地方 依次交换回来
+            int j = i;
+            while (j >= 0 && chars1[j] != chars2[i]) {
                 j--;
             }
+            // 交换回来
+            while (j != i) {
+                swap(j, j+1, chars1);
+                step++;
+                j++;
+            }
+
         }
         return step;
     }
