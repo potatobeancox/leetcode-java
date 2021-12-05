@@ -47,14 +47,82 @@ import org.junit.Assert;
  */
 public class Solution {
 
+
+    private NumberDic dic;
+
     /**
      * 暴力解法 tle
      * @param nums
      * @return
      */
     public int findMaximumXOR(int[] nums) {
+        dic = new NumberDic();
+        // 字典树 每个num 转换成32 位 插入字典树
+        for (int num : nums) {
+            insert(num);
+        }
+        // 重新遍历 找到 对应最大的值
+        int max = 0;
+        for (int num : nums) {
+            int thisMax = findMax(num);
+            max = Math.max(thisMax ^ num, max);
+        }
+        return max;
+    }
 
-        return -1;
+
+    private void insert(int num) {
+        String s = Integer.toBinaryString(num);
+        StringBuilder builder = new StringBuilder();
+        for (int i = s.length(); i < 32; i++) {
+            builder.append("0");
+        }
+        builder.append(s);
+        NumberDic p = dic;
+        for (int i = 0; i < builder.length(); i++) {
+            int index = builder.charAt(i) - '0';
+            if (p.child[index] == null) {
+                p.child[index] = new NumberDic();
+            }
+            p = p.child[index];
+        }
+        p.isEnd = true;
+    }
+
+    private int findMax(int num) {
+        String s = Integer.toBinaryString(num);
+        StringBuilder builder = new StringBuilder();
+        for (int i = s.length(); i < 32; i++) {
+            builder.append("0");
+        }
+        builder.append(s);
+
+        NumberDic p = dic;
+        int target = 0;
+        for (int i = 0; i < builder.length(); i++) {
+            int index = builder.charAt(i) - '0';
+            index = 1-index;
+            if (p.child[index] != null) {
+                p = p.child[index];
+                target *= 2;
+                target += index;
+            } else {
+                p = p.child[1-index];
+                target *= 2;
+                target += (1-index);
+            }
+        }
+        return target;
+    }
+
+
+    class NumberDic {
+        public NumberDic[] child;
+        public boolean isEnd;
+
+        public NumberDic() {
+            this.child = new NumberDic[2];
+        }
     }
 
     public static void main(String[] args) {
