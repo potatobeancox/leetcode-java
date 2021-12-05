@@ -55,9 +55,22 @@ public class Solution {
             List<Integer> list = triangle.get(i);
             List<Integer> last = triangle.get(i-1);
             for (int j = 0; j < list.size(); j++) {
-                list.set(i, Math.min(last.get(j), last.get(j+1)) + list.get(j));
+                if (j == 0) {
+                    list.set(j, last.get(j) + list.get(j));
+                    continue;
+                }
+                if (j == list.size() - 1) {
+                    list.set(j, last.get(j-1) + list.get(j));
+                    continue;
+                }
+                list.set(j, Math.min(last.get(j), last.get(j-1)) + list.get(j));
             }
         }
-        return -1;
+        List<Integer> list = triangle.get(triangle.size() - 1);
+        int min = Integer.MAX_VALUE;
+        for (int num : list) {
+            min = Math.min(min, num);
+        }
+        return min;
     }
 }
