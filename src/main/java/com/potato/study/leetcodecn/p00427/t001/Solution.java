@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 import com.potato.study.leetcode.domain.duplicate.name.Node;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 427. 建立四叉树
@@ -115,15 +116,24 @@ public class Solution {
         }
         // 全都一样
         if (isAllSame) {
-            return new Node(true, true);
+            return new Node(val == 1, true);
         }
         Node root = new Node(true, false);
-        root.topLeft = construct(grid, x1, y1, 1, grid[0].length);
-        root.topRight = construct(grid, 0, 0, grid.length, grid[0].length);
-        root.bottomLeft = construct(grid, 0, 0, grid.length, grid[0].length);
-        root.bottomRight = construct(grid, 0, 0, x2, y2);
+        root.topLeft = construct(grid, x1, y1, (x1 + x2) / 2, (y1 + y2) / 2);
+        root.topRight = construct(grid, x1, (y1 + y2) / 2, (x1 + x2) / 2, y2);
+        root.bottomLeft = construct(grid, (x1 + x2) / 2, y1, x2, (y1 + y2) / 2);
+        root.bottomRight = construct(grid, (x1 + x2) / 2, (y1 + y2) / 2, x2, y2);
         // 不一样 分成 4 分
         return root;
+    }
+
+
+    public static void main(String[] args) {
+        String input = "[[0,1],[1,0]]";
+        int[][] grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        Solution solution = new Solution();
+        Node construct = solution.construct(grid);
+
     }
 
 
