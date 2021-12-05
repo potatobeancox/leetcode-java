@@ -1,7 +1,10 @@
 package com.potato.study.leetcodecn.p00947.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -55,8 +58,72 @@ import java.util.Stack;
  */
 public class Solution {
 
+    /**
+     *
+     * https://leetcode-cn.com/problems/most-stones-removed-with-same-row-or-column/solution/947-yi-chu-zui-duo-de-tong-xing-huo-tong-ezha/
+     *
+     * @param stones
+     * @return
+     */
     public int removeStones(int[][] stones) {
+        // 找到 stone 中最大的坐标
+        UnionFind unionFind = new UnionFind();
+        for (int[] stone : stones) {
+            unionFind.union(stone[0], stone[1] + 10000);
+        }
+        return stones.length - unionFind.getCount();
+    }
 
-        return -1;
+
+    /**
+     * 用map 代替数组实现 每次 find时向map 插入待处理数据
+     * y轴坐标 + 10000 进行转换
+     */
+    class UnionFind {
+
+        private int count;
+        private Map<Integer, Integer> map;
+
+        public UnionFind() {
+            this.map = new HashMap<>();
+            this.count = 0;
+        }
+
+        public int find(int target) {
+            // 先放进度 count ++
+            if (!map.containsKey(target)) {
+                count++;
+                map.put(target, target);
+                return target;
+            }
+            while (map.get(target) != target) {
+                target = map.get(target);
+            }
+            return target;
+        }
+
+
+        public void union(int target1, int target2) {
+            int p1 = find(target1);
+            int p2 = find(target2);
+            if (p1 == p2) {
+                return;
+            }
+            map.put(p1, p2);
+            count--;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[0,0],[0,1],[1,0],[1,1],[2,1],[2,2],[3,2],[3,3],[3,4],[4,3],[4,4]]";
+        int[][] arr = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.removeStones(arr);
+        System.out.println(i);
+        Assert.assertEquals(10, i);
     }
 }
