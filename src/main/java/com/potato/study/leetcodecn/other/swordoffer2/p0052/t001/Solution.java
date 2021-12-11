@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0052.t001;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import apple.laf.JRSUIUtils;
 import com.potato.study.leetcode.domain.TreeNode;
 
@@ -41,11 +44,37 @@ public class Solution {
 
 
 
-    private TreeNode pre;
-    private TreeNode head;
 
+    /**
+     * 中序遍历二叉树
+     * @param root
+     * @return
+     */
     public TreeNode increasingBST(TreeNode root) {
-        return null;
+        Queue<TreeNode> queue = new LinkedList<>();
+        inorder(root, queue);
+        TreeNode node = queue.poll();
+        TreeNode pre = node;
+        node.left = null;
+        node.right = null;
+        while (!queue.isEmpty()) {
+            TreeNode poll = queue.poll();
+            poll.left = null;
+            poll.right = null;
+
+            pre.right = poll;
+            pre = poll;
+        }
+        return node;
+    }
+
+    public void inorder(TreeNode root, Queue<TreeNode> queue) {
+        if (root == null) {
+            return;
+        }
+        inorder(root.left, queue);
+        queue.add(root);
+        inorder(root.right, queue);
     }
 
 
