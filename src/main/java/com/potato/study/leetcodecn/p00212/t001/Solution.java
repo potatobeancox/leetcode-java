@@ -2,7 +2,10 @@ package com.potato.study.leetcodecn.p00212.t001;
 
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 212. 单词搜索 II
@@ -43,8 +46,86 @@ import java.util.List;
  */
 public class Solution {
 
-    public List<String> findWords(char[][] board, String[] words) {
 
-        return null;
+    private Dic dic;
+
+    public List<String> findWords(char[][] board, String[] words) {
+        this.dic = new Dic();
+        // 将word 插入 字典树
+        for (String word : words) {
+            addWord(word);
+        }
+        Set<String> result = new HashSet<>();
+        boolean[][] visited = new boolean[board.length][board[0].length];
+        this.direction = new int[][] {
+                {1, 0},
+                {-1, 0},
+                {0, 1},
+                {0, -1}
+        };
+        // 遍历 board 每个位置开始找单词 上线所有
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                find(i, j, visited, board, dic, result);
+            }
+        }
+        return new ArrayList<>(result);
+    }
+
+    private int[][] direction;
+
+    private void find(int startI, int startJ, boolean[][] visited, char[][] board, Dic dic, Set<String> result) {
+        if (visited[startI][startJ]) {
+            return;
+        }
+        if (dic == null) {
+            return;
+        }
+        int index = board[startI][startJ] - 'a';
+        if (dic.child[index] == null) {
+            return;
+        }
+        if (dic.child[index] != null && dic.child[index].isEnd) {
+            result.add(dic.child[index].word);
+        }
+        visited[startI][startJ] = true;
+        for (int i = 0; i < direction.length; i++) {
+            int di = startI + direction[i][0];
+            int dj = startJ + direction[i][1];
+
+            if (di < 0 || di >= board.length
+                    || dj < 0 || dj >= board[0].length) {
+                continue;
+            }
+
+            find(di, dj, visited, board, dic.child[index], result);
+        }
+        visited[startI][startJ] = false;
+    }
+
+
+    private void addWord(String word) {
+        Dic dic = this.dic;
+        for (int i = 0; i < word.length(); i++) {
+            int index = word.charAt(i) - 'a';
+            if (dic.child[index] == null) {
+                dic.child[index] = new Dic();
+            }
+            dic = dic.child[index];
+        }
+        // set flag
+        dic.isEnd = true;
+        dic.word = word;
+    }
+
+
+    class Dic {
+        public Dic[] child;
+        public boolean isEnd;
+        public String word;
+
+        public Dic() {
+            this.child = new Dic[26];
+        }
     }
 }
