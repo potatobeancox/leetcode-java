@@ -33,7 +33,7 @@ import java.util.List;
 
  提示：
 
- 0 <= num <= 231 - 1
+ 0 <= num <= 2 31 - 1
 
 
  来源：力扣（LeetCode）
@@ -43,58 +43,105 @@ import java.util.List;
  */
 public class Solution {
 
+
+
     /**
      *
      * @param num
      * @return
      */
     public String numberToWords(int num) {
-        int[] numChar = new int[10];
-        for (int i = 9; i >= 0; i--) {
-            numChar[i] = num % 10;
-            num /= 10;
+
+        if (num == 0) {
+            return "Zero";
         }
-        // 生成字符串
+
+        int bit = 1_000_000_000;
+        String[] bitString = new String[] {
+          "Billion", "Million" , "Thousand", ""
+        };
+        // 维护一个 【Billion， Million， Thousand， ""】 串
         StringBuilder builder = new StringBuilder();
-//        if (numChar[9] != 0) {
-//            builder.append().append();
-//        }
-//        if (numChar[8] != 0) {
-//            builder.append().append();
-//        }
-//        if (numChar[7] != 0) {
-//            builder.append().append();
-//        }
-//        if (numChar[6] != 0) {
-//            builder.append().append();
-//        }
-//        if (numChar[5] != 0) {
-//            builder.append().append();
-//        }
-//        if (numChar[4] != 0) {
-//            builder.append().append();
-//        }
-//        if (numChar[3] != 0) {
-//            builder.append().append();
-//        }
-//        if (numChar[2] != 0) {
-//            builder.append().append();
-//        }
-        if (numChar[1] != 0) {
-            getTen(numChar[1]);
+        int index = 0;
+        // 按照 每次 3位数字进行获取计算并生成字符串
+        while (bit >= 1 && num > 0) {
+            if (num < bit) {
+                bit /= 1000;
+                index++;
+                continue;
+            }
+            int bitIndex = num / bit;
+
+            String numBlow1000 = getNumBlow1000(bitIndex);
+            builder.append(numBlow1000);
+            builder.append(" ");
+
+
+            String str = bitString[index];
+            if (!"".equals(str)) {
+                builder.append(str);
+                builder.append(" ");
+
+            }
+            num %= bit;
+            bit /= 1000;
+            index++;
         }
-        if (numChar[0] != 0) {
-            String word = getDigit(numChar[0]);
-            builder.append(word).append(" ");
+
+        if (builder.charAt(builder.length() - 1) == ' ') {
+            builder.deleteCharAt(builder.length() - 1);
         }
+
+        return builder.toString();
+    }
+
+
+    /**
+     * 1000 以内的字符串生成
+     * @return
+     */
+    private String getNumBlow1000(int num) {
+        StringBuilder builder = new StringBuilder();
+        if (num >= 100) {
+            int bit = num / 100;
+            String numStr = getDigitBelow20(bit);
+            builder.append(numStr);
+            builder.append(" ");
+            builder.append("Hundred");
+            builder.append(" ");
+            num %= 100;
+        }
+
+        if (num >= 20) {
+            int tenBit = num / 10;
+            builder.append(getTenBit(tenBit));
+            num %= 10;
+            if (num > 0) {
+                builder.append(" ");
+                builder.append(getDigitBelow20(num));
+            }
+        } else {
+            builder.append(getDigitBelow20(num));
+        }
+
+        // 删除第一个空格
+        if (builder.charAt(0) == ' ') {
+            builder.deleteCharAt(0);
+        }
+
+        // 删除第一个空格
+        if (builder.charAt(builder.length() - 1) == ' ') {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+
         return builder.toString();
     }
 
     /**
-     * 获取 十位字符串
+     * 获取 几十
      * @param i
      */
-    private String getTen(int i) {
+    private String getTenBit(int i) {
         switch (i) {
             case 2:
                 return "Twenty";
@@ -116,34 +163,15 @@ public class Solution {
         return "Zero";
     }
 
-//    private String getDozen(int i) {
-//        switch (i) {
-//            case 2:
-//                return "Twenty";
-//            case 3:
-//                return "Thirty";
-//            case 4:
-//                return "Forty";
-//            case 5:
-//                return "Fifty";
-//            case 6:
-//                return "Sixty";
-//            case 7:
-//                return "Seventy";
-//            case 8:
-//                return "Eighty";
-//            case 9:
-//                return "Ninety";
-//        }
-//        return "Zero";
-//    }
+
+
 
     /**
-     * 生成个位数
+     * 生成20 一下英文
      * @param i
      * @return
      */
-    private String getDigit(int i) {
+    private String getDigitBelow20(int i) {
         switch (i) {
             case 1:
                 return "One";
@@ -163,15 +191,46 @@ public class Solution {
                 return "Eight";
             case 9:
                 return "Nine";
+            case 10:
+                return "Ten";
+            case 11:
+                return "Eleven";
+            case 12:
+                return "Twelve";
+            case 13:
+                return "Thirteen";
+            case 14:
+                return "Fourteen";
+            case 15:
+                return "Fifteen";
+            case 16:
+                return "Sixteen";
+            case 17:
+                return "Seventeen";
+            case 18:
+                return "Eighteen";
+            case 19:
+                return "Nineteen";
+
         }
-        return "Zero";
+        return "";
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        String nn = solution.numberToWords(12);
+        String nn = solution.numberToWords(123);
         System.out.println(nn);
-        Assert.assertEquals(3, nn);
+        Assert.assertEquals("One Hundred Twenty Three", nn);
+
+
+        nn = solution.numberToWords(12345);
+        System.out.println(nn);
+        Assert.assertEquals("Twelve Thousand Three Hundred Forty Five", nn);
+
+
+        nn = solution.numberToWords(100);
+        System.out.println(nn);
+        Assert.assertEquals("One Hundred", nn);
 
 
     }
