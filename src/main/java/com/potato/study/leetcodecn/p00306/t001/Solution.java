@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00306.t001;
 
+import org.junit.Assert;
+
 /**
  * 306. 累加数
  *
@@ -45,7 +47,8 @@ public class Solution {
      * @param numCount  当前有多少个数字
      * @return
      */
-    private boolean isAdditiveNumberEach(String num, int index, long lastSum, long lastNum, int numCount) {
+    private boolean isAdditiveNumberEach(String num, int index, long lastSum,
+            long lastNum, int numCount) {
         if (index == num.length()) {
             // 之前都满足了 找到最后 肯定ok
             return numCount > 2;
@@ -57,17 +60,24 @@ public class Solution {
             if (numStr.length() > 1 && numStr.charAt(0) == '0') {
                 return false;
             }
+            // 剩下的字符串还没有现在长 直接返回吧
+            if (numCount <= 1 && numStr.length() > num.length() / 2) {
+                return false;
+            }
             long currentNum = Long.parseLong(numStr);
             // 如果当前数字 小于 2 进行生成逻辑
             boolean success;
             if (numCount == 0) {
                 success = isAdditiveNumberEach(num, i+1, 0, currentNum, 1);
             } else if (numCount == 1) {
-                success = isAdditiveNumberEach(num, i+1, currentNum + lastNum, currentNum, 2);
+                success = isAdditiveNumberEach(num, i+1, currentNum + lastNum,
+                        currentNum, 2);
             } else {
                 // 判断有效性 无效的话直接continue
-                if (lastSum != currentNum) {
+                if (currentNum < lastSum) {
                     continue;
+                } else if (currentNum > lastSum) {
+                    break;
                 }
                 // 否则计算 并判断是否可行 ，可行的话 递归计算
                 success = isAdditiveNumberEach(num, i+1, currentNum + lastNum, currentNum, numCount + 1);
@@ -78,4 +88,23 @@ public class Solution {
         }
         return false;
     }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String num = "11235813213455890144";
+        boolean additiveNumber = solution.isAdditiveNumber(num);
+        System.out.println(additiveNumber);
+        Assert.assertEquals(false, additiveNumber);
+
+        num = "112358";
+        additiveNumber = solution.isAdditiveNumber(num);
+        System.out.println(additiveNumber);
+        Assert.assertEquals(true, additiveNumber);
+
+        num = "199100199";
+        additiveNumber = solution.isAdditiveNumber(num);
+        System.out.println(additiveNumber);
+        Assert.assertEquals(true, additiveNumber);
+    }
+
 }
