@@ -44,16 +44,63 @@ package com.potato.study.leetcodecn.p00307.t001;
  */
 public class NumArray {
 
+    private int[] nums;
+    private int n;
+    /**
+     * 用一个数组进行初始化，相当于存一个满二叉树
+     * @param nums
+     */
     public NumArray(int[] nums) {
-
+        int n = nums.length;
+        this.n = n;
+        this.nums = new int[2 * n - 1];
+        // 赋值
+        for (int i = n; i < this.nums.length; i++) {
+            this.nums[i] = nums[i - n];
+        }
+        // 从后往前生成
+        for (int i = n-1; i >= 0; i--) {
+            this.nums[i] = this.nums[2*i+1] + this.nums[2*i+2];
+        }
     }
 
+    // 更新 当前 index 对应下表 一次往上更新
     public void update(int index, int val) {
-
+        int[] target = this.nums;
+        target[index + this.n] = val;
+        // 往上更新
+        int targetIndex = index + this.n;
+        while (targetIndex >= 0) {
+            targetIndex--;
+            targetIndex /= 2;
+            if (targetIndex < 0) {
+                break;
+            }
+            // 计算
+            target[targetIndex] = target[2*targetIndex+1] + target[2*targetIndex+2];
+        }
     }
 
+    // 利用树结构进行叠加
     public int sumRange(int left, int right) {
+        left += this.n;
+        right += this.n;
+        int total = 0;
+        while (left <= right) {
+            if (left % 2 == 0) {
+                total += nums[left];
+                left++;
+            }
+            if (right % 2 == 1) {
+                total += nums[right];
+                right--;
+            }
+            left -= 1;
+            left /= 2;
 
-        return -1;
+            right -= 1;
+            right /= 2;
+        }
+        return total;
     }
 }

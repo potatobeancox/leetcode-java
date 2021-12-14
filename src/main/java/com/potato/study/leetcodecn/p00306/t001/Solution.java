@@ -31,29 +31,51 @@ package com.potato.study.leetcodecn.p00306.t001;
  */
 public class Solution {
 
+    // 306
     public boolean isAdditiveNumber(String num) {
-
-        return false;
+        return isAdditiveNumberEach(num, 0, 0, 0, 0);
     }
-
-
-
 
     /**
      *
-     * @param num           数字字符串
-     * @param index         当前使用的index
-     * @param sumOfTwo      之前两个数字的和
-     * @param current       当前数字
-     * @param lastNum       之前那个数字是多少
+     * @param num  原始数字
+     * @param index 当前处理到的位置
+     * @param lastSum   商2个数字的和
+     * @param lastNum   上一个数字
+     * @param numCount  当前有多少个数字
      * @return
      */
-    private boolean isAdditiveNumberEach(String num, int index, int sumOfTwo, int current, int lastNum) {
-        // 终止条件 当前index 已经到了 num末尾 如果 current 与 sumOfTwo 相等返回 true 否则 返回false
-
-        // index 开始往后找 直到
-
-
+    private boolean isAdditiveNumberEach(String num, int index, long lastSum, long lastNum, int numCount) {
+        if (index == num.length()) {
+            // 之前都满足了 找到最后 肯定ok
+            return numCount > 2;
+        }
+        // 从index 开始往后生成当前数字
+        for (int i = index; i < num.length(); i++) {
+            // 生成当前数字
+            String numStr = num.substring(index, i + 1);
+            if (numStr.length() > 1 && numStr.charAt(0) == '0') {
+                return false;
+            }
+            long currentNum = Long.parseLong(numStr);
+            // 如果当前数字 小于 2 进行生成逻辑
+            boolean success;
+            if (numCount == 0) {
+                success = isAdditiveNumberEach(num, i+1, 0, currentNum, 1);
+            } else if (numCount == 1) {
+                success = isAdditiveNumberEach(num, i+1, currentNum + lastNum, currentNum, 2);
+            } else {
+                // 判断有效性 无效的话直接continue
+                if (lastSum != currentNum) {
+                    continue;
+                }
+                // 否则计算 并判断是否可行 ，可行的话 递归计算
+                success = isAdditiveNumberEach(num, i+1, currentNum + lastNum, currentNum, numCount + 1);
+            }
+            if (success) {
+                return true;
+            }
+        }
         return false;
     }
 }
