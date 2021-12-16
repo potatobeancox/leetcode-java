@@ -1,10 +1,8 @@
 package com.potato.study.leetcodecn.p00399.t001;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import com.google.common.collect.Lists;
+
+import java.util.*;
 
 /**
  * 399. 除法求值
@@ -88,7 +86,14 @@ public class Solution {
             String from = list.get(0);
             String to = list.get(1);
 
-            result[i] = unionFind.getWeight(word2IndexMap.get(from), word2IndexMap.get(to));
+            Integer fromNum = word2IndexMap.get(from);
+            Integer toNum = word2IndexMap.get(to);
+            if (fromNum == null || toNum == null) {
+                result[i] = -1;
+                continue;
+            }
+
+            result[i] = unionFind.getWeight(fromNum, toNum);
         }
         return result;
     }
@@ -117,7 +122,7 @@ public class Solution {
             weight[parentIndex1] = weight[parentIndex1] * value / weight[parentIndex2];
         }
 
-        public int find (int target) {
+        public int find(int target) {
             if (parent[target] != target) {
                 int orignal = parent[target];
                 parent[target] = find(parent[target]);
@@ -130,10 +135,52 @@ public class Solution {
             int parentIndex1 = find(target1);
             int parentIndex2 = find(target2);
             if (parentIndex1 == parentIndex2) {
-                return weight[parentIndex1] / weight[parentIndex2];
+                return weight[target1] / weight[target2];
             }
             return -1.0;
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        List<List<String>> equations = new ArrayList<>();
+        equations.add(Lists.newArrayList("a", "b"));
+        equations.add(Lists.newArrayList("b", "c"));
+
+        double[] values = new double[] {
+            2.0, 3.0
+        };
+
+
+        List<List<String>> queries = new ArrayList<>();
+        queries.add(Lists.newArrayList("a", "c"));
+        queries.add(Lists.newArrayList("b", "a"));
+        queries.add(Lists.newArrayList("a", "e"));
+        queries.add(Lists.newArrayList("a", "a"));
+        queries.add(Lists.newArrayList("x", "x"));
+
+        double[] doubles = solution.calcEquation(equations, values, queries);
+        System.out.println(Arrays.toString(doubles));
+
+//        [6.00000,0.50000,-1.00000,1.00000,-1.00000]
+
+
+        equations = new ArrayList<>();
+        equations.add(Lists.newArrayList("a", "b"));
+        equations.add(Lists.newArrayList("e", "f"));
+        equations.add(Lists.newArrayList("b", "e"));
+
+        values = new double[] {
+                3.4,1.4,2.3
+        };
+
+
+        queries = new ArrayList<>();
+        queries.add(Lists.newArrayList("a", "f"));
+
+        doubles = solution.calcEquation(equations, values, queries);
+        System.out.println(Arrays.toString(doubles));
+        // [0.29412,10.948,1.0,1.0,-1.0,-1.0,0.71429]
     }
 }
 
