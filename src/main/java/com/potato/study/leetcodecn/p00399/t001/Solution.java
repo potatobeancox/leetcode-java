@@ -119,7 +119,7 @@ public class Solution {
                 return;
             }
             parent[parentIndex1] = parentIndex2;
-            weight[parentIndex1] = weight[parentIndex1] * value / weight[parentIndex2];
+            weight[parentIndex1] = weight[target2] * value / weight[target1];
         }
 
         public int find(int target) {
