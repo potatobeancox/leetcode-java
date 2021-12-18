@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p00220.t001;
 
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.junit.Assert;
@@ -66,18 +67,30 @@ public class Solution {
      * @return
      */
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
-        TreeSet<Integer> window = new TreeSet<>();
+        TreeMap<Long, Integer> window = new TreeMap<>();
+        int size = 0;
         for (int i = 0; i < nums.length; i++) {
-            int current = nums[i];
+            long current = nums[i];
             // 大于等于 current测最小值
-            Integer ceiling = window.ceiling(current - t);
-            if (null != ceiling && ceiling <= t + current) {
+            Long ceilingKey = window.ceilingKey((long)current - t);
+            if (null != ceilingKey && window.get(ceilingKey) > 0
+                    && Math.abs((long)ceilingKey - (long)current) <= (long)t) {
                 return true;
             }
-            window.add(current);
-            if (window.size() > k + 1) {
+            Integer count = window.getOrDefault(current, 0);
+            count++;
+            size++;
+            window.put(current, count);
+            if (size > k) {
                 // 此时 i 一定大于 k
-                window.remove(nums[i - k]);
+                Integer cc = window.get((long)nums[i - k]);
+                cc--;
+                if (cc <= 0) {
+                    window.remove((long)nums[i - k]);
+                } else {
+                    window.put((long)nums[i - k], cc);
+                }
+                size--;
             }
         }
         return false;
@@ -85,64 +98,36 @@ public class Solution {
 
 
     public static void main(String[] args) {
-//        Solution solution = new Solution();
-//        char[][] matrix = new char[][] {
-//                {'1','0','1','0','0'},
-//                {'1','0','1','1','1'},
-//                {'1','1','1','1','1'},
-//                {'1','0','0','1','0'}
-//        };
-//        int max = solution.maximalSquare(matrix);
-//        System.out.println(max);
-//        Assert.assertEquals(4, max);
-//
-//        matrix = new char[][] {
-//                {'0','0','0','1'},
-//                {'1','1','0','1'},
-//                {'1','1','1','1'},
-//                {'0','1','1','1'},
-//                {'0','1','1','1'}
-//        };
-//        max = solution.maximalSquare(matrix);
-//        System.out.println(max);
-//        Assert.assertEquals(9, max);
-//
-//        matrix = new char[][] {
-//                {'1','1','1','1'},
-//                {'1','1','1','1'},
-//                {'0','0','0','0'},
-//                {'1','1','1','1'},
-//                {'1','1','1','1'}
-//        };
-//        max = solution.maximalSquare(matrix);
-//        System.out.println(max);
-//        Assert.assertEquals(4, max);
-//
-//
-//        matrix = new char[][] {
-//                {'1','0','1','0'},
-//                {'1','0','1','1'},
-//                {'1','0','1','1'},
-//                {'1','1','1','1'}
-//        };
-//        max = solution.maximalSquare(matrix);
-//        System.out.println(max);
-//        Assert.assertEquals(4, max);
-//
-//
-//        matrix = new char[][] {
-//                {'0','1','1','0','0','1','0','1','0','1'},
-//                {'0','0','1','0','1','0','1','0','1','0'},
-//                {'1','0','0','0','0','1','0','1','1','0'},
-//                {'0','1','1','1','1','1','1','0','1','0'},
-//                {'0','0','1','1','1','1','1','1','1','0'},
-//                {'1','1','0','1','0','1','1','1','1','0'},
-//                {'0','0','0','1','1','0','0','0','1','0'},
-//                {'1','1','0','1','1','0','0','1','1','1'},
-//                {'0','1','0','1','1','0','1','0','1','1'}
-//        };
-//        max = solution.maximalSquare(matrix);
-//        System.out.println(max);
-//        Assert.assertEquals(4, max);
+        Solution solution = new Solution();
+        // int[] nums, int k, int t
+        int[] nums = new int[]{1,5,9,1,5,9};
+        int k = 2;
+        int t = 3;
+        boolean b = solution.containsNearbyAlmostDuplicate(nums, k, t);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        nums = new int[]{1,0,1,1};
+        k = 1;
+        t = 2;
+        b = solution.containsNearbyAlmostDuplicate(nums, k, t);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+        nums = new int[]{1,2,3,1};
+        k = 3;
+        t = 0;
+        b = solution.containsNearbyAlmostDuplicate(nums, k, t);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+        nums = new int[]{-2147483640,-2147483641};
+        k = 1;
+        t = 100;
+        b = solution.containsNearbyAlmostDuplicate(nums, k, t);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
     }
 }
