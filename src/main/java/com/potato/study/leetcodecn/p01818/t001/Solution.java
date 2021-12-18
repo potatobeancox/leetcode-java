@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01818.t001;
 
+import org.junit.Assert;
+
 import java.util.*;
 
 /**
@@ -54,12 +56,41 @@ import java.util.*;
  */
 public class Solution {
 
+
+
     public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+        int mod = 1_000_000_000 + 7;
         // 将 nums1 放入 tree map里边 求 sum 绝对值 总和
         TreeSet<Integer> nums1Set = new TreeSet<>();
-        int sum = 0;
         // 遍历 求 nums1 和 nums2 某个位置的和 查找最近的 计算差 求 最小值
+        int n = nums1.length;
+        long sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += Math.abs((long)nums1[i] - nums2[i]);
+            nums1Set.add(nums1[i]);
+        }
+        // 每个位置找到nums2 对接近的
+        long min = sum;
+        for (int i = 0; i < n; i++) {
+            long sumWithout = sum - Math.abs((long)nums1[i] - nums2[i]);
+            Integer floor = nums1Set.floor(nums2[i]);
+            if (floor != null) {
+                min = Math.min(min, sumWithout + Math.abs((long)floor - nums2[i]));
+            }
+            Integer ceiling = nums1Set.ceiling(nums2[i]);
+            if (ceiling != null) {
+                min = Math.min(min, sumWithout + Math.abs((long)ceiling - nums2[i]));
+            }
+        }
+        return (int)min;
+    }
 
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums1 = new int[]{1,7,5};
+        int[] nums2 = new int[]{2,3,5};
+        int i = solution.minAbsoluteSumDiff(nums1, nums2);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 }
