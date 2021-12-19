@@ -43,60 +43,54 @@ public class Solution {
      * @return
      */
     public int[] findDiagonalOrder(int[][] mat) {
-        // 控制当前 ij 的和 从 0开始到  行数 + 列数 -1
-        int m = mat.length;
-        int n = mat[0].length;
-//        if (m == 1) {
-//            return mat[0];
-//        }
-
+        // 直接从第一行和最后一列每个点作为起点开始对角线遍历
+        int n = mat.length;
+        int m = mat[0].length;
         int[] result = new int[m * n];
-        int current = 0;
-//        if (n == 1) {
-//            for (int i = 0; i < m; i++) {
-//                result[current++] = mat[i][0];
-//            }
-//            return result;
-//        }
-
         int index = 0;
-        // 上半部分 遍历第0 行 作为开始节点
-        for (int i = 0; i < n; i++) {
-            List<Integer> list = new ArrayList<>();
-            for (int start1 = 0; start1 <= index; start1++) {
-                int start2 = index - start1;
-                list.add(mat[start1][start2]);
+        int lineIndex = 0;
+        // 第一行
+        for (int i = 0; i < m; i++) {
+            int startI = 0;
+            int startJ = i;
+            List<Integer> thisList = new ArrayList<>();
+            while (startI < n && startJ >= 0) {
+                thisList.add(mat[startI][startJ]);
+                startI += 1;
+                startJ += -1;
             }
-            // 判断是否需要 reverse 添加
-            if (i % 2 == 0) {
-                for (int j = list.size() - 1; j >=0 ; j--) {
-                    result[current++] = list.get(j);
+            if (lineIndex % 2 == 0) {
+                for (int j = thisList.size() - 1; j >= 0; j--) {
+                    result[index++] = thisList.get(j);
                 }
             } else {
-                for (int j = 0; j < list.size() ; j++) {
-                    result[current++] = list.get(j);
+                for (int j = 0; j < thisList.size(); j++) {
+                    result[index++] = thisList.get(j);
                 }
             }
-            index++;
+            lineIndex++;
         }
-        // 下半部分
-        for (int i = 1; i < m; i++) {
-            List<Integer> list = new ArrayList<>();
-            for (int start1 = i; start1 < m; start1++) {
-                int start2 = index - start1;
-                list.add(mat[start1][start2]);
+        // 最后一列
+        for (int i = 1; i < n; i++) {
+            int startI = i;
+            int startJ = m-1;
+            List<Integer> thisList = new ArrayList<>();
+            while (startI < n && startJ >= 0) {
+                thisList.add(mat[startI][startJ]);
+                startI += 1;
+                startJ += -1;
             }
-            // 判断是否需要 reverse 添加 偶数需要翻转
-            if (i % 2 == 0) {
-                for (int j = list.size() - 1; j >=0 ; j--) {
-                    result[current++] = list.get(j);
+            // 将每次的遍历结果 放入数组中 考虑是否翻转
+            if (lineIndex % 2 == 0) {
+                for (int j = thisList.size() - 1; j >= 0; j--) {
+                    result[index++] = thisList.get(j);
                 }
             } else {
-                for (int j = 0; j < list.size() ; j++) {
-                    result[current++] = list.get(j);
+                for (int j = 0; j < thisList.size(); j++) {
+                    result[index++] = thisList.get(j);
                 }
             }
-            index++;
+            lineIndex++;
         }
         return result;
     }
