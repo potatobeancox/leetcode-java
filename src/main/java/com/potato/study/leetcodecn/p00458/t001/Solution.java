@@ -52,6 +52,20 @@ public class Solution {
      * @return
      */
     public int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
-        return -1;
+        int j = minutesToTest / minutesToDie;
+        // i个小猪，测试 j轮最多 确定 (j+1)^i次幂的结果
+        int i = (int) Math.ceil(Math.log(buckets * 1.0) / Math.log(j+1.0));
+        return i;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int buckets = 1000;
+        int minutesToDie = 15;
+        int minutesToTest = 60;
+        int i = solution.poorPigs(buckets, minutesToDie, minutesToTest);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
     }
 }
