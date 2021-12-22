@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p00862.t001;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 import org.junit.Assert;
 
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
@@ -41,22 +44,43 @@ import com.potato.study.leetcode.util.LeetcodeInputUtils;
 public class Solution {
 
     public int shortestSubarray(int[] nums, int k) {
-        // 862
-        int sum = 0;
-        int min = Integer.MAX_VALUE;
-        int index = 0;
+        // 求一下前缀和
+
+
+        // 双端队列 内部单调增
+        Deque<Integer> indexDeque = new LinkedList<>();
+        int shortestSubarrayLen = -1;
         for (int i = 0; i < nums.length; i++) {
-            sum += nums[i];
-            while (sum >= k && index <= i) {
-                min = Math.min(min, i - index + 1);
-                sum -= nums[index];
-                index++;
+            if (indexDeque.isEmpty()) {
+                indexDeque.addLast(i);
+                continue;
+            }
+            // num index1 >= num index2 那么说明 到 k  只能停止到 index 2 处
+            while (!indexDeque.isEmpty() && indexDeque.peekLast() > nums[i]) {
+
             }
         }
-        if (min == Integer.MAX_VALUE) {
-            return -1;
-        }
-        return min;
+
+
+        return shortestSubarrayLen;
+
+
+        // 862
+//        int sum = 0;
+//        int min = Integer.MAX_VALUE;
+//        int index = 0;
+//        for (int i = 0; i < nums.length; i++) {
+//            sum += nums[i];
+//            while (sum >= k && index <= i) {
+//                min = Math.min(min, i - index + 1);
+//                sum -= nums[index];
+//                index++;
+//            }
+//        }
+//        if (min == Integer.MAX_VALUE) {
+//            return -1;
+//        }
+//        return min;
     }
 
     public static void main(String[] args) {
