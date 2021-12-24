@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02062.t001;
 
+import org.junit.Assert;
+
 /**
  * 2062. 统计字符串中的元音子字符串
  *
@@ -55,8 +57,64 @@ package com.potato.study.leetcodecn.p02062.t001;
 public class Solution {
 
     public int countVowelSubstrings(String word) {
+        //枚举开始位置和结束位置
+        int count = 0;
+        for (int i = 0; i < word.length(); i++) {
+            for (int j = i + 1; j <= word.length(); j++) {
+                String substring = word.substring(i, j);
+                if (hasAllVowel(substring)) {
+//                    System.out.println(substring);
+                    count++;
+                }
+            }
+        }
+        // 判断当前字符串是否满足 如果满足，后续所有位置 都可以计数
+        return count;
+    }
 
-        return -1;
+    /**
+     * 是否包含所有 的原因字符
+     * @param word
+     * @return
+     */
+    private boolean hasAllVowel(String word) {
+        if (word == null || word.length() < 5) {
+            return false;
+        }
+        int status = 0b11111;
+        int current = 0;
+        char[] chars = word.toCharArray();
+        for (char ch : chars) {
+            if ('a' == ch) {
+                current |= 1;
+            } else if ('e' == ch) {
+                current |= 2;
+            } else if ('i' == ch) {
+                current |= 4;
+            } else if ('o' == ch) {
+                current |= 8;
+            } else if ('u' == ch){
+                current |= 16;
+            } else {
+                return false;
+            }
+        }
+        return current == status;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String word = "aeiouu";
+        int i = solution.countVowelSubstrings(word);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        word = "cuaieuouac";
+        i = solution.countVowelSubstrings(word);
+        System.out.println(i);
+        Assert.assertEquals(7, i);
     }
 
 
