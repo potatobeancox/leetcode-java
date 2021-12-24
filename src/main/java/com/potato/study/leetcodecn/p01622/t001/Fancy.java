@@ -70,7 +70,7 @@ public class Fancy {
     // 往list 中添加数据
     public void append(int val) {
         // 计算原来的数字
-        int baseElement = (((val - plusCoefficient)  % mod) / (multiCoefficient  % mod)) % mod;
+        int baseElement = (((val - plusCoefficient)) / (multiCoefficient)) % mod;
         element.add(baseElement);
     }
 
@@ -79,8 +79,8 @@ public class Fancy {
     }
 
     public void multAll(int m) {
-        this.multiCoefficient = ((multiCoefficient% mod) *  (m% mod)) % mod;
-        this.plusCoefficient = ((plusCoefficient% mod) *  (m% mod)) % mod;;
+        this.multiCoefficient = ((multiCoefficient) *  (m)) % mod;
+        this.plusCoefficient = ((plusCoefficient) *  (m)) % mod;;
     }
 
     public int getIndex(int idx) {
@@ -89,6 +89,6 @@ public class Fancy {
             return -1;
         }
         Integer value = element.get(idx);
-        return (((value % mod) * (multiCoefficient * mod))% mod + plusCoefficient % mod) % mod;
+        return (((value) * (multiCoefficient))% mod + plusCoefficient % mod) % mod;
     }
 }
