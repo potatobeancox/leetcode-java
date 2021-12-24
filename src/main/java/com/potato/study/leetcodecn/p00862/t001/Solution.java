@@ -43,44 +43,37 @@ import com.potato.study.leetcode.util.LeetcodeInputUtils;
  */
 public class Solution {
 
-    public int shortestSubarray(int[] nums, int k) {
+    public int shortestSubarray(int[] inputNums, int k) {
         // 求一下前缀和
-
-
+        long[] nums = new long[inputNums.length];
+        nums[0] = inputNums[0];
+        for (int i = 1; i < nums.length; i++) {
+            nums[i] = nums[i-1] + inputNums[i];
+        }
         // 双端队列 内部单调增
         Deque<Integer> indexDeque = new LinkedList<>();
-        int shortestSubarrayLen = -1;
+        int shortestSubarrayLen = Integer.MAX_VALUE;
         for (int i = 0; i < nums.length; i++) {
+            if (nums[i] >= k) {
+                shortestSubarrayLen = Math.min(i+1, shortestSubarrayLen);
+            }
             if (indexDeque.isEmpty()) {
                 indexDeque.addLast(i);
                 continue;
             }
             // num index1 >= num index2 那么说明 到 k  只能停止到 index 2 处
-            while (!indexDeque.isEmpty() && indexDeque.peekLast() > nums[i]) {
-
+            while (!indexDeque.isEmpty() && nums[indexDeque.peekLast()] >= nums[i]) {
+                indexDeque.pollLast();
             }
+
+            while  (!indexDeque.isEmpty() && nums[i] - nums[indexDeque.peekFirst()] >= k) {
+                Integer firstIndex = indexDeque.pollFirst();
+                shortestSubarrayLen = Math.min(shortestSubarrayLen, i - firstIndex);
+            }
+
+            indexDeque.addLast(i);
         }
-
-
-        return shortestSubarrayLen;
-
-
-        // 862
-//        int sum = 0;
-//        int min = Integer.MAX_VALUE;
-//        int index = 0;
-//        for (int i = 0; i < nums.length; i++) {
-//            sum += nums[i];
-//            while (sum >= k && index <= i) {
-//                min = Math.min(min, i - index + 1);
-//                sum -= nums[index];
-//                index++;
-//            }
-//        }
-//        if (min == Integer.MAX_VALUE) {
-//            return -1;
-//        }
-//        return min;
+        return shortestSubarrayLen == Integer.MAX_VALUE ? -1 : shortestSubarrayLen;
     }
 
     public static void main(String[] args) {
@@ -92,5 +85,43 @@ public class Solution {
         int i = solution.shortestSubarray(nums, k);
         System.out.println(i);
         Assert.assertEquals(1, i);
+
+
+        nums = new int[] {
+                1, 2
+        };
+        k = 4;
+        i = solution.shortestSubarray(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(-1, i);
+
+
+        nums = new int[] {
+                2, -1, 2
+        };
+        k = 3;
+        i = solution.shortestSubarray(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        nums = new int[] {
+                17,85,93,-45,-21
+        };
+        k = 150;
+        i = solution.shortestSubarray(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        nums = new int[] {
+                84,-37,32,40,95
+        };
+        k = 167;
+        i = solution.shortestSubarray(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
     }
 }
