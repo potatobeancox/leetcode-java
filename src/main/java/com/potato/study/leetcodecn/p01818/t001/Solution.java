@@ -66,23 +66,33 @@ public class Solution {
         int n = nums1.length;
         long sum = 0;
         for (int i = 0; i < n; i++) {
-            sum += Math.abs((long)nums1[i] - nums2[i]);
+            sum += (Math.abs((long)nums1[i] - nums2[i]) % mod);
+            sum %= mod;
             nums1Set.add(nums1[i]);
         }
-        // 每个位置找到nums2 对接近的
-        long min = sum;
+        // 每个位置找到nums2 对接近的 找到最大的差距
+        long maxDif = 0;
         for (int i = 0; i < n; i++) {
-            long sumWithout = sum - Math.abs((long)nums1[i] - nums2[i]);
             Integer floor = nums1Set.floor(nums2[i]);
             if (floor != null) {
-                min = Math.min(min, sumWithout + Math.abs((long)floor - nums2[i]));
+                long currentDif = Math.abs((long)nums1[i] - nums2[i]) - Math.abs((long) floor - nums2[i]);
+                if (currentDif > maxDif) {
+                    maxDif = currentDif;
+                }
             }
             Integer ceiling = nums1Set.ceiling(nums2[i]);
             if (ceiling != null) {
-                min = Math.min(min, sumWithout + Math.abs((long)ceiling - nums2[i]));
+                long currentDif = Math.abs((long)nums1[i] - nums2[i]) - Math.abs((long) ceiling - nums2[i]);
+                if (currentDif > maxDif) {
+                    maxDif = currentDif;
+                }
             }
         }
-        return (int)min;
+        sum -= (maxDif % mod);
+        if (sum < 0) {
+            sum += mod;
+        }
+        return (int) sum % mod;
     }
 
     public static void main(String[] args) {
