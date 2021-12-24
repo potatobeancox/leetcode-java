@@ -1,10 +1,7 @@
 package com.potato.study.leetcodecn.p01284.t001;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import org.junit.Assert;
 
@@ -67,7 +64,102 @@ public class Solution {
      * @return
      */
     public int minFlips(int[][] mat) {
+        // 生成最终状态的key
+        int[][] finalStatus = new int[mat.length][mat[0].length];
+        String finalStatusString = getKey(finalStatus);
 
+        // 两个队列 同步修改 记录 当时矩阵的反转次数
+        Queue<int[][]> matQueue = new LinkedList<>();
+        Queue<Integer> matTimes = new LinkedList<>();
+        matQueue.add(mat);
+        matTimes.add(0);
+        Map<String, Integer> matStatusMap = new HashMap<>();
+        matStatusMap.put(getKey(mat), 1);
+        // bfs
+        while (!matQueue.isEmpty()) {
+            int[][] currentMat = matQueue.poll();
+            Integer currentFlipTime = matTimes.poll();
+            String currentKey = getKey(currentMat);
+            if (finalStatusString.equals(currentKey)) {
+                return currentFlipTime;
+            }
+            // 遍历各个状态进行翻转
+            for (int i = 0; i < mat.length; i++) {
+                for (int j = 0; j < mat[0].length; j++) {
+                    // 翻转
+                    int[][] nextMat = filpMat(currentMat, i, j);
+                    String key = getKey(nextMat);
+                    if (finalStatusString.equals(key)) {
+                        return currentFlipTime + 1;
+                    }
+                    Integer status = matStatusMap.getOrDefault(key, 0);
+                    if (status > 0) {
+                        continue;
+                    }
+                    // 没有访问过
+                    matQueue.add(nextMat);
+                    matTimes.add(currentFlipTime + 1);
+                    matStatusMap.put(key, 1);
+                }
+            }
+            matStatusMap.put(currentKey, 2);
+        }
+        // map key 矩阵序列化之后的key value 是 这个矩阵目前遍历的状态 0未遍历，1遍历过，2遍历完了 没有终态
         return -1;
     }
+
+
+    // 翻转矩阵的某个位置
+    private int[][] filpMat(int[][] mat, int i, int j) {
+        int[][] newMat = new int[mat.length][mat[0].length];
+        for (int k = 0; k < mat.length; k++) {
+            for (int l = 0; l < mat[0].length; l++) {
+                if ((k == i && l == j)
+                        || (k == i-1 && l == j)
+                        || (k == i+1 && l == j)
+                        || (k == i && l == j-1)
+                        || (k == i && l == j+1)) {
+                    newMat[k][l] = 1 - mat[k][l];
+                } else {
+                    newMat[k][l] = mat[k][l];
+                }
+            }
+        }
+        return newMat;
+    }
+
+    // 生成key
+    private String getKey(int[][] mat) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                builder.append(mat[i][j]);
+            }
+        }
+        return builder.toString();
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] mat = new int[][] {
+                {0, 0},
+                {0, 1}
+        };
+        int i = solution.minFlips(mat);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        mat = new int[][] {
+                {0},
+                {1},
+                {1}
+        };
+        i = solution.minFlips(mat);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+    }
+
+
 }
