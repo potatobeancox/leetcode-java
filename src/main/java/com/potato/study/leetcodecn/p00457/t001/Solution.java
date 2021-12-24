@@ -58,54 +58,94 @@ import org.junit.Assert;
 public class Solution {
 
 
-
+    /**
+     * 用快慢指针
+     * @param nums
+     * @return
+     */
     public boolean circularArrayLoop(int[] nums) {
-        // 使用 一个 int visit 记录 当前是低级轮遍历的，如果当前轮已经被遍历过 continue 否则 往后遍历至无法继续
-        int[] visit = new int[nums.length];
-        Arrays.fill(visit, -1);
-        // 开始找的位置
-        for (int i = 0; i < nums.length; i++) {
-            if (visit[i] >= 0) {
-                continue;
-            }
-            visit[i] = i;
-            int direction = nums[i];
+        // 从每个位置 开始查找
+//        for (int i = 0; i < nums.length; i++) {
+//            // 之前访问过
+//            if (nums[i] == 0) {
+//                continue;
+//            }
+//            int slowIndex = i;
+//            int fastIndex = getNextIndex(slowIndex);
+//            while (nums[slowIndex] != 0) {
+//                // 如果 slow 与fast相遇
+//                if (slowIndex == fastIndex) {
+//
+//
+//                    continue;
+//                }
+//                // slow 和faset 没有相遇 slow 每次走一步
+//                slowIndex = getNextIndex(nums, slowIndex);
+//                fastIndex = getNextIndex(nums, fastIndex);
+//            }
+//
+//
+//        }
+        // 快慢指针找环 快慢指针相遇 说明找到了环，快指针使用 nums = 0 表示已经访问过 没有环
 
-            int next = i + direction;
-            while (next < 0) {
-                next += nums.length;
-            }
-            next %= nums.length;
-            int last = -1;
-            boolean isOpposite = false;
-            boolean isOnlyOne = false;
-            while (visit[next] < 0) {
-                if (last == next) {
-                    // 长度为1的环
-                    isOnlyOne = true;
-                    break;
-                }
-                last = next;
-                visit[next] = i;
-                if (nums[next] * direction < 0) {
-                    isOpposite = true;
-                    break;
-                }
-                next = next + nums[next];
-                while (next < 0) {
-                    next += nums.length;
-                }
-                next %= nums.length;
-            }
-            if (isOpposite || isOnlyOne) {
-                continue;
-            }
-            // 如果无法继续时，方向是走到了 本轮访问的点 说明 有环，如果是其他轮访问的点说明没有换
-            if (visit[next] == i) {
-                return true;
-            }
-        }
+
+
+
+        // 使用 一个 int visit 记录 当前是低级轮遍历的，如果当前轮已经被遍历过 continue 否则 往后遍历至无法继续
+//        int[] visit = new int[nums.length];
+//        Arrays.fill(visit, -1);
+//        // 开始找的位置
+//        for (int i = 0; i < nums.length; i++) {
+//            // 这个节点被之前遍历过
+//            if (visit[i] >= 0) {
+//                continue;
+//            }
+//            int direction = nums[i];
+//            // 本次访问了多少个节点
+//            int visitedLen = 0;
+//            int next = i;
+//            int last = -1;
+//            boolean isOpposite = false;
+//            do {
+//                // 遍历这个点
+//                last = next;
+//                visit[next] = i;
+//                visitedLen++;
+//                if (nums[next] * direction < 0) {
+//                    isOpposite = true;
+//                    break;
+//                }
+//                next += nums[next];
+//                while (next < 0) {
+//                    next += nums.length;
+//                }
+//                next %= nums.length;
+//                // 没有访问过就继续访问
+//            } while (visit[next] < 0);
+//            // 出现了方向相反
+//            if (isOpposite) {
+//                continue;
+//            }
+//            // 只请求了一个
+//            if (visitedLen == 1) {
+//                continue;
+//            }
+//            // 如果无法继续时，方向是走到了 本轮访问的点 说明 有环，如果是其他轮访问的点说明没有换
+//            if (visit[next] == i && last != next) {
+//                return true;
+//            }
+//        }
+//        return false;
         return false;
+    }
+
+
+    private int getNextIndex(int[] nums, int currentIndex) {
+        int nextIndex = currentIndex + nums[currentIndex];
+        while (nextIndex < 0) {
+            nextIndex += nums.length;
+        }
+        return nextIndex % nums.length;
     }
 
 
@@ -120,7 +160,37 @@ public class Solution {
 
 
         arr = new int[] {
+                -1,2
+        };
+        b = solution.circularArrayLoop(arr);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+        arr = new int[] {
+                -2,1,-1,-2,-2
+        };
+        b = solution.circularArrayLoop(arr);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        arr = new int[] {
+                -1,2
+        };
+        b = solution.circularArrayLoop(arr);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+        arr = new int[] {
                 -1,-2,-3,-4,-5
+        };
+        b = solution.circularArrayLoop(arr);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        arr = new int[] {
+                2,2,2,2,2,4,7
         };
         b = solution.circularArrayLoop(arr);
         System.out.println(b);
