@@ -72,6 +72,7 @@ public class Solution {
         return count;
     }
 
+
     /**
      * 是否包含所有 的原因字符
      * @param word
