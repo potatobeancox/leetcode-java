@@ -47,6 +47,14 @@ import java.util.Map;
 public class Solution {
 
     public int numSubmatrixSumTarget(int[][] matrix, int target) {
+        // 枚举 00 ij 每个矩阵 sum 枚举过程中 使用 map val count 计数
+        Map<Integer, Integer> valueCountMap = new HashMap<>();
+        // sum 计数之后 计算差值 sum - k == target， sum - target = k
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+
+            }
+        }
 
         return -1;
     }
