@@ -81,7 +81,7 @@ public class AuthenticationManager {
         if (expireTime >= currentTime) {
             tokenIdTimeMap.put(tokenId, currentTime);
         } else {
-            tokenIdTimeMap.remove(tokenId);
+//            tokenIdTimeMap.remove(tokenId);
         }
     }
 
