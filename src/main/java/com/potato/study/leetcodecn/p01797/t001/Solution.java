@@ -91,7 +91,7 @@ public class AuthenticationManager {
         Set<String> keys = tokenIdTimeMap.keySet();
         for (String tokenId : keys) {
             int expireTime = tokenIdTimeMap.get(tokenId) + timeToLive;
-            if (expireTime >= currentTime) {
+            if (expireTime > currentTime) {
                 count++;
             }
 //            else {
