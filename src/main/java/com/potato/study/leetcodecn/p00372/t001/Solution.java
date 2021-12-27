@@ -41,15 +41,25 @@ import org.junit.Assert;
  */
 public class Solution {
 
-    /**
-     *
-     * @param a
-     * @param b
-     * @return
-     */
+    private int mod = 1_000_000_007;
+    // 372
     public int superPow(int a, int[] b) {
+        int current = 1;
+        for (int i = 0; i < b.length; i++) {
+            if (i > 0) {
+                current = pow(current, 10);
+            }
+            current *= pow(a, b[i]);
+        }
+        return current;
+    }
 
-        return -1;
+    public int pow(int a, int b) {
+        int tmp = a % mod;
+        for (int i = 0; i < b; i++) {
+            tmp *= (a % mod);
+        }
+        return tmp;
     }
 
 }

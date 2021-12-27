@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p01609.t001;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.potato.study.leetcode.domain.TreeNode;
 
 /**
@@ -66,8 +69,52 @@ import com.potato.study.leetcode.domain.TreeNode;
  */
 public class Solution {
 
+    // 1609
     public boolean isEvenOddTree(TreeNode root) {
-        return false;
+        // 层序遍历
+        int layerIndex = 0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        int last = -1;
+
+        while (!queue.isEmpty()) {
+            int layerSize = queue.size();
+            boolean isFirst = true;
+            for (int i = 0; i < layerSize; i++) {
+                TreeNode poll = queue.poll();
+                // 奇偶性
+                if (layerIndex % 2 == 0) {
+                    // 0 层
+                    if (poll.val % 2 == 0) {
+                        return false;
+                    }
+                } else {
+                    // 1 层
+                    if (poll.val % 2 == 1) {
+                        return false;
+                    }
+                }
+                // 递增性质
+                if (isFirst) {
+                    isFirst = false;
+                    last = poll.val;
+                    continue;
+                }
+                if (!isFirst && poll.val < last) {
+                    return false;
+                }
+                last = poll.val;
+
+                // 左右孩子添加
+                if (poll.left != null) {
+                    queue.add(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.add(poll.right);
+                }
+            }
+        }
+        return true;
     }
 
 
