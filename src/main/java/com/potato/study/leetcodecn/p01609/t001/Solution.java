@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p01609.t001;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.junit.Assert;
+
 import com.potato.study.leetcode.domain.TreeNode;
 
 /**
@@ -94,13 +96,26 @@ public class Solution {
                         return false;
                     }
                 }
-                // 递增性质
+                // 递增性质 偶数递增 奇数递减
                 if (isFirst) {
                     isFirst = false;
                     last = poll.val;
+
+                    // 左右孩子添加
+                    if (poll.left != null) {
+                        queue.add(poll.left);
+                    }
+                    if (poll.right != null) {
+                        queue.add(poll.right);
+                    }
+
                     continue;
                 }
-                if (!isFirst && poll.val < last) {
+                // 递增性质 偶数递增 奇数递减
+                if (layerIndex % 2 == 0  && last >= poll.val) {
+                    return false;
+                }
+                if (layerIndex % 2 == 1 && last <= poll.val) {
                     return false;
                 }
                 last = poll.val;
@@ -113,8 +128,25 @@ public class Solution {
                     queue.add(poll.right);
                 }
             }
+            layerIndex++;
         }
         return true;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(5);
+        root.left = new TreeNode(4);
+        root.left.left = new TreeNode(3);
+        root.left.right = new TreeNode(3);
+
+        root.right = new TreeNode(2);
+        root.right.left = new TreeNode(7);
+
+        boolean evenOddTree = solution.isEvenOddTree(root);
+        System.out.println(evenOddTree);
+        Assert.assertEquals(false, evenOddTree);
     }
 
 
