@@ -67,57 +67,54 @@ import org.junit.Assert;
 public class Solution {
 
     /**
-     * dp ij  制作i束花 用 前j 朵花 需要花费最小时间
      *
-     * dp ij 等于 max dp i-1 j-3
-     *
-     * dp ij 等于 min dp i-1j-3 就到j-3最大值你 dp i j-1
-     * @param bloomDay
-     * @param m
-     * @param k
+     * @param bloomDay 可以收集的提起
+     * @param m        总计数量
+     * @param k        单次需要数量
      * @return
      */
     public int minDays(int[] bloomDay, int m, int k) {
-        int[][] dp = new int[bloomDay.length][m+1];
-        dp[2][1] = max(bloomDay[0], bloomDay[1], bloomDay[2]);
-
-        for (int j = 1; j <= m; j++) {
-            for (int i = 2; i < bloomDay.length; i++) {
-                dp[i][j] = min(dp[i][j], dp[i-1][j]);
-                if (i >= 3 && j > 0) {
-                    int day = dp[i-3][j-1] + max();
-                    dp[i][j] = min(dp[i][j], day);
+        // 1482 找到 bloomDay 最大值 right 就是最大值 left = 1 每次选择mid 判断够不够 够了的话 判断往前是不是不够了
+        int right = bloomDay[0];
+        for (int i = 0; i < bloomDay.length; i++) {
+            right = Math.max(right, bloomDay[i]);
+        }
+        int left = 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            boolean canCollectFlag = canCollectFlag(bloomDay, mid, m, k);
+            if (canCollectFlag) {
+                boolean b = canCollectFlag(bloomDay, mid - 1, m, k);
+                if (!b) {
+                    return mid;
                 }
+                right = mid - 1;
+            } else {
+                left = mid + 1;
             }
         }
-        // get min
-        return -1;
+        return left;
     }
 
-    /**
-     * 求最大值
-     * @param element
-     * @return
-     */
-    private int max(int... element) {
-        int max = element[0];
-        for (int i = 1; i < element.length; i++) {
-            max = Math.max(max, element[i]);
+    private boolean canCollectFlag(int[] bloomDay, int day, int m, int k) {
+        int currentLen = 0;
+        int collectNum = 0;
+        for (int i = 0; i < bloomDay.length; i++) {
+            if (bloomDay[i] <= day) {
+                currentLen++;
+            } else {
+                // 结算之前
+                if (currentLen > 0) {
+                    collectNum += (currentLen / k);
+                }
+                currentLen = 0;
+            }
         }
-        return max;
-    }
-
-    /**
-     * 求最小值
-     * @param element
-     * @return
-     */
-    private int min(int... element) {
-        int min = element[0];
-        for (int i = 1; i < element.length; i++) {
-            min = Math.min(min, element[i]);
+        // last time
+        if (currentLen > 0) {
+            collectNum += (currentLen / k);
         }
-        return min;
+        return collectNum >= m;
     }
 
     public static void main(String[] args) {
