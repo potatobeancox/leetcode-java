@@ -80,9 +80,10 @@ public class Solution {
             right = Math.max(right, bloomDay[i]);
         }
         int left = 1;
+        boolean canCollectFlag = false;
         while (left <= right) {
             int mid = (left + right) / 2;
-            boolean canCollectFlag = canCollectFlag(bloomDay, mid, m, k);
+            canCollectFlag = canCollectFlag(bloomDay, mid, m, k);
             if (canCollectFlag) {
                 boolean b = canCollectFlag(bloomDay, mid - 1, m, k);
                 if (!b) {
@@ -92,6 +93,9 @@ public class Solution {
             } else {
                 left = mid + 1;
             }
+        }
+        if (!canCollectFlag) {
+            return -1;
         }
         return left;
     }
@@ -118,16 +122,20 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-//        Solution solution = new Solution();
-//        int n = 12, k = 3;
-//        int i = solution.kthFactor(n, k);
-//        System.out.println(i);
-//        Assert.assertEquals(3, i);
-//
-//        n = 7;
-//        k = 2;
-//        i = solution.kthFactor(n, k);
-//        System.out.println(i);
-//        Assert.assertEquals(7, i);
+        Solution solution = new Solution();
+        int[] bloomDay = new int[]{1,10,3,10,2};
+        int m = 3;
+        int k = 1;
+        int i = solution.minDays(bloomDay, m, k);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        bloomDay = new int[]{1,10,3,10,2};
+        m = 3;
+        k = 2;
+        i = solution.minDays(bloomDay, m, k);
+        System.out.println(i);
+        Assert.assertEquals(-1, i);
     }
 }
