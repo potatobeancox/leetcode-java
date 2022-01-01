@@ -42,27 +42,42 @@ import org.junit.Assert;
 public class Solution {
 
     private int mod = 1337;
-    // 372
+
+    /**
+     * (a * b) % p = (a % p * b % p) % p （3）
+     * @param a
+     * @param b
+     * @return
+     */
     public int superPow(int a, int[] b) {
-        int current = 1;
+        long current = 1;
         for (int i = 0; i < b.length; i++) {
             if (i > 0) {
                 current = pow(current, 10);
             }
+            // (a * b) % p = (a % p * b % p) % p （3）
             current *= pow(a, b[i]);
         }
-        return current % mod;
+        return (int)(current % mod);
     }
 
-    public int pow(int a, int b) {
+    /**
+     * 计算 a^b 对1337 取余数
+     * a ^ b % p = ((a % p)^b) % p
+     * @param a
+     * @param b
+     * @return
+     */
+    public int pow(long a, long b) {
         if (b == 0) {
             return 1;
         }
-        int tmp = a % mod;
+        long tmp = a % mod;
         for (int i = 0; i < b - 1; i++) {
             tmp *= (a % mod);
+            tmp %= mod;
         }
-        return tmp;
+        return (int)(tmp);
     }
 
 
