@@ -78,7 +78,7 @@ public class AuthenticationManager {
         int createTime = tokenIdTimeMap.get(tokenId);
         int expireTime = createTime + timeToLive;
 
-        if (expireTime >= currentTime) {
+        if (expireTime > currentTime) {
             tokenIdTimeMap.put(tokenId, currentTime);
         } else {
 //            tokenIdTimeMap.remove(tokenId);
@@ -94,10 +94,27 @@ public class AuthenticationManager {
             if (expireTime > currentTime) {
                 count++;
             }
-//            else {
-//                tokenIdTimeMap.remove(tokenId);
-//            }
         }
         return count;
+    }
+
+
+    public static void main(String[] args) {
+        AuthenticationManager authenticationManager = new AuthenticationManager(104); // null
+        authenticationManager.renew("ox",50); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(73)); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(87)); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(93)); // null
+        authenticationManager.generate("yyeu",104); // null
+        authenticationManager.generate("r",131); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(167)); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(172)); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(191)); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(206)); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(232)); // null
+        authenticationManager.renew("r",235); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(239)); // null
+        System.out.println(authenticationManager.countUnexpiredTokens(257)); // null
+
     }
 }
