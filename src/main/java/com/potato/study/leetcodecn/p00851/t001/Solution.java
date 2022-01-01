@@ -56,37 +56,52 @@ public class Solution {
 
     // 851
     public int[] loudAndRich(int[][] richer, int[] quiet) {
-        // 用一个 map 记录 key 当前用户 value 比这个用户有钱的list
-        Map<Integer, List<Integer>> richerMap = new HashMap<>();
-        // 遍历 richer 生成 map
-        for (int[] rich : richer) {
-            int poor = rich[1];
-            int moreRich = rich[0];
-            List<Integer> list = richerMap.getOrDefault(poor, new ArrayList<>());
-            list.add(moreRich);
+        // dfs 用一个 quietest 数组记录最安静的那个人 初始 -1 代表没有访问过
+        int n = quiet.length;
+        int[] quietest = new int[n];
+        Arrays.fill(quietest, -1);
+        // 构造邻接矩阵
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        for (int i = 0; i < richer.length; i++) {
+            int personIndex = richer[i][1];
+            int rich = richer[i][0];
+            List<Integer> list = graph.get(personIndex);
+            if (!list.contains(rich) && rich != personIndex) {
+                list.add(rich);
+            }
+        }
+        // 如果当前已经访问过 直接返回 否则 设置当前为自己，然后 dfs 遍历邻接点 最后确定当前点
+        for (int i = 0; i < n; i++) {
+            dfs(i, graph, quiet, quietest);
+        }
+        return quietest;
+    }
 
-            richerMap.put(poor, list);
+
+
+    private void dfs(int currentIndex, List<List<Integer>> graph, int[] quiet, int[] quietest) {
+        // 当前 currentIndex 已经确定了 最安静的人 直接返回
+        if (quietest[currentIndex] > 0) {
+            return;
         }
-        // 遍历 map 对应 list 找到最安静的那个 通过 生成结果 遍历 map 查找
-        int length = quiet.length;
-        int[] result = new int[length];
-        for (int i = 0; i < length; i++) {
-            List<Integer> list = richerMap.get(i);
-            // 最富有
-            if (null == list || list.size() == 0) {
-                result[i] = i;
-                continue;
-            }
-            // 找到最安静的
-            int quietIndex = list.get(0);
-            for (int j = 1; j < list.size(); j++) {
-                if (quiet[quietIndex] < list.get(j)) {
-                    quietIndex = j;
-                }
-            }
-            result[i] = quietIndex;
+        // 自己最安静
+        quietest[currentIndex] = currentIndex;
+        // 找到邻接的人 问问
+        List<Integer> richerIndex = graph.get(currentIndex);
+        if (null == richerIndex) {
+            return;
         }
-        return result;
+        for (int richer : richerIndex) {
+            // 比较一下安静值
+            dfs(richer, graph, quiet, quietest);
+            // 安静值越大 越安静
+            if (quiet[quietest[richer]] < quiet[quietest[currentIndex]]) {
+                quietest[currentIndex] = quietest[richer];
+            }
+        }
     }
 
     public static void main(String[] args) {
