@@ -54,51 +54,49 @@ public class Solution {
     // 417
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
         // dp 从 第一个开始 往右下
-        boolean[][] visit1 = new boolean[heights.length][heights[0].length];
-        boolean[][] result1 = new boolean[heights.length][heights[0].length];
-
-        boolean[][] visit2 = new boolean[heights.length][heights[0].length];
-        boolean[][] result2 = new boolean[heights.length][heights[0].length];
-        // 第一行和最后一行
-        for (int i = 0; i < heights[0].length; i++) {
-            visit1[0][i] = true;
-            result1[0][i] = true;
-
-            visit2[heights.length-1][i] = true;
-            result2[heights.length-1][i] = true;
-        }
-        // 第一列和最后一列
-        for (int i = 0; i < heights.length; i++) {
-            visit1[i][0] = true;
-            result1[i][0] = true;
-
-            visit2[i][heights[0].length-1] = true;
-            result2[i][heights[0].length-1] = true;
-        }
-
-        for (int i = 0; i < heights.length; i++) {
-            for (int j = 0; j < heights[0].length; j++) {
-                dfs(heights, visit1, result1, i, j);
-                dfs(heights, visit2, result2, heights.length - 1 - i, heights[0].length - 1 - j);
-            }
-        }
-
-
-
-        List<List<Integer>> resultList = new ArrayList<>();
-        for (int i = 0; i < heights.length; i++) {
-            for (int j = 0; j < heights[0].length; j++) {
-                if (result1[i][j] && result2[i][j]) {
-
-                    List<Integer> list = new ArrayList<>();
-                    list.add(i);
-                    list.add(j);
-
-                    resultList.add(list);
-                }
-            }
-        }
-        return resultList;
+//        boolean[][] canReach1 = new boolean[heights.length][heights[0].length];
+//        boolean[][] canReach2 = new boolean[heights.length][heights[0].length];
+//        // 第一行和最后一行
+//        for (int i = 0; i < heights[0].length; i++) {
+//            visit1[0][i] = true;
+//            result1[0][i] = true;
+//
+//            visit2[heights.length-1][i] = true;
+//            result2[heights.length-1][i] = true;
+//        }
+//        // 第一列和最后一列
+//        for (int i = 0; i < heights.length; i++) {
+//            visit1[i][0] = true;
+//            result1[i][0] = true;
+//
+//            visit2[i][heights[0].length-1] = true;
+//            result2[i][heights[0].length-1] = true;
+//        }
+//
+//        for (int i = 0; i < heights.length; i++) {
+//            for (int j = 0; j < heights[0].length; j++) {
+//                dfs(heights, visit1, result1, i, j);
+//                dfs(heights, visit2, result2, heights.length - 1 - i, heights[0].length - 1 - j);
+//            }
+//        }
+//
+//
+//
+//        List<List<Integer>> resultList = new ArrayList<>();
+//        for (int i = 0; i < heights.length; i++) {
+//            for (int j = 0; j < heights[0].length; j++) {
+//                if (result1[i][j] && result2[i][j]) {
+//
+//                    List<Integer> list = new ArrayList<>();
+//                    list.add(i);
+//                    list.add(j);
+//
+//                    resultList.add(list);
+//                }
+//            }
+//        }
+//        return resultList;
+        return null;
     }
 
 
