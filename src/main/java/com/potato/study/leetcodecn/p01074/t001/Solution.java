@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p01074.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,15 +50,59 @@ import java.util.Map;
 public class Solution {
 
     public int numSubmatrixSumTarget(int[][] matrix, int target) {
-        // 枚举 00 ij 每个矩阵 sum 枚举过程中 使用 map val count 计数
-        Map<Integer, Integer> valueCountMap = new HashMap<>();
-        // sum 计数之后 计算差值 sum - k == target， sum - target = k
+        // 枚举开始行 0-len
+        int totalCount = 0;
         for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-
+            // 从开始行往下枚举结束行 i -len 对于当前范围求每列的值 （枚举列，求前缀和）对于每个范围 求 范围内有多少个 子矩阵
+            int[] preLineSum = new int[matrix[0].length];
+            for (int j = i; j < matrix.length; j++) {
+                // 求当前 值
+                for (int k = 0; k < matrix[0].length; k++) {
+                    preLineSum[k] = matrix[j][k] + preLineSum[k];
+                }
+                totalCount += getSubArrayCount(preLineSum, target);
             }
         }
+        return totalCount;
+    }
 
-        return -1;
+
+    /**
+     *
+     * @param nums 前缀和
+     * @param k 目标子数组的和
+     * @return
+     */
+    private int getSubArrayCount(int[] nums, int k) {
+        // key是num 元素 的值，value是这个值出现的次数
+        Map<Integer, Integer> valueCountMap = new HashMap<>();
+        valueCountMap.put(0, 1);
+        int count = 0;
+        int preSum = 0;
+        for (int num : nums) {
+            // 计算当期sum
+            int currentSum = preSum + num;
+            // 计算之前需要找的key
+            int targetKey = currentSum - k;
+            Integer targetCount = valueCountMap.getOrDefault(targetKey, 0);
+            count += targetCount;
+            // 当前放入map
+            valueCountMap.put(currentSum, valueCountMap.getOrDefault(currentSum, 0) + 1);
+
+            preSum = currentSum;
+        }
+
+        return count;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[0,1,0],[1,1,1],[0,1,0]]";
+        int[][] matrix = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int target = 0;
+        int i = solution.numSubmatrixSumTarget(matrix, target);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 }
