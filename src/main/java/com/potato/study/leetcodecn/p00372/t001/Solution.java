@@ -41,7 +41,7 @@ import org.junit.Assert;
  */
 public class Solution {
 
-    private int mod = 1_000_000_007;
+    private int mod = 1337;
     // 372
     public int superPow(int a, int[] b) {
         int current = 1;
@@ -51,15 +51,42 @@ public class Solution {
             }
             current *= pow(a, b[i]);
         }
-        return current;
+        return current % mod;
     }
 
     public int pow(int a, int b) {
+        if (b == 0) {
+            return 1;
+        }
         int tmp = a % mod;
-        for (int i = 0; i < b; i++) {
+        for (int i = 0; i < b - 1; i++) {
             tmp *= (a % mod);
         }
         return tmp;
     }
 
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int a = 2;
+        int[] b = new int[] {
+                3
+        };
+        int i = solution.superPow(a, b);
+        System.out.println(i);
+        Assert.assertEquals(8, i);
+
+
+        a = 2;
+        b = new int[] {1, 0};
+        i = solution.superPow(a, b);
+        System.out.println(i);
+        Assert.assertEquals(1024, i);
+
+        a = 2147483647;
+        b = new int[] {2, 0, 0};
+        i = solution.superPow(a, b);
+        System.out.println(i);
+        Assert.assertEquals(1198, i);
+    }
 }

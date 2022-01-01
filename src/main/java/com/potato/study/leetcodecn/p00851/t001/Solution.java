@@ -1,9 +1,9 @@
 package com.potato.study.leetcodecn.p00851.t001;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.*;
 
 /**
  * 851. 喧闹和富有
@@ -87,5 +87,19 @@ public class Solution {
             result[i] = quietIndex;
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[1,0],[2,1],[3,1],[3,7],[4,3],[5,3],[6,3]]";
+        int[] quiet = new int[] {
+                3,2,5,4,6,1,7,0
+        };
+        int[][] richer = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int[] ints = solution.loudAndRich(richer, quiet);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+                5,5,2,5,4,5,6,7
+        }, ints);
     }
 }
