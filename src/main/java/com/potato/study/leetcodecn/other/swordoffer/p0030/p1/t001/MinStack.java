@@ -75,4 +75,28 @@ public class MinStack {
         }
         return minStack.peekLast();
     }
+
+
+    //["MinStack","push","push","push","push","pop","min","pop","min","pop","min"]
+    //[[],        [512],[-1024],[-1024],[512],  [],[],[],[],[],[]]
+
+    public static void main(String[] args) {
+        MinStack minStack = new MinStack();
+        minStack.push(512);
+        minStack.push(-1024);
+        minStack.push(-1024);
+        minStack.push(512);
+        // [null,null,null,null,null,null,-1024,null,-1024,null,512]
+        minStack.pop();
+        System.out.println(minStack.min()); // -1024
+
+        minStack.pop();
+        System.out.println(minStack.min()); // -1024
+
+        minStack.pop();
+        System.out.println(minStack.min()); // 512
+
+
+
+    }
 }
