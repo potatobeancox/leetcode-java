@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00904.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,10 +61,44 @@ public class Solution {
         // 滑动窗口 使用一个 map 记录 窗口内部的 元素种类数 和最后一次出现的位置
         Map<Integer, Integer> lastIndexMap = new HashMap<>();
         // 遍历 fruits 如果 map 个数 还没到3种 更新map 最后出现的元素个数
+        int windowSize = 0;
+        int maxSize = 0;
+        for (int i = 0; i < fruits.length; i++) {
+            lastIndexMap.put(fruits[i], i);
+            windowSize++;
+            // 一旦超过了 拿到开始位置 往后的一个位置 修改窗口大小删除
+            if (lastIndexMap.size() == 3) {
+                // 找到最先结束的index
+                int lastAppearIndex = -1;
+                for (int lastIndex : lastIndexMap.values()) {
+                    if (lastAppearIndex == -1) {
+                        lastAppearIndex = lastIndex;
+                        continue;
+                    }
+                    if (lastIndex < lastAppearIndex) {
+                        lastAppearIndex = lastIndex;
+                    }
+                }
 
-        // 一旦超过了 拿到开始位置 往后的一个位置 修改窗口大小删除
+                // pre 最后一次出现的index  删除最早出现完了的
+                windowSize = i - lastAppearIndex;
+                lastIndexMap.remove(fruits[lastAppearIndex]);
+            }
+            // 计算最大的窗口长度
+            maxSize = Math.max(maxSize, windowSize);
+        }
+        return maxSize;
+    }
 
-        return -1;
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] fruits = new int[] {
+                1,0,1,4,1,4,1,2,3
+        };
+        int i = solution.totalFruit(fruits);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
     }
 
 }
