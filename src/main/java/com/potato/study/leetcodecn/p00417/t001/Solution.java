@@ -54,49 +54,42 @@ public class Solution {
     // 417
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
         // dp 从 第一个开始 往右下
-//        boolean[][] canReach1 = new boolean[heights.length][heights[0].length];
-//        boolean[][] canReach2 = new boolean[heights.length][heights[0].length];
-//        // 第一行和最后一行
-//        for (int i = 0; i < heights[0].length; i++) {
-//            visit1[0][i] = true;
-//            result1[0][i] = true;
-//
-//            visit2[heights.length-1][i] = true;
-//            result2[heights.length-1][i] = true;
-//        }
-//        // 第一列和最后一列
-//        for (int i = 0; i < heights.length; i++) {
-//            visit1[i][0] = true;
-//            result1[i][0] = true;
-//
-//            visit2[i][heights[0].length-1] = true;
-//            result2[i][heights[0].length-1] = true;
-//        }
-//
-//        for (int i = 0; i < heights.length; i++) {
-//            for (int j = 0; j < heights[0].length; j++) {
-//                dfs(heights, visit1, result1, i, j);
-//                dfs(heights, visit2, result2, heights.length - 1 - i, heights[0].length - 1 - j);
-//            }
-//        }
-//
-//
-//
-//        List<List<Integer>> resultList = new ArrayList<>();
-//        for (int i = 0; i < heights.length; i++) {
-//            for (int j = 0; j < heights[0].length; j++) {
-//                if (result1[i][j] && result2[i][j]) {
-//
-//                    List<Integer> list = new ArrayList<>();
-//                    list.add(i);
-//                    list.add(j);
-//
-//                    resultList.add(list);
-//                }
-//            }
-//        }
-//        return resultList;
-        return null;
+        int[][] canReach1 = new int[heights.length][heights[0].length];
+        int[][] canReach2 = new int[heights.length][heights[0].length];
+        // 第一行和最后一行
+        for (int i = 0; i < heights[0].length; i++) {
+            canReach1[0][i] = 1;
+            canReach2[heights.length-1][i] = 1;
+        }
+        // 第一列和最后一列
+        for (int i = 0; i < heights.length; i++) {
+            canReach1[i][0] = 1;
+            canReach2[i][heights[0].length-1] = 1;
+        }
+
+        for (int i = 0; i < heights.length; i++) {
+            for (int j = 0; j < heights[0].length; j++) {
+                dfs(heights, canReach1, i, j);
+                dfs(heights, canReach2, i, j);
+            }
+        }
+
+
+
+        List<List<Integer>> resultList = new ArrayList<>();
+        for (int i = 0; i < heights.length; i++) {
+            for (int j = 0; j < heights[0].length; j++) {
+                if (canReach1[i][j] == 1 && canReach2[i][j] == 1) {
+
+                    List<Integer> list = new ArrayList<>();
+                    list.add(i);
+                    list.add(j);
+
+                    resultList.add(list);
+                }
+            }
+        }
+        return resultList;
     }
 
 
@@ -110,14 +103,13 @@ public class Solution {
     /**
      *
      * @param heights 结果
-     * @param visit
-     * @param result
+     * @param canReach 1 可以到达 0还没开始遍历 2 遍历过程中
      */
-    private void dfs(int[][] heights, boolean[][] visit, boolean[][] result, int i, int j) {
-        if (visit[i][j]) {
+    private void dfs(int[][] heights, int[][] canReach, int i, int j) {
+        if (canReach[i][j] > 0) {
             return;
         }
-        visit[i][j] = true;
+        canReach[i][j] = 2;
         // 四个方向比较结果
         for (int k = 0; k < direction.length; k++) {
             int di = i + direction[k][0];
@@ -131,9 +123,9 @@ public class Solution {
             if (heights[i][j] < heights[di][dj]) {
                 continue;
             }
-            dfs(heights, visit, result, di, dj);
-            result[i][j] |= result[di][dj];
-            if (result[i][j]) {
+            dfs(heights, canReach, di, dj);
+            if (canReach[di][dj] == 1) {
+                canReach[i][j] = 1;
                 break;
             }
         }
