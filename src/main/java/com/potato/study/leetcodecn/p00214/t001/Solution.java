@@ -39,7 +39,12 @@ public class Solution {
      * @return
      */
     public String shortestPalindrome(String s) {
+        // 添加前缀，将其变成 回文串，找到最短的回文串
 
+
+        // 最长回文串 是将 s.sub 1 翻转拼在前边
+
+        
         return null;
     }
 
