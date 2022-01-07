@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
 
 /**
  * 785. 判断二分图
@@ -61,15 +63,66 @@ public class Solution {
             if (status[i] != 0) {
                 continue;
             }
-            status[i] = 1;
-            int[] target = graph[i];
-            for (int j = 0; j < target.length; j++) {
-                if (status[j] == 1) {
-                    return false;
-                }
-                status[j] = 2;
+            boolean res = dfs(graph, i, status, 1);
+            if (!res) {
+                return false;
             }
         }
         return true;
+    }
+
+
+    /**
+     * 返回 false 为不是二分图
+     * @param graph
+     * @param index
+     * @param status
+     * @param currentStatus
+     * @return
+     */
+    private boolean dfs(int[][] graph, int index, int[] status, int currentStatus) {
+        if (status[index] > 0) {
+            // 已经染过色 本次不再遍历
+            return status[index] == currentStatus;
+        }
+        status[index] = currentStatus;
+        int[] target = graph[index];
+        for (int j = 0; j < target.length; j++) {
+            if (status[j] > 0) {
+                if (status[j] != currentStatus) {
+                    return false;
+                } else {
+                    //状态相等
+                    continue;
+                }
+            }
+            boolean result;
+            if (currentStatus == 1) {
+                result = dfs(graph, j, status, 2);
+            } else {
+                result = dfs(graph, j, status, 1);
+            }
+
+            if (!result) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[1,2,3],[0,2],[0,1,3],[0,2]]";
+        int[][] graph = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        boolean bipartite = solution.isBipartite(graph);
+        System.out.println(bipartite);
+        Assert.assertEquals(false, bipartite);
+
+
+        input = "[[1,3],[0,2],[1,3],[0,2]]";
+        graph = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        bipartite = solution.isBipartite(graph);
+        System.out.println(bipartite);
+        Assert.assertEquals(true, bipartite);
     }
 }
