@@ -60,8 +60,12 @@ public class Solution {
 
 
     public int getMoneyAmount(int n) {
-        // 假设答案是任意一个数据 那么 猜到这个数据 需要花费的最大值
+        // dp i i
 
+
+        // 遍历n 假设n 是这个数字，猜到它需要的最小花费
+
+        // 上述 最小话费中的最大花费 是返回值结果
         return -1;
     }
 }
