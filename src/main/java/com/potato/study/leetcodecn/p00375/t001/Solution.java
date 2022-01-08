@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.p00375.t001.t001;
+package com.potato.study.leetcodecn.p00375.t001;
 
 /**
  * 375. 猜数字大小 II
