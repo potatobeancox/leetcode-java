@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p00375.t001;
 
+
+import org.junit.Assert;
+
 /**
  * 375. 猜数字大小 II
  *
@@ -59,14 +62,36 @@ package com.potato.study.leetcodecn.p00375.t001;
 public class Solution {
 
 
+    /**
+     * https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/solution/cai-shu-zi-da-xiao-ii-by-leetcode-soluti-a7vg/
+     * @param n
+     * @return
+     */
     public int getMoneyAmount(int n) {
-        // dp i i
+        // dp ij 猜测从 i到j 最小需要的花费 返回 dp 1-n
+        int[][] dp = new int[n+2][n+2];
+        // dp ij = min {dp ij, x + max {dp ix-1, dp x+1 j}}
+        for (int i = n; i >= 1; i--) {
+            // 因为 总要用到后边 所以开始位置从后往前
+            for (int j = i + 1; j <= n; j++) {
+                // 枚举k
+                dp[i][j] = j + dp[i][j-1];
+                for (int k = i; k < j; k++) {
+                    dp[i][j] = Math.min(dp[i][j], Math.max(dp[i][k-1], dp[k+1][j]) + k);
+                }
+            }
+        }
 
+        return dp[1][n];
+    }
 
-        // 遍历n 假设n 是这个数字，猜到它需要的最小花费
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 10;
+        int moneyAmount = solution.getMoneyAmount(n);
+        System.out.println(moneyAmount);
+        Assert.assertEquals(16, moneyAmount);
 
-        // 上述 最小话费中的最大花费 是返回值结果
-        return -1;
     }
 }
 
