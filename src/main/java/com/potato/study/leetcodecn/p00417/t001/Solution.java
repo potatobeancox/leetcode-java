@@ -54,32 +54,24 @@ public class Solution {
     // 417
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
         // dp 从 第一个开始 往右下
-        int[][] canReach1 = new int[heights.length][heights[0].length];
-        int[][] canReach2 = new int[heights.length][heights[0].length];
+        boolean[][] canReach1 = new boolean[heights.length][heights[0].length];
+        boolean[][] canReach2 = new boolean[heights.length][heights[0].length];
         // 第一行和最后一行
         for (int i = 0; i < heights[0].length; i++) {
-            canReach1[0][i] = 1;
-            canReach2[heights.length-1][i] = 1;
+            dfs(heights, canReach1, 0, i);
+            dfs(heights, canReach2, heights.length-1, i);
         }
         // 第一列和最后一列
         for (int i = 0; i < heights.length; i++) {
-            canReach1[i][0] = 1;
-            canReach2[i][heights[0].length-1] = 1;
+            dfs(heights, canReach1, i, 0);
+            dfs(heights, canReach2, i, heights[0].length-1);
         }
-
-        for (int i = 0; i < heights.length; i++) {
-            for (int j = 0; j < heights[0].length; j++) {
-                dfs(heights, canReach1, i, j);
-                dfs(heights, canReach2, i, j);
-            }
-        }
-
 
 
         List<List<Integer>> resultList = new ArrayList<>();
         for (int i = 0; i < heights.length; i++) {
             for (int j = 0; j < heights[0].length; j++) {
-                if (canReach1[i][j] == 1 && canReach2[i][j] == 1) {
+                if (canReach1[i][j] && canReach2[i][j]) {
 
                     List<Integer> list = new ArrayList<>();
                     list.add(i);
@@ -105,11 +97,9 @@ public class Solution {
      * @param heights 结果
      * @param canReach 1 可以到达 0还没开始遍历 2 遍历过程中
      */
-    private void dfs(int[][] heights, int[][] canReach, int i, int j) {
-        if (canReach[i][j] > 0) {
-            return;
-        }
-        canReach[i][j] = 2;
+    private void dfs(int[][] heights, boolean[][] canReach, int i, int j) {
+        // 直接设置状态 ，说明可以到达 往四个方向找 大于等于的位置 且没有 访问过的
+        canReach[i][j] = true;
         // 四个方向比较结果
         for (int k = 0; k < direction.length; k++) {
             int di = i + direction[k][0];
@@ -119,15 +109,18 @@ public class Solution {
                     || dj < 0 || dj >= heights[0].length) {
                 continue;
             }
+
             // 水不能往高处流
-            if (heights[i][j] < heights[di][dj]) {
+            if (heights[i][j] > heights[di][dj]) {
                 continue;
             }
-            dfs(heights, canReach, di, dj);
-            if (canReach[di][dj] == 1) {
-                canReach[i][j] = 1;
-                break;
+
+            // 已经请求过 ，不再请求
+            if (canReach[di][dj]) {
+                continue;
             }
+
+            dfs(heights, canReach, di, dj);
         }
 
     }
@@ -135,10 +128,11 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        String input = "[[1,2,3],[8,9,4],[7,6,5]]";
+        String input = "[[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]";
         int[][] arr = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
         List<List<Integer>> lists = solution.pacificAtlantic(arr);
         System.out.println(lists);
+        // [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
 
 
         input = "[[11,3,2,4,14,6,13,18,1,4,12,2,4,1,16],[5,11,18,0,15,14,6,17,2,17,19,15,12,3,14],[10,2,5,13,11,11,13,19,11,17,14,18,14,3,11],[14,2,10,7,5,11,6,11,15,11,6,11,12,3,11],[13,1,16,15,8,2,16,10,9,9,10,14,7,15,13],[17,12,4,17,16,5,0,4,10,15,15,15,14,5,18],[9,13,18,4,14,6,7,8,5,5,6,16,13,7,2],[19,9,16,19,16,6,1,11,7,2,12,10,9,18,19],[19,5,19,10,7,18,6,10,7,12,14,8,4,11,16],[13,3,18,9,16,12,1,0,1,14,2,6,1,16,6],[14,1,12,16,7,15,9,19,14,4,16,6,11,15,7],[6,15,19,13,3,2,13,7,19,11,13,16,0,16,16],[1,5,9,7,12,9,2,18,6,12,1,8,1,10,19],[10,11,10,11,3,5,12,0,0,8,15,7,5,13,19],[8,1,17,18,3,6,8,15,0,9,8,8,12,5,18],[8,3,6,12,18,15,10,10,12,19,16,7,17,17,1],[12,13,6,4,12,18,18,9,4,9,13,11,5,3,14],[8,4,12,11,2,2,10,3,11,17,14,2,17,4,7],[8,0,14,0,13,17,11,0,16,13,15,17,4,8,3],[18,15,8,11,18,3,10,18,3,3,15,9,11,15,15]]";
