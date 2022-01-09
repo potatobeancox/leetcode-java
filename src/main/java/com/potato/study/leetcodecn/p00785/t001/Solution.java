@@ -59,16 +59,14 @@ public class Solution {
         int n = graph.length;
         int[] status = new int[n];
         // 初始化邻接矩阵 从0-n-1 计算状态 只遍历 没有遍历过的
+        boolean res = true;
         for (int i = 0; i < n; i++) {
             if (status[i] != 0) {
                 continue;
             }
-            boolean res = dfs(graph, i, status, 1);
-            if (!res) {
-                return false;
-            }
+            res &= dfs(graph, i, status, 1);
         }
-        return true;
+        return res;
     }
 
 
@@ -87,27 +85,24 @@ public class Solution {
         }
         status[index] = currentStatus;
         int[] target = graph[index];
+        boolean result = true;
         for (int j = 0; j < target.length; j++) {
-            if (status[j] > 0) {
-                if (status[j] != currentStatus) {
+            int targetIndex = target[j];
+            if (status[targetIndex] > 0) {
+                if (status[targetIndex] == currentStatus) {
                     return false;
                 } else {
                     //状态相等
                     continue;
                 }
             }
-            boolean result;
             if (currentStatus == 1) {
-                result = dfs(graph, j, status, 2);
+                result &= dfs(graph, targetIndex, status, 2);
             } else {
-                result = dfs(graph, j, status, 1);
-            }
-
-            if (!result) {
-                return false;
+                result &= dfs(graph, targetIndex, status, 1);
             }
         }
-        return true;
+        return result;
     }
 
     public static void main(String[] args) {
@@ -124,5 +119,12 @@ public class Solution {
         bipartite = solution.isBipartite(graph);
         System.out.println(bipartite);
         Assert.assertEquals(true, bipartite);
+
+
+        input = "[[2,3,5,6,7,8,9],[2,3,4,5,6,7,8,9],[0,1,3,4,5,6,7,8,9],[0,1,2,4,5,6,7,8,9],[1,2,3,6,9],[0,1,2,3,7,8,9],[0,1,2,3,4,7,8,9],[0,1,2,3,5,6,8,9],[0,1,2,3,5,6,7],[0,1,2,3,4,5,6,7]]";
+        graph = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        bipartite = solution.isBipartite(graph);
+        System.out.println(bipartite);
+        Assert.assertEquals(false, bipartite);
     }
 }
