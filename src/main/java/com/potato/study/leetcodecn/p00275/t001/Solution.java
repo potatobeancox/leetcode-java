@@ -43,20 +43,65 @@ public class Solution {
 
     // 275 其实可以顺序往后找 第一个 citai < i 直接返回 i-1
     public int hIndex(int[] citations) {
-        int count = 1;
-        for (int i = citations.length - 1; i >= 0; i--) {
-            if (citations[i] < count) {
-                return count - 1;
+        // citations 本身就升序
+        int left = 0;
+        int right = citations.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            // 被引用次数
+            int citationTimes = citations[mid];
+            // 之后有多少篇论文 include
+            int pageCount = citations.length - mid;
+            // 引用次数 大于 等于 剩余论文次数 说明 往左边找
+            if (citationTimes >= pageCount) {
+                right = mid - 1;
+            } else {
+                // 还可以往前
+                left = mid + 1;
             }
         }
-        return 0;
+        return citations.length - left;
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-//        String nn = solution.numberToWords(12);
-//        System.out.println(nn);
-//        Assert.assertEquals(3, nn);
+        int[] arr = new int[] {
+                0,1,3,5,6
+        };
+        int index = solution.hIndex(arr);
+        System.out.println(index);
+        Assert.assertEquals(3, index);
+
+
+        arr = new int[] {
+                1,2,100
+        };
+        index = solution.hIndex(arr);
+        System.out.println(index);
+        Assert.assertEquals(2, index);
+
+        arr = new int[] {
+                100
+        };
+        index = solution.hIndex(arr);
+        System.out.println(index);
+        Assert.assertEquals(1, index);
+
+
+        arr = new int[] {
+                0
+        };
+        index = solution.hIndex(arr);
+        System.out.println(index);
+        Assert.assertEquals(0, index);
+
+
+        arr = new int[] {
+                0,0,4,4
+        };
+        index = solution.hIndex(arr);
+        System.out.println(index);
+        Assert.assertEquals(2, index);
 
     }
 }
