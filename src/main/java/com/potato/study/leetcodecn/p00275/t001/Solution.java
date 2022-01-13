@@ -46,6 +46,7 @@ public class Solution {
         // citations 本身就升序
         int left = 0;
         int right = citations.length - 1;
+        int ans = 0;
         while (left <= right) {
             int mid = (left + right) / 2;
             // 被引用次数
@@ -55,12 +56,13 @@ public class Solution {
             // 引用次数 大于 等于 剩余论文次数 说明 往左边找
             if (citationTimes >= pageCount) {
                 right = mid - 1;
+                ans = citations.length - mid;
             } else {
                 // 还可以往前
                 left = mid + 1;
             }
         }
-        return citations.length - left;
+        return ans;
     }
 
     public static void main(String[] args) {
