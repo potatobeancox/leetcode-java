@@ -100,7 +100,7 @@ public class Solution {
                     return false;
                 }
                 // 如果 当前 节点 index i 之前的个数 小于 2 * i 返回 false
-                if (2 * i > nextNum && nextNum > 0) {
+                if (2 * i > nextNum && nextNum > 0 && poll.left != null) {
                     return false;
                 }
                 // 左右孩子
@@ -124,8 +124,10 @@ public class Solution {
         node.left = new TreeNode(2);
         node.right = new TreeNode(3);
 
+        node.left.right = new TreeNode(4);
+
         boolean completeTree = solution.isCompleteTree(node);
         System.out.println(completeTree);
-        Assert.assertEquals(true, completeTree);
+        Assert.assertEquals(false, completeTree);
     }
 }
