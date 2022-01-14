@@ -100,13 +100,16 @@ public class Solution {
                     return false;
                 }
                 // 如果 当前 节点 index i 之前的个数 小于 2 * i 返回 false
-                if (2 * i > nextNum && nextNum > 0 && poll.left != null) {
+                if (poll.left != null && 2 * i > nextNum) {
                     return false;
                 }
                 // 左右孩子
                 if (poll.left != null) {
                     queue.add(poll.left);
                     nextNum++;
+                }
+                if (poll.right != null && 2 * i + 1 > nextNum) {
+                    return false;
                 }
                 if (poll.right != null) {
                     queue.add(poll.right);
@@ -129,5 +132,29 @@ public class Solution {
         boolean completeTree = solution.isCompleteTree(node);
         System.out.println(completeTree);
         Assert.assertEquals(false, completeTree);
+
+
+        // [1,2,3,null,null,7,8]
+        node = new TreeNode(1);
+        node.left = new TreeNode(2);
+        node.right = new TreeNode(3);
+        node.right.left = new TreeNode(7);
+        node.right.right = new TreeNode(8);
+
+
+        completeTree = solution.isCompleteTree(node);
+        System.out.println(completeTree);
+        Assert.assertEquals(false, completeTree);
+
+
+        // [1,2,3,null,null,7,8]
+        node = new TreeNode(1);
+        node.left = new TreeNode(2);
+        node.right = new TreeNode(3);
+
+
+        completeTree = solution.isCompleteTree(node);
+        System.out.println(completeTree);
+        Assert.assertEquals(true, completeTree);
     }
 }
