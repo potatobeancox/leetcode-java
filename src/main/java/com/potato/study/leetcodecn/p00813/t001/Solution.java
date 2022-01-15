@@ -1,5 +1,9 @@
 package com.potato.study.leetcodecn.p00813.t001;
 
+import org.junit.Assert;
+
+import java.lang.ref.SoftReference;
+
 /**
  * 813. 最大平均值和的分组
  *
@@ -31,7 +35,56 @@ package com.potato.study.leetcodecn.p00813.t001;
 public class Solution {
 
     public double largestSumOfAverages(int[] nums, int k) {
-        // dp ij 从 0-i 分成j最获取到的最大平均值
-        return -1;
+        // dp ij 从 0-i 分成j最获取到的最大平均值 对于每次分割 dp ij =
+        int n = nums.length;
+        double[][] dp = new double[n+1][k+1];
+
+
+        dp[1][1] = nums[0];
+        for (int l = 1; l <= k; l++) {
+            for (int i = 2; i <= n; i++) {
+                // 单独分组
+                if (l != 1 && dp[i-1][l-1] == 0) {
+                    continue;
+                }
+//                dp[i][l] = dp[i-1][l-1] + nums[i-1];
+                int sum = 0;
+                int count = 0;
+                // 和前一个分到一起
+                for (int j = i; j >= 1; j--) {
+                    sum += nums[j-1];
+                    count++;
+                    dp[i][l] = Math.max(dp[j-1][l-1] + (sum * 1.0 / count), dp[i][l]);
+                }
+            }
+        }
+        return dp[n][k];
+    }
+
+    /**
+     * [9,1,2,3,9]
+     3
+     * @param args
+     */
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                9,1,2,3,9
+        };
+        int k = 3;
+        double v = solution.largestSumOfAverages(nums, k);
+        System.out.println(v);
+        Assert.assertEquals(20, v, 10e-6);
+
+
+        nums = new int[] {
+                1,2,3,4,5,6,7
+        };
+        k = 4;
+        v = solution.largestSumOfAverages(nums, k);
+        System.out.println(v);
+        Assert.assertEquals(20.5, v, 10e-6);
+
+
     }
 }
