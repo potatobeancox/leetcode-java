@@ -59,6 +59,14 @@ import java.util.stream.Collectors;
 public class Solution {
 
 
+    /**
+     * https://www.baidu.com/s?wd=stream%20collect&rsv_spt=1&rsv_iqid=0xe655c39d000426f1&issp=1&f=8&rsv_bp=1&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=1&rsv_dl=tb&rsv_sug3=8&rsv_sug1=8&rsv_sug7=100&rsv_sug2=0&rsv_btype=i&inputT=1988&rsv_sug4=1988
+     * @param restaurants
+     * @param veganFriendly
+     * @param maxPrice
+     * @param maxDistance
+     * @return
+     */
     public List<Integer> filterRestaurants(int[][] restaurants, int veganFriendly,
                                            int maxPrice, int maxDistance) {
 
