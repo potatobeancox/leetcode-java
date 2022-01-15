@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p01552.t001;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
+
 /**
  * 1552. 两球之间的磁力
  *
@@ -43,6 +45,43 @@ import org.junit.Assert;
 public class Solution {
 
     public int maxDistance(int[] position, int m) {
-        return -1;
+        // 二分查找 1 - 10e9 每次找到 mid 如果mid 可以满足 每 index + mid 都放一个球 记录 并 往大找 否则往小找
+        Arrays.sort(position);
+        int left = 1;
+        int right = 1_000_000_000;
+        int ans = 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            boolean res = canMake(position, m, mid);
+            if (res) {
+                ans = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+
+    /**
+     * position 中 按照 最小距离 每 dis 防止 一个求 是否能放下 m个球
+     * @param position
+     * @param m
+     * @param dis
+     * @return
+     */
+    private boolean canMake(int[] position, int m, int dis) {
+        int lastIndex = 0;
+        int count = 1;
+        for (int i = 1; i < position.length; i++) {
+            if (position[i] - position[lastIndex] >= dis) {
+                count++;
+                lastIndex = i;
+            }
+        }
+        return count >= m;
     }
 }
+
+
