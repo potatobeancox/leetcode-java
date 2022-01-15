@@ -2,10 +2,7 @@ package com.potato.study.leetcodecn.p00636.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 636. 函数的独占时间
@@ -80,34 +77,45 @@ import java.util.Queue;
  */
 public class Solution {
 
+    /**
+     * https://leetcode-cn.com/problems/exclusive-time-of-functions/solution/han-shu-de-du-zhan-shi-jian-by-leetcode/
+     * @param n
+     * @param logs
+     * @return
+     */
     public int[] exclusiveTime(int n, List<String> logs) {
-        int[] time = new int[n];
-        // 从 index = 1 开始遍历
-        for (int i = 1; i < logs.size(); i++) {
-            String currentLog = logs.get(i);
-            String[] split = currentLog.split(":");
-            int index = Integer.parseInt(split[0]);
-            String flag = split[1];
-            int timestamp = Integer.parseInt(split[2]);
+        // 记录执行程序id 栈顶就是正在执行的程序
+        Stack<Integer> runStack = new Stack<>();
+        // 上一个结束时间戳
+        String[] split = logs.get(0).split(":");
+        int index = Integer.parseInt(split[0]);
+        int preTime = Integer.parseInt(split[2]);
+        runStack.push(index);
 
-            String preLog = logs.get(i-1);
-            String[] preSplit = preLog.split(":");
-            int preIndex = Integer.parseInt(preSplit[0]);
-            String preFlag = preSplit[1];
-            int preTimestamp = Integer.parseInt(preSplit[2]);
-            // 如果 当前 是 start 按照之前的index 计算 ，否则 按照当前的计算
+        // 遍历 logs 如果当前是开始 时间 直接减去 pre 如果是结束 减去 pre 还得 + 1 如果 是 start 入栈 finish 出栈
+        int[] time = new int[n];
+        for (int i = 1; i < logs.size();i++) {
+            String s = logs.get(i);
+            split = s.split(":");
+            int currentIndex = Integer.parseInt(split[0]);
+            String flag = split[1];
+            int currentTimestamp = Integer.parseInt(split[2]);
             if ("start".equals(flag)) {
-                // 排除中间有空档的情况
-                if (!"end".equals(preFlag)) {
-                    time[preIndex] += (timestamp - preTimestamp);
+                if (!runStack.isEmpty()) {
+                    Integer peekIndex = runStack.peek();
+                    time[peekIndex] += (currentTimestamp - preTime);
                 }
+                runStack.push(currentIndex);
+                preTime = currentTimestamp;
             } else {
-                time[index] += (timestamp - preTimestamp);
-                if ("start".equals(preFlag) && preIndex == index) {
-                    time[index]++;
-                }
+                Integer popIndex = runStack.pop();
+                time[popIndex] += (currentTimestamp + 1 - preTime);
+                preTime = currentTimestamp + 1;
             }
         }
         return time;
     }
+
+    // 3
+//            ["0:start:0","0:end:0","1:start:1","1:end:1","2:start:2","2:end:2","2:start:3","2:end:3"]
 }
