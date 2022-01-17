@@ -56,8 +56,16 @@ import java.util.*;
 public class Solution {
 
     public boolean pyramidTransition(String bottom, List<String> allowed) {
+        // 将 allowed 准换成map
+        Map<String, String> allowMap = new HashMap<>();
+        for (String word : allowed) {
+            String key = word.substring(0, 2);
+            String value = allowMap.getOrDefault(key, "");
+            value += word.substring(2);
+            allowMap.put(key, value);
+        }
         // dfs
-        return false;
+        return canMakePyramid(bottom, "", allowMap, 0);
     }
 
     /**
@@ -79,9 +87,20 @@ public class Solution {
             return canMakePyramid(nextBottom, "", allowMap, 0);
         }
         // 还没找到最后一个 字母， 选择两个 字母 fore 找 下一个字母 dfs 每次 失败都记录 seen （这个还没想好怎么做）
-        currentBottom.charAt();
-
-
+        char ch1 = currentBottom.charAt(index);
+        char ch2 = currentBottom.charAt(index + 1);
+        String key = "" + ch1 + ch2;
+        String s = allowMap.get(key);
+        if (null == s || s.length() == 0) {
+            return false;
+        }
+        for (char ch3 : s.toCharArray()) {
+            String tmpNextBottom = nextBottom + ch3;
+            boolean result = canMakePyramid(currentBottom, tmpNextBottom, allowMap, index + 1);
+            if (result) {
+                return true;
+            }
+        }
         return false;
     }
 }
