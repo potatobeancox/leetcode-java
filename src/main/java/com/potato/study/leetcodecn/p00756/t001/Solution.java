@@ -56,6 +56,32 @@ import java.util.*;
 public class Solution {
 
     public boolean pyramidTransition(String bottom, List<String> allowed) {
+        // dfs
+        return false;
+    }
+
+    /**
+     *
+     * @param currentBottom     当前遍历的层
+     * @param nextBottom        下一层
+     * @param allowMap          可以组成的map
+     * @param index             当前找到的index
+     * @return
+     */
+    private boolean canMakePyramid(String currentBottom, String nextBottom, Map<String, String> allowMap, int index) {
+        // 如果当前层只剩一个 字母了 就说明 这个已经找到了结果
+        if (currentBottom.length() == 1) {
+            return true;
+        }
+        // 如果 当前 找到了 最后一个 位置 index 这层就结束了，
+        if (index == currentBottom.length() - 1) {
+            // 当前字母 在上一个字母就已经被搞过了
+            return canMakePyramid(nextBottom, "", allowMap, 0);
+        }
+        // 还没找到最后一个 字母， 选择两个 字母 fore 找 下一个字母 dfs 每次 失败都记录 seen （这个还没想好怎么做）
+        currentBottom.charAt();
+
+
         return false;
     }
 }
