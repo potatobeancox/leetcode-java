@@ -62,10 +62,15 @@ import com.google.common.collect.Lists;
  */
 public class Solution {
 
+    private List<Integer> result;
+
     // 842
     public List<Integer> splitIntoFibonacci(String num) {
-        List<Integer> list = dfs(num, 0, 0, 0, 0, new ArrayList<>());
-        return list;
+        boolean flag = dfs(num, 0, 0, 0, 0, new ArrayList<>());
+        if (flag) {
+            return result;
+        }
+        return new ArrayList<>();
     }
 
 
@@ -78,20 +83,21 @@ public class Solution {
      * @param numCount  数字 count
      * @return
      */
-    private List<Integer> dfs(String num, int index, int num1, int num2, int numCount, List<Integer> list) {
+    private boolean dfs(String num, int index, int num1, int num2, int numCount, List<Integer> list) {
         // 已经到了末尾
         if (index == num.length()) {
             if (numCount > 2) {
-                return list;
+                this.result = list;
+                return true;
             } else {
-                return new ArrayList<>();
+                return false;
             }
         }
         // 从 index 开始往后面遍历
         for (int i = index; i < num.length(); i++) {
             String substring = num.substring(index, i + 1);
             // 判断是够有先导0
-            if (substring.charAt(0) == '0' && substring.length() == 1) {
+            if (substring.charAt(0) == '0' && substring.length() != 1) {
                 continue;
             }
             int current = Integer.parseInt(substring);
@@ -99,12 +105,27 @@ public class Solution {
                 continue;
             }
             List<Integer> nextList = new ArrayList<>(list);
-            list.add(current);
-            List<Integer> result = dfs(num, i+1, num2, current, numCount + 1, nextList);
-            if (result.size() > 0) {
-                return result;
+            nextList.add(current);
+            boolean flag = dfs(num, i+1, num2, current, numCount + 1, nextList);
+            if (flag) {
+                return true;
             }
         }
-        return new ArrayList<>();
+        return false;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String num = "123456579";
+        List<Integer> list = solution.splitIntoFibonacci(num);
+        // [123,456,579]
+        System.out.println(list);
+
+        num = "0123";
+        list = solution.splitIntoFibonacci(num);
+        // [123,456,579]
+        System.out.println(list);
+
     }
 }
