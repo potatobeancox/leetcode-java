@@ -100,13 +100,16 @@ public class Solution {
             if (substring.charAt(0) == '0' && substring.length() != 1) {
                 continue;
             }
-            int current = Integer.parseInt(substring);
+            long current = Long.parseLong(substring);
+            if (current > Integer.MAX_VALUE) {
+                break;
+            }
             if (numCount >= 2 && num1 + num2 != current) {
                 continue;
             }
             List<Integer> nextList = new ArrayList<>(list);
-            nextList.add(current);
-            boolean flag = dfs(num, i+1, num2, current, numCount + 1, nextList);
+            nextList.add((int) current);
+            boolean flag = dfs(num, i+1, num2, (int) current, numCount + 1, nextList);
             if (flag) {
                 return true;
             }
@@ -125,6 +128,11 @@ public class Solution {
         num = "0123";
         list = solution.splitIntoFibonacci(num);
         // [123,456,579]
+        System.out.println(list);
+
+        // "5511816597"
+        num = "5511816597";
+        list = solution.splitIntoFibonacci(num);
         System.out.println(list);
 
     }
