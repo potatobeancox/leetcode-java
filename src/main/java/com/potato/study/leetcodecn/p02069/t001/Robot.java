@@ -64,40 +64,44 @@ import java.util.List;
 public class Robot {
 
 
-    private int[][] direction;
     private int i;
     private int j;
     private int width;
     private int height;
-    private int directionIndex;
+    private boolean isAtStart;
+    private int sum;
+    private int around;
 
     public Robot(int width, int height) {
-        this.direction = new int[][] {
-                {0, 1}, // 东
-                {1, 0}, // 北
-                {0, -1},
-                {-1, 0}
-        };
         this.i = 0;
         this.j = 0;
         this.width = width;
         this.height = height;
-        this.directionIndex = directionIndex;
+        this.isAtStart = true;
+        this.around = (width + height) * 2 - 4;
     }
 
     // 往当前方向走 num 步骤
     public void step(int num) {
-        for (int k = 0; k < num; k++) {
-            int di = i + direction[directionIndex][0];
-            int dj = j + direction[directionIndex][1];
-            // 判断是否需要跟换方向
-            if (di < 0 || di >= height
-                    || dj < 0 || dj >= width) {
-                directionIndex++;
-                directionIndex %= 4;
-            }
-            i += direction[directionIndex][0];
-            j += direction[directionIndex][1];
+        if (num != 0) {
+            this.isAtStart = false;
+        }
+        sum += num;
+        // 确定当前在什么位置
+        sum %= around;
+
+        if (sum < width) {
+            i = 0;
+            j = sum;
+        } else if (width <= sum && sum < width + height - 1) {
+            i = sum - (width - 1);
+            j = width - 1;
+        } else if (width + height - 1 <= sum && sum < width + height - 2) {
+            i = height - 1;
+            j = sum - (width - 1) - (height - 1);
+        } else {
+            i = sum - (width - 1) - (height - 1) - (width - 1);
+            j = 0;
         }
     }
 
@@ -106,15 +110,19 @@ public class Robot {
     }
 
     public String getDir() {
-        if (directionIndex == 0) {
+        if (isAtStart && i == 0 && j == 0) {
             return "East";
-        } else if (directionIndex == 1) {
-            return "North";
-        } else if (directionIndex == 2) {
-            return "West";
-        } else {
-            return "South";
         }
+        if (i == 0 && j < width - 1) {
+            return "East";
+        }
+        if (j == width - 1 && i < height - 1) {
+            return "North";
+        }
+        if (i == height - 1 && j > 0) {
+            return "West";
+        }
+        return "South";
     }
 
     public static void main(String[] args) {
