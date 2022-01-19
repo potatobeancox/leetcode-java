@@ -96,11 +96,11 @@ public class Robot {
         } else if (width <= sum && sum < width + height - 1) {
             i = sum - (width - 1);
             j = width - 1;
-        } else if (width + height - 1 <= sum && sum < width + height - 2) {
+        } else if (width + height - 1 <= sum && sum < width * 2 + height - 2) {
             i = height - 1;
-            j = sum - (width - 1) - (height - 1);
+            j = width - 1 - (sum - (width - 1) - (height - 1));
         } else {
-            i = sum - (width - 1) - (height - 1) - (width - 1);
+            i = height - 1 - (sum - (width - 1) - (height - 1) - (width - 1));
             j = 0;
         }
     }
@@ -110,16 +110,17 @@ public class Robot {
     }
 
     public String getDir() {
+        // 开始位置
         if (isAtStart && i == 0 && j == 0) {
             return "East";
         }
-        if (i == 0 && j < width - 1) {
+        if (i == 0 && j > 0 && j <= width - 1) {
             return "East";
         }
-        if (j == width - 1 && i < height - 1) {
+        if (j == width - 1 && i > 0) {
             return "North";
         }
-        if (i == height - 1 && j > 0) {
+        if (i == height - 1 && j < width - 1) {
             return "West";
         }
         return "South";
