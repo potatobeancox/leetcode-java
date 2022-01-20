@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p00658.t001;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * 658. 找到 K 个最接近的元素
@@ -36,7 +40,20 @@ import java.util.List;
  */
 public class Solution {
 
+    // 658
     public List<Integer> findClosestElements(int[] arr, int k, int x) {
-        return null;
+        // 升序
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(
+                Comparator.comparingInt((Integer a) -> Math.abs(a - x)).thenComparingInt(a -> a)
+        );
+        for (int num: arr) {
+            priorityQueue.add(num);
+        }
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            list.add(priorityQueue.poll());
+        }
+        Collections.sort(list);
+        return list;
     }
 }
