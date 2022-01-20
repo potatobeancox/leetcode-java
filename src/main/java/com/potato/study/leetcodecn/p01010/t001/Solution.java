@@ -48,19 +48,20 @@ public class Solution {
         // 使用一个map 记录余数 从 0-30进行遍历
         Map<Integer, Integer> remainderCountMap = new HashMap<>();
         for (int t : time) {
-            Integer count = remainderCountMap.getOrDefault(t, 0);
+            int key = t % 60;
+            Integer count = remainderCountMap.getOrDefault(key, 0);
             count++;
-            remainderCountMap.put(t, count);
+            remainderCountMap.put(key, count);
         }
         // 从 0 - 30计算
         int pairNum = 0;
         for (int i = 0; i <= 30; i++) {
             Integer count = remainderCountMap.get(i);
-            if (count == null || count <= 1) {
+            if (count == null || count <= 0) {
                 continue;
             }
             if (i == 0 || i == 30) {
-                pairNum += (count * (count - 1));
+                pairNum += (count * (count - 1) / 2);
             } else {
                 // 查看差值
                 int otherKey = 60 - i;
@@ -70,6 +71,16 @@ public class Solution {
             }
         }
         return pairNum;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                30,20,150,100,40
+        };
+        int i = solution.numPairsDivisibleBy60(arr);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 
 
