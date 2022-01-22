@@ -50,6 +50,8 @@ import org.junit.Assert;
 public class Solution {
 
     public int maxCompatibilitySum(int[][] students, int[][] mentors) {
+        // 将同学和老师 分表换成数字
+
         return -1;
     }
 
