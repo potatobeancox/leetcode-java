@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p00787.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 import java.util.Arrays;
@@ -70,15 +71,52 @@ public class Solution {
             int from = flights[i][0];
             int to = flights[i][1];
             int eachCost = flights[i][2];
-            flights[from][to] = eachCost;
+            cost[from][to] = eachCost;
         }
         // 从 src 到达 i 用了 t次换成 的最小划分
         int[][] dp = new int[k+1][n+1];
         // 从 src 出发 自然不需要 花费
-        dp[0][src] = 0;
-        for (int i = 0; i < n; i++) {
-            // 怎么做到全覆盖的
+        for (int i = 0; i < dp.length; i++) {
+            Arrays.fill(dp[i], maxNum * 100);
         }
-        return -1;
+        dp[0][src] = 0;
+        for (int i = 1; i <= k; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int l = 0; l < n; l++) {
+                    if (l == j) {
+                        continue;
+                    }
+                    // l -> j 没有航线
+                    if (cost[l][j] == maxNum) {
+                        continue;
+                    }
+                    dp[i][j] = Math.min(dp[i][j], dp[i-1][l] + cost[l][j]);
+                }
+            }
+        }
+
+        // 最小的
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < k + 1; i++) {
+            min = Math.min(min, dp[i][dst]);
+        }
+        if (min == maxNum * 100) {
+            return -1;
+        }
+        return min;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 3;
+        String input = "[[0,1,100],[1,2,100],[0,2,500]]";
+        int[][] flights = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int src = 0;
+        int dst = 2;
+        int k = 1;
+        int cheapestPrice = solution.findCheapestPrice(n, flights, src, dst, k);
+        System.out.println(cheapestPrice);
+        Assert.assertEquals(200, cheapestPrice);
     }
 }
