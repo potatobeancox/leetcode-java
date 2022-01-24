@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p00787.t001;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
+
 /**
  * 787. K 站中转内最便宜的航班
  *
@@ -56,7 +58,27 @@ import org.junit.Assert;
 public class Solution {
 
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-
+        // 将 flights 转换成 cost 数组 1 <= pricei <= 104 弄一个极大值
+        int[][] cost = new int[n][n];
+        int maxNum = 10000 + 1;
+        // 将所有值 设置成极大值
+        for (int i = 0; i < cost.length; i++) {
+            Arrays.fill(cost[i], maxNum);
+        }
+        // 遍历 航班设置 cost
+        for (int i = 0; i < flights.length; i++) {
+            int from = flights[i][0];
+            int to = flights[i][1];
+            int eachCost = flights[i][2];
+            flights[from][to] = eachCost;
+        }
+        // 从 src 到达 i 用了 t次换成 的最小划分
+        int[][] dp = new int[k+1][n+1];
+        // 从 src 出发 自然不需要 花费
+        dp[0][src] = 0;
+        for (int i = 0; i < n; i++) {
+            // 怎么做到全覆盖的
+        }
         return -1;
     }
 }
