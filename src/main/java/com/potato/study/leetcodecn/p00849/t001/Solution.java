@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p00849.t001;
 
 
+import java.lang.ref.SoftReference;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -61,34 +63,45 @@ public class Solution {
         int length = seats.length;
         // 遍历 seats 找到左边的位置 当前位置 离左边有人
         int[] left = new int[length];
+        Arrays.fill(left, length);
         for (int i = 0; i < length; i++) {
             if (seats[i] == 1) {
                 left[i] = 0;
             } else {
-                if (i == 0) {
-                    left[i] = 1;
-                } else {
+                if (i != 0) {
                     left[i] = left[i-1] + 1;
                 }
             }
         }
         // 遍历 seats 找到i 右边的第一个位置
         int[] right = new int[length];
+        Arrays.fill(right, length);
         for (int i = length - 1; i >= 0; i--) {
             if (seats[i] == 1) {
                 right[i] = 0;
             } else {
-                if (i == length - 1) {
-                    right[i] = 1;
-                } else {
-                    right[i] = left[i+1] + 1;
+                if (i != length - 1) {
+                    right[i] = right[i+1] + 1;
                 }
             }
         }
         int max = 0;
         for (int i = 0; i < length; i++) {
+            if (seats[i] == 1) {
+                continue;
+            }
             max = Math.max(max, Math.min(left[i], right[i]));
         }
         return max;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                1,0,0,0
+        };
+        int i = solution.maxDistToClosest(arr);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 }
