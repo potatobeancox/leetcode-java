@@ -49,10 +49,76 @@ import org.junit.Assert;
  */
 public class Solution {
 
-    public int maxCompatibilitySum(int[][] students, int[][] mentors) {
-        // 将同学和老师 分表换成数字
 
-        return -1;
+    private int maxScore;
+    /**
+     * https://leetcode-cn.com/problems/maximum-compatibility-score-sum/solution/jian-dan-yi-dong-dfsji-bai-100-by-merick-zxaz/
+     * @param students
+     * @param mentors
+     * @return
+     */
+    public int maxCompatibilitySum(int[][] students, int[][] mentors) {
+        this.maxScore = 0;
+        // 将同学和老师 分表换成数字 数组 二维
+        int len = students.length;
+        // 每个学生 分配到每个老师的得分
+        int[][] score = new int[len][len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
+                score[i][j] = getScore(students[i], mentors[j]);
+            }
+        }
+        // flag 记录当前 老师使用情况 记录 dfs 对于每个学生选择一个老师 求最大值
+        boolean[] visitMentor = new boolean[len];
+        int currentSum = 0;
+        dfs(score, visitMentor, 0, currentSum);
+        return maxScore;
+    }
+
+    /**
+     *
+     * @param score         得分矩阵
+     * @param visitMentor   memter 是否被使用标识
+     * @param studentIndex  当前分配到哪个学生
+     * @param currentSum    当前的和
+     */
+    private void dfs(int[][] score, boolean[] visitMentor, int studentIndex, int currentSum) {
+        // 终止条件 当前 学生分配晚
+        int len = visitMentor.length;
+        if (studentIndex == len) {
+            this.maxScore = Math.max(maxScore, currentSum);
+            return;
+        }
+        // 对 studentIndex 选择各种方式分配一个老师
+        for (int i = 0; i < len; i++) {
+            // 当前老师已经被分配了
+            if (visitMentor[i]) {
+                continue;
+            }
+            // 计算这种分配方式得分
+            int nextScoreSum = currentSum + score[studentIndex][i];
+            // 老师被分配
+            visitMentor[i] = true;
+            dfs(score, visitMentor, studentIndex + 1, nextScoreSum);
+            visitMentor[i] = false;
+        }
+    }
+
+    /**
+     * 计算 student 和 mentor获得的匹配得分
+     * @param student
+     * @param mentor
+     * @return
+     */
+    private int getScore(int[] student, int[] mentor) {
+        int len = student.length;
+        int score = 0;
+        for (int i = 0; i < len; i++) {
+            if (student[i] == mentor[i]) {
+                score++;
+            }
+        }
+        return score;
     }
 
 }
