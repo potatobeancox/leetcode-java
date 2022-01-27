@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02013.t001;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 2013. 检测正方形
  *
@@ -52,17 +55,68 @@ package com.potato.study.leetcodecn.p02013.t001;
  */
 public class DetectSquares {
 
+    private Map<Integer, Map<Integer, Integer>> rowColCountMap;
+    /**
+     * https://leetcode-cn.com/problems/detect-squares/solution/gong-shui-san-xie-jian-dan-ha-xi-biao-yu-748e/
+     */
     public DetectSquares() {
-
+        // key 是 row value： key col  value 出现次数
+        this.rowColCountMap = new HashMap<>();
     }
 
     public void add(int[] point) {
+        int x = point[0];
+        int y = point[1];
 
+        Map<Integer, Integer> colCountMap = rowColCountMap.getOrDefault(x, new HashMap<>());
+        Integer count = colCountMap.getOrDefault(y, 0);
+        count++;
+        colCountMap.put(y, count);
+        rowColCountMap.put(x, colCountMap);
     }
 
     public int count(int[] point) {
+        int x = point[0];
+        int y = point[1];
+        Map<Integer, Integer> colCountMap = rowColCountMap.getOrDefault(x, new HashMap<>());
+        // 获取 与x 同行的数据 判定 与x之间差距多少 y1坐标之间 作为变成 d
+        int xyCount = 1;
+        int totalCount = 0;
+        for (int dy : colCountMap.keySet()) {
+            // 边长
+            int dis = dy - y;
+            if (dis == 0) {
+                continue;
+            }
+            int[] dxs = new int[] {
+                    x + dis, x - dis
+            };
+            int xdyCount = colCountMap.getOrDefault(dy, 0);
+            for (int dx : dxs) {
+                Map<Integer, Integer> yCount = rowColCountMap.getOrDefault(dx, new HashMap<>());
+                Integer dxyCount = yCount.getOrDefault(y, 0);
+                Integer dxdyCount = yCount.getOrDefault(dy, 0);
 
-        return -1;
+                totalCount += (xyCount * xdyCount * dxyCount * dxdyCount);
+            }
+        }
+
+        // 判定 x - d / x+d y    x - d / x+d y1
+        return totalCount;
+    }
+
+    public static void main(String[] args) {
+        DetectSquares detectSquares = new DetectSquares();
+        detectSquares.add(new int[]{3, 10});
+        detectSquares.add(new int[]{11, 2});
+        detectSquares.add(new int[]{3, 2});
+        System.out.println(detectSquares.count(new int[] {11,10}));
+        detectSquares.add(new int[]{14, 8});
+        detectSquares.add(new int[]{11, 2});
+        detectSquares.add(new int[]{11, 10});
+//        ["DetectSquares","add","add","add","count","count","add","count"]
+//[[],[[3,10]],[[11,2]],[[3,2]],[[11,10]],[[14,8]],[[11,2]],[[11,10]]]
+
     }
 }
 
