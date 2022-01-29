@@ -72,8 +72,51 @@ import com.google.common.collect.Lists;
  */
 public class Solution {
 
-    public int closestCost(int[] baseCosts, int[] toppingCosts, int target) {
 
-        return -1;
+    private int value;
+    /**
+     * https://leetcode-cn.com/problems/closest-dessert-cost/solution/liang-chong-xie-fa-de-qing-xi-dfsdui-bi-v0637/
+     * dfs
+     * @param baseCosts
+     * @param toppingCosts
+     * @param target
+     * @return
+     */
+    public int closestCost(int[] baseCosts, int[] toppingCosts, int target) {
+        this.value = Integer.MAX_VALUE;
+        // 选择每种基料进行配置 循环内部 调用 选择每种 配料进行配置
+        for (int i = 0; i < baseCosts.length; i++) {
+            dfs(toppingCosts, target, 0, baseCosts[i]);
+        }
+        return value;
+    }
+
+    /**
+     *
+     *
+     * @param toppingCosts
+     * @param target
+     * @param toppingIndex
+     */
+    private void dfs(int[] toppingCosts, int target, int toppingIndex, int currentCost) {
+        // 判断当前是否可以终止
+        if (Math.abs(target - currentCost) < Math.abs(value - target)) {
+            value = currentCost;
+        }
+        if (Math.abs(target - currentCost) == Math.abs(value - target) && value > currentCost) {
+            value = currentCost;
+        }
+        // 超过了 下一个只能更大
+        if (currentCost > target) {
+            return;
+        }
+        // 配料用完了
+        if (toppingIndex >= toppingCosts.length) {
+            return;
+        }
+        // 当前料添加 当前不选 1种 2种
+        dfs(toppingCosts, target, toppingIndex + 1, currentCost);
+        dfs(toppingCosts, target, toppingIndex + 1, currentCost + toppingCosts[toppingIndex]);
+        dfs(toppingCosts, target, toppingIndex + 1, currentCost + 2 * toppingCosts[toppingIndex]);
     }
 }
