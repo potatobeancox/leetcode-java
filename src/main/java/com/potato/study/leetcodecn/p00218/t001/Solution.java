@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.p00218.t001;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 218. 天际线问题
