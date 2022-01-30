@@ -44,48 +44,26 @@ public class Solution {
 
 
     public int minFlipsMonoIncr(String s) {
-        if (s == null || s.length() == 0) {
-            return 0;
-        }
-        // 找到第一个1
-        int index = 0;
-        while (index < s.length() && s.charAt(index) == '0') {
-            index++;
-        }
-        if (index >= s.length()) {
-            return 0;
-        }
-        // 计算第一部分1 多少个
-        int oneCount = 0;
-        while (index < s.length() && s.charAt(index) == '1') {
-            index++;
-            oneCount++;
-        }
-        if (index >= s.length()) {
-            return 0;
-        }
-        if (oneCount == 0) {
-            // 没有1
-            return 0;
-        }
-        // 计算 0 多少个
+        // 以zero 结尾需要翻转的次数
         int zeroCount = 0;
-        while (index < s.length() && s.charAt(index) == '0') {
-            index++;
-            zeroCount++;
-        }
-        // 选小的
-        if (zeroCount == 0) {
-            return 0;
-        }
-        int convertCount = Math.min(oneCount, zeroCount);
-        while (index < s.length()) {
-            if (s.charAt(index) == '0') {
-                convertCount++;
+        int oneCount = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int tmpZeroCount;
+            int tmpOneCount;
+            if (s.charAt(i) == '0') {
+                tmpZeroCount = zeroCount;
+                tmpOneCount = Math.min(zeroCount, oneCount) + 1;
+            } else {
+                // 当前1结尾
+                tmpZeroCount = zeroCount + 1;
+                // 之前按照 01 结尾哪个短就是哪个
+                tmpOneCount = Math.min(zeroCount, oneCount);
+
             }
-            index++;
+            zeroCount = tmpZeroCount;
+            oneCount = tmpOneCount;
         }
-        return convertCount;
+        return Math.min(zeroCount, oneCount);
     }
 
     public static void main(String[] args) {
