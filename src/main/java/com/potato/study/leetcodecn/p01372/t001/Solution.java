@@ -53,8 +53,41 @@ import com.potato.study.leetcode.domain.TreeNode;
  */
 public class Solution {
 
-    public int longestZigZag(TreeNode root) {
 
-        return 0;
+    private int maxLength;
+    /**
+     * https://leetcode-cn.com/problems/longest-zigzag-path-in-a-binary-tree/solution/er-cha-shu-zhong-de-zui-chang-jiao-cuo-lu-jing-b-2/
+     * @param root
+     * @return
+     */
+    public int longestZigZag(TreeNode root) {
+        this.maxLength = 0;
+        // dfs
+        dfs(root, true, 0);
+        dfs(root, false, 0);
+        return maxLength;
+    }
+
+    private void dfs (TreeNode root, boolean goLeft, int currentLen) {
+        // 比较长度
+        this.maxLength = Math.max(maxLength, currentLen);
+        if (root == null) {
+            return;
+        }
+        if (goLeft) {
+            if (root.left != null) {
+                dfs(root.left, false, currentLen + 1);
+            }
+            if (root.right != null) {
+                dfs(root.right, true, 1);
+            }
+        } else {
+            if (root.left != null) {
+                dfs(root.left, false, 1);
+            }
+            if (root.right != null) {
+                dfs(root.right, true, currentLen + 1);
+            }
+        }
     }
 }
