@@ -64,15 +64,42 @@ public class Solution {
      * https://leetcode-cn.com/problems/paint-house-iii/solution/gong-shui-san-xie-san-wei-dong-tai-gui-h-ud7m/
      * @param houses
      * @param cost
-     * @param m
-     * @param n
-     * @param target
+     * @param m         房子数量
+     * @param n         颜色数量
+     * @param target    组成街区的数量
      * @return
      */
     public int minCost(int[] houses, int[][] cost, int m, int n, int target) {
-
-
-        return -1;
+        // dp ijk 将 第i个之前的房子 其中 i粉刷成j这个颜色，并形成了 k个社区 需要多少钱 最少
+        int[][][] dp = new int[m+1][n+1][target+1];
+        // 初始化 一下 所有0个街区都是不存在的
+        int MAXINT = 0x3f3f3f3f; // 参考 https://www.cnblogs.com/DearDongchen/p/6917060.html
+        // 初始化 所有 target 为0的情况
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                dp[i][j][0] = MAXINT;
+            }
+        }
+        // 开始转移
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j <= n; j++) {// 当前房子是否已经有颜色
+                if (houses[i-1] == j) {
+//                    dp[][][] = ;
+                    continue;
+                }
+                for (int k = 1; k <= target; k++) {
+//                    else {
+//
+//                    }
+                }
+            }
+        }
+        // 遍历 最终结果 颜色 取最小的
+        int min = MAXINT;
+        for (int i = 1; i <= n; i++) {
+            min = Math.min(min, dp[m][i][target]);
+        }
+        return min;
 
     }
 }
