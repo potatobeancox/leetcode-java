@@ -103,6 +103,55 @@ public class LeetcodeInputUtils {
     }
 
 
+    /**
+     * rectangles = [[2,3],[3,7],[4,3],[3,7]]
+     * 测试用例
+     * []
+     * null
+     * 返回 int 2维 数组
+     * @param input
+     * @return
+     */
+    public static List<List<Integer>> inputString2IntListTwoDimensional(String input) {
+        if (input == null) {
+            return new ArrayList<>();
+        }
+        if ("".equals(input) || "[]".equals(input)) {
+            return new ArrayList<>();
+        }
+        // 去掉"[2,3],[3,7],[4,3],[3,7] 或者 [1,2]"
+        String substring = input.substring(1, input.length() - 1);
+        // ，拆分
+        String[] split = substring.split("]");
+//        String[] result = new String[split.length];
+//        int[][] result = new int[split.length][];
+        List<List<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < split.length; i++) {
+            // 去掉引号 [2,3 或者 ,[3,7
+            String word = split[i].trim();
+            if ("".equals(word)) {
+                continue;
+            }
+            // [2 或者 3 或者 ""
+            String[] numSplit = word.split(",");
+            List<Integer> list = new ArrayList<>();
+            for (String numStr : numSplit) {
+                if (numStr.startsWith("[")) {
+                    numStr = numStr.substring(1);
+                }
+                if ("".equals(numStr)) {
+                    continue;
+                }
+                list.add(Integer.parseInt(numStr.trim()));
+            }
+            result.add(list);
+        }
+        // 返回数组
+        return result;
+    }
+
+
+
     @Test
     public void testInputString2IntArrayTwoDimensional() {
         String input = "[[2,3],[3,7],[4,3],[3,7]]";
