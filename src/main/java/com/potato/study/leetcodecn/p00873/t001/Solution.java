@@ -44,8 +44,6 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
     public int lenLongestFibSubseq(int[] arr) {
-        // dp ij 以ij作为 最后两个数字的
-
         return -1;
     }
 }
