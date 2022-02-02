@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00991.t001;
 
+import org.junit.Assert;
+
 /**
  * 991. 坏了的计算器
  *
@@ -49,14 +51,46 @@ public class Solution {
 
 
     /**
-     * https://leetcode-cn.com/problems/broken-calculator/solution/pi-liao-de-ji-suan-qi-by-leetcode/
+     *
+     *
+     * https://leetcode-cn.com/problems/broken-calculator/solution/wu-xu-ni-xiang-zheng-xiang-ji-suan-jian-ji-zheng-m/
      * @param startValue
      * @param target
      * @return
      */
     public int brokenCalc(int startValue, int target) {
+        // 正向计算 直到 大于等于 target 记录 次数 cnt1
+        int cnt1 = 0;
+        // 从cnt1 开始计算要减去多少次
+        while (startValue < target) {
+            startValue *= 2;
+            cnt1++;
+        }
+        int diff = startValue - target;
+        // 计算减去 cnt2的次数
+        int cnt2 = 0;
+        for (int i = cnt1; i >= 0; i--) {
+            // 2 ^ n 次幂
+            int tmp = (int) Math.pow(2, i);
+            int times = diff / tmp;
+            // 减去 定量之后的值
+            diff -= times * tmp;
+            cnt2 += times;
+            // 已经剪光了 剪枝
+            if (diff == 0) {
+                break;
+            }
+        }
+        return cnt1 + cnt2;
+    }
 
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int startValue = 2;
+        int target = 3;
+        int i = solution.brokenCalc(startValue, target);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 
 
