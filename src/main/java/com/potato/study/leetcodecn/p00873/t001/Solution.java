@@ -43,7 +43,30 @@ import com.potato.study.leetcode.domain.TreeNode;
  */
 public class Solution {
 
+    // 873
     public int lenLongestFibSubseq(int[] arr) {
-        return -1;
+        // dp ij 以ij为最后两个数字的飞沫拿起数列的最长长度
+        int[][] dp = new int[arr.length][arr.length];
+        //初始化
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = i+1; j < arr.length; j++) {
+                dp[i][j] = 2;
+            }
+        }
+        // 对于新位置 枚举 ij位置
+        int max = 0;
+        for (int k = 0; k < arr.length; k++) {
+            // 枚举ij位置
+            for (int i = 0; i < k; i++) {
+                for (int j = i+1; j < k; j++) {
+                    // 判断下是否满足 fib关系
+                    if (arr[i] + arr[j] == arr[k]) {
+                        dp[j][k] = Math.max(dp[i][j] + 1, dp[j][k]);
+                        max = Math.max(max, dp[j][k]);
+                    }
+                }
+            }
+        }
+        return max;
     }
 }
