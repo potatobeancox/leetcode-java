@@ -55,23 +55,14 @@ package com.potato.study.leetcodecn.p02063.t001;
 public class Solution {
 
     public long countVowels(String word) {
-        // 统计 word 的中 前缀原因个数 遍历 计算 子串个数
-        long[] count = new long[word.length() + 1];
+        long total = 0;
         for (int i = 0; i < word.length(); i++) {
             char ch = word.charAt(i);
             if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
-                count[1+i] = count[i] + 1;
-            } else {
-                count[1+i] = count[i];
+                total += ((long)word.length() - i) * (i+1);
             }
         }
-        long totalCount = 0;
-        for (int i = 0; i <= word.length(); i++) {
-            for (int j  = i + 1; j <= word.length(); j++) {
-                totalCount += (count[j] - count[i]);
-            }
-        }
-        return totalCount;
+        return total;
     }
 
 
