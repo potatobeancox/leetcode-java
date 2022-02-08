@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02165.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -59,13 +61,13 @@ public class Solution {
         } else {
             // 找到第一个非0位置
             int notZeroIndex = 0;
-            while (notZeroIndex < numsArray.length && numsArray[notZeroIndex] == 0) {
+            while (notZeroIndex < numsArray.length && numsArray[notZeroIndex] == '0') {
                 notZeroIndex++;
             }
             if (notZeroIndex == numsArray.length) {
                 return 0;
             }
-            newNum += numsArray[notZeroIndex];
+            newNum += numsArray[notZeroIndex] - '0';
             for (int i = 0; i < numsArray.length; i++) {
                 if (i == notZeroIndex) {
                     continue;
@@ -75,5 +77,12 @@ public class Solution {
             }
         }
         return newNum;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        long l = solution.smallestNumber(310);
+        System.out.println(l);
+        Assert.assertEquals(103, l);
     }
 }
