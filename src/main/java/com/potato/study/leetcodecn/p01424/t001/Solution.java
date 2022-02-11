@@ -3,7 +3,10 @@ package com.potato.study.leetcodecn.p01424.t001;
 
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 1424. 对角线遍历 II
@@ -49,17 +52,34 @@ import java.util.List;
 public class Solution {
 
     /**
-     *
+     * https://leetcode-cn.com/problems/diagonal-traverse-ii/solution/java-shuang-bai-gen-ju-bu-tong-dui-jiao-xian-de-we/
      * @param nums
      * @return
      */
     public int[] findDiagonalOrder(List<List<Integer>> nums) {
-        // 控制 当前 sum 0 - 2 * n- 2
-
-        // 控制当前 行位置 0 - n-1 , n-2
-
-
-        return null;
+        // 顺序遍历 n* n nums 每次计算 key = i+j 保持 map 有序性 value 是 list 每次往list后面放元素
+        Map<Integer, List<Integer>> map = new LinkedHashMap<>();
+        int totalLength = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            List<Integer> list = nums.get(i);
+            for (int j = 0; j < list.size(); j++) {
+                int key = i + j;
+                List<Integer> valueList = map.getOrDefault(key, new ArrayList<>());
+                valueList.add(list.get(j));
+                map.put(key, valueList);
+            }
+            totalLength += list.size();
+        }
+        // 遍历 key 对于每个key对应结果 按照倒序插入
+        int[] array = new int[totalLength];
+        int index = 0;
+        for (int key : map.keySet()) {
+            List<Integer> list = map.get(key);
+            for (int i = list.size() - 1; i >= 0; i--) {
+                array[index++] = list.get(i);
+            }
+        }
+        return array;
     }
 
     public static void main(String[] args) {
