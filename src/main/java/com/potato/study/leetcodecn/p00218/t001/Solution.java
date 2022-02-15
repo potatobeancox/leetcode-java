@@ -1,6 +1,6 @@
 package com.potato.study.leetcodecn.p00218.t001;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 218. 天际线问题
@@ -46,8 +46,57 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     * https://leetcode-cn.com/problems/the-skyline-problem/solution/gong-shui-san-xie-sao-miao-xian-suan-fa-0z6xc/
+     * @param buildings
+     * @return
+     */
     public List<List<Integer>> getSkyline(int[][] buildings) {
+        // 处理一下 buildings 用用一个 int[] 存x坐标和 高度 如果 左边 高度负数，否则整数
+        List<int[]> list = new ArrayList<>();
+        for (int[] build : buildings) {
+            int left = build[0];
+            int right = build[1];
+            int h = build[2];
 
-        return null;
+            list.add(new int[] {left, -1 * h});
+            list.add(new int[] {right, h});
+        }
+        // 按照 坐标 递增排序，坐标相同 按照高度 升序排序
+        Collections.sort(list, (o1, o2) -> {
+            int compare = Integer.compare(o1[0], o2[0]);
+            if (compare == 0) {
+                return Integer.compare(o1[1], o2[1]);
+            }
+            return compare;
+        });
+        // 使用一个 优先级队列 大根堆记录当前存在的线的高度 使用 prev 记录之前的高度 初始插入0
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        int previous = 0;
+        priorityQueue.add(previous);
+        // 遍历数组，每次 将高度插入或者移除，并取出 当前高度 如果根prev 比发生了变化，那就生成这个点 x 高度 设置 prev
+        List<List<Integer>> resultList = new ArrayList<>();
+        for (int[] build : list) {
+            int x = build[0];
+            int h = build[1];
+            // 左边点插入，右边点删除
+            if (h < 0) {
+                priorityQueue.add(-1 * h);
+            } else {
+                priorityQueue.remove(h);
+            }
+            // 判断是够改变 改变才能有边界
+            Integer peek = priorityQueue.peek();
+            if (peek != previous) {
+
+                List<Integer> result = new ArrayList<>();
+                result.add(x);
+                result.add(peek);
+
+                resultList.add(result);
+                previous = peek;
+            }
+        }
+        return resultList;
     }
 }
