@@ -64,6 +64,8 @@ import org.junit.Assert;
  */
 public class LFUCache {
 
+
+    // 用一个数据结构 和treemap 记录超过 的时候 从treemap中移除first
     public LFUCache(int capacity) {
 
     }
