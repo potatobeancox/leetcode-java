@@ -45,7 +45,7 @@ import org.junit.Assert;
  */
 public class Solution {
 
-    // 301
+
     // 结果集合
     private Set<String> resultSet;
     // 当前结合中元素的长度
@@ -66,6 +66,11 @@ public class Solution {
             }
         }
         int maxScore = Math.min(left, right);
+        if (left == 0 && right == 0) {
+            List<String> res = new ArrayList<>();
+            res.add(s);
+            return res;
+        }
         // max 就是 最小值 说明 只能有最小个 这样的数字
         this.resultSet = new HashSet<>();
         resultSet.add("");
@@ -106,7 +111,7 @@ public class Solution {
         if (currentScore < 0 || currentScore > this.maxScore) {
             return;
         }
-        if (currentScore == 0 && currentWord.length() > 0) {
+        if (currentScore == 0) {
             if (currentWord.length() + 1 == this.length) {
                 this.resultSet.add(currentWord + charAt);
             } else if (currentWord.length() + 1 > this.length) {
@@ -119,6 +124,19 @@ public class Solution {
     }
 
     public static void main(String[] args) {
+        String s = "()())()";
+        Solution solution = new Solution();
+        List<String> list = solution.removeInvalidParentheses(s);
+        System.out.println(list);
 
+
+        s = "n";
+        list = solution.removeInvalidParentheses(s);
+        System.out.println(list);
+
+
+        s = ")(n";
+        list = solution.removeInvalidParentheses(s);
+        System.out.println(list);
     }
 }
