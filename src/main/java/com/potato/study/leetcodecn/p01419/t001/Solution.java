@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01419.t001;
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -56,45 +58,67 @@ public class Solution {
 
 
     /**
-     * https://leetcode-cn.com/problems/minimum-number-of-frogs-croaking/solution/tong-guo-dui-lie-lai-mo-ni-xu-yao-de-qing-wa-shu-l/
+     * https://leetcode-cn.com/problems/minimum-number-of-frogs-croaking/solution/cai-ji-gong-xian-ge-chun-onzuo-fa-by-imcover/
      * @param croakOfFrogs
      * @return
      */
     public int minNumberOfFrogs(String croakOfFrogs) {
-        // 判断 croakOfFrogs 是否合法
-        if (croakOfFrogs.length() %  5 != 0) {
-            return -1;
-        }
-        Map<Character, Integer> countMap = new HashMap<>();
-        // 遍历 croakOfFrogs 每一个字符 如果是 c ++ 如果 是 k-- 过程中计算 最大值
+        // 遍历 croakOfFrogs 遇到 k时将 计算历史最多青蛙和目前的c数量比较 然后将croa都减去 过程中保证后一个字母必须小于等于前一个字母
+        int c = 0;
+        int r = 0;
+        int o = 0;
+        int a = 0;
         int maxFrog = 0;
-        char[] chars = croakOfFrogs.toCharArray();
-        int currentFrog = 0;
-        for (int i = 0; i < chars.length; i++) {
-            // 计数
-            countMap.put(chars[i], countMap.getOrDefault(chars[i], 0) + 1);
-            // 看下是否合法
-
-            if (chars[i] == 'c') {
-                currentFrog++;
-            } else if (chars[i] == 'k') {
-                currentFrog--;
+        for (int i = 0; i < croakOfFrogs.length(); i++) {
+            char ch = croakOfFrogs.charAt(i);
+            switch (ch) {
+                case 'c':
+                    c++;
+                    break;
+                case 'r':
+                    r++;
+                    if (r > c) {
+                        return -1;
+                    }
+                    break;
+                case 'o':
+                    o++;
+                    if (o > r) {
+                        return -1;
+                    }
+                    break;
+                case 'a':
+                    a++;
+                    if (a > o) {
+                        return -1;
+                    }
+                    break;
+                case 'k':
+                    maxFrog = Math.max(maxFrog, c);
+                    c--;
+                    r--;
+                    o--;
+                    a--;
+                    if (c < 0 || r < 0 || o < 0 || a < 0) {
+                        return -1;
+                    }
+                    break;
+                default:
+                    return -1;
             }
-            maxFrog = Math.max(currentFrog, maxFrog);
+        }
+        // 遍历结束后 保证 croa 之和为 0
+        if (c + r + o + a > 0) {
+            return -1;
         }
         return maxFrog;
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-
-//        String reformat = solution.displayTable();
-//        System.out.println(reformat);
-//        Assert.assertEquals("0a1b2c", reformat);
-//
-//
-//        reformat = solution.reformat("leetcode");
-//        System.out.println(reformat);
-//        Assert.assertEquals("", reformat);
+        String croakOfFrogs = "croakcroak";
+        int i = solution.minNumberOfFrogs(croakOfFrogs);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
 }
