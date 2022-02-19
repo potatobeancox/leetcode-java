@@ -65,13 +65,48 @@ public class Solution {
         // 先找山峰 找到之后
         int peekIndex = getPeekIndex(mountainArr);
         // 在前面找 target
-        int targetIndex = getTargetIndex(mountainArr, 0, peekIndex, target, true);
+        int targetIndex = getTargetIndex1(mountainArr, 0, peekIndex, target);
         // 在后面找 target
         if (targetIndex != -1) {
             return targetIndex;
         }
-        targetIndex = getTargetIndex(mountainArr, 0, peekIndex, target, false);
+        targetIndex = getTargetIndex2(mountainArr, peekIndex, mountainArr.length() - 1, target);
         return targetIndex;
+    }
+
+    private int getTargetIndex1(MountainArray mountainArr, int i, int j, int target) {
+        int left = 0;
+        int right = j;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int midValue = mountainArr.get(mid);
+            if (midValue == target) {
+                return mid;
+            } else if (midValue > target) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return -1;
+    }
+
+
+    private int getTargetIndex2(MountainArray mountainArr, int i, int j, int target) {
+        int left = 0;
+        int right = j;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int midValue = mountainArr.get(mid);
+            if (midValue == target) {
+                return mid;
+            } else if (midValue < target) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -87,12 +122,13 @@ public class Solution {
             int midValue = mountainArr.get(mid);
             int midAfterValue = mountainArr.get(mid + 1);
             if (midValue > midAfterValue) {
-
+                right = mid;
             } else {
                 // midValue < midAfterValue
+                left = mid + 1;
             }
         }
-        return 0;
+        return left;
     }
 
 
