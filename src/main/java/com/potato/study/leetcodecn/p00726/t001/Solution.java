@@ -4,6 +4,8 @@ import com.potato.study.leetcode.domain.ListNode;
 
 import java.util.*;
 
+import org.junit.Assert;
+
 /**
  * 726. 原子的数量
  *
@@ -67,18 +69,101 @@ public class Solution {
         for (int i = 0; i < formula.length();) {
             char ch = formula.charAt(i);
             if (ch == '(') {
-
-
+                stack.add(String.valueOf(ch));
+                i++;
             } else if (ch == ')') {
-
+                stack.add(String.valueOf(ch));
+                i++;
             } else if (Character.isDigit(ch)) {
                 // 数字  一直往后找到对应的数字终点
-
+                int j = i;
+                StringBuilder builder = new StringBuilder();
+                while (j < formula.length() && Character.isDigit(formula.charAt(j))) {
+                    builder.append(formula.charAt(j));
+                    j++;
+                }
+                i = j;
+                int num = Integer.parseInt(builder.toString());
                 // 判断 stack 顶 是否是 ） 是的话 对其中的数量循环 乘法，不是的话 只对最近的做处理
+                if (")".equals(stack.peek())) {
+                    // ) pop调
+                    String pop = stack.pop();
+                    // 循环pop 知道 ）
+                    List<String> tmp = new ArrayList<>();
+                    while (!"(".equals(stack.peek())) {
+                        pop = stack.pop();
+                        // 计算完了 还得放回去 防止 之前有问题
+                        int count = countMap.getOrDefault(pop, 1);
+                        count *= num;
+                        countMap.put(pop, count);
+                        tmp.add(pop);
+                    }
+                    // pop (
+                    stack.pop();
+                    // 遍历 tmp 倒序入stack
+                    for (int k = tmp.size() - 1; k >= 0; k--) {
+                        stack.add(tmp.get(k));
+                    }
+                } else {
+                    // 计算个数 不要pop
+                    String atom = stack.peek();
+                    int count = countMap.getOrDefault(atom, 1);
+                    count *= num;
+                    countMap.put(atom, count);
+                }
             } else {
-                // 不是数字的话 要往后找到 字母终点 以数量 1 进行进入map 或者入栈 记录最终字母index
+                // 不是数字的话 要往后找到  小写字母 字母终点 以数量 1 进行进入map 或者入栈 记录最终字母index
+                int j = i;
+                StringBuilder builder = new StringBuilder();
+                builder.append(ch);
+                j++;
+                while (j < formula.length() && Character.isLowerCase(formula.charAt(j))) {
+                    builder.append(formula.charAt(j));
+                    j++;
+                }
+                i = j;
+                // 生成 key
+                builder.append("_").append(i);
+                stack.add(builder.toString());
+                countMap.put(builder.toString(), 1);
             }
         }
-        return null;
+        // 遍历 map 进行新的统计 各个 单词出现次数 遍历 放进优先队列
+        Map<String, Integer> atomCountMap = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+            Integer count = entry.getValue();
+            String atom = entry.getKey().split("_")[0];
+            atomCountMap.put(atom, atomCountMap.getOrDefault(atom, 0) + count);
+        }
+        List<String> atomList = new ArrayList<>(atomCountMap.keySet());
+        Collections.sort(atomList);
+        StringBuilder resultBuilder = new StringBuilder();
+        for (String atom : atomList) {
+            resultBuilder.append(atom);
+            Integer count = atomCountMap.getOrDefault(atom, 0);
+            if (count > 1) {
+                resultBuilder.append(count);
+            }
+        }
+        return resultBuilder.toString();
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String ff = "H2O";
+        String s = solution.countOfAtoms(ff);
+        System.out.println(s);
+        Assert.assertEquals("H2O", s);
+
+
+        ff = "Mg(OH)2";
+        s = solution.countOfAtoms(ff);
+        System.out.println(s);
+        Assert.assertEquals("H2MgO2", s);
+
+        ff = "K4(ON(SO3)2)2";
+        s = solution.countOfAtoms(ff);
+        System.out.println(s);
+        Assert.assertEquals("K4N2O14S4", s);
     }
 }
