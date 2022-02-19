@@ -1,6 +1,14 @@
 package com.potato.study.leetcodecn.p00460.t001;
 
+import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcodecn.p00402.t001.Solution;
 import org.junit.Assert;
+
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 460. LFU 缓存
@@ -64,18 +72,131 @@ import org.junit.Assert;
  */
 public class LFUCache {
 
+    class LFUCacheNode {
+        public int key;
+        public int value;
+        public int time;
+        public int count;
+    }
+
+    // 当前时刻
+    private int time;
+    // capacity 容量
+    private int capacity;
+    // 当前数量
+    private int currentCount;
+
+    private Map<Integer, LFUCacheNode> map;
+
+    private TreeSet<LFUCacheNode> set;
+
 
     // 用一个数据结构 和treemap 记录超过 的时候 从treemap中移除first
     public LFUCache(int capacity) {
-
+        this.time = 0;
+        this.capacity = capacity;
+        this.currentCount = 0;
+        this.map = new HashMap<>();
+        this.set = new TreeSet<LFUCacheNode>((o1, o2) -> {
+            int compare = Integer.compare(o1.count, o2.count);
+            if (compare != 0) {
+                return compare;
+            }
+            compare = Integer.compare(o1.time, o2.time);
+            return compare;
+        });
     }
 
     public int get(int key) {
-
-        return -1;
+        if (capacity == 0) {
+            return -1;
+        }
+        // 不存在
+        if (!map.containsKey(key)) {
+            return -1;
+        }
+        // 存在
+        LFUCacheNode node = map.get(key);
+        set.remove(node);
+        node.count++;
+        node.time = ++this.time;
+        set.add(node);
+        return node.value;
     }
 
     public void put(int key, int value) {
+        if (capacity == 0) {
+            return;
+        }
+        // 插入当前key
+        if (map.containsKey(key)) {
+            LFUCacheNode node = map.get(key);
+            set.remove(node);
+            node.count++;
+            node.time = ++this.time;
+            node.value = value;
+            set.add(node);
+            return;
+        }
+        // 判断是够大于 capacity 大于需要删除 第一个点
+        if (currentCount == capacity) {
+            // 弹出
+            LFUCacheNode popNode = set.first();
+            set.remove(popNode);
+            map.remove(popNode.key);
+            this.currentCount--;
+        }
+        LFUCacheNode node = new LFUCacheNode();
+        node.key = key;
+        node.value = value;
+        node.count = 1;
+        node.time = ++this.time;
+        set.add(node);
+        map.put(key, node);
+        this.currentCount++;
+    }
+
+    public static void main(String[] args) {
+        LFUCache cache = new LFUCache(2);
+        cache.put(1, 1);
+        cache.put(2, 2);
+        System.out.println(cache.get(1)); // 1
+        cache.put(3, 3);
+        System.out.println(cache.get(2)); // -1
+        System.out.println(cache.get(3)); // 3
+        cache.put(4, 4);
+        System.out.println(cache.get(1)); // -1
+        System.out.println(cache.get(3)); // 3
+        System.out.println(cache.get(4)); // 4
+
+
+        cache = new LFUCache(2);
+        cache.put(3, 1);
+        cache.put(2, 1);
+        cache.put(2, 2);
+        cache.put(4, 4);
+        System.out.println(cache.get(2)); // 2
+
+
+
+        cache = new LFUCache(2);
+        int num = cache.get(2);
+        System.out.println(num);
+        Assert.assertEquals(-1, num);
+        cache.put(2, 6);
+        num = cache.get(1);
+        System.out.println(num);
+        Assert.assertEquals(-1, num);
+        cache.put(1, 5);
+        cache.put(1, 2);
+
+        num = cache.get(1);
+        System.out.println(num); // 2
+        Assert.assertEquals(2, num);
+
+        num = cache.get(2);
+        System.out.println(num); // 2
+        Assert.assertEquals(6, num);
 
     }
 }
