@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.other.swordoffer2.p0056.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -40,8 +42,18 @@ import java.util.Stack;
  */
 public class Solution {
 
-    public boolean findTarget(TreeNode root, int k) {
 
-        return false;
+    private Set<Integer> set = new HashSet<>();
+
+    public boolean findTarget(TreeNode root, int k) {
+        if (root == null) {
+            return false;
+        }
+        int val = root.val;
+        if (set.contains(k - val)) {
+            return true;
+        }
+        set.add(val);
+        return findTarget(root.left, k) || findTarget(root.right, k);
     }
 }
