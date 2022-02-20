@@ -39,8 +39,30 @@ import com.potato.study.leetcode.domain.ListNode;
 public class Solution {
 
 
+    /**
+     * https://leetcode-cn.com/problems/a7VOhD/solution/hui-wen-zi-zi-fu-chuan-de-ge-shu-by-leet-ejfv/
+     * @param s
+     * @return
+     */
     public int countSubstrings(String s) {
-        // 枚举
-        return -1;
+        // 枚举中心位置 的left和 right
+        int n = s.length();
+        int totalCount = 0;
+        for (int i = 0; i < 2 * n; i++) {
+            int left = i / 2;
+            int right = i / 2 + (i % 2);
+            int count = 0;
+            while (left >= 0 && right < n) {
+                if (s.charAt(left) == s.charAt(right)) {
+                    count++;
+                    left--;
+                    right++;
+                } else {
+                    break;
+                }
+            }
+            totalCount += count;
+        }
+        return totalCount;
     }
 }
