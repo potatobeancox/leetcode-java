@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.other.Interview.p0008.p0012;
 
 
+import java.util.*;
+
 /**
  * 面试题 08.12. 八皇后
  *
@@ -34,60 +36,76 @@ public class Solution {
 
     // dfs 如何保证不重复 选择 同一种 皇后摆放
 
-//    /**
-//     *
-//     * @param n
-//     * @return
-//     */
-//    public List<List<String>> solveNQueens(int n) {
-//        List<List<String>> resultList = new ArrayList<>();
-//        boolean[][] visited = new boolean[n][n];
-//        char[][] checkerboard = new char[n][n];
-//        // 都弄成 .
-//        for (int i = 0; i < checkerboard.length; i++) {
-//            checkerboard[i] = new char[n];
-//            Arrays.fill(checkerboard, '.');
-//        }
-//        solveNQueens(n, 0, checkerboard, 0, 0, resultList, visited);
-//        return resultList;
-//    }
-//
-//    private void solveNQueens(int n, int hasSetNum, char[][] checkerboard,
-//            int i, int j, List<List<String>> resultList, boolean[][] visited) {
-//        // 终止条件 已经全部放完了
-//        if (n == hasSetNum) {
-//            List<String> serialization = serializeCheckerboard(checkerboard);
-//            resultList.add(serialization);
-//            return;
-//        }
-//        // ij 放置 Q 判定是不是ok
-//        if (visited[i][j]) {
-//            return;
-//        }
-//        visited[i][j] = true;
-//        // 不ok 直接返回s
-//        boolean canSet = checkNewQueueOnTheCheckerboard(checkerboard, i, j);
-//        if (canSet) {
-//            checkerboard[i][j] = 'Q';
-//        }
-//        // ok 的话 递归 搞下个位置
-//        for (int k = 0; k < n; k++) {
-//            for (int l = 0; l < n; l++) {
-//                if (visited[k][l]) {
-//                    continue;
-//                }
-//                solveNQueens(n, );
-//            }
-//        }
-//        // 其他位置都搞完 还原这个
-//        visited[i][j] = false;
-//        checkerboard[i][j] = '.';
-//
-//    }
-//    public static void main(String[] args) {
-//        Solution solution = new Solution();
-//        List<String> list = solution.generateParenthesis(3);
-//        System.out.println(list);
-//    }
+
+    /**
+     * https://leetcode-cn.com/problems/eight-queens-lcci/solution/ba-huang-hou-by-leetcode-solution/
+     * @param n
+     * @return
+     */
+    public List<List<String>> solveNQueens(int n) {
+        // 用回溯的方式 使用一个 数组 记录 列是否放了 dfs 中需要记录 放置在哪个位置了
+        List<List<String>> result = new ArrayList<>();
+        Set<Integer> columnSet = new HashSet<>();
+        Set<Integer> diagonalSet1 = new HashSet<>();
+        Set<Integer> diagonalSet2 = new HashSet<>();
+        int[] queens = new int[n];
+        int rowIndex = 0;
+        backtracking(result, columnSet, diagonalSet1, diagonalSet2, queens, n, rowIndex);
+        return result;
+    }
+
+    private void backtracking(List<List<String>> result, Set<Integer> columnSet, Set<Integer> diagonalSet1,
+                              Set<Integer> diagonalSet2, int[] queens, int n, int rowIndex) {
+        // 终止条件 如果到了 最后一个 row 直接生成结果集合
+        if (rowIndex == n) {
+            List<String> list = generateResult(queens);
+            result.add(list);
+            return;
+        }
+        // 没有的话 在当前行位置 找到对应可以安排的 column位置 往里放 放完了 递归
+        for (int i = 0; i < n; i++) {
+            // 列的位置
+            if (columnSet.contains(i)) {
+                continue;
+            }
+            if (diagonalSet1.contains(i + rowIndex)) {
+                continue;
+            }
+            if (diagonalSet2.contains(i - rowIndex)) {
+                continue;
+            }
+            queens[rowIndex] = i;
+            columnSet.add(i);
+            diagonalSet1.add(i + rowIndex);
+            diagonalSet2.add(i - rowIndex);
+            backtracking(result, columnSet, diagonalSet1, diagonalSet2, queens, n, rowIndex + 1);
+            diagonalSet1.remove(i + rowIndex);
+            diagonalSet2.remove(i - rowIndex);
+            columnSet.remove(i);
+            queens[rowIndex] = -1;
+        }
+    }
+
+
+    /**
+     *
+     * @param queens 对饮放置在 哪个行的那个列上
+     * @return
+     */
+    private List<String> generateResult(int[] queens) {
+        List<String> resultList = new ArrayList<>();
+        int n = queens.length;
+        for (int i = 0; i < queens.length; i++) {
+            char[] chars = new char[n];
+            Arrays.fill(chars, '.');
+            chars[queens[i]] = 'Q';
+            resultList.add(new String(chars));
+        }
+        return resultList;
+    }
+
+
+
+
 
 }
