@@ -40,7 +40,7 @@ public class Solution {
 
 
     public int countSubstrings(String s) {
-
+        // 枚举
         return -1;
     }
 }
