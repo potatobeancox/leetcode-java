@@ -5,7 +5,9 @@ import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * 987. 二叉树的垂序遍历
@@ -67,7 +69,67 @@ public class Solution {
 
 
     public List<List<Integer>> verticalTraversal(TreeNode root) {
-        return null;
+        // 中序遍历 将 对应节点 value 放入优先级队列  column row value
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(
+                Comparator.comparingInt((int[] ele) -> ele[0])
+                        .thenComparingInt(ele -> ele[1])
+                        .thenComparingInt(ele -> ele[2]));
+        dfs(root, priorityQueue, 0, 0);
+        // 优先级队列 pop 记录当前 上一个colmn index
+        List<List<Integer>> list = new ArrayList<>();
+        if (priorityQueue.isEmpty()) {
+            return list;
+        }
+        int[] poll = priorityQueue.poll();
+        int lastCol = poll[0];
+        List<Integer> elementList = new ArrayList<>();
+        list.add(elementList);
+        elementList.add(poll[2]);
+        while (!priorityQueue.isEmpty()) {
+            int[] otherPoll = priorityQueue.poll();
+            if (otherPoll[0] == lastCol) {
+                elementList.add(otherPoll[2]);
+            } else {
+                elementList = new ArrayList<>();
+                list.add(elementList);
+                elementList.add(otherPoll[2]);
+                lastCol = otherPoll[0];
+            }
+        }
+        return list;
+    }
+
+    /**
+     *
+     * @param root
+     * @param priorityQueue
+     */
+    private void dfs(TreeNode root, PriorityQueue<int[]> priorityQueue,
+            int row, int col) {
+        if (null == root) {
+            return;
+        }
+        priorityQueue.add(new int[] {col, row, root.val});
+        if (null != root.left) {
+            dfs(root.left, priorityQueue, row + 1, col - 1);
+        }
+        if (null != root.right) {
+            dfs(root.right, priorityQueue, row + 1, col + 1);
+        }
+    }
+
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(3);
+        root.left = new TreeNode(9);
+        root.right = new TreeNode(20);
+
+        root.right.left = new TreeNode(15);
+        root.right.right = new TreeNode(7);
+
+        Solution solution = new Solution();
+        List<List<Integer>> list = solution.verticalTraversal(root);
+        // [[9],[3,15],[20],[7]]
+        System.out.println(list);
     }
 
 }
