@@ -45,60 +45,35 @@ public class Solution {
         if (s.length() == 1) {
             return n;
         }
-        // 找到找到第一个 递减的位置 i
+        // 找到找到第一个 递减的位置 i 大于 i+ 1
         char[] numChar = s.toCharArray();
         boolean isUp = true;
         int targetIndex = -1;
-        for (int i = 0; i < numChar.length; i++) {
-            if (i == 0) {
-                continue;
-            }
-            if (numChar[i] >= numChar[i-1]) {
-                continue;
-            }
-            // 找到第一个 1221 中 最后一个1的位置
-            isUp = false;
-            targetIndex = i;
-            break;
-        }
-        if (isUp) {
-            return n;
-        }
-
-        // i位置之后 都是 9（包括i位置）
-        char[] targetNumChar = numChar.clone();
-        for (int i = targetIndex; i < numChar.length; i++) {
-            targetNumChar[i] = '9';
-        }
-        // i位置之前 找到 第一个 比i 小的位置 的位置 如果这个位置 -- 其他的位置 如果有的话 直接 9了
-        int lastMinIndex = -1;
-        for (int i = targetIndex - 1; i > 0; i--) {
+        int i;
+        for (i = 0; i + 1 < numChar.length; i++) {
+            // 找到第一个 i位置 大于 i+ 1的位置
             if (numChar[i] > numChar[i+1]) {
-                lastMinIndex = i;
+                isUp = false;
                 break;
             }
         }
-        if (lastMinIndex != -1) {
-            // lastMinIndex -- ，
-            targetNumChar[lastMinIndex] = (char) (targetNumChar[lastMinIndex] - 1);
-            for (int i = lastMinIndex+1; i < targetIndex; i++) {
-                targetNumChar[i] = '9';
-            }
-        } else {
-            // 前边全一样 第一个位置 -- 其他全是9
-            targetNumChar[0] = (char) (targetNumChar[0] - 1);
-            for (int i = 1; i < targetIndex; i++) {
-                targetNumChar[i] = '9';
-            }
+        // 已经是升序 直接返回
+        if (isUp) {
+            return n;
         }
-
-        // 计算返回结果
-        int num = 0;
-        for (char ch : targetNumChar) {
-            num *= 10;
-            num += (ch - '0');
+        // 从 i位置 往前 --
+        numChar[i]--;
+        while (i > 0 && numChar[i-1] > numChar[i]) {
+            numChar[i-1]--;
+            i--;
         }
-        return num;
+        int j = i + 1;
+        // 将 j 之后的字符都换成 9
+        while (j < numChar.length) {
+            numChar[j] = '9';
+            j++;
+        }
+        return Integer.parseInt(new String(numChar));
     }
 
     public static void main(String[] args) {
