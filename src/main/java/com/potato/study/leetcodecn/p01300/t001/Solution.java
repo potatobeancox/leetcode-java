@@ -3,8 +3,11 @@ package com.potato.study.leetcodecn.p01300.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import org.junit.Assert;
 
 /**
  * 1300. 转变数组后最接近目标值的数组和
@@ -45,7 +48,44 @@ import java.util.Queue;
 public class Solution {
 
     public int findBestValue(int[] arr, int target) {
-
+        // 排序 计算
+        Arrays.sort(arr);
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+            // 当前有多少 变成sum的
+            int count = arr.length - 1 - i;
+            if (sum + count * arr[i] >= target) {
+                // 计算差值
+                int diff = sum + count * arr[i] - target;
+                if (diff >= 0) {
+                    int diffEach = diff / arr.length;
+                    if (diff % arr.length == 0) {
+                        return arr[i] - diffEach;
+                    }
+                }
+            }
+        }
         return -1;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                4,9,3
+        };
+        int target = 10;
+        int bestValue = solution.findBestValue(arr, target);
+        System.out.println(bestValue);
+        Assert.assertEquals(3, bestValue);
+
+
+        arr = new int[] {
+                2,3,5
+        };
+        target = 10;
+        bestValue = solution.findBestValue(arr, target);
+        System.out.println(bestValue);
+        Assert.assertEquals(5, bestValue);
     }
 }

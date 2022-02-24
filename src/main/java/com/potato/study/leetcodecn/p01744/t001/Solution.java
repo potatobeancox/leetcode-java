@@ -70,23 +70,28 @@ public class Solution {
         // 计算
         boolean[] result = new boolean[queries.length];
         for (int i = 0; i < queries.length; i++) {
-            // 在第day 天 需要吃多少苹果
-            int day = queries[i][1];
-            int type = queries[i][0];
-            int needEatCount = prefixSum[type];
-            // 看看能不能够吃
-            boolean canEat = false;
-            if (type == 0) {
-                if (day == 0) {
-                    canEat = true;
-                } else {
-                    canEat = needEatCount > day;
-                }
-            } else {
-                int needEatCountPre = prefixSum[type-1];
-                canEat = (needEatCountPre < day * queries[i][2] && day * queries[i][2] <= needEatCount);
+            // 在每天吃 不超过 dailyCapi 颗糖果的前提下，你可以在第 favoriteDayi 天吃到第 favoriteTypei 类糖果；否则 answer[i] 为 false 
+            int favoriteDay = queries[i][1];
+            // queries[i] = [favoriteTypei, favoriteDayi, dailyCapi]
+            int favoriteType = queries[i][0];
+            int maxDailyEat = queries[i][2];
+            // favoriteDay - 1 天 最小吃多少个苹果 做多吃多少个
+            int minEatCount = 0;
+            int maxEatCount = 0;
+            if (favoriteDay != 0) {
+                minEatCount = (favoriteDay - 1);
+                maxEatCount = maxDailyEat * (favoriteDay - 1);
             }
-            result[i] = canEat;
+            // 不够吃
+            if (prefixSum[favoriteDay] < minEatCount) {
+                result[favoriteDay] = false;
+                continue;
+            }
+            if (prefixSum[favoriteDay] > maxEatCount) {
+                result[favoriteDay] = false;
+                continue;
+            }
+            result[favoriteDay] = true;
         }
         return result;
     }
