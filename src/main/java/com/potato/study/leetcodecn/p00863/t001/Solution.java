@@ -52,6 +52,7 @@ public class Solution {
         // 递归生成 map key index ，value parent 节点
         Map<Integer, TreeNode> parentMap = new HashMap<>();
         List<Integer> resultList = new ArrayList<>();
+        // 生成 map key 节点值 value 这个值对应的父亲节点
         dfsGetParentMap(parentMap, root, resultList, 0, k, root == target, target);
         // 在map中递归找到
         dfsGetResultFromParentMap(target, parentMap, k, resultList, 0);
