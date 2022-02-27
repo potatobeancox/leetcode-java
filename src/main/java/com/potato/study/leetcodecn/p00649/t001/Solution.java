@@ -2,6 +2,9 @@ package com.potato.study.leetcodecn.p00649.t001;
 
 import org.junit.Assert;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * 649. Dota2 参议院
  *
@@ -61,34 +64,42 @@ public class Solution {
      * 否则 判断当前点是否被舍弃
      * 可以就舍弃
      * 不可以 舍弃之前的i
+     *
+     * https://leetcode-cn.com/problems/dota2-senate/solution/dota2-can-yi-yuan-by-leetcode-solution-jb7l/
+     *
      * @param senate
      * @return
      */
     public String predictPartyVictory(String senate) {
-        // 对于先出场的议员一定是禁用一个人权利
-        char current = senate.charAt(0);
-        int rejectSenateCount = 1;
-        int ramainSenateCount = 1;
-        for (int i = 1; i < senate.length(); i++) {
+        // 两个 queue 分别存 Radiant Dire 出现的index
+        Queue<Integer> radiant = new LinkedList<>();
+        Queue<Integer> dire = new LinkedList<>();
+        for (int i = 0; i < senate.length(); i++) {
             char ch = senate.charAt(i);
-            // 连续两个参议 有效 返回获胜者
-            if (current == ch) {
-                rejectSenateCount++;
-                ramainSenateCount++;
-                continue;
-            }
-            // 判断当前的参议是否被禁用
-            if (rejectSenateCount > 0) {
-                rejectSenateCount--;
-                continue;
+            if (ch == 'D') {
+                dire.add(i);
             } else {
-                // rejectSenateCount == 0;
-                if (ramainSenateCount > 0) {
-                    ramainSenateCount--;
-                }
+                radiant.add(i);
             }
         }
-        return current == 'R' ? "Radiant" : "Dire";
+        while (!radiant.isEmpty() && !dire.isEmpty()) {
+            Integer radiantIndex = radiant.peek();
+            Integer direIndex = dire.peek();
+            if (radiantIndex < direIndex) {
+                dire.poll();
+                Integer pollIndex = radiant.poll();
+                radiant.add(pollIndex + senate.length());
+            } else {
+                radiant.poll();
+                Integer pollIndex = dire.poll();
+                dire.add(pollIndex + senate.length());
+            }
+        }
+        // 两个队列有一个非空
+        if (!dire.isEmpty()) {
+            return "Dire";
+        }
+        return "Radiant";
     }
 
     public static void main(String[] args) {
