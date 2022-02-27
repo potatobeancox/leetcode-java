@@ -52,27 +52,7 @@ public class Solution {
 
     // 1621
     public int numberOfSets(int n, int k) {
-        // dp ij 从 0 - i 分成 j段的可能数 i（包含i位置的点）
-        int[][] dp = new int[n][k+1];
-        // 初始化 dp x 1 = 1;
-        for (int i = 0; i < n; i++) {
-            dp[i][1] = 1;
-        }
-        // dp ij = sum dp k (0-i) j-1
-        for (int i = 0; i < n; i++) {
-            // 控制分段数量
-            for (int j = 1; j <= k; j++) {
-                // 分段数 大于 字符数
-                if (i + 1 < j) {
-                    continue;
-                }
-                // 控制之前的分段数
-                for (int l = 0; l < i; l++) {
-                    dp[i][j] += dp[l][j-1];
-                }
-            }
-        }
-        return dp[n-1][k];
+        return -1;
     }
 
 
