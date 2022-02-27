@@ -35,30 +35,33 @@ import java.lang.ref.SoftReference;
 public class Solution {
 
     public double largestSumOfAverages(int[] nums, int k) {
-        // dp ij 从 0-i 分成j最获取到的最大平均值 对于每次分割 dp ij =
+        // dp ij 从 0-i （包含i） 分成j最获取到的 最大平均值的和
         int n = nums.length;
-        double[][] dp = new double[n+1][k+1];
+        double[][] dp = new double[n][k+1];
+        // 初始化一下 只分成1组的平均值
+        double sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            // 0-i 分成一组
+            dp[i][1] = sum / (i+1);
+        }
 
-
-        dp[1][1] = nums[0];
-        for (int l = 1; l <= k; l++) {
-            for (int i = 2; i <= n; i++) {
-                // 单独分组
-                if (l != 1 && dp[i-1][l-1] == 0) {
-                    continue;
-                }
-//                dp[i][l] = dp[i-1][l-1] + nums[i-1];
-                int sum = 0;
-                int count = 0;
-                // 和前一个分到一起
-                for (int j = i; j >= 1; j--) {
-                    sum += nums[j-1];
-                    count++;
-                    dp[i][l] = Math.max(dp[j-1][l-1] + (sum * 1.0 / count), dp[i][l]);
+        for (int j = 2; j <= k; j++) {
+            for (int i = j-1; i < nums.length; i++) {
+                // 第 i 单独作为一组
+                dp[i][j] = Math.max(dp[i][j], dp[i-1][j-1] + nums[i]);
+                // 和前一个分到一起 计算 从i位置 往前的和
+                double rangSum = nums[i];
+                for (int l = 1; i-l > 0; l++) {
+                    rangSum += nums[i-l];
+                    if (i-l < j-1) {
+                        break;
+                    }
+                    dp[i][j] = Math.max(dp[i][j], dp[i-l-1][j-1] + rangSum / (l+1));
                 }
             }
         }
-        return dp[n][k];
+        return dp[n-1][k];
     }
 
     /**
