@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p02178.t001;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,8 +47,28 @@ import java.util.List;
 public class Solution {
 
 
+    /**
+     *https://leetcode-cn.com/problems/maximum-split-of-positive-even-integers/solution/5998-chai-fen-cheng-zui-duo-shu-mu-de-ou-1y4r/
+     * @param finalSum
+     * @return
+     */
     public List<Long> maximumEvenSplit(long finalSum) {
-
-        return null;
+        List<Long> result = new ArrayList<>();
+        if (finalSum % 2 == 1) {
+            return result;
+        }
+        long num = 2;
+        while (finalSum >= num) {
+            result.add(num);
+            finalSum -= num;
+            num += 2;
+        }
+        // 如果最后数字不够了 直接加到最后一个位置
+        if (finalSum > 0) {
+            long remove = result.remove(result.size() - 1);
+            remove += finalSum;
+            result.add(remove);
+        }
+        return result;
     }
 }
