@@ -54,22 +54,41 @@ public class Solution {
     }
 
 
+
     /**
      *
      * @param matchsticks
-     * @param target
-     * @param visit
+     * @param target        每条边的长度
+     * @param visit         true 为i位置 火柴已经被使用
+     * @param count         当前边个数
+     * @param current       当前凑到了边的长度
+     * @param visitCount    当前已经用了 多少个火柴
      * @return
      */
     private boolean makesquare(int[] matchsticks, int target, boolean[] visit, int count, int current, int visitCount) {
+        // 终止条件
+        if (current > target) {
+            // 当前边长度过长
+            return false;
+        }
+        // 用的太多
+        if (visitCount > matchsticks.length) {
+            return false;
+        }
+        // 超多4个边
+        if (count > 4) {
+            return false;
+        }
         // 判断是否全部 visit
         if (visitCount == matchsticks.length) {
             return count == 4;
         }
         for (int i = 0; i < matchsticks.length; i++) {
+            // 访问过了 continue
             if (visit[i]) {
                 continue;
             }
+            // 当前 有一个边超级长
             if (matchsticks[i] > target) {
                 return false;
             }
@@ -77,6 +96,7 @@ public class Solution {
             if (nextCurrent > target) {
                 continue;
             }
+            // 用这个火柴
             visit[i] = true;
             boolean flag;
             if (nextCurrent == target) {
@@ -84,10 +104,10 @@ public class Solution {
             } else {
                 flag = makesquare(matchsticks, target, visit, count, nextCurrent, visitCount + 1);
             }
-            visit[i] = false;
             if (flag) {
                 return true;
             }
+            visit[i] = false;
         }
         return false;
     }
@@ -103,14 +123,22 @@ public class Solution {
         Assert.assertEquals(true, makesquare);
 
 
+
+        arr = new int[] {
+                3,3,3,3,4
+        };
+        makesquare = solution.makesquare(arr);
+        System.out.println(makesquare);
+        Assert.assertEquals(false, makesquare);
+
+
+
         arr = new int[] {
                 5,5,5,5,16,4,4,4,4,4,3,3,3,3,4
         };
         makesquare = solution.makesquare(arr);
         System.out.println(makesquare);
         Assert.assertEquals(true, makesquare);
-
-        //[5,5,5,5,16,4,4,4,4,4,3,3,3,3,4]
     }
 
 }
