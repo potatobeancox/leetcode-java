@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p02183.t001;
 
 import com.potato.study.leetcode.domain.ListNode;
+import org.junit.Assert;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 2183. 统计可以被 K 整除的下标对数目
@@ -42,13 +46,68 @@ public class Solution {
 
     public long countPairs(int[] nums, int k) {
         int count = 0;
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i + 1; j < nums.length; j++) {
-                if ((long)nums[i] * nums[j] % k == 0) {
-                    count++;
+        // 存储 当前 最大公约数
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : nums) {
+            if (num % k == 0) {
+                count++;
+            } else {
+                int gcd = gcd(num, k);
+                countMap.put(gcd, countMap.getOrDefault(gcd, 0 ) + 1);
+            }
+        }
+        long totalCount = 0;
+        // 都取自可以整除k的数组
+        totalCount += ((long)count * (count - 1) / 2);
+        totalCount += (long)count * (nums.length - count);
+        // 各自的约数 可以被整除的
+        long tempCount = 0;
+        for (int key1 : countMap.keySet()) {
+            for (int key2 : countMap.keySet()) {
+                if (key1 * key2 % k != 0) {
+                    continue;
+                }
+                // 能整除
+                if (key1 == key2) {
+                    tempCount += (long)countMap.get(key1) * (countMap.get(key1) - 1);
+                } else {
+                    tempCount += (long)countMap.get(key1) * countMap.get(key2);
                 }
             }
         }
-        return count;
+        return totalCount + tempCount / 2;
+    }
+
+
+    /**
+     * 辗转相除 求最大公约数
+     * @param a
+     * @param b
+     * @return
+     */
+    private int gcd(int a, int b) {
+        // 被除数可以整除除数 返回除数
+        if (a % b == 0) {
+            return b;
+        }
+        return gcd(b, a % b);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[]{1,2,3,4,5};
+        int k = 2;
+        long l = solution.countPairs(nums, k);
+        System.out.println(l);
+        Assert.assertEquals(7, l);
+
+
+        nums = new int[]{
+                8,10,2,5,9,6,3,8,2
+        };
+        k = 6;
+        l = solution.countPairs(nums, k);
+        System.out.println(l);
+        Assert.assertEquals(18, l);
     }
 }
