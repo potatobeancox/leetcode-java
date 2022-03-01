@@ -38,6 +38,7 @@ import java.util.Stack;
 public class MinStack {
 
     private Stack<Integer> stack;
+    // 递减的
     private Deque<Integer> minStack;
 
     /** initialize your data structure here. */
@@ -59,8 +60,8 @@ public class MinStack {
         if (stack.isEmpty()) {
             return;
         }
-        Integer pop = stack.pop();
-        if (!minStack.isEmpty() && pop == minStack.peekLast()) {
+        int pop = stack.pop();
+        if (!minStack.isEmpty() && pop == minStack.peekLast().intValue()) {
             minStack.pollLast();
         }
     }
