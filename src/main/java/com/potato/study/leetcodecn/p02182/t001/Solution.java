@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p02182.t001;
 
 import java.util.PriorityQueue;
 
+import org.junit.Assert;
+
 import com.potato.study.leetcode.domain.ListNode;
 
 /**
@@ -79,21 +81,25 @@ public class Solution {
             // 当前最大
             int[] poll = priorityQueue.poll();
             if (poll[1] > repeatLimit && priorityQueue.isEmpty()) {
-                return "";
+                for (int i = 0; i < repeatLimit; i++) {
+                    builder.append((char) ('a' + poll[0]));
+                }
+                return builder.toString();
             }
             if (poll[1] <= repeatLimit) {
                 for (int i = 0; i < poll[1]; i++) {
                     builder.append((char) ('a' + poll[0]));
                 }
+                continue;
             }
-            // 没有后续字符 无法组成
-            if (priorityQueue.isEmpty()) {
-                return "";
-            }
+            // 有多于 repeatLimit 个字符
             for (int i = 0; i < repeatLimit; i++) {
                 builder.append((char) ('a' + poll[0]));
             }
             poll[1] -= repeatLimit;
+            if (priorityQueue.isEmpty()) {
+                return builder.toString();
+            }
             int[] other = priorityQueue.poll();
             builder.append((char) ('a' + other[0]));
             other[1]--;
@@ -104,4 +110,24 @@ public class Solution {
         }
         return builder.toString();
     }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "cczazcc";
+        int repeatLimit = 3;
+        String s = solution.repeatLimitedString(str, repeatLimit);
+        System.out.println(s);
+        Assert.assertEquals("zzcccac", s);
+
+        // 不必使用完 所有的字符串
+        str = "aababab";
+        repeatLimit = 2;
+        s = solution.repeatLimitedString(str, repeatLimit);
+        System.out.println(s);
+        Assert.assertEquals("bbabaa", s);
+    }
+
+
+
 }
