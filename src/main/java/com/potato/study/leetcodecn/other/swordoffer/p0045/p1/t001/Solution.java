@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.other.swordoffer.p0045.p1.t001;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import org.junit.Assert;
 
@@ -38,7 +39,23 @@ import org.junit.Assert;
 public class Solution {
 
     public String minNumber(int[] nums) {
-        return null;
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>(
+                (o1, o2) -> {
+                    long num1 = Long.parseLong(o1 + o2);
+                    long num2 = Long.parseLong(o2 + o1);
+                    return Long.compare(num1, num2);
+                }
+        );
+
+        for (int num : nums) {
+            priorityQueue.add(String.valueOf(num));
+        }
+
+        StringBuilder builder = new StringBuilder();
+        while (!priorityQueue.isEmpty()) {
+            builder.append(priorityQueue.poll());
+        }
+        return builder.toString();
     }
 
 }
