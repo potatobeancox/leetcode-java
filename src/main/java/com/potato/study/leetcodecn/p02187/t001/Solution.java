@@ -49,13 +49,17 @@ public class Solution {
 
     // 2187 二分查找 先找到 最小值 1 最大值  totalTrips * min 二分查找
     public long minimumTime(int[] time, int totalTrips) {
+        // 如果只有一个
+        if (time.length == 1) {
+            return (long) time[0] * totalTrips;
+        }
         Arrays.sort(time);
-        int min = time[0];
-        int left = 1;
-        int right = totalTrips * min;
+        long min = time[0];
+        long left = 1;
+        long right = (long) totalTrips * min;
         long res = right;
         while (left <= right) {
-            int mid = (left + right) / 2;
+            long mid = (left + right) / 2;
             // 计算mid 时间能 完成多少个 totalTrips
             long trips = getTrips(time, mid);
             if (trips >= totalTrips) {
@@ -69,7 +73,7 @@ public class Solution {
     }
 
 
-    private long getTrips(int[] times, int cost) {
+    private long getTrips(int[] times, long cost) {
         long total = 0;
         for (int time : times) {
             total += (cost / time);
