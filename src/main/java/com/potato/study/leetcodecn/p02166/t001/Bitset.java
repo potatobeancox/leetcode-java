@@ -74,9 +74,11 @@ public class Bitset {
 
     // 将idx 变成1
     public void fix(int idx) {
+        // 当前记录的是1
         if (isIdxOne) {
             indexSet.add(idx);
         } else {
+            // 当前记录的是0
             indexSet.remove(idx);
         }
     }
@@ -84,8 +86,10 @@ public class Bitset {
     // 将idx 变成 0
     public void unfix(int idx) {
         if (isIdxOne) {
+            // 当前记录的是1
             indexSet.remove(idx);
         } else {
+            // 当前记录的是0
             indexSet.add(idx);
         }
     }
@@ -103,7 +107,7 @@ public class Bitset {
 
     // 是否有已个 1
     public boolean one() {
-        return (isIdxOne && indexSet.size() > 1)
+        return (isIdxOne && indexSet.size() >= 1)
                 || (!isIdxOne && indexSet.size() < size);
     }
 
@@ -135,4 +139,31 @@ public class Bitset {
         }
         return builder.toString();
     }
+
+
+    public static void main(String[] args) {
+        Bitset bitset = new Bitset(2);
+        bitset.flip();
+        bitset.unfix(1);
+        bitset.all();
+        bitset.fix(1);
+        bitset.fix(1);
+        bitset.unfix(1);
+        bitset.all();
+        bitset.count();
+        bitset.toString();
+        bitset.toString();
+        bitset.toString();
+        bitset.unfix(0);
+        bitset.flip();
+        bitset.all();
+        bitset.unfix(0);
+        bitset.one(); // true
+    }
+
+
+//    ["Bitset","flip","unfix","all","fix","fix","unfix","all","count","toString","toString","toString","unfix","flip","all","unfix","one","one","all","fix","unfix"]
+//     [[2],[],          [1],   [],   [1],[1],     [1],    [],    [],     [],        [],        [],       [0],     [],   [],    [0],   [],[],[],[0],[0]]
+
+
 }
