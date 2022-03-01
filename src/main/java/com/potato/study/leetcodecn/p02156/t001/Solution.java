@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p02156.t001;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
+
 /**
  * 2156. 查找给定哈希值的子串
  *
@@ -71,5 +73,18 @@ public class Solution {
             hashCode += ((((int) Math.pow(power, i) % power) * ((word.charAt(i) - 'a') % power)) % modulo);
         }
         return hashCode % modulo;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "leetcode";
+        int power = 7;
+        int modulo = 20;
+        int k = 2;
+        int hashValue = 0;
+        String str = solution.subStrHash(s, power, modulo, k, hashValue);
+        System.out.println(str);
+        Assert.assertEquals("ee", str);
+
     }
 }
