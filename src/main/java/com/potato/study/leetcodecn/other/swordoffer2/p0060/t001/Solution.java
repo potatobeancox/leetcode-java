@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0060.t001;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * 剑指 Offer II 060. 出现频率最高的 k 个数字
@@ -42,6 +46,30 @@ import java.util.List;
 public class Solution {
 
     public int[] topKFrequent(int[] nums, int k) {
-        return null;
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : nums) {
+            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
+        }
+        // 小根堆
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(
+                (i1, i2) -> {
+                    return Integer.compare(countMap.get(i1), countMap.get(i2));
+                }
+        );
+        for (int key : countMap.keySet()) {
+            if (priorityQueue.isEmpty()
+                    || priorityQueue.size() < k
+                    || countMap.get(priorityQueue.peek()) < countMap.get(key)) {
+                priorityQueue.add(key);
+            }
+            if (priorityQueue.size() > k) {
+                priorityQueue.poll();
+            }
+        }
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = priorityQueue.poll();
+        }
+        return res;
     }
 }
