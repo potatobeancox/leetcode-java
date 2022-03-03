@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0004.t001;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,7 +42,15 @@ import java.util.Set;
  */
 public class Solution {
     public int singleNumber(int[] nums) {
-        // 变成-1
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : nums) {
+            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
+        }
+        for (int key : countMap.keySet()) {
+            if (countMap.get(key) == 1) {
+                return key;
+            }
+        }
         return -1;
     }
 }
