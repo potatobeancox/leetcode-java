@@ -40,7 +40,14 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
     public int minChanges(int[] nums, int k) {
+
 
         return -1;
     }
