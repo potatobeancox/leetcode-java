@@ -44,40 +44,51 @@ package com.potato.study.leetcodecn.p00307.t001;
  */
 public class NumArray {
 
+    // 存索引和数字
     private int[] nums;
+    // 数字长度
     private int n;
     /**
      * 用一个数组进行初始化，相当于存一个满二叉树
+     * https://leetcode-cn.com/problems/range-sum-query-mutable/solution/xian-duan-shu-zu-shou-hui-tu-xiang-yi-qing-er-chu-/
      * @param nums
      */
     public NumArray(int[] nums) {
         int n = nums.length;
         this.n = n;
-        this.nums = new int[2 * n - 1];
+        this.nums = new int[2 * n];
         // 赋值
         for (int i = n; i < this.nums.length; i++) {
             this.nums[i] = nums[i - n];
         }
-        // 从后往前生成
-        for (int i = n-1; i >= 0; i--) {
-            this.nums[i] = this.nums[2*i+1] + this.nums[2*i+2];
+        // 从后往前生成 0位置空出来了
+        for (int i = n-1; i > 0; i--) {
+            this.nums[i] = this.nums[2*i] + this.nums[2*i+1];
         }
     }
 
     // 更新 当前 index 对应下表 一次往上更新
     public void update(int index, int val) {
         int[] target = this.nums;
-        target[index + this.n] = val;
-        // 往上更新
+        // 更新原来数组
         int targetIndex = index + this.n;
-        while (targetIndex >= 0) {
-            targetIndex--;
-            targetIndex /= 2;
-            if (targetIndex < 0) {
-                break;
+        target[targetIndex] = val;
+        // 往上更新
+        while (targetIndex > 0) {
+            int left;
+            int right;
+            if (targetIndex % 2 == 0) {
+                left = targetIndex;
+                right = targetIndex+1;
+            } else {
+                left = targetIndex - 1;
+                right = targetIndex;
             }
             // 计算
-            target[targetIndex] = target[2*targetIndex+1] + target[2*targetIndex+2];
+            int parentIndex = targetIndex / 2;
+            target[parentIndex] = target[left] + target[right];
+
+            targetIndex = parentIndex;
         }
     }
 
@@ -87,20 +98,27 @@ public class NumArray {
         right += this.n;
         int total = 0;
         while (left <= right) {
-            if (left % 2 == 0) {
+            if (left % 2 == 1) {
                 total += nums[left];
                 left++;
             }
-            if (right % 2 == 1) {
+            if (right % 2 == 0) {
                 total += nums[right];
                 right--;
             }
-            left -= 1;
             left /= 2;
-
-            right -= 1;
             right /= 2;
         }
         return total;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = new int[] {
+                1, 3, 5
+        };
+        NumArray numArray = new NumArray(arr);
+        System.out.println(numArray.sumRange(0, 2));
+        numArray.update(1, 2);
+        System.out.println(numArray.sumRange(0, 2));
     }
 }
