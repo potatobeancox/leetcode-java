@@ -1,8 +1,10 @@
 package com.potato.study.leetcodecn.p00310.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
-import java.util.List;
+import java.lang.ref.SoftReference;
+import java.util.*;
 
 /**
  * 310. 最小高度树
@@ -56,8 +58,74 @@ import java.util.List;
 public class Solution {
 
 
+    /**
+     * https://leetcode-cn.com/problems/minimum-height-trees/solution/zui-rong-yi-li-jie-de-bfsfen-xi-jian-dan-zhu-shi-x/
+     * @param n
+     * @param edges
+     * @return
+     */
     public List<Integer> findMinHeightTrees(int n, int[][] edges) {
-        // 记录出度 每次对
-        return null;
+        if (n == 1) {
+            List<Integer> result = new ArrayList<>();
+            result.add(0);
+            return result;
+        }
+        // 将 nums 改造成 邻接表 map key 点， value：list 相邻点
+        Map<Integer, List<Integer>> adjacencyMap = new HashMap<>();
+        // 在上一步过程中 计算每个点的 度 （因为是无向图） 出度等于 入度
+        int[] degree = new int[n];
+        for (int i = 0; i < edges.length; i++) {
+            int from = edges[i][0];
+            int to = edges[i][1];
+            List<Integer> fromList = adjacencyMap.getOrDefault(from, new ArrayList<>());
+            fromList.add(to);
+            adjacencyMap.put(from, fromList);
+
+
+            List<Integer> toList = adjacencyMap.getOrDefault(to, new ArrayList<>());
+            toList.add(from);
+            adjacencyMap.put(to, toList);
+
+            degree[from]++;
+            degree[to]++;
+        }
+        // 找到 度为1的queue
+        Queue<Integer> indexQueue = new LinkedList<>();
+        for (int i = 0; i < degree.length; i++) {
+            if (degree[i] == 1) {
+                indexQueue.add(i);
+            }
+        }
+        // 遍历 每次 都将 pop 一个 并将其 删去 计算度 并将 相邻剩余度为 1 的 进队 记录 当前删除的点 最后一次删除的点就是结果
+        List<Integer> result = new ArrayList<>();
+        while (!indexQueue.isEmpty()) {
+            // dfs
+            int size = indexQueue.size();
+            result = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                int leaf = indexQueue.poll();
+                degree[leaf]--;
+                result.add(leaf);
+                // 找到邻接点 遍历 修改
+                List<Integer> nextList = adjacencyMap.get(leaf);
+                for (int nextIndex : nextList) {
+                    // leaf 被删除 修改 出度
+                    degree[nextIndex]--;
+                    if (degree[nextIndex] == 1) {
+                        indexQueue.add(nextIndex);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 4;
+        String input = "[[1,0],[1,2],[1,3]]";
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        List<Integer> minHeightTrees = solution.findMinHeightTrees(n, edges);
+        System.out.println(minHeightTrees); // 1
     }
 }
