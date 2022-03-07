@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p00468.t001;
 
 
+import org.junit.Assert;
+
 /**
  * 468. 验证IP地址
  *
@@ -49,15 +51,101 @@ public class Solution {
 
     public String validIPAddress(String queryIP) {
         if (queryIP.contains(":")) {
+            // 如果最后一个字符是 ：
+            if (queryIP.charAt(queryIP.length() - 1) == ':') {
+                return "Neither";
+            }
+            if (queryIP.charAt(0) == ':') {
+                return "Neither";
+            }
             // ipv6
+            String[] split = queryIP.split(":");
+            // partnum
+            if (split.length != 8) {
+                return "Neither";
+            }
+            for (int i = 0; i < split.length; i++) {
+                // split[i]  每个 部分长度 在 1-4 和之间
+                if (split[i].length() < 1 || split[i].length() > 4) {
+                    return "Neither";
+                }
+                // 不能出现其他字母
+                for (int j = 0; j < split[i].length(); j++) {
+                    char ch = split[i].charAt(j);
+                    if (Character.isDigit(ch)) {
+                        continue;
+                    }
+                    if (!Character.isAlphabetic(ch)) {
+                        return "Neither";
+                    }
+                    // 字母
+                    if ('a' <= ch && ch <= 'f') {
+                        continue;
+                    }
+                    if ('A' <= ch && ch <= 'F') {
+                        continue;
+                    }
+                    return "Neither";
+                }
+            }
 
             return "IPv6";
         } else if (queryIP.contains(".")) {
+            if (queryIP.charAt(queryIP.length() - 1) == '.') {
+                return "Neither";
+            }
+            if (queryIP.charAt(0) == '.') {
+                return "Neither";
+            }
             // ipv4
-
+            String[] split = queryIP.split("\\.");
+            // 4个 part
+            if (split.length != 4) {
+                return "Neither";
+            }
+            // 先导0
+            for (int i = 0; i < split.length; i++) {
+                if (split[i].length() == 0) {
+                    return "Neither";
+                }
+                try {
+                    int partNum = Integer.parseInt(split[i]);
+                    // 大小
+                    if (partNum < 0 || partNum >= 256) {
+                        return "Neither";
+                    }
+                    // 先导0
+                    if (split[i].length() != String.valueOf(partNum).length()) {
+                        return "Neither";
+                    }
+                } catch (Exception e) {
+                    // part 里边有其他字符
+                    return "Neither";
+                }
+            }
             return "IPv4";
         } else {
             return "Neither";
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String ip = "172.16.254.1";
+        String s = solution.validIPAddress(ip);
+        System.out.println(s);
+        Assert.assertEquals("IPv4", s);
+
+
+        ip = "2001:0db8:85a3:0:0:8A2E:0370:7334:";
+        s = solution.validIPAddress(ip);
+        System.out.println(s);
+        Assert.assertEquals("Neither", s);
+
+
+        ip = "1.1.1.1.";
+        s = solution.validIPAddress(ip);
+        System.out.println(s);
+        Assert.assertEquals("Neither", s);
     }
 }
