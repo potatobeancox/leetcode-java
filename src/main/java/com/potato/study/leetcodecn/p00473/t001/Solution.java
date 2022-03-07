@@ -4,6 +4,8 @@ import org.junit.Assert;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  * 473. 火柴拼正方形
@@ -37,77 +39,59 @@ import java.util.Arrays;
 public class Solution {
 
 
+    /**
+     * https://leetcode-cn.com/problems/matchsticks-to-square/solution/huo-chai-pin-zheng-fang-xing-by-leetcode/
+     * @param matchsticks
+     * @return
+     */
     public boolean makesquare(int[] matchsticks) {
-        // 计算 sum
+        // 计算一下每个边 需要达到的大小 matchsticks 排序 倒序
+        Arrays.sort(matchsticks);
+        int left = 0;
+        int right = matchsticks.length - 1;
+        while (left < right) {
+            int tmp = matchsticks[left];
+            matchsticks[left] = matchsticks[right];
+            matchsticks[right] = tmp;
+
+            left++;
+            right--;
+        }
         int sum = 0;
-        for (int stick : matchsticks) {
-            sum += stick;
+        for (int num : matchsticks) {
+            sum += num;
         }
         if (sum % 4 != 0) {
             return false;
         }
-        // 遍历 matchsticks dfs 按照
-        int target = sum / 4;
-        boolean[] visit = new boolean[matchsticks.length];
-        Arrays.sort(matchsticks);
-        return makesquare(matchsticks, target, visit, 0, 0, 0);
+        if (matchsticks.length < 4) {
+            return false;
+        }
+        // 使用 一个数组 存储当前每个边 凑齐的长度
+        int[] edge = new int[4];
+        int index = 0;
+        int eachEdgeLength = sum / 4;
+        return dfs(matchsticks, edge, index, eachEdgeLength);
     }
 
-
-
-    /**
-     *
-     * @param matchsticks
-     * @param target        每条边的长度
-     * @param visit         true 为i位置 火柴已经被使用
-     * @param count         当前边个数
-     * @param current       当前凑到了边的长度
-     * @param visitCount    当前已经用了 多少个火柴
-     * @return
-     */
-    private boolean makesquare(int[] matchsticks, int target, boolean[] visit, int count, int current, int visitCount) {
+    private boolean dfs(int[] matchsticks, int[] edge, int index, int eachEdgeLength) {
         // 终止条件
-        if (current > target) {
-            // 当前边长度过长
-            return false;
+        if (index == matchsticks.length) {
+            return edge[0] == edge[1]
+                    && edge[1] == edge[2]
+                    && edge[2] == edge[3];
         }
-        // 用的太多
-        if (visitCount > matchsticks.length) {
-            return false;
-        }
-        // 超多4个边
-        if (count > 4) {
-            return false;
-        }
-        // 判断是否全部 visit
-        if (visitCount == matchsticks.length) {
-            return count == 4;
-        }
-        for (int i = 0; i < matchsticks.length; i++) {
-            // 访问过了 continue
-            if (visit[i]) {
+        // 找到任意一个放
+        for (int i = 0; i < 4; i++) {
+            if (edge[i] + matchsticks[index] > eachEdgeLength) {
                 continue;
             }
-            // 当前 有一个边超级长
-            if (matchsticks[i] > target) {
-                return false;
-            }
-            int nextCurrent = current + matchsticks[i];
-            if (nextCurrent > target) {
-                continue;
-            }
-            // 用这个火柴
-            visit[i] = true;
-            boolean flag;
-            if (nextCurrent == target) {
-                flag = makesquare(matchsticks, target, visit, count + 1, 0, visitCount + 1);
-            } else {
-                flag = makesquare(matchsticks, target, visit, count, nextCurrent, visitCount + 1);
-            }
+            edge[i] += matchsticks[index];
+            boolean flag = dfs(matchsticks, edge, index + 1, eachEdgeLength);
             if (flag) {
                 return true;
             }
-            visit[i] = false;
+            edge[i] -= matchsticks[index];
         }
         return false;
     }
@@ -133,12 +117,12 @@ public class Solution {
 
 
 
-        arr = new int[] {
-                5,5,5,5,16,4,4,4,4,4,3,3,3,3,4
-        };
-        makesquare = solution.makesquare(arr);
-        System.out.println(makesquare);
-        Assert.assertEquals(true, makesquare);
+//        arr = new int[] {
+//                5,5,5,5,16,4,4,4,4,4,3,3,3,3,4
+//        };
+//        makesquare = solution.makesquare(arr);
+//        System.out.println(makesquare);
+//        Assert.assertEquals(true, makesquare);
     }
 
 }
