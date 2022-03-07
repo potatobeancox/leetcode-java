@@ -74,33 +74,24 @@ public class Solution {
             int fastIndex = getNextIndex(nums, slowIndex);
             while (nums[slowIndex] * nums[fastIndex] > 0
                     && nums[slowIndex] * nums[getNextIndex(nums, fastIndex)] > 0) {
-//                // 方向不相同 返回false
-//                if (nums[slowIndex] * nums[i] < 0 || nums[fastIndex] * nums[i] < 0) {
-//                    return false;
-//                }
                 // 如果 slow 与fast相遇
                 if (slowIndex == fastIndex) {
                     // 只有一个元素的环
-                    if (slowIndex == getNextIndex(nums, slowIndex)) {
-                        break;
+                    if (slowIndex != getNextIndex(nums, slowIndex)) {
+                        return true;
                     }
-                    return true;
+                    break;
                 }
                 // slow 和faset 没有相遇 slow 每次走一步
                 slowIndex = getNextIndex(nums, slowIndex);
                 fastIndex = getNextIndex(nums, getNextIndex(nums, fastIndex));
-//                if (nums[fastIndex] == 0) {
-//                    break;
-//                }
             }
             // 本次遍历的 slow 都改成0
             int visitIndex = i;
             while (nums[visitIndex] != 0) {
-                int tmp = visitIndex;
+                nums[visitIndex] = 0;
                 visitIndex = getNextIndex(nums, visitIndex);
-                nums[tmp] = 0;
             }
-
         }
         return false;
     }
@@ -125,49 +116,6 @@ public class Solution {
         Assert.assertEquals(true, b);
 
 
-        arr = new int[] {
-                -1,2
-        };
-        b = solution.circularArrayLoop(arr);
-        System.out.println(b);
-        Assert.assertEquals(false, b);
 
-        arr = new int[] {
-                -2,1,-1,-2,-2
-        };
-        b = solution.circularArrayLoop(arr);
-        System.out.println(b);
-        Assert.assertEquals(false, b);
-
-
-        arr = new int[] {
-                -1,2
-        };
-        b = solution.circularArrayLoop(arr);
-        System.out.println(b);
-        Assert.assertEquals(false, b);
-
-        arr = new int[] {
-                -1,-2,-3,-4,-5
-        };
-        b = solution.circularArrayLoop(arr);
-        System.out.println(b);
-        Assert.assertEquals(false, b);
-
-
-        arr = new int[] {
-                2,2,2,2,2,4,7
-        };
-        b = solution.circularArrayLoop(arr);
-        System.out.println(b);
-        Assert.assertEquals(false, b);
-
-
-        arr = new int[] {
-                1,-1,2,4,4
-        };
-        b = solution.circularArrayLoop(arr);
-        System.out.println(b);
-        Assert.assertEquals(false, b);
     }
 }
