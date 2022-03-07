@@ -41,40 +41,24 @@ public class Solution {
      * @return
      */
     public int findNthDigit(int n) {
-        // 确定 n位置所在的数字 是几位数的 1-9 9*1数字   10 - 99 90个数 90*2个数字   100-999  900*3 个数字
-        if (n < 10) {
-            return n;
+        // 确定 n 在几位数里边
+        int bitLen = 1;
+        while (n > 9 * Math.pow(10, bitLen - 1) * bitLen) {
+            n -= 9 * Math.pow(10, bitLen - 1) * bitLen;
+            bitLen++;
         }
-        // 当前个数数字 总共有多少个位置  9 - 90，900
-        int bitTotalCount = 9;
-        // 找到第几位数字了
-        int bitCount = 1;
-        int start = 1;
-        int tmp = n;
-        while (tmp >= bitTotalCount) {
-            tmp -= bitTotalCount;
-            bitTotalCount *= 10;
-            bitCount++;
-            start *= 10;
-            bitTotalCount *= bitCount;
-        }
-        // 当前n 在 bitCount 里边 ，看下是哪个数字
-        int num = tmp / bitCount + start;
-        // 看下是这个数字的第几个位置
-        int position = tmp % bitCount;
-        if (position == 0) {
-            num--;
-        }
-        char[] chars = String.valueOf(num).toCharArray();
-        int res;
-        if (position == 0) {
-            // 返回 最后一个位置
-            res = chars[chars.length - 1] - '0';
+        // 确定n 在哪个数字里边
+        int start = (int) Math.pow(10, bitLen - 1);
+        int num = n / bitLen;
+        int remind = (n % bitLen);
+        int target;
+        if (remind != 0) {
+            target = start + num;
+            return String.valueOf(target).charAt(remind - 1) - '0';
         } else {
-            // 返回 position -1 位置
-            res = chars[position - 1] - '0';
+            target = start + num - 1;
+            return String.valueOf(target).charAt(bitLen - 1) - '0';
         }
-        return res;
     }
 
 
@@ -95,10 +79,10 @@ public class Solution {
         System.out.println(res);
         Assert.assertEquals(1, res);
 
-        n = 10000;
+        n = 100;
         res = solution.findNthDigit(n);
         System.out.println(res);
-        Assert.assertEquals(7, res);
+        Assert.assertEquals(5, res);
     }
 
 
