@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p00532.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
+import java.util.Arrays;
+
 /**
  * 532. 数组中的 k-diff 数对
  *
@@ -49,7 +51,22 @@ public class Solution {
 
 
     public int findPairs(int[] nums, int k) {
-
-        return -1;
+        Arrays.sort(nums);
+        int count = 0;
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (j != i + 1 && nums[j] == nums[j-1]) {
+                    continue;
+                }
+                if (nums[j] - nums[i] == k) {
+                    count++;
+                } else if (nums[j] - nums[i] > k) {
+                    break;
+                }
+            }
+        }
+        return count;
     }
+
+
 }
