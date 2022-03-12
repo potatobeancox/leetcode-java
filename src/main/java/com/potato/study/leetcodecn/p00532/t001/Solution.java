@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p00532.t001;
 
 
 import com.potato.study.leetcode.domain.TreeNode;
+import org.junit.Assert;
 
 import java.util.Arrays;
 
@@ -54,6 +55,9 @@ public class Solution {
         Arrays.sort(nums);
         int count = 0;
         for (int i = 0; i < nums.length; i++) {
+            if (i != 0 && nums[i] == nums[i-1]) {
+                continue;
+            }
             for (int j = i + 1; j < nums.length; j++) {
                 if (j != i + 1 && nums[j] == nums[j-1]) {
                     continue;
@@ -66,6 +70,17 @@ public class Solution {
             }
         }
         return count;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                3, 1, 4, 1, 5
+        };
+        int k = 2;
+        int pairs = solution.findPairs(nums, k);
+        System.out.println(pairs);
+        Assert.assertEquals(2, pairs);
     }
 
 
