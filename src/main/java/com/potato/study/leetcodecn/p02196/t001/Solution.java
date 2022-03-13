@@ -3,8 +3,7 @@ package com.potato.study.leetcodecn.p02196.t001;
 import com.potato.study.leetcode.domain.TreeNode;
 import org.junit.Assert;
 
-import java.util.Arrays;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -55,8 +54,34 @@ public class Solution {
 
 
     public TreeNode createBinaryTree(int[][] descriptions) {
+        // 存可能的父亲节点
+        Set<TreeNode> parentSet = new HashSet<>();
+        Set<TreeNode> childSet = new HashSet<>();
+        // 存当前 value 对应节点
+        Map<Integer, TreeNode> valueNodeMap = new HashMap<>();
+        for (int i = 0; i < descriptions.length; i++) {
+            int parentValue = descriptions[i][0];
+            int childValue = descriptions[i][1];
+            boolean isLeft = descriptions[i][2] == 1;
 
-        return null;
+            TreeNode parent = valueNodeMap.getOrDefault(parentValue, new TreeNode(parentValue));
+            TreeNode child = valueNodeMap.getOrDefault(childValue, new TreeNode(childValue));
+
+            if (isLeft) {
+                parent.left = child;
+            } else {
+                parent.right = child;
+            }
+
+            parentSet.add(parent);
+            childSet.add(child);
+
+            valueNodeMap.put(parentValue, parent);
+            valueNodeMap.put(childValue, child);
+
+        }
+        parentSet.removeAll(childSet);
+        return parentSet.iterator().next();
     }
 
 }
