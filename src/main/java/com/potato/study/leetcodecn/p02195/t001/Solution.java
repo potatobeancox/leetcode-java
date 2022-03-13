@@ -47,17 +47,34 @@ public class Solution {
 
 
     public long minimalKSum(int[] nums, int k) {
-        Set<Integer> collectSet = Arrays.stream(nums).boxed()
-                .collect(Collectors.toSet());
-        int num = 1;
+        // 1 排序
+        Arrays.sort(nums);
+        // 2 遍历 每个位置 找 k 可能的数字 最后返回和
+        int start = 1;
         long sum = 0;
-        for (int i = 0; i < k; i++) {
-            while (collectSet.contains(num)) {
-                num++;
+        for (int i = 0; i < nums.length; i++) {
+            if (k == 0) {
+                break;
             }
-            sum += num;
-            num++;
+            if (nums[i] > start) {
+                // num i不算
+                int n = nums[i] - start;
+                if (n > k) {
+                    n = k;
+                }
+//                for (int j = 0; j < n; j++) {
+//                    System.out.println(start + j);
+//                }
+                sum += ((long)start + start + n - 1) * n / 2;
+                k -= n;
+            }
+            start = nums[i] + 1;
         }
+
+        if (k != 0) {
+            sum += ((long)start + start + k - 1) * k / 2;
+        }
+
         return sum;
     }
 
@@ -70,6 +87,16 @@ public class Solution {
         long l = solution.minimalKSum(nums, k);
         System.out.println(l);
         Assert.assertEquals(25, l);
+
+
+        nums = new int[] {
+                17,18,19,19,21,22,25,29,32,33,35,40,44,47,
+                96,99,61,84,88,60,86,52,50,94,98,72,100,84
+        };
+        k = 35;
+        l = solution.minimalKSum(nums, k);
+        System.out.println(l);
+        Assert.assertEquals(794, l);
     }
 
 }
