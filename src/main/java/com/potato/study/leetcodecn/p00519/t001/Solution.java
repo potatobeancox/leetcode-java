@@ -1,7 +1,10 @@
 package com.potato.study.leetcodecn.p00519.t001;
 
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * 519. 随机翻转矩阵
@@ -48,10 +51,12 @@ import java.util.Map;
 public class Solution {
 
 
-    private Map<Integer, Integer> hasusedMap;
-
-
-
+    private Map<Integer, Integer> hasUsedMap;
+    private int m;
+    private int n;
+    private int limit;
+    private int canUseLength;
+    private Random random;
 
     /**
      * 将mn 化成 1维度
@@ -59,25 +64,58 @@ public class Solution {
      * @param n
      */
     public Solution(int m, int n) {
-
+        this.m = m;
+        this.n = n;
+        this.limit = m * n;
+        this.canUseLength = limit;
+        this.random = new Random();
+        this.hasUsedMap = new HashMap<>();
     }
 
     public int[] flip() {
-        return null;
+        int index = random.nextInt(canUseLength);
+        // 找到没有用的
+        while (hasUsedMap.containsKey(index)) {
+            index = hasUsedMap.get(index);
+        }
+        // 整好选择了 可以直接使用的
+        if (index == canUseLength - 1) {
+            canUseLength--;
+            int[] originalArray = getOriginalArray(index);
+            return originalArray;
+        }
+        int replace = canUseLength - 1;
+        while (hasUsedMap.containsKey(replace)) {
+            replace = hasUsedMap.get(replace);
+        }
+        hasUsedMap.put(index, replace);
+        canUseLength--;
+        int[] originalArray = getOriginalArray(index);
+        return originalArray;
     }
 
     public void reset() {
-
+        this.canUseLength = limit;
+        hasUsedMap.clear();
     }
 
-    private int getKey(int m, int n) {
-        return m * 1_00000 + n;
+    private int getKey(int i, int j) {
+        return i * this.n + j;
     }
 
     private int[] getOriginalArray(int key) {
-        int m = key / 1_00000;
-        int n = key % 1_00000;
-        return new int[] {m, n};
+        int i = key / this.n;
+        int j = key % this.n;
+        return new int[] {i, j};
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution(3, 1);
+        System.out.println(Arrays.toString(solution.flip()));
+        System.out.println(Arrays.toString(solution.flip()));
+        System.out.println(Arrays.toString(solution.flip()));
+        solution.reset();
+        System.out.println(Arrays.toString(solution.flip()));
     }
 
 }
