@@ -35,42 +35,41 @@ import org.junit.Assert;
  */
 public class Solution {
 
-    // 678 (*)
-    public boolean checkValidString(String s) {
-        return isValidString(s, 0, 0);
-    }
-
     /**
-     *
+     * https://leetcode-cn.com/problems/valid-parenthesis-string/solution/gong-shui-san-xie-yi-ti-shuang-jie-dong-801rq/
      * @param s
-     * @param index
-     * @param state 状态，大于0 说明是 （ 多一些
      * @return
      */
-    private boolean isValidString(String s, int index, int state) {
-        // 终止条件
-        if (index >= s.length()) {
-            return state == 0;
-        }
-        if (state < 0) {
-            return false;
-        }
-        char ch = s.charAt(index++);
-        if (ch == '(') {
-            state++;
-            return isValidString(s, index, state);
-        }
-        if (ch == ')') {
-            state--;
-            if (state < 0) {
+    public boolean checkValidString(String s) {
+        // （ ++ ） --  * 记录最小值和最大值
+        int min = 0;
+        int max = 0;
+        for (char ch : s.toCharArray()) {
+            if (ch == '(') {
+                min++;
+                max++;
+            } else if (ch == ')') {
+                min--;
+                max--;
+            } else {
+                // *
+                min--;
+                max++;
+            }
+
+            if (min < 0) {
+                min = 0;
+            }
+            // 判断 是否已经不行了
+            if (min > max) {
+                // 隐含 max < 0
                 return false;
             }
-            return isValidString(s, index, state);
         }
-        // * 处理
-        return isValidString(s, index, state + 1)
-                || isValidString(s, index, state - 1) || isValidString(s, index, state);
+        return min == 0;
     }
+
+
 
 
     public static void main(String[] args) {
