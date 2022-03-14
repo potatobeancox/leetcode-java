@@ -18,4 +18,10 @@ public class Node {
         bottomLeft = _bottomLeft;
         bottomRight = _bottomRight;
     }
+
+
+    public Node(boolean _val,boolean _isLeaf) {
+        val = _val;
+        isLeaf = _isLeaf;
+    }
 }
