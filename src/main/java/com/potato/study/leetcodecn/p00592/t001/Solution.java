@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p00592.t001;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * 592. 分数加减运算
@@ -44,10 +46,78 @@ import java.util.Comparator;
 public class Solution {
 
 
-
+    /**
+     *
+     * @param expression
+     * @return
+     */
     public String fractionAddition(String expression) {
+        Queue<String> fractionQueue = new LinkedList<>();
+        Queue<Character> signQueue = new LinkedList<>();
+        int start = 0;
+        if (expression.charAt(start) == '-') {
+            signQueue.add('-');
+            start++;
+        } else {
+            signQueue.add('+');
+        }
 
-        return null;
+        for (int i = start; i < expression.length(); i++) {
+            char ch = expression.charAt(i);
+            if (ch == '/' || Character.isDigit(ch)) {
+                continue;
+            }
+            //  + -
+            fractionQueue.add(expression.substring(start, i));
+            start = i + 1;
+            signQueue.add(ch);
+        }
+        if (start < expression.length()) {
+            fractionQueue.add(expression.substring(start, expression.length()));
+        }
+        // 计算分数
+        int molecular = 0;
+        int denominator = 0;
+        while (!fractionQueue.isEmpty()) {
+            String fractionPoll = fractionQueue.poll();
+            Character signPoll = signQueue.poll();
+
+            String[] split = fractionPoll.split("/");
+            int otherMolecular = Integer.parseInt(split[0]);
+            int otherDenominator = Integer.parseInt(split[1]);
+
+            if (signPoll == '-') {
+                otherMolecular *= -1;
+            }
+            if (molecular == 0 && denominator == 0) {
+                molecular = otherMolecular;
+                denominator = otherDenominator;
+                continue;
+            }
+            // 计算
+            molecular = molecular * otherDenominator + denominator * otherMolecular;
+            denominator = denominator * otherDenominator;
+
+            int gcd = getGcd(molecular, denominator);
+
+            molecular /= gcd;
+            denominator /= gcd;
+
+        }
+        return molecular + "/" + denominator;
+    }
+
+    private int getGcd(int a, int b) {
+        if (a < 0) {
+            a *= -1;
+        }
+        if (b < 0) {
+            b *= -1;
+        }
+        if (a % b == 0) {
+            return b;
+        }
+        return getGcd(b, a%b);
     }
 
 }
