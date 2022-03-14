@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.p00497.t001;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.Random;
 
 /**
  * 497. 非重叠矩形中的随机点
@@ -56,13 +54,43 @@ import java.util.Stack;
  */
 public class Solution {
 
+    private int[][] rects;
+    private Random random;
+    private int[] pointCountSum;
+    private int[] pointCount;
+
     public Solution(int[][] rects) {
+        this.rects = rects;
+        this.random = new Random();
+        // 预处理 pointCount 每个区域中 有多少个点
+        this.pointCountSum = new int[rects.length];
+        this.pointCount = new int[rects.length];
+
+        for (int i = 0; i < rects.length; i++) {
+            this.pointCount[i] = (rects[i][2] - rects[i][0] + 1) * (rects[i][3] - rects[i][1] + 1);
+            if (i == 0) {
+                this.pointCountSum[i] = this.pointCount[i];
+            } else {
+                this.pointCountSum[i] = this.pointCountSum[i-1] + this.pointCount[i];
+            }
+        }
 
     }
 
     public int[] pick() {
-
-        return null;
+        // 找到一共有多少个点 每次在0-n 进行随机 如果在里边 确定是 这个index
+        int target = 0;
+        for (int i = 0; i < pointCountSum.length; i++) {
+            int limit = pointCountSum[i];
+            int randomNum = random.nextInt(limit);
+            if (randomNum < pointCount[i]) {
+                target = i;
+            }
+        }
+        // 在点之中进行 random
+        int dx = random.nextInt(rects[target][2] - rects[target][0] + 1);
+        int dy = random.nextInt(rects[target][3] - rects[target][1] + 1);
+        return new int[] {rects[target][0] + dx, rects[target][1] + dy};
     }
 
 }
