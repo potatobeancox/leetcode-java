@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p00640.t001;
 
 
+import java.util.Queue;
+
 /**
  * 640. 求解方程
  *
@@ -41,7 +43,21 @@ package com.potato.study.leetcodecn.p00640.t001;
 public class Solution {
 
     public String solveEquation(String equation) {
+        if (!equation.contains("=")) {
+            return "No solution";
+        }
+        // 根据 = 进行 split
+        String[] split = equation.split("=");
+        if (split.length != 2) {
+            return "No solution";
+        }
+        // 记录+- 和数字 通过变量记录
+        for (int i = 0; i < 2; i++) {
+            String eq = split[i];
+            for (int j = 0; j < eq.length(); j++) {
 
+            }
+        }
         return null;
     }
 
