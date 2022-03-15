@@ -43,7 +43,10 @@ public class Solution {
 
     public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
         int mod = 1_000_000_000 + 7;
-        //
+        // dp ijk 走了 i步到达jk的种类数
+        int[][][] dp = new int[maxMove + 1][m][n];
+        dp[0][startRow][startColumn] = 1;
+
         return -1;
     }
 
