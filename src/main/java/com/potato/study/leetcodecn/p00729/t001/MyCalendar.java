@@ -56,8 +56,10 @@ public class MyCalendar {
     public boolean book(int start, int end) {
         // 遍历 list 如果有交集返回 false 否则 加入list 返回true
         for (int[] interval: list) {
-            // 有交叉
-            if (start < interval[1] || end > interval[0]) {
+            // 无交叉
+            if (end <= interval[0] || interval[1] <= start) {
+                continue;
+            } else {
                 return false;
             }
         }
