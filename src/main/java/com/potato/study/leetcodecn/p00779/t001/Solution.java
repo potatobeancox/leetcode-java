@@ -41,8 +41,9 @@ package com.potato.study.leetcodecn.p00779.t001;
 public class Solution {
 
     public int kthGrammar(int n, int k) {
-
-        return -1;
+        // 看看有几次反转 就是 k-1 对应 二级制有多少个1 奇数个返回1 ，偶数个返回0
+        int count = Integer.bitCount(k - 1);
+        return count % 2;
     }
 
 }
