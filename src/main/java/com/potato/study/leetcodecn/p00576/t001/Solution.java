@@ -41,13 +41,44 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    // 576
     public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-        int mod = 1_000_000_000 + 7;
-        // dp ijk 走了 i步到达jk的种类数
-        int[][][] dp = new int[maxMove + 1][m][n];
+        // dp ijk 走了i步 达到jk 点的种类数
+        int[][][] dp = new int[maxMove+1][m][n];
+        // 开始点 不用走 只有一种可能
         dp[0][startRow][startColumn] = 1;
+        // 遍历每个位置 如果当前大于 0 往四个方向上加 如果 四个方向出界了 就改成 往结果集合上加
+        int[][] directions = new int[][] {
+                {1, 0},
+                {-1, 0},
+                {0, 1},
+                {0, -1}
+        };
+        int totalPath = 0;
+        int mod = 1_000_000_000 + 7;
+        // (a + b) % p = (a % p + b % p) % p
+        for (int i = 0; i < maxMove; i++) {
+            for (int j = 0; j < m; j++) {
+                for (int k = 0; k < n; k++) {
+                    if (dp[i][j][k] == 0) {
+                        continue;
+                    }
+                    // 四个方向
+                    for (int l = 0; l < 4; l++) {
+                        int dj = j + directions[l][0];
+                        int dk = k + directions[l][1];
 
-        return -1;
+                        if (dj < 0 || dj >= m
+                                || dk < 0 || dk >= n) {
+                            totalPath = (totalPath % mod + dp[i][j][k] % mod) % mod;
+                            continue;
+                        }
+                        dp[i+1][j][k] = (dp[i][j][k] % mod + dp[i+1][j][k] % mod) % mod;
+                    }
+                }
+            }
+        }
+        return totalPath;
     }
 
 }
