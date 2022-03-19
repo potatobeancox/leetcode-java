@@ -1,5 +1,9 @@
 package com.potato.study.leetcodecn.p01503.t001;
 
+import org.junit.Assert;
+
+import java.util.Arrays;
+
 /**
  * 1503. 所有蚂蚁掉下来前的最后一刻
  *
@@ -70,7 +74,33 @@ package com.potato.study.leetcodecn.p01503.t001;
 public class Solution {
 
     public int getLastMoment(int n, int[] left, int[] right) {
-        return -1;
+        Arrays.sort(left);
+        Arrays.sort(right);
+        if (left.length == 0 && right.length == 0) {
+            return 0;
+        } else if (left.length == 0) {
+            return n - right[0];
+        } else if (right.length == 0) {
+            return left[left.length - 1];
+        } else {
+            return Math.max(left[left.length - 1], n - right[0]);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 4;
+        int[] left = new int[] {
+            4, 3
+        };
+        int[] right = new int[] {
+            0, 1
+        };
+        int lastMoment = solution.getLastMoment(n, left, right);
+        System.out.println(lastMoment);
+        Assert.assertEquals(4, lastMoment);
+
     }
 
 }
