@@ -67,8 +67,20 @@ import java.util.Arrays;
 public class Solution {
 
     public boolean winnerOfGame(String colors) {
-
-        return false;
+        // 扫描 colors 记录 连续的a 或者 b 的个数 多的那个赢了
+        int count1 = 0;
+        int count2 = 0;
+        for (int i = 1; i < colors.length() - 1; i++) {
+            char ch1 = colors.charAt(i);
+            char ch2 = colors.charAt(i+1);
+            char ch3 = colors.charAt(i-1);
+            if (ch1 == 'A' && ch2 == 'A' && ch3 == 'A') {
+                count1++;
+            } else if (ch1 == 'B' && ch2 == 'B' && ch3 == 'B') {
+                count2++;
+            }
+        }
+        return count1 > count2;
     }
 
 }
