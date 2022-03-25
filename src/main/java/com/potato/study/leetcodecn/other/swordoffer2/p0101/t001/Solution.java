@@ -34,15 +34,34 @@ import java.util.Arrays;
  */
 public class Solution {
 
+
+    /**
+     * https://leetcode-cn.com/problems/NUPfPr/solution/java-bei-bao-wen-ti-by-mou-zi-ming-z-75v4/
+     * @param nums
+     * @return
+     */
     public boolean canPartition(int[] nums) {
         int sum = Arrays.stream(nums).sum();
-        int left = 0;
-        for (int i = 0; i < nums.length - 1; i++) {
-            left += nums[i];
-            if (left == sum - left) {
-                return true;
+        if (sum % 2 != 0) {
+            return false;
+        }
+        int target = sum / 2;
+        // 简单dp bool 这个值是否可以达到 每次从 大往小遍历
+        boolean[] dp = new boolean[target+1];
+        dp[0] = true;
+        // 遍历每个数字
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            // 从target 往前看 是否可以 | 组成
+            for (int j = target; j >= num; j--) {
+                dp[j] |= dp[j - num];
             }
         }
-        return false;
+        return dp[target];
     }
+
+
+
+
+
 }
