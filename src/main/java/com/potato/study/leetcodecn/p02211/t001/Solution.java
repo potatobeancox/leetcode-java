@@ -1,5 +1,9 @@
 package com.potato.study.leetcodecn.p02211.t001;
 
+import org.junit.Assert;
+
+import java.util.Stack;
+
 /**
  * 2211. 统计道路上的碰撞次数
  *
@@ -50,7 +54,62 @@ public class Solution {
 
 
     public int countCollisions(String directions) {
+        // 从左往右遍历 如果遇到 s 和 R 记录 入栈 如果遇到 l 且栈非空结算 如果 s 入栈 stack 是 r 还需要循环结算
+        Stack<Character> stack = new Stack<>();
+        int count = 0;
+        for (int i = 0; i < directions.length(); i++) {
+            char ch = directions.charAt(i);
+            if (ch == 'L') {
+                // 如果栈空 就这样了 如果栈顶是 s 要相撞 生成两个 s 入栈
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                if (stack.peek() == 'S') {
+                    stack.add('S');
+                    count++;
+                    continue;
+                }
+                if (stack.peek() == 'R') {
+                    count += 2;
+                    // r 输出 生成2个 s
+                    stack.pop();
+                    while (!stack.isEmpty() && stack.peek() == 'R') {
+                        stack.pop();
+                        count += 1;
+                    }
+                    stack.push('S');
+                }
 
-        return 0;
+            } else if (ch == 'S') {
+                if (stack.isEmpty()) {
+                    stack.push('S');
+                    continue;
+                }
+                while (!stack.isEmpty() && stack.peek() == 'R') {
+                    stack.pop();
+                    count += 1;
+                }
+                stack.push('S');
+            } else {
+                // r
+                if (stack.isEmpty()) {
+                    stack.push('R');
+                    continue;
+                }
+                if (stack.peek() == 'S' || stack.peek() == 'R') {
+                    stack.push('R');
+                }
+            }
+        }
+        // 结算时 如果
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "SSRSSRLLRSLLRSRSSRLRRRRLLRRLSSRR";
+        int i = solution.countCollisions(str);
+        System.out.println(i);
+        Assert.assertEquals(20, i);
     }
 }
