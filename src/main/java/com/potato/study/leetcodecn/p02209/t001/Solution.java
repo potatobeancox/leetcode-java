@@ -70,7 +70,7 @@ public class Solution {
         }
         // 从第i条毛毯开始 生成 dp 最小值
         for (int i = 1; i <= numCarpets; i++) {
-            // carpetLen 之前 由第一个 毛毯覆盖
+            // carpetLen 之前 由第一个 毛毯覆盖 只要有一个毛毯覆盖就都是0
             for (int j = carpetLen; j < length; j++) {
                 // 用毛毯覆盖或者不用覆盖 最小值
                 dp[i][j] = dp[i][j-1] + (floor.charAt(j) == '1' ? 1 : 0);
