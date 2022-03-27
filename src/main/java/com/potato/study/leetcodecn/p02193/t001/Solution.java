@@ -50,9 +50,32 @@ import java.util.List;
 public class Solution {
 
 
+    /**
+     * https://leetcode-cn.com/problems/minimum-number-of-moves-to-make-palindrome/solution/tan-xin-zheng-ming-geng-da-shu-ju-fan-we-h57i/
+     * @param s
+     * @return
+     */
     public int minMovesToMakePalindrome(String s) {
-
-        return -1;
+        if (s.length() <= 1) {
+            return 0;
+        }
+        // 递归找 当前 0 位置 对应 最后 往前的相同的位置
+        char charAt = s.charAt(0);
+        int targetIndex = 0;
+        for (int i = s.length() - 1; i > 0; i--) {
+            if (s.charAt(i) == charAt) {
+                // 找到了 将其移动到最后的位置 需要的step 数量 + 递归的数量
+                targetIndex = i;
+                int stepCount = s.length() - 1 - targetIndex;
+                String subString = s.substring(1, targetIndex) + s.substring(targetIndex + 1);
+                return stepCount + minMovesToMakePalindrome(subString);
+            }
+        }
+        // 没找到 说明 他就是 中间的那个 那么就 将 器移动到 mid 位置
+        int mid = s.length() / 2;
+        // 从 0 移动到mid
+        String subString = s.substring(1);
+        return mid + minMovesToMakePalindrome(subString);
     }
 
 }
