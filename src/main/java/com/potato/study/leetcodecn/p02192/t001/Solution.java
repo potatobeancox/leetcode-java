@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p02192.t001;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 2192. 有向无环图中一个节点的所有祖先
@@ -63,7 +65,9 @@ public class Solution {
 
 
     public List<List<Integer>> getAncestors(int n, int[][] edges) {
-
+        // 使用map 记录 key 节点 list 他的直接祖先
+        Map<Integer, List<Integer>> valueParentListMap = new HashMap<>();
+        // 遍历 map entry 递归找到所有祖先 最终返回
         return null;
     }
 
