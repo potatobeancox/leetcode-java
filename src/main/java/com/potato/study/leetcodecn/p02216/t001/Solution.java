@@ -49,7 +49,25 @@ public class Solution {
      * @return
      */
     public int minDeletion(int[] nums) {
-
-        return -1;
+        // 美丽的两个条件 1.数组个数为偶数 2.满足上述题目条件
+        int deleteNum = 0;
+        // 两个指针i 指向偶数 index j指向 奇数index
+        int i = 0;
+        int j;
+        while (i < nums.length) {
+            j = i + 1;
+            // 删除 j位置字符
+            while (j < nums.length && nums[i] == nums[j]) {
+                j++;
+                deleteNum++;
+            }
+            // i 的下一个位置就是 j+1
+            i = j + 1;
+        }
+        // 数组个数为偶数
+        if ((nums.length - deleteNum) % 2 == 1) {
+            deleteNum++;
+        }
+        return deleteNum;
     }
 }
