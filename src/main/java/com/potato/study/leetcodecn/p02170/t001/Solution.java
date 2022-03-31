@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p02170.t001;
 
 
+import org.junit.Assert;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,53 +54,106 @@ import java.util.PriorityQueue;
 public class Solution {
 
 
+    // 2170
     public int minimumOperations(int[] nums) {
-        // 记录 odd index 和 even index 的 map count
-        Map<Integer, Integer> oddMap = new HashMap<>();
-        Map<Integer, Integer> evenMap = new HashMap<>();
+        if (nums.length <= 1) {
+            return 0;
+        }
+        // 遍历 一遍 nums 统计 偶数位置 最多出现次数和数字，次多的出现次数和数字
+        Map<Integer, Integer> countMap1 = new HashMap<>();
+        Map<Integer, Integer> countMap2 = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
             if (i % 2 == 0) {
-                evenMap.put(nums[i], evenMap.getOrDefault(nums[i], 0) + 1);
+                countMap1.put(nums[i], countMap1.getOrDefault(nums[i], 0) + 1);
             } else {
-                oddMap.put(nums[i], oddMap.getOrDefault(nums[i], 0) + 1);
+                countMap2.put(nums[i], countMap2.getOrDefault(nums[i], 0) + 1);
             }
         }
-        // 找到 odd 最大 第二大的key
-        PriorityQueue<Integer> evenPriorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return Integer.compare(evenMap.get(o1), evenMap.get(o2));
+        // 奇数位置 最多的出现次数和数字 堆处理 小根堆
+        PriorityQueue<Integer> priorityQueue1 = getPriorityQueue(countMap1);
+
+        PriorityQueue<Integer> priorityQueue2 = getPriorityQueue(countMap2);
+        // 如果 最多的 不一样 那么 就是 nums。le 减去
+        if (priorityQueue1.size() == 1 && priorityQueue2.size() == 1) {
+            int max1 = priorityQueue1.peek();
+            int max2 = priorityQueue2.peek();
+            if (max1 != max2) {
+                return 0;
             }
-        });
-        // 找到 even 最大和 次大的key
-        for (int key : evenMap.keySet()) {
-            if (evenPriorityQueue.isEmpty()
-                    || evenPriorityQueue.size() < 2
-                    || evenMap.get(evenPriorityQueue.peek()) < evenMap.get(key)) {
-                evenPriorityQueue.add(key);
+            return nums.length - Math.max(countMap1.get(max1), countMap2.get(max2));
+        } else if (priorityQueue1.size() == 1) {
+            int max1 = priorityQueue1.poll();
+            int secondMax2 = priorityQueue2.poll();
+            int max2 = priorityQueue2.poll();
+            if (max1 != max2) {
+                return nums.length - (countMap1.get(max1) + countMap2.get(max2));
+            } else {
+                return nums.length - (countMap1.get(max1) + countMap2.get(secondMax2));
             }
-            if (evenPriorityQueue.size() > 2) {
-                evenPriorityQueue.poll();
+        } else if (priorityQueue2.size() == 1) {
+            int max2 = priorityQueue2.poll();
+            int secondMax1 = priorityQueue1.poll();
+            int max1 = priorityQueue1.poll();
+            if (max1 != max2) {
+                return nums.length - (countMap1.get(max1) + countMap2.get(max2));
+            } else {
+                return nums.length - (countMap1.get(secondMax1) + countMap2.get(max2));
+            }
+        } else {
+            // 都是2
+            int secondMax1 = priorityQueue1.poll();
+            int max1 = priorityQueue1.poll();
+
+            int secondMax2 =  priorityQueue2.poll();
+            int max2 =  priorityQueue2.poll();
+
+            if (max1 != max2) {
+                return nums.length - (countMap1.get(max1) + countMap2.get(max2));
+            }
+            return nums.length - Math.max(countMap1.get(max1) + countMap2.get(secondMax2),
+                    countMap1.get(secondMax1) + countMap2.get(max2));
+        }
+    }
+
+    private PriorityQueue<Integer> getPriorityQueue(Map<Integer, Integer> countMap) {
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>((i1, i2) -> Integer.compare(
+                countMap.getOrDefault(i1, 0), countMap.getOrDefault(i2, 0)
+        ));
+        for (int key : countMap.keySet()) {
+            if (priorityQueue.isEmpty()
+                    || priorityQueue.size() < 2
+                    || countMap.get(priorityQueue.peek()) < countMap.get(key)) {
+                priorityQueue.add(key);
+            }
+            if (priorityQueue.size() > 2) {
+                priorityQueue.poll();
             }
         }
+        return priorityQueue;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                3,1,3,2,4,3
+        };
+        int i = solution.minimumOperations(nums);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+        nums = new int[] {
+                1,2,2,2,2
+        };
+        i = solution.minimumOperations(nums);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
 
 
-        PriorityQueue<Integer> oddPriorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return Integer.compare(evenMap.get(o1), evenMap.get(o2));
-            }
-        });
-        for (int key : oddMap.keySet()) {
-            if (oddPriorityQueue.isEmpty()
-                    || oddPriorityQueue.size() < 2
-                    || oddMap.get(oddPriorityQueue.peek()) < oddMap.get(key)) {
-                oddPriorityQueue.add(key);
-            }
-            if (oddPriorityQueue.size() > 2) {
-                oddPriorityQueue.poll();
-            }
-        }
-        return -1;
+        nums = new int[] {
+                42,2,97,78,8,12,98,7,98,48,56,80,54,51,61,23,2,64,87,24,25,10,55,25,12,71,82,67,21,54,29,78,11,29,65,24,56,3,55,67,70,97,40,14,92,82,42,37,7,91,63,47,42,4,100,47,75,76,43,90,28,14,69,4,90,8,52,89,68,51,5,52,1,83,6,87,79,56,93,59,11,42,77,68,79,58,72,66,28,12,59,75,87,99,47
+        };
+        i = solution.minimumOperations(nums);
+        System.out.println(i);
+        Assert.assertEquals(90, i);
     }
 }
