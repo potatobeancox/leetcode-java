@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.p02192.t001;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 2192. 有向无环图中一个节点的所有祖先
@@ -64,11 +62,50 @@ import java.util.Map;
 public class Solution {
 
 
+    // 2192 找到每个节点的祖先
     public List<List<Integer>> getAncestors(int n, int[][] edges) {
-        // 使用map 记录 key 节点 list 他的直接祖先
-        Map<Integer, List<Integer>> valueParentListMap = new HashMap<>();
-        // 遍历 map entry 递归找到所有祖先 最终返回
-        return null;
+        // 遍历 edges 用map int list int 存 每个点的直接祖先
+        Map<Integer, List<Integer>> directParentMap = new HashMap<>();
+        for (int i = 0; i < edges.length; i++) {
+            // [fromi, toi]
+            int from = edges[i][0];
+            int to = edges[i][1];
+            List<Integer> orDefault = directParentMap.getOrDefault(to, new ArrayList<>());
+            orDefault.add(from);
+            directParentMap.put(to, orDefault);
+        }
+        // 从 i 开始生成 每个节点的所有祖先
+        List<Set<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            result.add(new HashSet<>());
+        }
+
+        for (int i = 0; i < n; i++) {
+            getParents(i, result, directParentMap);
+        }
+
+        List<List<Integer>> resultList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            resultList.add(new ArrayList<>(result.get(i)));
+        }
+        return resultList;
+    }
+
+    private void getParents(int i, List<Set<Integer>> result,
+                            Map<Integer, List<Integer>> directParentMap) {
+        if (result.get(i).size() > 0) {
+            return;
+        }
+        Set<Integer> set = result.get(i);
+        // 找到set 所有直接的 节点 往里加
+        List<Integer> parentList = directParentMap.get(i);
+        if (parentList != null) {
+            set.addAll(parentList);
+            for (int parent : parentList) {
+                getParents(parent, result, directParentMap);
+                set.addAll(result.get(parent));
+            }
+        }
     }
 
 }
