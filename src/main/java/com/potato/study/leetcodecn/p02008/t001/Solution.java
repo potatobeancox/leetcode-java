@@ -60,24 +60,27 @@ public class Solution {
      * @return
      */
     public long maxTaxiEarnings(int n, int[][] rides) {
-        // 对 rides 按照 结束 升序排序 按照 开始升序排序
+        // 对 rides 按照 结束 升序排序
         Arrays.sort(rides, new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
-                if (o1[1] == o2[1]) {
-                    return Integer.compare(o2[0], o1[0]);
-                }
                 return Integer.compare(o1[1], o2[1]);
             }
         });
         // dp i 达到i处最多赚了多少钱
-        int[] dp = new int[n+1];
+        long[] dp = new long[n+1];
         // dp i = Max {dp j + from j to i} 的钱 其中 j小于 i j从1开始到 i-1
-        int max = 0;
-        for (int i = 0; i < rides.length; i++) {
-            dp[rides[i][1]] =
-                    Math.max(dp[rides[i][1]], dp[rides[i][0]] + rides[i][2] + rides[i][1] - rides[i][0]);
-            max = Math.max(max, dp[rides[i][1]]);
+        long max = 0;
+        for (int i = 1; i <= n; i++) {
+            // 不拉活
+            dp[i] = dp[i-1];
+            // 拉活
+            int index = 0;
+            while (index < rides.length && rides[index][1] <= i) {
+                dp[i] = Math.max(dp[i], dp[rides[index][0]] + rides[index][2] + rides[index][1] - rides[index][0]);
+                index++;
+            }
+            max = Math.max(max, dp[i]);
         }
         // 遍历 dp 找到最大值
         return max;
