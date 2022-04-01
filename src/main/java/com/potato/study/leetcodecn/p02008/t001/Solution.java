@@ -71,19 +71,18 @@ public class Solution {
         long[] dp = new long[n+1];
         // dp i = Max {dp j + from j to i} 的钱 其中 j小于 i j从1开始到 i-1
         long max = 0;
+        int index = 0;
         for (int i = 1; i <= n; i++) {
             // 不拉活
             dp[i] = dp[i-1];
             // 拉活
-            int index = 0;
             while (index < rides.length && rides[index][1] <= i) {
                 dp[i] = Math.max(dp[i], dp[rides[index][0]] + rides[index][2] + rides[index][1] - rides[index][0]);
                 index++;
             }
-            max = Math.max(max, dp[i]);
         }
         // 遍历 dp 找到最大值
-        return max;
+        return dp[n];
     }
 
     public static void main(String[] args) {
