@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-
 import com.potato.study.leetcode.domain.TreeNode;
-import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 863. 二叉树中所有距离为 K 的结点
@@ -50,64 +47,80 @@ public class Solution {
     // 863
     public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
         // 递归生成 map key index ，value parent 节点
-        Map<Integer, TreeNode> parentMap = new HashMap<>();
+        Map<TreeNode, TreeNode> parentMap = new HashMap<>();
+        // 生成 parentMap
+        getParentMap(root, parentMap);
+        // 从当前跟开始 递归 获取结果
         List<Integer> resultList = new ArrayList<>();
-        // 生成 map key 节点值 value 这个值对应的父亲节点
-        dfsGetParentMap(parentMap, root, resultList, 0, k, root == target, target);
-        // 在map中递归找到
-        dfsGetResultFromParentMap(target, parentMap, k, resultList, 0);
+        getResultList(target, k, 0, null, resultList, parentMap);
         return resultList;
     }
 
-    /**
-     *
-     * @param parentMap
-     * @param root
-     */
-    private void dfsGetParentMap(Map<Integer, TreeNode> parentMap, TreeNode root,
-            List<Integer> resultList, int currentLevel, int k, boolean isFromTarget, TreeNode target) {
-        if (root == null) {
+    private void getResultList(TreeNode currentNode, int targetDepth, int currentDepth,
+            TreeNode from, List<Integer> resultList, Map<TreeNode, TreeNode> parentMap) {
+        // 判断当前节点 是否满足
+        if (currentNode == null) {
             return;
         }
-        // 叶子节点直接返回
-        if (currentLevel == k) {
-            resultList.add(root.val);
-        }
-        if (root.left == null && root.right == null) {
+        if (targetDepth == currentDepth) {
+            resultList.add(currentNode.val);
             return;
         }
-        if (root.left != null) {
-            parentMap.put(root.left.val, root);
-            dfsGetParentMap(parentMap, root.left, resultList, currentLevel + 1, k,
-                    isFromTarget || root == target, target);
+        if (targetDepth < currentDepth) {
+            return;
         }
-        if (root.right != null) {
-            parentMap.put(root.right.val, root);
-            dfsGetParentMap(parentMap, root.right, resultList, currentLevel + 1, k,
-                    isFromTarget || root == target, target);
+
+        if (currentNode.left != from) {
+            getResultList(currentNode.left, targetDepth, currentDepth + 1,
+                    currentNode, resultList, parentMap);
         }
+
+        if (currentNode.right != from) {
+            getResultList(currentNode.right, targetDepth, currentDepth + 1,
+                    currentNode, resultList, parentMap);
+        }
+
+        if (parentMap.get(currentNode) != from) {
+            getResultList(parentMap.get(currentNode), targetDepth, currentDepth + 1,
+                    currentNode, resultList, parentMap);
+        }
+        return;
     }
 
     /**
-     * 找到结果
+     * dfs 生成 记录每个点与父亲节点的关系
      * @param root
      * @param parentMap
-     * @param k
-     * @param resultList
-     * @param currentLevel
      */
-    private void dfsGetResultFromParentMap(TreeNode root, Map<Integer, TreeNode> parentMap,
-            int k, List<Integer> resultList, int currentLevel) {
-        if (currentLevel > k) {
+    private void getParentMap(TreeNode root, Map<TreeNode, TreeNode> parentMap) {
+        if (root == null) {
             return;
         }
-        if (currentLevel == k) {
-            resultList.add(root.val);
-            return;
+        if (root.left != null) {
+            parentMap.put(root.left, root);
+            getParentMap(root.left, parentMap);
         }
-        TreeNode nextNode = parentMap.get(root.val);
-        if (nextNode != null) {
-            dfsGetResultFromParentMap(nextNode, parentMap, k, resultList, currentLevel + 1);
+        if (root.right != null) {
+            parentMap.put(root.right, root);
+            getParentMap(root.right, parentMap);
         }
     }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(0);
+        root.left = new TreeNode(1);
+        root.left.left = new TreeNode(3);
+
+        TreeNode target = new TreeNode(2);
+        root.left.right = target;
+
+
+        int k = 1;
+        List<Integer> list = solution.distanceK(root, target, k);
+        System.out.println(list);
+    }
+
+
 }
