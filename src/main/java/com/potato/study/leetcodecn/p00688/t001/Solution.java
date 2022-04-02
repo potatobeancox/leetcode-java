@@ -46,7 +46,50 @@ public class Solution {
 
 
     public double knightProbability(int n, int k, int row, int column) {
+        // 按照 8 个方向 计算概率
+        int[][] direction = new int[][] {
+                {1, 2},
+                {-1, 2},
+                {1, -2},
+                {-1, -2},
+                {2, 1},
+                {2, -1},
+                {-2, 1},
+                {-2, -1}
+        };
+        // dp step ij 从ij 出发 走了 step 还在棋盘上 的概率
+        double[][][] dp = new double[k+1][n][n];
+        // 最开始 ij 0 就是 1
+        for (int step = 0; step <= k; step++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (step == 0) {
+                        dp[step][i][j] = 1;
+                        continue;
+                    }
+                    for (int l = 0; l < direction.length; l++) {
+                        int di = i + direction[l][0];
+                        int dj = j + direction[l][1];
+                        if (di < 0 || di >= n || dj < 0 || dj >= n) {
+                            continue;
+                        }
+                        dp[step][i][j] += dp[step-1][di][dj] / 8.0;
+                    }
+                }
+            }
+        }
+        return dp[k][row][column];
+    }
 
-        return 0;
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 3;
+        int k = 2;
+        int row = 0;
+        int column = 0;
+        double v = solution.knightProbability(n, k, row, column);
+        System.out.println(v);
+
     }
 }
