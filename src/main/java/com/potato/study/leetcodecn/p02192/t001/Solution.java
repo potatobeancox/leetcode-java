@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02192.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 import java.util.*;
 
 /**
@@ -86,7 +88,9 @@ public class Solution {
 
         List<List<Integer>> resultList = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            resultList.add(new ArrayList<>(result.get(i)));
+            List<Integer> integers = new ArrayList<>(result.get(i));
+            Collections.sort(integers);
+            resultList.add(integers);
         }
         return resultList;
     }
@@ -106,6 +110,23 @@ public class Solution {
                 set.addAll(result.get(parent));
             }
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 8;
+        String arrayString = "[[0,3],[0,4],[1,3],[2,4],[2,7],[3,5],[3,6],[3,7],[4,6]]";
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(arrayString);
+        List<List<Integer>> ancestors = solution.getAncestors(n, edges);
+        System.out.println(ancestors);
+
+
+        n = 5;
+        arrayString = "[[0,1],[0,2],[0,3],[0,4],[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]";
+        edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(arrayString);
+        ancestors = solution.getAncestors(n, edges);
+        // [[],[0],[0,1],[0,1,2],[0,1,2,3]]
+        System.out.println(ancestors);
     }
 
 }
