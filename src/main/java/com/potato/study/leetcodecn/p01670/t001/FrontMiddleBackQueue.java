@@ -76,7 +76,13 @@ public class FrontMiddleBackQueue {
     }
 
     public void pushMiddle(int val) {
-        deque1.addLast(val);
+        if (deque1.size() > deque2.size()) {
+            Integer last = deque1.pollLast();
+            deque2.addFirst(last);
+            deque1.addLast(val);
+        } else {
+            deque1.addLast(val);
+        }
         rebalance();
     }
 
@@ -120,6 +126,7 @@ public class FrontMiddleBackQueue {
         if (0 <= diff && diff <= 1) {
             return;
         }
+        // 保证 deque1 大于等于 deque2
         while (deque1.size() < deque2.size()) {
             Integer poll = deque2.pollFirst();
             deque1.addLast(poll);
@@ -132,5 +139,24 @@ public class FrontMiddleBackQueue {
 
     private boolean isEmpty() {
         return deque1.size() + deque2.size() == 0;
+    }
+
+    public static void main(String[] args) {
+//        ["FrontMiddleBackQueue","pushFront","pushBack","pushMiddle","pushMiddle","popFront","popMiddle","popMiddle","popBack",
+        //        "popFront"]
+//[[],[1],[2],[3],[4],[],[],[],[],[]]
+        FrontMiddleBackQueue frontMiddleBackQueue = new FrontMiddleBackQueue();
+        frontMiddleBackQueue.pushFront(1);
+        frontMiddleBackQueue.pushBack(2);
+        frontMiddleBackQueue.pushMiddle(3);
+        frontMiddleBackQueue.pushMiddle(4);
+        System.out.println(frontMiddleBackQueue.popFront()); // 1
+        System.out.println(frontMiddleBackQueue.popMiddle()); // 3
+        System.out.println(frontMiddleBackQueue.popMiddle()); // 4
+        System.out.println(frontMiddleBackQueue.popBack()); // 2
+        System.out.println(frontMiddleBackQueue.popFront()); // -1
+
+
+
     }
 }
