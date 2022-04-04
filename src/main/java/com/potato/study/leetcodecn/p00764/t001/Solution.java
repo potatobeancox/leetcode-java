@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p00764.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +59,7 @@ public class Solution {
             set.add(mines[i][0] + "_" + mines[i][1]);
         }
         // 双循环遍历 每个位置 计算最大值
-        int max = 1;
+        int max = 0;
         int[][] direction = new int[][] {
                 {1, 0},
                 {-1, 0},
@@ -89,7 +92,7 @@ public class Solution {
                         }
                     }
                     if (isValid) {
-                        currentMax = k;
+                        currentMax = k + 1;
                     } else {
                         break;
                     }
@@ -98,5 +101,22 @@ public class Solution {
             }
         }
         return max;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 5;
+        String str = "[[4, 2]]";
+        int[][] arr = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        int i = solution.orderOfLargestPlusSign(n, arr);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+        n = 1;
+        str = "[[0, 0]]";
+        arr = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        i = solution.orderOfLargestPlusSign(n, arr);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
     }
 }
