@@ -60,7 +60,7 @@ public class Solution {
             for (int i = 0; i < k; i++) {
                 for (int j = i+1; j < k; j++) {
                     // 判断下是否满足 fib关系
-                    if (arr[i] + arr[j] == arr[k]) {
+                    if (arr[i] + (long)arr[j] == arr[k]) {
                         dp[j][k] = Math.max(dp[i][j] + 1, dp[j][k]);
                         max = Math.max(max, dp[j][k]);
                     }
