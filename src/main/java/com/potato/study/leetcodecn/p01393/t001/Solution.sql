@@ -59,3 +59,8 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 --
 
+-- 按照 股票维度进行聚合 计算每个股票 buy 花了 多少钱 计算每个股票 sell 卖了多少钱 做差
+SELECT * FROM Stocks WHERE operation = 'Buy'
+
+
+SELECT * FROM Stocks WHERE operation = 'Sell'
