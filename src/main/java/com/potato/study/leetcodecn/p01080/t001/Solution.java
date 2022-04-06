@@ -46,8 +46,64 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     *
+     * @param root
+     * @param limit
+     * @return
+     */
     public TreeNode sufficientSubset(TreeNode root, int limit) {
+        // dfs 后序便利 每个孩子返回是否可以删除 如果当前节点满足 左右孩子都可以删除，且 当前节点也满足 就删除
+        boolean canDeleteNodeRoot = canDeleteNode(root, limit, 0);
+        // 否则
+        if (canDeleteNodeRoot) {
+            return null;
+        }
+        return root;
+    }
 
-        return null;
+    private boolean canDeleteNode(TreeNode root, int limit, int current) {
+        if (root == null) {
+            return true;
+        }
+        // 当前是叶子节点 判断当前是否需要删除
+        if (root.left == null && root.right == null) {
+            if (current + root.val < limit) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        // 有孩子
+        boolean canDeleteNodeLeft = true;
+        if (root.left != null) {
+            canDeleteNodeLeft = canDeleteNode(root.left, limit, root.val + current);
+        }
+        boolean canDeleteNodeRight = true;
+        if (root.right != null) {
+            canDeleteNodeRight = canDeleteNode(root.right, limit, root.val + current);
+        }
+        // 删除孩子
+        if (canDeleteNodeLeft) {
+            root.left = null;
+        }
+        if (canDeleteNodeRight) {
+            root.right = null;
+        }
+        return canDeleteNodeLeft && canDeleteNodeRight && current + root.val < limit;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(2);
+        root.left.left = new TreeNode(-5);
+        root.left.right = null;
+
+        root.right = new TreeNode(-3);
+        root.right.left = new TreeNode(4);
+        root.right.right = null;
+        TreeNode node = solution.sufficientSubset(root, -1);
+
     }
 }
