@@ -96,11 +96,14 @@ public class Solution {
     class UnionFind {
 
         private int[] parent;
+        private int[] rank;
 
         public UnionFind(int n) {
             this.parent = new int[n];
+            this.rank = new int[n];
             for (int i = 0; i < n; i++) {
                 parent[i] = i;
+                rank[i] = 1;
             }
         }
 
@@ -110,7 +113,16 @@ public class Solution {
             if (p1 == p2) {
                 return;
             }
-            parent[p1] = p2;
+            if (rank[p1] == rank[p2]) {
+                rank[p2]++;
+                parent[p1] = p2;
+            } else if (rank[p1] > rank[p2]) {
+                // p1 深
+                parent[p2] = p1;
+            } else {
+                // p2 深
+                parent[p1] = p2;
+            }
         }
 
         public int find(int target) {
