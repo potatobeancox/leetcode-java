@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p01276.t001;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,6 +58,25 @@ import java.util.List;
 public class Solution {
 
     public List<Integer> numOfBurgers(int tomatoSlices, int cheeseSlices) {
-        return null;
+        List<Integer> list = new ArrayList<>();
+        int tmp1 = tomatoSlices - 2 * cheeseSlices;
+        if (tmp1 < 0 || tmp1 % 2 == 1) {
+            return list;
+        }
+        int tmp2 = 4 * cheeseSlices - tomatoSlices;
+        if (tmp2 < 0 || tmp2 % 2 == 1) {
+            return list;
+        }
+        list.add(tmp1 / 2);
+        list.add(tmp2 / 2);
+        return list;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int tomatoSlices = 16;
+        int cheeseSlices = 7;
+        List<Integer> list = solution.numOfBurgers(tomatoSlices, cheeseSlices);
+        System.out.println(list); // 1,6
     }
 }
