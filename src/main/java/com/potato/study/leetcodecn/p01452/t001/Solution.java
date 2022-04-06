@@ -2,8 +2,10 @@ package com.potato.study.leetcodecn.p01452.t001;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * 1452. 收藏清单
@@ -64,7 +66,8 @@ public class Solution {
                 if (favoriteCompanies.get(j).size() < favoriteCompanies.get(i).size()) {
                     continue;
                 }
-                if (favoriteCompanies.get(j).containsAll(favoriteCompanies.get(i))) {
+                Set<String> set = new HashSet<>(favoriteCompanies.get(j));
+                if (set.containsAll(favoriteCompanies.get(i))) {
                     flag = false;
                     break;
                 }
