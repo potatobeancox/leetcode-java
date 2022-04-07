@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.p02039.t001;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -96,14 +98,18 @@ public class Solution {
     public int networkBecomesIdle(int[][] edges, int[] patience) {
         // 将 edges 转换成邻接矩阵
         int n = patience.length;
-        // adjacency ij = true ij 直接相邻
-        Set<String> set = new HashSet<>();
+        // adjacency ij = true ij 直接相邻 使用list
+        List<Integer>[] adjacency = new List[n];
+        for (int i = 0; i < n; i++) {
+            adjacency[i] = new ArrayList<>();
+        }
+
         for (int i = 0; i < edges.length; i++) {
             int u = edges[i][0];
             int v = edges[i][1];
 
-            set.add(u + "_" + v);
-            set.add(v + "_" + u);
+            adjacency[u].add(v);
+            adjacency[v].add(u);
         }
         // 从 0 开始
         Queue<Integer> queue = new LinkedList<>();
@@ -120,15 +126,9 @@ public class Solution {
             for (int i = 0; i < size; i++) {
                 Integer poll = queue.poll();
                 // 找到邻接点
-                for (int j = 0; j < n; j++) {
-                    if (j == poll) {
-                        continue;
-                    }
+                for (int j : adjacency[poll]) {
                     // 判断是够已经 visited （放进过queue）
                     if (visited[j]) {
-                        continue;
-                    }
-                    if (!set.contains(poll + "_" + j) && !set.contains(j + "_" + poll)) {
                         continue;
                     }
                     // 计算这个节点 最长时间 需要多久
