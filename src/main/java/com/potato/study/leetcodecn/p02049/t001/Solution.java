@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02049.t001;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 2049. 统计最高分的节点数目
  *
@@ -54,8 +57,73 @@ package com.potato.study.leetcodecn.p02049.t001;
  */
 public class Solution {
 
+    private int max;
+    private int maxNodeCount;
+    /**
+     *
+     * @param parents
+     * @return
+     */
     public int countHighestScoreNodes(int[] parents) {
-        return -1;
+        // 将 parents 转换成 children 数组
+        int n = parents.length;
+        List<Integer> [] children = new List[n];
+        // init
+        for (int i = 0; i < children.length; i++) {
+            children[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < parents.length; i++) {
+            int parent = parents[i];
+            int child = i;
+            if (parent == -1) {
+                continue;
+            }
+            children[parent].add(child);
+        }
+        // dfs 从 0 号节点开始
+        this.max = 0;
+        this.maxNodeCount = 0;
+        dfs(0, children, n);
+        return maxNodeCount;
+    }
+
+    private int dfs(int noteIndex, List<Integer>[] children, int totalNodeCount) {
+        // 找到孩子 对于每个孩子 计算 孩子数量 求和和乘积，
+        List<Integer> child = children[noteIndex];
+        int score = 0;
+        int childNodeCount = 0;
+        if (child.size() == 0) {
+            // 根节点 且只有一个节点
+            if (noteIndex == 0) {
+                score = 0;
+            } else {
+                score = totalNodeCount - 1;
+            }
+        } else {
+            // 有孩子
+            for (int childNodeIndex : child) {
+                int eachChildNodeCount = dfs(childNodeIndex, children, totalNodeCount);
+                childNodeCount += eachChildNodeCount;
+                if (eachChildNodeCount != 0) {
+                    if (score == 0) {
+                        score = 1;
+                    }
+                    score *= eachChildNodeCount;
+                }
+            }
+            if (totalNodeCount - childNodeCount - 1 > 1) {
+                score *= (totalNodeCount - childNodeCount - 1);
+            }
+        }
+        // 判断得分是否是最大
+        if (score > this.max) {
+            this.max = score;
+            this.maxNodeCount = 1;
+        } else if (score == this.max) {
+            this.maxNodeCount++;
+        }
+        // 返回有多少个节点 包括这个节点
+        return childNodeCount + 1;
     }
 
 }
