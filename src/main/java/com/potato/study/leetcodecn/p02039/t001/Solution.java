@@ -1,5 +1,14 @@
 package com.potato.study.leetcodecn.p02039.t001;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 2039. 网络空闲的时刻
  *
@@ -77,9 +86,73 @@ package com.potato.study.leetcodecn.p02039.t001;
  */
 public class Solution {
 
+    /**
+     *
+     https://leetcode-cn.com/problems/the-time-when-the-network-becomes-idle/solution/wang-luo-kong-xian-de-shi-ke-by-leetcode-qttv/
+     * @param edges
+     * @param patience
+     * @return
+     */
     public int networkBecomesIdle(int[][] edges, int[] patience) {
+        // 将 edges 转换成邻接矩阵
+        int n = patience.length;
+        // adjacency ij = true ij 直接相邻
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < edges.length; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
 
-        return -1;
+            set.add(u + "_" + v);
+            set.add(v + "_" + u);
+        }
+        // 从 0 开始
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(0);
+        // 当前距离
+        int cost = 1;
+        int maxCostTime = 0;
+        // 使用 visit 矩阵 记录 节点是否被 访问过
+        boolean[] visited = new boolean[n];
+        visited[0] = true;
+        // bfs 对于 每个 节点 计算之前距离，patient i * 【2*dist -1】/ patient 先算除法 + 2*dist +1
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                // 找到邻接点
+                for (int j = 0; j < n; j++) {
+                    if (j == poll) {
+                        continue;
+                    }
+                    // 判断是够已经 visited （放进过queue）
+                    if (visited[j]) {
+                        continue;
+                    }
+                    if (!set.contains(poll + "_" + j) && !set.contains(j + "_" + poll)) {
+                        continue;
+                    }
+                    // 计算这个节点 最长时间 需要多久
+                    int thisCostTime = 2 * cost + 1 + patience[j] * ((2 * cost - 1) / patience[j]);
+                    maxCostTime = Math.max(thisCostTime, maxCostTime);
+                    queue.add(j);
+                    visited[j] = true;
+                }
+            }
+            cost++;
+        }
+        return maxCostTime;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "[[0,1],[1,2]]";
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        int[] patience = new int[] {
+                0,2,1
+        };
+        int i = solution.networkBecomesIdle(edges, patience);
+        System.out.println(i);
+        Assert.assertEquals(8, i);
     }
 
 }
