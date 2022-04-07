@@ -57,8 +57,8 @@ import java.util.List;
  */
 public class Solution {
 
-    private int max;
-    private int maxNodeCount;
+    private long max;
+    private long maxNodeCount;
     /**
      *
      * @param parents
@@ -84,37 +84,25 @@ public class Solution {
         this.max = 0;
         this.maxNodeCount = 0;
         dfs(0, children, n);
-        return maxNodeCount;
+        return (int) maxNodeCount;
     }
 
-    private int dfs(int noteIndex, List<Integer>[] children, int totalNodeCount) {
+    private long dfs(int noteIndex, List<Integer>[] children, int totalNodeCount) {
         // 找到孩子 对于每个孩子 计算 孩子数量 求和和乘积，
         List<Integer> child = children[noteIndex];
-        int score = 0;
-        int childNodeCount = 0;
-        if (child.size() == 0) {
-            // 根节点 且只有一个节点
-            if (noteIndex == 0) {
-                score = 0;
-            } else {
-                score = totalNodeCount - 1;
-            }
-        } else {
-            // 有孩子
-            for (int childNodeIndex : child) {
-                int eachChildNodeCount = dfs(childNodeIndex, children, totalNodeCount);
-                childNodeCount += eachChildNodeCount;
-                if (eachChildNodeCount != 0) {
-                    if (score == 0) {
-                        score = 1;
-                    }
-                    score *= eachChildNodeCount;
-                }
-            }
-            if (totalNodeCount - childNodeCount - 1 > 1) {
-                score *= (totalNodeCount - childNodeCount - 1);
-            }
+        long score = 1;
+        long childNodeCount = 0;
+        // 有孩子
+        for (int childNodeIndex : child) {
+            long eachChildNodeCount = dfs(childNodeIndex, children, totalNodeCount);
+            childNodeCount += eachChildNodeCount;
+            score *= eachChildNodeCount;
         }
+        // 计算上 除去当前节点子树
+        if (totalNodeCount - childNodeCount - 1 > 1) {
+            score *= (totalNodeCount - childNodeCount - 1);
+        }
+
         // 判断得分是否是最大
         if (score > this.max) {
             this.max = score;
@@ -125,5 +113,4 @@ public class Solution {
         // 返回有多少个节点 包括这个节点
         return childNodeCount + 1;
     }
-
 }
