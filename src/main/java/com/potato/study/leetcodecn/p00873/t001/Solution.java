@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.p00873.t001;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import com.potato.study.leetcode.domain.TreeNode;
@@ -45,28 +47,30 @@ public class Solution {
 
     // 873
     public int lenLongestFibSubseq(int[] arr) {
-        // dp ij 以ij为最后两个数字的飞沫拿起数列的最长长度
-        int[][] dp = new int[arr.length][arr.length];
-        //初始化
+        // 使用 set 记录 arr 数组
+        Set<Integer> set = new HashSet<>();
         for (int i = 0; i < arr.length; i++) {
-            for (int j = i+1; j < arr.length; j++) {
-                dp[i][j] = 2;
-            }
+            set.add(arr[i]);
         }
-        // 对于新位置 枚举 ij位置
-        int max = 0;
-        for (int k = 0; k < arr.length; k++) {
-            // 枚举ij位置
-            for (int i = 0; i < k; i++) {
-                for (int j = i+1; j < k; j++) {
-                    // 判断下是否满足 fib关系
-                    if (arr[i] + (long)arr[j] == arr[k]) {
-                        dp[j][k] = Math.max(dp[i][j] + 1, dp[j][k]);
-                        max = Math.max(max, dp[j][k]);
-                    }
+        // 枚举 前两个位置 while 一直往后找 计算最大值
+        int maxLength = 0;
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = i + 1; j < arr.length; j++) {
+                int x = arr[i];
+                int y = arr[j];
+                int len = 2;
+                while (set.contains(x + y)) {
+                    int tmp = y;
+                    y = x + y;
+                    x = tmp;
+                    len++;
                 }
+                maxLength = Math.max(len, maxLength);
             }
         }
-        return max;
+        if (maxLength > 2) {
+            return maxLength;
+        }
+        return 0;
     }
 }
