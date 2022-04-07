@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p00816.t001;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,9 +50,56 @@ import com.potato.study.leetcode.domain.ListNode;
 public class Solution {
 
 
-
-
     public List<String> ambiguousCoordinates(String s) {
-        return null;
+        // 去掉 （）
+        String substring = s.substring(1, s.length() - 1);
+        // 首先枚举分割点
+        List<String> resultList = new ArrayList<>();
+        for (int i = 1; i < substring.length(); i++) {
+            String left = substring.substring(0, i);
+            String right = substring.substring(i);
+            for (String leftString : getValidCoordinate(left)) {
+                for (String rightString : getValidCoordinate(right)) {
+                    resultList.add("(" + leftString + ", " + rightString + ")");
+                }
+            }
+        }
+        // 针对每个分割，往其中添加 . 形成坐标 返回
+        return resultList;
+    }
+
+    private List<String> getValidCoordinate(String numString) {
+        // 枚举每一个可以插入.的位置
+        List<String> list = new ArrayList<>();
+        for (int i = 1; i < numString.length(); i++) {
+            String left = numString.substring(0, i);
+            if (left.startsWith("0") && !"0".equals(left)) {
+                continue;
+            }
+            String right = numString.substring(i);
+            if (right.equals("0")) {
+                continue;
+            }
+            if (right.endsWith("0")) {
+                continue;
+            }
+            list.add(left + "." + right);
+        }
+        // 不分割
+        if (!numString.startsWith("0") || "0".equals(numString)) {
+            list.add(numString);
+        }
+        return list;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "(0123)";
+        List<String> list = solution.ambiguousCoordinates(s);
+        System.out.println(list);
+
+        s = "(00011)";
+        list = solution.ambiguousCoordinates(s);
+        System.out.println(list);
     }
 }
