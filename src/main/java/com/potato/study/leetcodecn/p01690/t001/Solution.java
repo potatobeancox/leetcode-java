@@ -45,10 +45,42 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     * https://leetcode-cn.com/problems/stone-game-vii/solution/java-dpjie-fa-by-zzq-_-i2s0s/
+     *
+     * dp ij 从第i个到第j个石头能获得的最大值
+     * 固定 长度 计算两侧
+     * len i
+     * @param stones
+     * @return
+     */
     public int stoneGameVII(int[] stones) {
-
-        return -1;
-
+        // 计算一个前缀和 preSum
+        int[] preSum = new int[stones.length];
+        preSum[0] = stones[0];
+        for (int i = 1; i < stones.length; i++) {
+            preSum[i] = stones[i] + preSum[i-1];
+        }
+        // dp ij alice 从 ij 中能获取的最大差值
+        int n = stones.length;
+        int[][] dp = new int[n][n];
+        // dp ii = 0 dp i i+1 = Math.max(i, i+1)
+        for (int len = 1; len < n; len++) {
+            for (int i = 0; i + len < n; i++) {
+                if (len == 1) {
+                    dp[i][i+len] = Math.max(stones[i], stones[i+1]);
+                    continue;
+                }
+                int j = i + len;
+                // 两种可能 拿了 i (i+1-j)或者 拿了j
+                int tmpSum = 0;
+                if (i > 0) {
+                    tmpSum = preSum[i-1];
+                }
+                dp[i][j] = Math.max(preSum[j] - preSum[i] - dp[i+1][j], preSum[j-1] - tmpSum - dp[i][j-1]);
+            }
+        }
+        return dp[0][stones.length-1];
     }
 
 }
