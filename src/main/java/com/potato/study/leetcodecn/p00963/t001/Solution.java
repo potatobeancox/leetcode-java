@@ -2,8 +2,10 @@ package com.potato.study.leetcodecn.p00963.t001;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
@@ -63,8 +65,39 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
     // 963
     public double minAreaFreeRect(int[][] points) {
-
-        return 0;
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < points.length; i++) {
+            set.add(points[i][0] + "_" + points[i][1]);
+        }
+        // 枚举 开始两个 点 之后
+        int n = points.length;
+        double minArea = Double.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            int[] p1 = points[i];
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    continue;
+                }
+                int[] p2 = points[j];
+                // 第三个顶点
+                for (int k = j+1; k < n; k++) {
+                    int[] p3 = points[k];
+                    // 判断第四个点是够在 point 中
+                    int[] p4 = new int[] {
+                            p2[0] + p3[0] - p1[0],
+                            p2[1] + p3[1] - p1[1]
+                    };
+                    if (!set.contains(p4[0] + "_" + p4[1])) {
+                        continue;
+                    }
+                    // 判断是否是垂直的 p1 p2 和 p1 p3
+                    int area = 0; // todo
+                    // 是的话 计算 面积
+                    minArea = Math.min(minArea, area);
+                }
+            }
+        }
+        return minArea;
     }
 
 
