@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 963. 最小面积矩形 II
@@ -91,7 +92,18 @@ public class Solution {
                         continue;
                     }
                     // 判断是否是垂直的 p1 p2 和 p1 p3
-                    int area = 0; // todo
+                    int[] p1p2 = new int[] {
+                            p1[0]-p2[0], p1[1]-p2[1]
+                    };
+                    int[] p1p3 = new int[] {
+                            p1[0]-p3[0], p1[1]-p3[1]
+                    };
+                    // 不垂直
+                    if (p1p2[0] * p1p3[1] != p1p2[1] * p1p3[0]) {
+                        continue;
+                    }
+                    int area = (int)(Math.sqrt(p1p2[0]*p1p2[0] + p1p2[1]*p1p2[1]) *
+                            Math.sqrt(p1p3[0]*p1p3[0] + p1p3[1]*p1p3[1])); //
                     // 是的话 计算 面积
                     minArea = Math.min(minArea, area);
                 }
@@ -100,5 +112,14 @@ public class Solution {
         return minArea;
     }
 
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[1,2],[2,1],[1,0],[0,1]]";
+        int[][] points = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        double v = solution.minAreaFreeRect(points);
+        // 2.0
+        System.out.println(v);
+    }
 
 }
