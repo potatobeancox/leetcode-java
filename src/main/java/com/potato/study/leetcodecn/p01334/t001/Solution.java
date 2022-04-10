@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01334.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +67,74 @@ public class Solution {
 
 
     public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+        // 用一个 数组 dis 表示 两个点的距离 相同点距离 为 0
+        int[][] dis = new int[n][n];
 
-        return -1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    continue;
+                }
+                dis[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+
+        // 遍历 edges 直接相连的距离就是 edges 的距离
+        for (int i = 0; i < edges.length; i++) {
+            int from = edges[i][0];
+            int to = edges[i][1];
+
+            int value = edges[i][2];
+
+            dis[from][to] = value;
+            dis[to][from] = value;
+        }
+
+
+        // 三重循环遍历 点 找到最小值
+        for (int k = 0; k < n; k++) {
+            // 中间点
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == j) {
+                        continue;
+                    }
+                    // ik 和 kj 不可达
+                    if (dis[i][k] >= Integer.MAX_VALUE || dis[k][j] >= Integer.MAX_VALUE) {
+                        continue;
+                    }
+                    dis[i][j] = Math.min(dis[i][j], dis[i][k] + dis[k][j]);
+                }
+            }
+        }
+        // 遍历每个临界点 找到 distanceThreshold 个数 计算最小的点
+        int minCount = Integer.MAX_VALUE;
+        int minIndex = 0;
+        for (int i = 0; i < n; i++) {
+            int count = 0;
+            for (int j = 0; j < n; j++) {
+                if (dis[i][j] <= distanceThreshold) {
+                    count++;
+                }
+            }
+            if (count <= minCount) {
+                minCount = count;
+                minIndex = i;
+            }
+
+        }
+        return minIndex;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 5;
+        String str = "[[0,1,2],[0,4,8],[1,2,3],[1,4,2],[2,3,1],[3,4,1]]";
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        int distanceThreshold = 2;
+        int theCity = solution.findTheCity(n, edges, distanceThreshold);
+        System.out.println(theCity);
+        Assert.assertEquals(0, theCity);
     }
 }
