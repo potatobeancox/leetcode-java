@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.p00822.t001;
 
-import java.util.Arrays;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * 822. 翻转卡片游戏
@@ -41,9 +39,24 @@ import java.util.TreeSet;
 public class Solution {
 
     public int flipgame(int[] fronts, int[] backs) {
-        // 比较同一个 位置 小的 放在背面
+        // 用一个 set 存 前后两个面 一致的 数字
+        Set<Integer> sameSet = new HashSet<>();
+        for (int i = 0; i < fronts.length; i++) {
+            if (fronts[i] == backs[i]) {
+                sameSet.add(fronts[i]);
+            }
+        }
+        // 找到不在这个 set 中最小的值
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < fronts.length; i++) {
+            if (!sameSet.contains(fronts[i])) {
+                min = Math.min(min, fronts[i]);
+            }
 
-        //
-        return -1;
+            if (!sameSet.contains(backs[i])) {
+                min = Math.min(min, backs[i]);
+            }
+        }
+        return min == Integer.MAX_VALUE ? 0 : min;
     }
 }
