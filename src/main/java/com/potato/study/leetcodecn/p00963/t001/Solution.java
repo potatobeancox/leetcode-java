@@ -102,17 +102,17 @@ public class Solution {
                             p1[0]-p3[0], p1[1]-p3[1]
                     };
                     // 不垂直
-                    if (p1p2[0] * p1p3[1] != p1p2[1] * p1p3[0]) {
+                    if (p1p2[0] * p1p3[0] + p1p2[1] * p1p3[1] != 0) {
                         continue;
                     }
-                    int area = (int)(Math.sqrt(p1p2[0]*p1p2[0] + p1p2[1]*p1p2[1]) *
-                            Math.sqrt(p1p3[0]*p1p3[0] + p1p3[1]*p1p3[1])); //
+                    double area = Math.sqrt(p1p2[0]*p1p2[0] + p1p2[1]*p1p2[1]) *
+                            Math.sqrt(p1p3[0]*p1p3[0] + p1p3[1]*p1p3[1]); //
                     // 是的话 计算 面积
                     minArea = Math.min(minArea, area);
                 }
             }
         }
-        return minArea;
+        return minArea == Double.MAX_VALUE ? 0 : minArea;
     }
 
 
@@ -122,6 +122,13 @@ public class Solution {
         int[][] points = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
         double v = solution.minAreaFreeRect(points);
         // 2.0
+        System.out.println(v);
+
+
+        input = "[[27,23],[29,20],[16,34],[17,12],[28,22],[8,26],[20,14],[15,15]]";
+        points = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        v = solution.minAreaFreeRect(points);
+        // 52.0
         System.out.println(v);
     }
 
