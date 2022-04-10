@@ -90,7 +90,7 @@ public class Solution {
         if (canDeleteNodeRight) {
             root.right = null;
         }
-        return canDeleteNodeLeft && canDeleteNodeRight && current + root.val < limit;
+        return canDeleteNodeLeft && canDeleteNodeRight;
     }
 
     public static void main(String[] args) {
