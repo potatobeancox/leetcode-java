@@ -82,6 +82,9 @@ public class Solution {
                 int[] p2 = points[j];
                 // 第三个顶点
                 for (int k = j+1; k < n; k++) {
+                    if (k == i) {
+                        continue;
+                    }
                     int[] p3 = points[k];
                     // 判断第四个点是够在 point 中
                     int[] p4 = new int[] {
