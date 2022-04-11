@@ -77,7 +77,12 @@ public class Solution {
             if (visited.contains(i)) {
                 continue;
             }
+            // 当前选中 元素 位置
             int nextResultIndex = resultIndex + i;
+            // 当前位置用过 continue
+            if (i != 1 && nextResultIndex >= result.length) {
+                continue;
+            }
             if (i != 1 && result[nextResultIndex] != 0) {
                 continue;
             }
@@ -87,13 +92,16 @@ public class Solution {
             if (i != 1) {
                 result[nextResultIndex] = i;
             }
-            // dfs
-            boolean nextLoopResult = dfs(n, resultIndex + 1, visited);
-            if (nextLoopResult) {
-                return nextLoopResult;
+            // 找到下一个 位置
+            int nextIndex = resultIndex + 1;
+            while (nextIndex < result.length && result[nextIndex] > 0) {
+                nextIndex++;
             }
-
-
+            // dfs
+            boolean nextLoopResult = dfs(n, nextIndex, visited);
+            if (nextLoopResult) {
+                return true;
+            }
             visited.remove(i);
             result[resultIndex] = 0;
             if (i != 1) {
@@ -108,11 +116,14 @@ public class Solution {
         Solution solution = new Solution();
         int n = 3;
         int[] ints = solution.constructDistancedSequence(n);
+        // [3,1,2,3,2]
         System.out.println(Arrays.toString(ints));
 
 
         n = 5;
         ints = solution.constructDistancedSequence(n);
         System.out.println(Arrays.toString(ints));
+        // [5,3,1,4,3,5,2,4,2]
+        // [5, 3, 1, 4, 3, 5, 2, 4, 2]
     }
 }
