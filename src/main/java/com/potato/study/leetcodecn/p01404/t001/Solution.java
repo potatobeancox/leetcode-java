@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
+
 /**
  * 1404. 将二进制表示减到 1 的步骤数
  *
@@ -54,7 +56,43 @@ import java.util.List;
 public class Solution {
 
     public int numSteps(String s) {
+        // 从后往前边 s 如果 使用一个标记位 标记 是否已经 遇到了 1 就是 是够已经 进行了 + 1操作
+        boolean hasAdd = false;
+        int steps = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            char charAt = s.charAt(i);
+            if ('0' == charAt) {
+                if (hasAdd) {
+                    // 已经变成1了
+                    if (i == 0) {
+                        continue;
+                    }
+                    steps += 2;
+                } else {
+                    steps++;
+                }
+            } else {
+                // 1
+                if (hasAdd) {
+                    // 已经变成 0
+                    steps++;
+                } else {
+                    if (i == 0) {
+                        continue;
+                    }
+                    steps += 2;
+                    hasAdd = true;
+                }
+            }
+        }
+        return steps;
+    }
 
-        return 1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "1101";
+        int i = solution.numSteps(s);
+        System.out.println(i);
+        Assert.assertEquals(6, i);
     }
 }
