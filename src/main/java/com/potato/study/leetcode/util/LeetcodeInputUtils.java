@@ -1,5 +1,6 @@
 package com.potato.study.leetcode.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -41,6 +42,29 @@ public class LeetcodeInputUtils {
         }
         // 返回数组
         return result;
+    }
+
+
+    public static List<String> inputString2StringList(String input) {
+        if (StringUtils.isBlank(input)) {
+            return new ArrayList<>();
+        }
+        if ("".equals(input) || "[]".equals(input)) {
+            return new ArrayList<>();
+        }
+        // 去掉"[]"
+        String substring = input.substring(1, input.length() - 1);
+        // ，拆分
+        String[] split = substring.split(",");
+        // 去掉引号
+        List<String> resultList = new ArrayList<>();
+        for (int i = 0; i < split.length; i++) {
+            String word = split[i].trim();
+            word = word.substring(1, word.length() - 1);
+            resultList.add(word);
+        }
+        // 返回数组
+        return resultList;
     }
 
 

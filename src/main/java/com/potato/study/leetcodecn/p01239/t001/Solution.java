@@ -4,6 +4,10 @@ package com.potato.study.leetcodecn.p01239.t001;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 1239. 串联字符串的最大长度
  *
@@ -42,38 +46,49 @@ import java.util.List;
  */
 public class Solution {
 
-    private int maxLen;
+    private long maxLen;
     // 1239
     public int maxLength(List<String> arr) {
-        // 将 字段串转成 状态
+        // 将 字段串转成 状态 数字
         List<Long> statusList = new ArrayList<>();
+        // 遍历 word 如果出现 重复字符返回 0
         for (String word : arr) {
             long status = getStatus(word);
-            statusList.add(status);
+            if (status > 0) {
+                statusList.add(status);
+            }
         }
         // 回溯找
         this.maxLen = 0;
-        backtrack(arr, statusList, 0, 0, 0);
-        return maxLen;
+        backtrack(statusList, 0,  0);
+        return (int) maxLen;
     }
 
-    private void backtrack(List<String> wordList, List<Long> statusList, int currentMaxLength, long currentStatus,
-            int currentIndex) {
-        // 判定 当前 currentIndex 是否可以选择
-        long status = statusList.get(currentIndex);
-        boolean hasSameChar = hasSameChar(status, currentStatus);
-        // 不能选择 往后 回溯
-        if (hasSameChar) {
-            backtrack(wordList, statusList, currentMaxLength, currentStatus, currentIndex + 1);
-            return;
+    /**
+     *
+     * @param statusList        原始字符串对应的占位符
+     * @param currentStatus     当前拼接后字符串的状态
+     * @param currentIndex      当前使用的index
+     */
+    private void backtrack(List<Long> statusList, long currentStatus, int currentIndex) {
+
+        // 找下一个 字符串看 能不能递归找下去
+        for (int i = currentIndex; i < statusList.size(); i++) {
+            // 判定 当前 currentIndex 是否可以选择
+            long status = statusList.get(i);
+            // 有相同的 往后找
+            if (hasSameChar(status, currentStatus)) {
+                continue;
+            }
+            // 当前没有相同的 修改最大设定等
+            long nextStatus = (currentStatus | status);
+            long nextLength = Long.bitCount(nextStatus);
+            maxLen = Math.max(maxLen, nextLength);
+            // 用这个点
+            backtrack(statusList, nextStatus, i + 1);
+            // 也可以不用这个节点
+            backtrack(statusList, currentStatus, i + 1);
         }
-        // 可以选择 不选 往后回溯
-        backtrack(wordList, statusList, currentMaxLength, currentStatus, currentIndex + 1);
-        // 可以选择，选择 更新状态，往后回溯
-        String currentWord = wordList.get(currentIndex);
-        this.maxLen = Math.max(maxLen, currentMaxLength + currentWord.length());
-        backtrack(wordList, statusList, currentMaxLength + currentWord.length(),
-                (currentStatus | statusList.get(currentIndex)), currentIndex + 1);
     }
 
     private long getStatus(String word) {
@@ -85,25 +100,34 @@ public class Solution {
         // count 数组变成 字符串
         int status = 0;
         for (int i = 0; i < 26; i++) {
-            if (count[i] > 0) {
+            if (count[i] >= 2) {
+                return 0;
+            } else if (count[i] == 1) {
                 status |= (1 << i);
             }
         }
         return status;
     }
 
+    /**
+     * 两个状态是否有相同的字符
+     * @param status1
+     * @param status2
+     * @return
+     */
     private boolean hasSameChar(long status1, long status2) {
-        for (int i = 0; i < 26; i++) {
-            long bit1 = status1 & 1;
-            long bit2 = status2 & 1;
-            if (bit1 + bit2 > 1) {
-                return false;
-            }
+        long bit = status1 & status2;
+        return bit > 0;
+    }
 
-            status1 >>>= 1;
-            status2 >>>= 1;
-        }
-        return true;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[\"un\",\"iq\",\"ue\"]";
+        List<String> list = LeetcodeInputUtils.inputString2StringList(input);
+
+        int i = solution.maxLength(list);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 
 
