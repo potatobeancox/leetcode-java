@@ -56,6 +56,7 @@ public class Solution {
                 // 找到 set 中第一个 与之相同的
                 while (startIndex < i && nums[startIndex] != nums[i]) {
                     tmpSum -= nums[startIndex];
+                    set.remove(nums[startIndex]);
                     startIndex++;
                 }
                 // 把之前set的让出来
@@ -85,7 +86,7 @@ public class Solution {
         Assert.assertEquals(i, 8);
 
         nums = new int[] {
-                538,809,166,809,165,809,610
+                187,470,25,436,538,809,441,167,477,110,275,133,666,345,411,459,490,266,987,965,429,166,809,340,467,318,125,165,809,610,31,585,970,306,42,189,169,743,78,810,70,382,367,490,787,670,476,278,775,673,299,19,893,817,971,458,409,886,434
         };
         i = solution.maximumUniqueSubarray(nums);
         System.out.println(i);
