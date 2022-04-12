@@ -52,52 +52,59 @@ import java.util.Set;
  */
 public class Solution {
 
+    // 764
     public int orderOfLargestPlusSign(int n, int[][] mines) {
-        // 使用 一个 set 记录 0的位置
-        Set<String> set = new HashSet<>();
+        // 将 mines 处理成 set
+        Set<Long> set = new HashSet<>();
         for (int i = 0; i < mines.length; i++) {
-            set.add(mines[i][0] + "_" + mines[i][1]);
+            long num = mines[i][0] * n + mines[i][1];
+            set.add(num);
         }
-        // 双循环遍历 每个位置 计算最大值
-        int max = 0;
-        int[][] direction = new int[][] {
-                {1, 0},
-                {-1, 0},
-                {0, 1},
-                {0, -1}
-        };
+        int[][][] dp = new int[n][n][4];
+        // dp ij k 标识 已ij为中心 的最长延伸的1的长度 0上1下2左3右
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (set.contains(i + "_" + j)) {
+                long num = i * n + j;
+                if (set.contains(num)) {
                     continue;
                 }
-                // 计算最大值
-                int currentMax = 1;
-                for (int k = 1; k < n; k++) {
-                    // 4个方向 哪个方向不行了 直接 break 调 返回值
-                    boolean isValid = true;
-                    for (int l = 0; l < 4; l++) {
-                        int di = i + k * direction[l][0];
-                        int dj = j + k * direction[l][1];
-                        // 坐标非法
-                        if (di < 0 || di >= n
-                                || dj < 0 || dj >= n) {
-                            isValid = false;
-                            break;
-                        }
-                        // 不是 1
-                        if (set.contains(di + "_" + dj)) {
-                            isValid = false;
-                            break;
-                        }
-                    }
-                    if (isValid) {
-                        currentMax = k + 1;
-                    } else {
-                        break;
-                    }
+                // 上 和左
+                if (i == 0 || j == 0) {
+                    dp[i][j][0] = Math.max(dp[i][j][0], 1);
+                    dp[i][j][2] = Math.max(dp[i][j][2], 1);
+                } else {
+                    dp[i][j][0] = Math.max(dp[i][j][0], dp[i-1][j][0] + 1);
+                    dp[i][j][2] = Math.max(dp[i][j][2], dp[i][j-1][2] + 1);
                 }
-                max = Math.max(max, currentMax);
+            }
+        }
+        // 从左上和右下开始遍历
+        for (int i = n-1; i >= 0; i--) {
+            for (int j = n-1; j >= 0; j--) {
+                long num = i * n + j;
+                if (set.contains(num)) {
+                    continue;
+                }
+                // 上 和左
+                if (i == n-1 || j == n-1) {
+                    dp[i][j][1] = Math.max(dp[i][j][1], 1);
+                    dp[i][j][3] = Math.max(dp[i][j][3], 1);
+                } else {
+                    // 下
+                    dp[i][j][1] = Math.max(dp[i][j][1], dp[i+1][j][1] + 1);
+                    // 右
+                    dp[i][j][3] = Math.max(dp[i][j][3], dp[i][j+1][3] + 1);
+                }
+            }
+        }
+        // 遍历 找四个方向最小的
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int min = Math.min(dp[i][j][0], dp[i][j][1]);
+                min = Math.min(min, dp[i][j][2]);
+                min = Math.min(min, dp[i][j][3]);
+                max = Math.max(max, min);
             }
         }
         return max;
