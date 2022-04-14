@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.junit.Assert;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 1631. 最小体力消耗路径
  *
@@ -66,7 +68,7 @@ public class Solution {
             }
         }
         int left = 0;
-        int res = -1;
+        int res = 0;
         while (left <= right) {
             int mid = (left + right) / 2;
             boolean canReach = canReach(heights, mid);
@@ -98,7 +100,7 @@ public class Solution {
         };
         Queue<int[]> queue = new LinkedList<>();
         queue.add(new int[] {0, 0});
-        int n = heights.length;
+        int n = heights[0].length;
         Set<Integer> visited = new HashSet<>();
         visited.add(0 * n + 0);
         while (!queue.isEmpty()) {
@@ -107,7 +109,7 @@ public class Solution {
             for (int i = 0; i < direction.length; i++) {
                 int di = poll[0] + direction[i][0];
                 int dj = poll[1] + direction[i][1];
-                if (di < 0 || di >= n || dj < 0 || dj >= n) {
+                if (di < 0 || di >= heights.length || dj < 0 || dj >= heights[0].length) {
                     continue;
                 }
                 // 判断是否访问过
@@ -117,9 +119,9 @@ public class Solution {
                 // 判断 差 是否小于等于 cost
                 int diff = Math.abs(heights[di][dj] - heights[poll[0]][poll[1]]);
                 if (diff > cost) {
-                    return false;
+                    continue;
                 }
-                if (di == n - 1 && dj == n - 1) {
+                if (di == heights.length - 1 && dj == heights[0].length - 1) {
                     return true;
                 }
                 queue.add(new int[]{
@@ -130,4 +132,29 @@ public class Solution {
         }
         return false;
     }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "[[1,2,2],[3,8,2],[5,3,5]]";
+        int[][] heights = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        int i = solution.minimumEffortPath(heights);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        str = "[[3]]";
+        heights = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        i = solution.minimumEffortPath(heights);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
+
+
+        str = "[[1,10,6,7,9,10,4,9]]";
+        heights = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        i = solution.minimumEffortPath(heights);
+        System.out.println(i);
+        Assert.assertEquals(9, i);
+    }
+
 }
