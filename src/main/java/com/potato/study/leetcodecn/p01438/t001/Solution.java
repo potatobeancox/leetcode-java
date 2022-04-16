@@ -2,6 +2,9 @@ package com.potato.study.leetcodecn.p01438.t001;
 
 import org.junit.Assert;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * 1438. 绝对差不超过限制的最长连续子数组
  *
@@ -52,50 +55,61 @@ import org.junit.Assert;
 public class Solution {
 
     /**
-     * 滑动庄口 nums。lem - limit
+     * https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/solution/xiang-jie-er-fen-hua-dong-chuang-kou-dan-41g1/
+     * 分别用两个 双端队列 维护最大值和最小值
      * @param nums
      * @param limit
      * @return
      */
     public int longestSubarray(int[] nums, int limit) {
-        int minWindow = Integer.MAX_VALUE;
-        int total = 0;
-        int windowLen = 0;
-        int windowTotal = 0;
-        for (int i = 0; i < nums.length; i++) {
-            total += nums[i];
-            windowLen++;
-            windowTotal += nums[i];
-            if (windowLen > nums.length - limit) {
-                windowTotal -= nums[i - windowLen];
-                windowLen--;
+
+        Deque<Integer> maxDeque = new LinkedList<>();
+        Deque<Integer> minDeque = new LinkedList<>();
+        int maxLength = 0;
+        int left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            // right 更新 双端队列 如果当前值 比尾巴 大或者小 那么可以循环出战
+            while (!maxDeque.isEmpty() && maxDeque.peekLast() < nums[right]) {
+                maxDeque.pollLast();
             }
-            if (windowLen == nums.length - limit) {
-                minWindow = Math.min(minWindow, windowTotal);
+            maxDeque.addLast(nums[right]);
+            while (!minDeque.isEmpty() && minDeque.peekLast() > nums[right]) {
+                minDeque.pollLast();
             }
+            minDeque.addLast(nums[right]);
+            // 判断此时是不是满足 limit
+            while (!maxDeque.isEmpty() && !minDeque.isEmpty()
+                    && maxDeque.peekFirst() - minDeque.peekFirst() > limit) {
+                // 超了 移动左边
+                if (maxDeque.peekFirst() == nums[left]) {
+                    maxDeque.pollFirst();
+                }
+                if (minDeque.peekFirst() == nums[left]) {
+                    minDeque.pollFirst();
+                }
+                left++;
+            }
+            maxLength = Math.max(maxLength, right - left + 1);
+
         }
-        return total - minWindow;
+        return maxLength;
     }
 
-//    public static void main(String[] args) {
-//        Solution solution = new Solution();
-//        int[] nums = new int[] {1,0,0,0,1,0,0,1};
-//        int k = 2;
-//        boolean res = solution.kLengthApart(nums, k);
-//        System.out.println(res);
-//        Assert.assertEquals(true, res);
-//
-//        nums = new int[] {1,0,0,1,0,1};
-//        k = 2;
-//        res = solution.kLengthApart(nums, k);
-//        System.out.println(res);
-//        Assert.assertEquals(false, res);
-//
-//
-//        nums = new int[] {0,1, 0,0,1,0,0,};
-//        k = 2;
-//        res = solution.kLengthApart(nums, k);
-//        System.out.println(res);
-//        Assert.assertEquals(true, res);
-//    }
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {8,2,4,7};
+        int k = 4;
+        int res = solution.longestSubarray(nums, k);
+        System.out.println(res);
+        Assert.assertEquals(2, res);
+
+
+        nums = new int[] {10,1,2,4,7,2};
+        k = 5;
+        res = solution.longestSubarray(nums, k);
+        System.out.println(res);
+        Assert.assertEquals(4, res);
+
+
+    }
 }
