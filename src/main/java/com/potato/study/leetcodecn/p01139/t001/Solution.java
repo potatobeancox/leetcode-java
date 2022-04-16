@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01139.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 /**
  * 1139. 最大的以 1 为边界的正方形
  *
@@ -36,9 +39,9 @@ public class Solution {
         // 记录每个 点对应的 左边 和 上面 的长度 按照每个点开始 找 对应的 最小值，
         int n = grid.length;
         // 0 是左边 长度 1是上面长度
-        int[][][] dp = new int[n][n][2];
+        int[][][] dp = new int[n][grid[0].length][2];
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j] == 0) {
                     continue;
                 }
@@ -59,16 +62,25 @@ public class Solution {
         // 遍历 每个 开始的点 找到 对应 点的 左边个 上面 是否有足够的长度  需要 逐渐往里边找
         int max = 0;
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < grid[0].length; j++) {
                 int minLen = Math.min(dp[i][j][0], dp[i][j][1]);
                 for (int k = minLen; k > 0; k--) {
-                    if (k >= dp[i-k+1][j][1] && k >= dp[i][j-k+1][0]) {
+                    if (k <= dp[i-k+1][j][1] && k <= dp[i][j-k+1][0]) {
                         max = Math.max(max, k);
                         break;
                     }
                 }
             }
         }
-        return max;
+        return max * max;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "[[0,0,0,1]]";
+        int[][] arrayTwoDimensional = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        int i = solution.largest1BorderedSquare(arrayTwoDimensional);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
 }
