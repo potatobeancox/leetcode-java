@@ -47,8 +47,27 @@ import org.junit.Assert;
 public class Solution {
 
     public long minimumPerimeter(long neededApples) {
+        long totalAppleCount = 0;
+        long len = 0;
+        // sn=2n(n+1)(2n+1)
+        while (totalAppleCount < neededApples) {
+            len++;
+            totalAppleCount = 2 * len * (len + 1) * (2 * len + 1);
+        }
+        return 8 * len;
+    }
 
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        long l = solution.minimumPerimeter(13);
+        System.out.println(l);
+        Assert.assertEquals(16, l);
+
+
+
+        l = solution.minimumPerimeter(1000000000);
+        System.out.println(l);
+        Assert.assertEquals(5040, l);
     }
 
 }
