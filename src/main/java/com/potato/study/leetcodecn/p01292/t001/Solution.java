@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01292.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +53,62 @@ import java.util.List;
 public class Solution {
 
     public int maxSideLength(int[][] mat, int threshold) {
+        // 求2位前缀和 先求 行 再求列
+        int[][] newMat = new int[mat.length + 1][mat[0].length + 1];
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[i].length; j++) {
+                newMat[i+1][j+1] = newMat[i+1][j] + mat[i][j];
+            }
+        }
+        // 求列
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                newMat[i+1][j+1] += (newMat[i][j+1]);
+            }
+        }
+        // 枚举每个 ij 作为右下角
+        int maxLength = 0;
+        for (int i = newMat.length - 1; i >= 0; i--) {
+            for (int j = newMat[0].length - 1; j >= 0; j--) {
+                // 长度 从大的开始
+                int length = Math.min(i, j);
+                for (int k = length; k > 0; k--) {
+                    int area = newMat[i][j] + newMat[i-k][j-k]
+                            - newMat[i][j-k] - newMat[i-k][j];
+                    if (area > threshold) {
+                        continue;
+                    } else {
+                        maxLength = Math.max(maxLength, k);
+                        break;
+                    }
+                }
+            }
+        }
+        return maxLength;
+    }
 
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "[[1,1,3,2,4,3,2],[1,1,3,2,4,3,2],[1,1,3,2,4,3,2]]";
+        int[][] arrayTwoDimensional = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        int i = solution.maxSideLength(arrayTwoDimensional, 4);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        str = "[[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2],[2,2,2,2,2]]";
+        arrayTwoDimensional = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        i = solution.maxSideLength(arrayTwoDimensional, 1);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
+//
+
+        str = "[[1,1,1,1],[1,0,0,0],[1,0,0,0],[1,0,0,0]]";
+        arrayTwoDimensional = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(str);
+        i = solution.maxSideLength(arrayTwoDimensional, 6);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
     }
 }
