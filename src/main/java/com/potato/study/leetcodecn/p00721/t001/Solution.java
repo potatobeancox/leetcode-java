@@ -111,4 +111,11 @@ public class Solution {
             parent.put(p1, p2);
         }
     }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        List<List<String>> accounts = new ArrayList<>();
+        List<List<String>> lists = solution.accountsMerge(accounts);
+        System.out.println(lists);
+    }
 }
