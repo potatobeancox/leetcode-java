@@ -50,10 +50,69 @@ import org.junit.Assert;
 public class Solution {
 
     public boolean areSentencesSimilar(String sentence1, String sentence2) {
+        if (sentence1.length() < sentence2.length()) {
+            String tmp = sentence2;
+            sentence2 = sentence1;
+            sentence1 = tmp;
+        }
         // 按照 空格 split
-
+        String[] split1 = sentence1.split(" ");
+        String[] split2 = sentence2.split(" ");
         // 开始位置必须相同 对于 sentence2 的1的位置 找到
+        int left1 = 0;
+        int left2 = 0;
+        // 三种情况 左边一致相同
+        for (int i = 0; i < split2.length; i++) {
+            if (split1[left1].equals(split2[left2])) {
+                left1++;
+                left2++;
+            } else {
+                break;
+            }
+        }
+        if (left2 == split2.length) {
+            return true;
+        }
+        // 右边一直相同
+        int right1 = split1.length - 1;
+        int right2 = split2.length - 1;
+        for (int i = 0; i < split2.length; i++) {
+            if (split1[right1].equals(split2[right2])) {
+                right1--;
+                right2--;
+            } else {
+                break;
+            }
+        }
+        if (left2 < 0) {
+            return true;
+        }
+        // 两头可以对上
+        if (right2 <= left2  - 1) {
+            return true;
+        }
 
         return false;
     }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String sentence1 = "My name is Haley";
+        String sentence2 = "My Haley";
+        boolean b = solution.areSentencesSimilar(sentence1, sentence2);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+
+
+
+        sentence1 = "A A AAa";
+        sentence2 = "A AAa";
+        b = solution.areSentencesSimilar(sentence1, sentence2);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+    }
+
+
 }
