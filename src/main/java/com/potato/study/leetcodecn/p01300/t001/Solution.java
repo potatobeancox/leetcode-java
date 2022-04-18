@@ -47,26 +47,29 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     * https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target/solution/zui-you-jie-fa-onlogn-by-java_lee/
+     * @param arr
+     * @param target
+     * @return
+     */
     public int findBestValue(int[] arr, int target) {
         // 排序 计算
         Arrays.sort(arr);
         int sum = 0;
         for (int i = 0; i < arr.length; i++) {
-            sum += arr[i];
             // 当前有多少 变成sum的
-            int count = arr.length - 1 - i;
-            if (sum + count * arr[i] >= target) {
-                // 计算差值
-                int diff = sum + count * arr[i] - target;
-                if (diff >= 0) {
-                    int diffEach = diff / arr.length;
-                    if (diff % arr.length == 0) {
-                        return arr[i] - diffEach;
-                    }
-                }
+            int count = arr.length - i;
+            // 计算差值
+            int diff = sum + count * arr[i] - target;
+            if (diff >= 0) {
+                // 这块要四舍五入一下
+                return arr[i] - (int)Math.round(1.0 * diff / count);
             }
+            sum += arr[i];
         }
-        return -1;
+        // 没有结果 就使用最大值
+        return arr[arr.length - 1];
     }
 
     public static void main(String[] args) {
@@ -87,5 +90,13 @@ public class Solution {
         bestValue = solution.findBestValue(arr, target);
         System.out.println(bestValue);
         Assert.assertEquals(5, bestValue);
+
+        arr = new int[] {
+                60864,25176,27249,21296,20204
+        };
+        target = 56803;
+        bestValue = solution.findBestValue(arr, target);
+        System.out.println(bestValue);
+        Assert.assertEquals(11361, bestValue);
     }
 }
