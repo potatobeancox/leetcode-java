@@ -56,7 +56,55 @@ import org.junit.Assert;
 public class Solution {
 
     public boolean btreeGameWinningMove(TreeNode root, int n, int x) {
+        // 找到 x 点位置 计算 x的左子树的节点 个数 计算右孩子的节点个数
+        TreeNode node = findNode(root, x);
+        int leftCount = getCount(node.left);
+        int limit = n / 2;
+        if (n % 2 == 1) {
+            limit++;
+        }
+        if (leftCount >= limit) {
+            return true;
+        }
+        int rightCount = getCount(node.right);
+        if (rightCount >= limit) {
+            return true;
+        }
+        return n - leftCount - rightCount - 1 >= limit;
+    }
 
-        return false;
+    private int getCount(TreeNode node) {
+        if (null == node) {
+            return 0;
+        }
+        return getCount(node.left) + getCount(node.right) + 1;
+    }
+
+    private TreeNode findNode(TreeNode root, int x) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val == x) {
+            return root;
+        }
+        TreeNode left = findNode(root.left, x);
+        if (left != null) {
+            return left;
+        }
+        TreeNode right = findNode(root.right, x);
+        return right;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(2);
+        root.right = new TreeNode(3);
+        int n = 3;
+        int x = 2;
+        boolean b = solution.btreeGameWinningMove(root, n, x);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 }
