@@ -54,31 +54,56 @@ public class Solution {
                 {0, 1},
                 {0, -1}
         };
-        int totalPath = 0;
+        long totalPath = 0;
         int mod = 1_000_000_000 + 7;
         // (a + b) % p = (a % p + b % p) % p
-        for (int i = 0; i < maxMove; i++) {
+        for (int i = 1; i <= maxMove; i++) {
             for (int j = 0; j < m; j++) {
                 for (int k = 0; k < n; k++) {
-                    if (dp[i][j][k] == 0) {
+                    if (dp[i-1][j][k] == 0) {
                         continue;
                     }
                     // 四个方向
                     for (int l = 0; l < 4; l++) {
                         int dj = j + directions[l][0];
                         int dk = k + directions[l][1];
-
+                        // 找到了 出界的方式
                         if (dj < 0 || dj >= m
                                 || dk < 0 || dk >= n) {
-                            totalPath = (totalPath % mod + dp[i][j][k] % mod) % mod;
+                            totalPath += dp[i-1][j][k];
+                            totalPath %= mod;
                             continue;
                         }
-                        dp[i+1][j][k] = (dp[i][j][k] % mod + dp[i+1][j][k] % mod) % mod;
+                        dp[i][dj][dk] += dp[i-1][j][k];
+                        dp[i][dj][dk] %= mod;
                     }
                 }
             }
         }
-        return totalPath;
+        return (int)totalPath;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int m = 2;
+        int n = 2;
+        int maxMove = 2;
+        int startRow = 0;
+        int startColumn = 0;
+        int paths = solution.findPaths(m, n, maxMove, startRow, startColumn);
+        System.out.println(paths);
+        Assert.assertEquals(6, paths);
+
+
+
+        m = 1;
+        n = 3;
+        maxMove = 3;
+        startRow = 0;
+        startColumn = 1;
+        paths = solution.findPaths(m, n, maxMove, startRow, startColumn);
+        System.out.println(paths);
+        Assert.assertEquals(12, paths);
     }
 
 }
