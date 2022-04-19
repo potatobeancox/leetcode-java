@@ -51,21 +51,15 @@ import org.junit.Assert;
 public class Solution {
 
     public boolean isIdealPermutation(int[] nums) {
-        // 直接计算
-        int localTime = 0;
-        int totalTime = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (i < nums.length - 1 && nums[i] > nums[i + 1] ) {
-                localTime++;
-            }
-            // nums[i] > nums[j]
-            for (int j = i+ 1; j < nums.length; j++) {
-                if (nums[i] > nums[j]) {
-                    totalTime++;
-                }
+        // 从后往前 维护当前最小值 如果 i-2 大于最小值 说明 不是
+        int min = nums[nums.length - 1];
+        for (int i = nums.length - 1; i >= 2; i--) {
+            min = Math.min(min, nums[i]);
+            if (nums[i-2] > min) {
+                return false;
             }
         }
-        return localTime == totalTime;
+        return true;
     }
 
 }
