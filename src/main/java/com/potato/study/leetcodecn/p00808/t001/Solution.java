@@ -44,9 +44,39 @@ import org.junit.Assert;
  */
 public class Solution {
 
+
+    /**
+     *
+     * @param n
+     * @return
+     */
     public double soupServings(int n) {
+        // dp ij 剩余 ij ml 时 结果的概率
+        int len;
+        if (n % 25 == 0) {
+            len = n / 25;
+        } else {
+            len = n / 25 + 1;
+        }
+        // len
+        if (len >= 200) {
+            return 1;
+        }
+        double[][] dp = new double[len + 1][len + 1];
+        dp[0][0] = 0.5;
+        for (int i = 1; i < len + 1; i++) {
+            dp[0][i] = 1;
+        }
 
-
-        return 0.0;
+        for (int i = 1; i < len + 1; i++) {
+            for (int j = 1; j < len + 1; j++) {
+                dp[i][j] += dp[Math.max(i-4, 0)][j];
+                dp[i][j] += dp[Math.max(i-3, 0)][Math.max(j-1, 0)];
+                dp[i][j] += dp[Math.max(i-2, 0)][Math.max(j-2, 0)];
+                dp[i][j] += dp[Math.max(i-1, 0)][Math.max(j-3, 0)];
+                dp[i][j] /= 4;
+            }
+        }
+        return dp[len][len];
     }
 }
