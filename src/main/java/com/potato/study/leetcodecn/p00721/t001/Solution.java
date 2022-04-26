@@ -4,6 +4,8 @@ import org.junit.Assert;
 
 import java.util.*;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 721. 账户合并
  *
@@ -45,76 +47,105 @@ import java.util.*;
  */
 public class Solution {
 
+    /**
+     *
+     * @param accounts
+     * @return
+     */
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
-        // 遍历 accounts 维护 email - index map email - person map
-        Map<String, String> emailPersonMap = new HashMap<>();
-        UnionFind unionFind = new UnionFind();
+        // 维护一个map 每个邮箱 对应一个 index index 用于并查集 同事维护 email 对应 用户的map
+        Map<String, Integer> emailIndexMap = new HashMap<>();
+        Map<String, String> emailUserMap = new HashMap<>();
         for (List<String> info : accounts) {
             String person = info.get(0);
-            String firstEmail = "";
             for (int i = 1; i < info.size(); i++) {
                 String email = info.get(i);
-                if (i == 1) {
-                    firstEmail = email;
-                    unionFind.find(firstEmail);
+                if (emailIndexMap.containsKey(email)) {
                     continue;
                 }
-                unionFind.union(firstEmail, email);
-                emailPersonMap.put(email, person);
+                emailIndexMap.put(email, emailIndexMap.size());
+                emailUserMap.put(email, person);
             }
         }
-        // 对于每个人的email union 操作
-        Map<String, List<String>> emailEmailMap = new HashMap<>();
-        Map<String, String> parent = unionFind.parent;
-        for (Map.Entry<String, String> entry : parent.entrySet()) {
-            List<String> list = emailEmailMap.getOrDefault(entry.getValue(), new ArrayList<>());
-            list.add(entry.getKey());
-            emailEmailMap.put(entry.getValue(), list);
+        // 遍历 accounts 进行并查集 计算
+        UnionFind unionFind = new UnionFind(emailIndexMap.size());
+        for (List<String> info : accounts) {
+            if (info.size() == 1) {
+                continue;
+            }
+            String firstEmail = info.get(1);
+            for (int i = 2; i < info.size(); i++) {
+                String email = info.get(i);
+                unionFind.union(emailIndexMap.get(firstEmail), emailIndexMap.get(email));
+            }
         }
+        // 遍历 所有邮箱，将 相同父亲的 放在一个map index list 中
+        Map<Integer, List<String>> parentIndexEmailListMap = new HashMap<>();
+        Set<String> emailSet = emailIndexMap.keySet();
+        for (String email : emailSet) {
+            int emailIndex = emailIndexMap.get(email);
+            int parentIndex = unionFind.find(emailIndex);
+            List<String> emailList = parentIndexEmailListMap.getOrDefault(parentIndex, new ArrayList<>());
+            emailList.add(email);
+            parentIndexEmailListMap.put(parentIndex, emailList);
+        }
+        // 遍历 index 的map 生成最终结果 名字就是 list 中的第一个email 对应的名字
         List<List<String>> resultList = new ArrayList<>();
-        for (Map.Entry<String, List<String>> entry : emailEmailMap.entrySet()) {
-            String person = emailPersonMap.get(entry.getKey());
-            List<String> res = new ArrayList<>();
-            res.add(person);
-            res.addAll(entry.getValue());
-            resultList.add(res);
+        for (List<String> emailList : parentIndexEmailListMap.values()) {
+            if (emailList == null || emailList.size() == 0) {
+                continue;
+            }
+            String email = emailList.get(0);
+            String user = emailUserMap.get(email);
+
+            List<String> list = new ArrayList<>();
+            list.add(user);
+
+            Collections.sort(emailList);
+            list.addAll(emailList);
+
+            resultList.add(list);
         }
+
         return resultList;
     }
 
     class UnionFind {
-        public Map<String, String> parent;
 
-        public UnionFind() {
-            this.parent = new HashMap<>();
+        private int[] parent;
+
+        public UnionFind(int n) {
+            this.parent = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
         }
 
-        public String find(String target) {
-            if (!parent.containsKey(target)) {
-                parent.put(target, target);
-                return target;
-            }
-
-            while (!target.equals(parent.get(target))) {
-                target = parent.get(target);
+        public int find(int target) {
+            while (parent[target] != target) {
+                target = parent[target];
             }
             return target;
         }
 
-
-        public void union(String target1, String target2) {
-            String p1 = find(target1);
-            String p2 = find(target2);
-            if (p1.equals(p2)) {
+        public void union(int target1, int target2) {
+            int p1 = find(target1);
+            int p2 = find(target2);
+            if (p1 == p2) {
                 return;
             }
-            parent.put(p1, p2);
+            parent[p1] = p2;
         }
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        List<List<String>> accounts = new ArrayList<>();
+        String input = "[[\"Alex\",\"Alex5@m.co\",\"Alex4@m.co\",\"Alex0@m.co\"],[\"Ethan\",\"Ethan3@m.co\","
+                + "\"Ethan3@m.co\",\"Ethan0@m.co\"],[\"Kevin\",\"Kevin4@m.co\",\"Kevin2@m.co\",\"Kevin2@m.co\"],"
+                + "[\"Gabe\",\"Gabe0@m.co\",\"Gabe3@m.co\",\"Gabe2@m.co\"],[\"Gabe\",\"Gabe3@m.co\",\"Gabe4@m.co\","
+                + "\"Gabe2@m.co\"]]";
+        List<List<String>> accounts = LeetcodeInputUtils.inputString2StringListList(input);
+
         List<List<String>> lists = solution.accountsMerge(accounts);
         System.out.println(lists);
     }
