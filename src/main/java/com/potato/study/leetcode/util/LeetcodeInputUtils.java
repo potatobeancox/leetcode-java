@@ -68,6 +68,27 @@ public class LeetcodeInputUtils {
     }
 
 
+    public static List<List<String>> inputString2StringListList(String input) {
+        if (StringUtils.isBlank(input)) {
+            return new ArrayList<>();
+        }
+        if ("".equals(input) || "[]".equals(input)) {
+            return new ArrayList<>();
+        }
+        // 去掉"[]"
+        String substring = input.substring(2, input.length() - 2);
+        // ，拆分
+        String[] split = substring.split("\\],\\[");
+        // 去掉引号
+        List<List<String>> resultList = new ArrayList<>();
+        for (int i = 0; i < split.length; i++) {
+            resultList.add(inputString2StringList(split[i]));
+        }
+        // 返回数组
+        return resultList;
+    }
+
+
     @Test
     public void testInputString2StringArray() {
         String input = "[\"0201\",\"0101\",\"0102\",\"1212\",\"2002\"]";
