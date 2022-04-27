@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p00909.t001;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * 909. 蛇梯棋
  *
@@ -55,7 +58,52 @@ package com.potato.study.leetcodecn.p00909.t001;
 public class Solution {
 
     public int snakesAndLadders(int[][] board) {
-        // 将
+        // 将 board 转换成 一维数组
+        int n = board.length;
+        int[] step = new int[n * n + 1];
+        // 左下角开始
+        boolean fromLeft = true;
+        int index = 1;
+        for (int i = n-1; i >= 0; i--) {
+            if (fromLeft) {
+                for (int j = 0; j < n; j++) {
+                    step[index++] = board[i][j];
+                }
+            } else {
+                for (int j = n-1; j >= 0; j--) {
+                    step[index++] = board[i][j];
+                }
+            }
+            fromLeft = !fromLeft;
+        }
+        // 从 1 开始 bfs
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(1);
+        int count = 1;
+        boolean[] visited = new boolean[n * n + 1];
+        visited[1] = true;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                for (int j = 1; j <= 6; j++) {
+                    int nextIndex = poll + j;
+                    if (step[nextIndex] != -1) {
+                        nextIndex = step[nextIndex];
+                    }
+                    if (visited[nextIndex]) {
+                        continue;
+                    }
+                    if (nextIndex == n * n) {
+                        return count;
+                    }
+                    visited[nextIndex] = true;
+                    queue.add(nextIndex);
+                }
+            }
+            count++;
+        }
         return -1;
     }
 
