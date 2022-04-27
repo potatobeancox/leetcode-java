@@ -56,17 +56,36 @@ public class Solution {
 
     public boolean stoneGameIX(int[] stones) {
         // 统计 3 12  出现次数
+        int cnt0 = 0;
+        int cnt1 = 0;
+        int cnt2 = 0;
 
+        for (int stone : stones) {
+            int tmp = stone % 3;
+            if (tmp == 0) {
+                cnt0++;
+            } else if (tmp == 1) {
+                cnt1++;
+            } else {
+                cnt2++;
+            }
+        }
         // 如果 3 出现次数为偶数时，那么只要
-
-
-        return false;
+        if (cnt0 % 2 == 0) {
+            return cnt1 >= 1 && cnt2 >=1;
+        }
+        return Math.abs(cnt2 - cnt1) >= 2;
     }
+
+
+    // 112121212121
+
+    // 相差大于等于2   假设 1多 输了  2少
 
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-
+        
     }
 
 }
