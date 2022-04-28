@@ -1,8 +1,13 @@
 package com.potato.study.leetcodecn.p00954.t001;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.junit.Assert;
 
 /**
  * 954. 二倍数对数组
@@ -39,7 +44,61 @@ import java.util.Map;
  */
 public class Solution {
 
+    // 954
     public boolean canReorderDoubled(int[] arr) {
-        return false;
+        // 对应 arr 从小到大计数 往大找每个小的数的 2倍是否存在 在 map 中进行维护
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : arr) {
+            Integer count = countMap.getOrDefault(num, 0);
+            count++;
+            countMap.put(num, count);
+        }
+        int zeroCount = countMap.getOrDefault(0, 0);
+        if (zeroCount % 2 != 0) {
+            return false;
+        }
+        // 将key 排序
+        List<Integer> list = new ArrayList<>(countMap.keySet());
+        Collections.sort(list);
+        for (int num : list) {
+            if (num <= 0) {
+                continue;
+            }
+            if (countMap.get(num) == 0) {
+                continue;
+            }
+            Integer thisCount = countMap.get(num);
+            if (countMap.getOrDefault(num * 2, 0) < thisCount) {
+                return false;
+            }
+            countMap.put(num * 2, countMap.get(num * 2) - thisCount);
+        }
+
+
+        Collections.sort(list, Collections.reverseOrder());
+        for (int num : list) {
+            if (num >= 0) {
+                continue;
+            }
+            if (countMap.get(num) == 0) {
+                continue;
+            }
+            Integer thisCount = countMap.get(num);
+            if (countMap.getOrDefault(num * 2, 0) < thisCount) {
+                return false;
+            }
+            countMap.put(num * 2, countMap.get(num * 2) - thisCount);
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                4,-2,2,-4
+        };
+        boolean b = solution.canReorderDoubled(arr);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 }
