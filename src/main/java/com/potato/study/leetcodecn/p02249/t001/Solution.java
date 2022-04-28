@@ -53,8 +53,44 @@ import java.util.Map;
 public class Solution {
 
 
+    // 2249
     public int countLatticePoints(int[][] circles) {
+        // 遍历 每个 圆圈 找到左上角和 右下角 找到做成中 左上角的最小值和 右下角的最大值
+        int leftMin = Integer.MAX_VALUE;
+        int upMin = Integer.MAX_VALUE;
+        int rightMax = Integer.MIN_VALUE;
+        int downMax = Integer.MIN_VALUE;
+        for (int[] circle : circles) {
+            int radius = circle[2];
+            int x = circle[0];
+            int y = circle[1];
 
-        return -1;
+            upMin = Math.min(upMin, x - radius);
+            leftMin = Math.min(leftMin, y - radius);
+
+            downMax = Math.max(downMax, x + radius);
+            rightMax = Math.max(rightMax, y + radius);
+        }
+        // 对 上述区域里边的每个点 半径距离 是否小于 等于半径
+        int count = 0;
+        for (int i = upMin; i <= downMax; i++) {
+            for (int j = leftMin; j <= rightMax; j++) {
+                // 判断距离
+                boolean isValid = false;
+                for (int[] circle : circles) {
+                    int radius = circle[2];
+                    int x = circle[0];
+                    int y = circle[1];
+                    if ((x-i)*(x-i) + (y-j)*(y-j) <= radius * radius) {
+                        isValid = true;
+                        break;
+                    }
+                }
+                if (isValid) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }
