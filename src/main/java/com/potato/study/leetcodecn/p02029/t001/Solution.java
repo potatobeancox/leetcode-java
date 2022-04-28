@@ -74,7 +74,7 @@ public class Solution {
         if (cnt0 % 2 == 0) {
             return cnt1 >= 1 && cnt2 >=1;
         }
-        return Math.abs(cnt2 - cnt1) >= 2;
+        return Math.abs(cnt2 - cnt1) > 2;
     }
 
 
