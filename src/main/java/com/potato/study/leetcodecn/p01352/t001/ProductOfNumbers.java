@@ -63,7 +63,15 @@ public class ProductOfNumbers {
         this.productList = new ArrayList<>();
     }
 
+    /**
+     * 如果遇到 0 直接清控
+     * @param num
+     */
     public void add(int num) {
+        if (num == 0) {
+            productList = new ArrayList<>();
+            return;
+        }
         if (productList.size() == 0) {
             productList.add((long) num);
             return;
@@ -72,7 +80,16 @@ public class ProductOfNumbers {
         productList.add(pro * num);
     }
 
+    /**
+     * 如果当前 k 大于 当前 productList
+     * 说明 有 0 插入 且受了影响
+     * @param k
+     * @return
+     */
     public int getProduct(int k) {
+        if (k > productList.size()) {
+            return 0;
+        }
         if (k == productList.size()) {
             return productList.get(productList.size() - 1).intValue();
         }
