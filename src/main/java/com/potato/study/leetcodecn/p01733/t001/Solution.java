@@ -4,7 +4,9 @@ import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 1733. 需要教语言的最少人数
@@ -60,82 +62,50 @@ public class Solution {
      * @return
      */
     public int minimumTeachings(int n, int[][] languages, int[][] friendships) {
-        // 遍历 friendships 对 union
-        int personCount = languages.length;
-        UnionFind unionFind = new UnionFind(personCount);
-        for (int[] friend: friendships) {
-            unionFind.union(friend[0], friend[1]);
-        }
-        // 遍历每个 person 找到他对应的 父亲 对于同一个父亲进行 语言的计数 map 父亲 语言统计
-        Map<Integer, int[]> parentLanguageCountMap = new HashMap<>();
-        for (int i = 1; i <= personCount; i++) {
-            int parent = unionFind.find(i);
-            int[] countArray = parentLanguageCountMap.getOrDefault(parent, new int[n + 1]);
-            // 这个人会什么语言
-            for (int lan : languages[i-1]) {
-                countArray[lan]++;
+        // 遍历 friendships 用一个 set 记录不能交流的人
+        Set<Integer> cannotTak = new HashSet<>();
+        for (int i = 0; i < friendships.length; i++) {
+            int p1 = friendships[i][0] - 1;
+            int p2 = friendships[i][1] - 1;
+            boolean canTalk = canTalk(languages[p1], languages[p2]);
+            if (!canTalk) {
+                cannotTak.add(p1);
+                cannotTak.add(p2);
             }
-            parentLanguageCountMap.put(parent, countArray);
         }
-        // 遍历 map 的key 求和 父亲对应的节点个数 -》 语言统计中最多的那个
-        int techCount = 0;
-        for (int parent : parentLanguageCountMap.keySet()) {
-            // 有多少人
-            int eachPersonCount = unionFind.getCount(parent);
-            // 最多掌握的语言个数
-            int maxLanCount = 0;
-            int[] ints = parentLanguageCountMap.get(parent);
-            for (int count : ints) {
-                maxLanCount = Math.max(count, maxLanCount);
+        // 遍历 set 统计 languages 会的人数
+        int[] lanCount = new int[n+1];
+        for (int personIndex : cannotTak) {
+            int[] languageArray = languages[personIndex];
+            for (int lan : languageArray) {
+                lanCount[lan]++;
             }
-
-            techCount += (eachPersonCount - maxLanCount);
         }
-        return techCount;
+        // 用 set 人数 减去 会的 languages 最多的人数
+        int max = 0;
+        for (int i = 1; i <= n; i++) {
+            max = Math.max(max, lanCount[i]);
+        }
+        return cannotTak.size() - max;
     }
 
-    class UnionFind {
 
-
-        private int[] parent;
-        private int[] count;
-
-        /**
-         * 人员编号 从1开始
-         * @param n
-         */
-        public UnionFind(int n) {
-            this.parent = new int[n+1];
-            this.count = new int[n+1];
-            for (int i = 1; i <= n; i++) {
-                parent[i] = i;
-                count[i] = 1;
+    /**
+     * 判断 两个人是够可以交流
+     * 只要同时会一种语言就可以交流
+     * @param lan1
+     * @param lan2
+     * @return
+     */
+    private boolean canTalk(int[] lan1, int[] lan2) {
+        for (int l1 : lan1) {
+            for (int l2 : lan2) {
+                if (l1 == l2) {
+                    return true;
+                }
             }
         }
-
-
-        public int find(int target) {
-            while (parent[target] != target) {
-                target = parent[target];
-            }
-            return target;
-        }
-
-        public void union (int target1, int target2) {
-            int p1 = find(target1);
-            int p2 = find(target2);
-            if (p1 == p2) {
-                return;
-            }
-            parent[p2] = p1;
-            // 这个是关键 修改个数 因为 p2的 父亲变成了 p1 将所有的count 加载 p1上
-            count[p1] += count[p2];
-        }
-
-        public int getCount(int target) {
-            return count[target];
-        }
-
+        return false;
     }
 
 
