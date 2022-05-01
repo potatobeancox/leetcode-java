@@ -48,38 +48,62 @@ public class Solution {
      * @return
      */
     public String strWithout3a3b(int a, int b) {
+        // 如果 ab 相同 直接拼接 依次拼接ab 即可
         StringBuilder builder = new StringBuilder();
-        if (a == 0 && b == 0) {
-            return "";
-        } else if (a == 0) {
+        if (a == 0) {
             for (int i = 0; i < b; i++) {
                 builder.append("b");
             }
             return builder.toString();
-        } else if (b == 0) {
+        }
+        if (b == 0) {
             for (int i = 0; i < a; i++) {
                 builder.append("a");
             }
             return builder.toString();
         }
-        if (a == b) {
-            for (int i = 0; i < a; i++) {
-                builder.append("a").append("b");
+        while (a != b) {
+            // 每次选多的那个选2个 再看看能不能选少的那个
+            if (a > b) {
+                builder.append("a");
+                builder.append("a");
+                a -= 2;
+                if (a != b && b > 0) {
+                    builder.append("b");
+                    b--;
+                }
+            } else {
+                // a < b
+                builder.append("b");
+                builder.append("b");
+                b -= 2;
+                if (a != b && a > 0) {
+                    builder.append("a");
+                    a--;
+                }
             }
-            return builder.toString();
         }
-        // 递归 求解 a != b
-        if (a > b) {
-            builder.append("aa").append("b");
-            a -= 2;
-            b--;
+        // 否则 选择 ab 中多的那个 每次消耗2个 少的 消耗一个 或者不消耗
+        if (builder.length() == 0) {
+            return getSameCountStr(a, true);
+        }
+        if (builder.charAt(builder.length() - 1) == 'a') {
+            builder.append(getSameCountStr(a, false));
         } else {
-            // b > a
-            builder.append("a").append("bb");
-            a--;
-            b -= 2;
+            builder.append(getSameCountStr(a, true));
         }
-        builder.append(strWithout3a3b(a, b));
+        return builder.toString();
+    }
+
+    public String getSameCountStr(int n, boolean startWithA) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            if (startWithA) {
+                builder.append("ab");
+            } else {
+                builder.append("ba");
+            }
+        }
         return builder.toString();
     }
 
@@ -90,7 +114,14 @@ public class Solution {
         int b = 2;
         String str = solution.strWithout3a3b(a, b);
         System.out.println(str);
-        Assert.assertEquals("abb", str);
+        Assert.assertEquals("bba", str);
+
+
+        a = 4;
+        b = 1;
+        str = solution.strWithout3a3b(a, b);
+        System.out.println(str);
+        Assert.assertEquals("aabaa", str);
 
 
     }
