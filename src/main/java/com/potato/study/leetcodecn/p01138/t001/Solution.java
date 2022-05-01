@@ -46,7 +46,44 @@ package com.potato.study.leetcodecn.p01138.t001;
 public class Solution {
 
     public String alphabetBoardPath(String target) {
+        // 因为z的原因 先往上在往左  先往右再往下
+        int x = 0;
+        int y = 0;
+        // 每个字母 计算与下个字母之前的 xy 左边差 直到往哪走
+        StringBuilder builder = new StringBuilder();
+        char[] chars = target.toCharArray();
+        for (int i = 0; i < target.length(); i++) {
+            char ch = chars[i];
+            // 计算当前ch 应该在的位置
+            int dx = (ch - 'a') / 5;
+            int dy = (ch - 'a') % 5;
 
-        return null;
+            int moveX = dx - x;
+            int moveY = dy - y;
+
+            // 先上 再左 再右 在下
+            while (moveX < 0) {
+                builder.append("U");
+                moveX++;
+            }
+            while (moveY < 0) {
+                builder.append("L");
+                moveY++;
+            }
+            while (moveY > 0) {
+                builder.append("R");
+                moveY--;
+            }
+            while (moveX > 0) {
+                builder.append("D");
+                moveX--;
+            }
+            builder.append("!");
+            x = dx;
+            y = dy;
+        }
+        return builder.toString();
     }
+
+
 }
