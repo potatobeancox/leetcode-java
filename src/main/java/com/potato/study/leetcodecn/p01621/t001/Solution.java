@@ -50,7 +50,12 @@ package com.potato.study.leetcodecn.p01621.t001;
  */
 public class Solution {
 
-    // 1621
+    /**
+     * https://leetcode-cn.com/problems/number-of-sets-of-k-non-overlapping-line-segments/solution/da-xiao-wei-k-de-bu-zhong-die-xian-duan-de-shu-mu-/
+     * @param n
+     * @param k
+     * @return
+     */
     public int numberOfSets(int n, int k) {
         return -1;
     }
