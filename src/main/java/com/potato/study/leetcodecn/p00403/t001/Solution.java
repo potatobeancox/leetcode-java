@@ -44,34 +44,58 @@ import java.util.*;
 public class Solution {
 
 
+
+    private Boolean[][] canReach;
+    /**
+     * https://leetcode-cn.com/problems/frog-jump/solution/qing-wa-guo-he-by-leetcode-solution-mbuo/
+     * @param stones
+     * @return
+     */
     public boolean canCross(int[] stones) {
-        // 快速判断是够合法
-        for (int i = 0; i < stones.length - 1; i++) {
-            if (stones[i+1] - stones[i] > i+1) {
-                return false;
-            }
-        }
-        // dp ij 跳到 用了 j个单位 是否可以实现
+        // 用一个 全局的 Bool 形 dp ij 代表 走到i (index) 上一步走了 j 是否可以走到
         int n = stones.length;
-        boolean[][] dp = new boolean[n][n+2];
-        // dp 00 = true; dp 11 = true
-        dp[0][0] = true;
-        // dp ij = dp i-j j+1 || dp i-j j || dp i-j  j-1
-        for (int i = 1; i < n; i++) {
-            for (int j = i-1; j >= 0; j--) {
-                // 计算 ij两个点间的间隔
-                int k = stones[i] - stones[j];
-                if (k > j+1) {
-                    break;
-                }
-                dp[i][j] = dp[j][k] || dp[j][k+1] || dp[j][k-1];
-            }
+        this.canReach = new Boolean[n][n];
+        // dfs 求是否可以走到 i
+        int i = 0;
+        return dfs(stones, i, 0);
+    }
+
+    /**
+     *
+     * @param stones
+     * @param i 当前所在位置
+     * @param j 上一步走了 j
+     * @return 从i开始走 能不能走到终点
+     */
+    private boolean dfs(int[] stones, int i, int j) {
+        // 记录一下 剪枝
+        if (null != canReach[i][j]) {
+            return canReach[i][j];
         }
-        for (int i = 0; i < n; i++) {
-            if (dp[n-1][i]) {
+        // 当前i就是终点
+        if (i == stones.length - 1) {
+            canReach[i][j] = true;
+            return true;
+        }
+        // 没到终点 枚举下一步能走多少
+        for (int step = j-1; step <= j+1; step++) {
+            if (step <= 0) {
+                continue;
+            }
+            // 正经走 能不能有石头 从i+1 到末尾 找一下 下一个石头坐标位置
+            int nextIndex = Arrays.binarySearch(stones, i + 1, stones.length, stones[i] + step);
+            if (nextIndex <= 0) {
+                continue;
+            }
+            // 有下一个石头
+            boolean res = dfs(stones, nextIndex, step);
+            if (res) {
+                canReach[i][j] = true;
                 return true;
             }
         }
+        // 记录
+        canReach[i][j] = false;
         return false;
     }
 
