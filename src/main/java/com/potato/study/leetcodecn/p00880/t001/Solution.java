@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p00880.t001;
 
 import java.util.Arrays;
 
+import org.junit.Assert;
+
 /**
  * 880. 索引处的解码字符串
  *
@@ -57,9 +59,78 @@ public class Solution {
      * @return
      */
     public String decodeAtIndex(String s, int k) {
-        // 遍历 s ch 是字符串的话 length++ 否则 扩大n倍
+        StringBuilder builder = new StringBuilder();
+        int index = 0;
+        char[] chars = s.toCharArray();
+        while (index < s.length()) {
+            char ch = chars[index];
+            if (Character.isAlphabetic(ch)) {
+                builder.append(ch);
+                index++;
+                continue;
+            }
+            // 解析出来数字
+            int numIndexEnd = index;
+            while (Character.isDigit(ch) && numIndexEnd < s.length()) {
+                numIndexEnd++;
+                if (numIndexEnd == s.length()) {
+                    break;
+                }
+                ch = chars[numIndexEnd];
+            }
+            // 数字
+            String numStr = s.substring(index, numIndexEnd);
+            long times = 0;
+            for (int i = 0; i < numStr.length(); i++) {
+                if (times * builder.length() >= k) {
+                    break;
+                }
+                times *= 10;
+                times += (numStr.charAt(i) - '0');
+            }
+            // 找到了重复的次数
+            if (times * builder.length() >= k) {
+                int idx = (k-1) % builder.length();
+                return String.valueOf(builder.charAt(idx));
+            }
+            String string = builder.toString();
+            for (int i = 0; i < times - 1; i++) {
+                builder.append(string);
+            }
+            // 如果当前 超过了 k 那么就这个了
+            index = numIndexEnd;
+        }
+        return String.valueOf(builder.charAt(k-1));
+    }
 
-        // 如果扩大之后
-        return null;
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "leet2code3";
+        int k = 10;
+        String res = solution.decodeAtIndex(s, k);
+        System.out.println(res);
+        Assert.assertEquals("o", res);
+
+
+        s = "ha22";
+        k = 5;
+        res = solution.decodeAtIndex(s, k);
+        System.out.println(res);
+        Assert.assertEquals("h", res);
+
+
+        s = "a2345678999999999999999";
+        k = 1;
+        res = solution.decodeAtIndex(s, k);
+        System.out.println(res);
+        Assert.assertEquals("a", res);
+
+
+        s = "vzpp636m8y";
+        k = 2920;
+        res = solution.decodeAtIndex(s, k);
+        System.out.println(res);
+        Assert.assertEquals("z", res);
     }
 }
