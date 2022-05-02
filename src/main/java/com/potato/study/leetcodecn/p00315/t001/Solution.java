@@ -3,6 +3,7 @@ package com.potato.study.leetcodecn.p00315.t001;
 import org.junit.Assert;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -36,21 +37,32 @@ import java.util.List;
 public class Solution {
 
     /**
-     * 粗犷的方式是每个位置都往后遍历 n*n 的时间复杂度
+     * https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/solution/cong-you-wang-zuo-cha-ru-pai-xu-by-utopiahiker/
      * @param nums
      * @return
      */
     public List<Integer> countSmaller(int[] nums) {
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < nums.length; i++) {
-            int count = 0;
-            for (int j = i+1; j < nums.length; j++) {
-                if (nums[i] > nums[j]) {
-                    count++;
-                }
+        LinkedList<Integer> result = new LinkedList<>();
+        // 使用类似插入排序方法 先确定插入排序的开始位置 从 len - 2 到0
+        for (int i = nums.length - 2; i >= 0; i--) {
+            int j = i + 1;
+            // 记录i的数字
+            int tmp = nums[i];
+            // 将大于 nums[i] 都交换到前边
+            // 因为插入排序会将 大的数字都插入到前边，所以值需要从 i+1 -》 往后遍历 将大的往前移动就行 最终 i停留位置 用len 减去就可以得到 小于的个数了
+            while (j < nums.length && nums[j] >= tmp) {
+                nums[j-1] = nums[j];
+                j++;
             }
-            result.add(count);
+            // j-1 最终的停留位置 就是 放tmp的
+            nums[j-1] = tmp;
+            // 计算还有多少个小于 tmp的个数
+            int count = nums.length - j;
+            result.addFirst(count);
+
         }
+        // 往最后一个位置 添加 0
+        result.addLast(0);
         return result;
     }
 
