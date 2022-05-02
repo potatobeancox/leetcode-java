@@ -58,49 +58,43 @@ import java.util.Arrays;
  */
 public class Solution {
 
+    /**
+     *
+     * @param n
+     * @param flights
+     * @param src
+     * @param dst
+     * @param k 经过k 站，换了 k+1次
+     * @return
+     */
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
         // 将 flights 转换成 cost 数组 1 <= pricei <= 104 弄一个极大值
-        int[][] cost = new int[n][n];
-        int maxNum = 10000 + 1;
-        // 将所有值 设置成极大值
-        for (int i = 0; i < cost.length; i++) {
-            Arrays.fill(cost[i], maxNum);
-        }
-        // 遍历 航班设置 cost
-        for (int i = 0; i < flights.length; i++) {
-            int from = flights[i][0];
-            int to = flights[i][1];
-            int eachCost = flights[i][2];
-            cost[from][to] = eachCost;
-        }
+        int maxNum = 10000 * 102 + 1;
         // 从 src 到达 i 用了 t次换成 的最小划分
-        int[][] dp = new int[k+1][n+1];
+        int[][] dp = new int[k+2][n+1];
         // 从 src 出发 自然不需要 花费
         for (int i = 0; i < dp.length; i++) {
-            Arrays.fill(dp[i], maxNum * 100);
+            Arrays.fill(dp[i], maxNum);
         }
+        // 刚开始 依次没有换，从src 开始
         dp[0][src] = 0;
-        for (int i = 1; i <= k; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int l = 0; l < n; l++) {
-                    if (l == j) {
-                        continue;
-                    }
-                    // l -> j 没有航线
-                    if (cost[l][j] == maxNum) {
-                        continue;
-                    }
-                    dp[i][j] = Math.min(dp[i][j], dp[i-1][l] + cost[l][j]);
-                }
+        // 控制转站次数
+        for (int t = 1; t <= k+1; t++) {
+            // 遍历 航班找到 开始终止位置 计算价格
+            for (int[] flight : flights) {
+                int from = flight[0];
+                int to = flight[1];
+                int cost = flight[2];
+
+                dp[t][to] = Math.min(dp[t][to], dp[t-1][from] + cost);
             }
         }
-
         // 最小的
         int min = Integer.MAX_VALUE;
-        for (int i = 0; i < k + 1; i++) {
+        for (int i = 0; i <= k + 1; i++) {
             min = Math.min(min, dp[i][dst]);
         }
-        if (min == maxNum * 100) {
+        if (min == maxNum) {
             return -1;
         }
         return min;
