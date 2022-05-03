@@ -2,6 +2,9 @@ package com.potato.study.leetcodecn.p00826.t001;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * 826. 安排工作以达到最大收益
  *
@@ -43,6 +46,33 @@ import org.junit.Assert;
 public class Solution {
 
     public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
-        return 0;
+        //  worker 按照升序 排序
+        Arrays.sort(worker);
+        // difficulty 和 profit 用一个 index 按照 difficulty 升序排序
+        Integer[] difficultyIndex = new Integer[difficulty.length];
+        for (int i = 0; i < difficultyIndex.length; i++) {
+            difficultyIndex[i] = i;
+        }
+        Arrays.sort(difficultyIndex, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(difficulty[o1], difficulty[o2]);
+            }
+        });
+        // 遍历 worker 对于 每个 worker 找到 小于等于 worker 的difficulty 对应最大的profit 干这个
+        int index = 0;
+        int maxProfit = 0;
+        int total = 0;
+        for (int i = 0; i < worker.length; i++) {
+            int worderDifficulty = worker[i];
+            while (index < difficulty.length
+                    && difficulty[difficultyIndex[index]] <= worderDifficulty) {
+                maxProfit = Math.max(maxProfit, profit[difficultyIndex[index]]);
+                index++;
+            }
+            // 就用这个
+            total += maxProfit;
+        }
+        return total;
     }
 }
