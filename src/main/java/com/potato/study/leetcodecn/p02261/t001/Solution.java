@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p02261.t001;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 2261. 含最多 K 个可整除元素的子数组
@@ -49,8 +51,33 @@ import java.util.Arrays;
 public class Solution {
 
 
+    /**
+     * https://leetcode-cn.com/problems/k-divisible-elements-subarrays/solution/by-shou-hu-zhe-t-moiy/
+     * @param nums
+     * @param k
+     * @param p
+     * @return
+     */
     public int countDistinct(int[] nums, int k, int p) {
+        // 枚举 每个开始 位置 找结束位置 使用 Set 记录 字串的大小
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            StringBuilder builder = new StringBuilder();
+            int cnt = 0;
+            for (int j = i; j < nums.length; j++) {
+                if (nums[j] % p == 0) {
+                    cnt++;
 
-        return 0;
+                }
+                // 最多k个被整除
+                if (cnt <= k) {
+                    builder.append(nums[j]).append("_");
+                    set.add(builder.toString());
+                } else {
+                    break;
+                }
+            }
+        }
+        return set.size();
     }
 }
