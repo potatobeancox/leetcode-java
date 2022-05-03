@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02070.t001;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * 2070. 每一个查询的最大美丽值
  *
@@ -59,8 +62,40 @@ public class Solution {
      * @return
      */
     public int[] maximumBeauty(int[][] items, int[] queries) {
-
-        return null;
+        // 做一个 queriesIndex 数组 按照 queries 升序 排序
+        Integer[] queriesIndex = new Integer[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            queriesIndex[i] = i;
+        }
+        Arrays.sort(queriesIndex, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(queries[o1], queries[o2]);
+            }
+        });
+        // 对item 按照 价格升序排序
+        Arrays.sort(items, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                int price1 = o1[0];
+                int price2 = o2[0];
+                return Integer.compare(price1, price2);
+            }
+        });
+        // 遍历 queriesIndex 如果当前 item 价格小于等于 queriesIndex 价格 往前移动 维护最大美丽值
+        int maxBeauty = 0;
+        int priceItemIndex = 0;
+        int[] result = new int[queries.length];
+        for (int i = 0; i < queriesIndex.length; i++) {
+            int index = queriesIndex[i];
+            int targetPrice = queries[index];
+            while (priceItemIndex < items.length && items[priceItemIndex][0] <= targetPrice) {
+                maxBeauty = Math.max(maxBeauty, items[priceItemIndex][1]);
+                priceItemIndex++;
+            }
+            result[index] = maxBeauty;
+        }
+        return result;
     }
 
 
