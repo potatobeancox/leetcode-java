@@ -74,4 +74,11 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 链接：https://leetcode-cn.com/problems/bank-account-summary-ii
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-SELECT SUM(amount) as balance, account FROM Transactions GROUP BY account
+-- https://leetcode-cn.com/problems/bank-account-summary-ii/solution/by-jam007-btjg/
+
+SELECT name, SUM(t1.amount) as balance
+  FROM Transactions as t1
+  INNER JOIN Users AS u1
+  ON t1.account = u1.account
+GROUP BY u1.account
+HAVING SUM(t1.amount) > 10000
