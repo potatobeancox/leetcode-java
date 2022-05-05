@@ -32,5 +32,4 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 --
 
-
 SELECT name FROM customer WHERE referee_id is NULL or referee_id !=2
