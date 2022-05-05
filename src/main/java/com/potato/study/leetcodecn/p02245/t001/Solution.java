@@ -84,6 +84,19 @@ public class Solution {
         // 0上1左2下3右
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
+                for (int k = 0; k < 4; k++) {
+                    if (i == 0 && j == 0) {
+                        prefix[i][j][0][k] = gridCount[i][j][0];
+                        prefix[i][j][1][k] = gridCount[i][j][1];
+                        continue;
+                    }
+                    if (i == 0) {
+
+                    }
+                    if (j == 0) {
+
+                    }
+                }
 
             }
         }
