@@ -1,106 +1,82 @@
 package com.potato.study.leetcodecn.other.swordoffer.p0034.p1.t001;
 
+import com.potato.study.leetcode.domain.TreeNode;
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 剑指 Offer 33. 二叉搜索树的后序遍历序列
+ * 剑指 Offer 34. 二叉树中和为某一值的路径
  *
- * 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数字都互不相同。
- *
- *  
- *
- * 参考以下这颗二叉搜索树：
- *
- *      5
- *     / \
- *    2   6
- *   / \
- *  1   3
- * 示例 1：
- *
- * 输入: [1,6,3,2,5]
- * 输出: false
- * 示例 2：
- *
- * 输入: [1,3,2,6,5]
- * 输出: true
- *  
- *
- * 提示：
- *
- * 数组长度 <= 1000
- *
- * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof
- * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+ * 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
+
+ 叶子节点 是指没有子节点的节点。
+
+  
+
+ 示例 1：
+
+
+
+ 输入：root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+ 输出：[[5,4,11,2],[5,8,4,5]]
+ 示例 2：
+
+
+
+ 输入：root = [1,2,3], targetSum = 5
+ 输出：[]
+ 示例 3：
+
+ 输入：root = [1,2], targetSum = 0
+ 输出：[]
+  
+
+ 提示：
+
+ 树中节点总数在范围 [0, 5000] 内
+ -1000 <= Node.val <= 1000
+ -1000 <= targetSum <= 1000
+ 注意：本题与主站 113 题相同：https://leetcode-cn.com/problems/path-sum-ii/
+
+ 来源：力扣（LeetCode）
+ 链接：https://leetcode-cn.com/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof
+ 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
 public class Solution {
 
 
-
-
-
-
-
-
-
-
-
-    /**
-     * 分治 直接遍历找到左右子树并判定他们是够也合法
-     * @param postorder
-     * @return
-     */
-    public boolean verifyPostorder(int[] postorder) {
-        // 当前 没有节点或者当前只有一个节点 那就是合法
-        return verifyPostorderEach(postorder, 0, postorder.length - 1);
+    public List<List<Integer>> pathSum(TreeNode root, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        dfs(result, root, 0, target, new ArrayList<>());
+        return result;
     }
 
-    /**
-     *
-     * @param postorder
-     * @param left      左边界
-     * @param right     右边界
-     * @return
-     */
-    private boolean verifyPostorderEach(int[] postorder, int left, int right) {
-        // 当前只有 1个点 或者当前 没有点那就是已经ok了 也就是终止条件
-        if (left >= right) {
-            return true;
+    private void dfs(List<List<Integer>> result, TreeNode current, int currentSum, int target,
+                     List<Integer> currentResult) {
+        if (current == null) {
+            return;
         }
-        int val = postorder[right];
-        int leftEnd = left;
-        while (leftEnd < right && postorder[leftEnd] < val) {
-            leftEnd++;
-        }
-        int rightEnd = leftEnd;
-        while (rightEnd < right && postorder[rightEnd] > val) {
-            rightEnd ++;
-        }
-        // 没有办法 弄成 左边都比当前值小 右边都比当前值大的情况
-        if (rightEnd != right) {
-            return false;
-        }
-        return verifyPostorderEach(postorder, left, leftEnd - 1)
-                && verifyPostorderEach(postorder, leftEnd, right - 1);
-    }
+        int temp = currentSum + current.val;
+        List<Integer> list = new ArrayList<>(currentResult);
+        list.add(current.val);
 
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-        int[] arr = new int[] {
-                1,6,3,2,5
-        };
-        boolean b = solution.verifyPostorder(arr);
-        System.out.println(b);
-        Assert.assertEquals(false, b);
+        if (current.left == null && current.right == null) {
+            if (temp == target) {
+                result.add(list);
+            }
+            return;
+        }
 
+        if (current.left != null) {
+            dfs(result, current.left, temp, target, list);
+        }
 
-        arr = new int[] {
-                1,3,2,6,5
-        };
-        b = solution.verifyPostorder(arr);
-        System.out.println(b);
-        Assert.assertEquals(true, b);
+        if (current.right != null) {
+            dfs(result, current.right, temp, target, list);
+        }
+
     }
 }
