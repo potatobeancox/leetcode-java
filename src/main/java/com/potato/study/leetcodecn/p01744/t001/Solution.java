@@ -58,40 +58,44 @@ import java.util.*;
 public class Solution {
 
 
-
+    /**
+     *
+     * @param candiesCount
+     * @param queries
+     * @return
+     */
     public boolean[] canEat(int[] candiesCount, int[][] queries) {
-        // 前缀和
+        // 前缀和 吃到每种糖果 需要提前吃的糖果数
         int n = candiesCount.length;
-        int[] prefixSum = new int[n];
+        long[] prefixSum = new long[n];
         prefixSum[0] = candiesCount[0];
         for (int i = 1; i < n; i++) {
             prefixSum[i] = candiesCount[i] + prefixSum[i-1];
         }
-        // 计算
+        // 遍历 queries 计算 要在 [favoriteTypei, favoriteDayi, dailyCapi]   favoriteDayi天吃到 favoriteTypei 这个糖果 每天吃一个 和每天吃  dailyCapi 能吃多少
         boolean[] result = new boolean[queries.length];
         for (int i = 0; i < queries.length; i++) {
             // 在每天吃 不超过 dailyCapi 颗糖果的前提下，你可以在第 favoriteDayi 天吃到第 favoriteTypei 类糖果；否则 answer[i] 为 false 
-            int favoriteDay = queries[i][1];
+            long favoriteDay = queries[i][1];
             // queries[i] = [favoriteTypei, favoriteDayi, dailyCapi]
             int favoriteType = queries[i][0];
-            int maxDailyEat = queries[i][2];
+            long dailyEat = queries[i][2];
             // favoriteDay - 1 天 最小吃多少个苹果 做多吃多少个
-            int minEatCount = 0;
-            int maxEatCount = 0;
-            if (favoriteDay != 0) {
-                minEatCount = (favoriteDay - 1);
-                maxEatCount = maxDailyEat * (favoriteDay - 1);
+            long minEatCount = 1 * (favoriteDay + 1);
+            long maxEatCount = dailyEat * (favoriteDay + 1);
+
+            // 判断 【minEatCount ， maxEatCount】 和 【a, b】是否有交集
+            long a = 1;
+            if (favoriteType > 0) {
+                a = prefixSum[favoriteType - 1] + 1;
             }
-            // 不够吃
-            if (prefixSum[favoriteDay] < minEatCount) {
-                result[favoriteDay] = false;
-                continue;
+            long b = prefixSum[favoriteType];
+
+            if (minEatCount <= b && maxEatCount >= a) {
+                result[i] = true;
+            } else {
+                result[i] = false;
             }
-            if (prefixSum[favoriteDay] > maxEatCount) {
-                result[favoriteDay] = false;
-                continue;
-            }
-            result[favoriteDay] = true;
         }
         return result;
     }
