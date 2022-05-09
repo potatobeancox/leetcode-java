@@ -1,10 +1,7 @@
 package com.potato.study.leetcodecn.p01353.t001;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * 1353. 最多可以参加的会议数目
@@ -48,25 +45,40 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/maximum-number-of-events-that-can-be-attended/solution/zui-duo-ke-yi-can-jia-de-hui-yi-shu-mu-by-leetcode/
+     * @param events
+     * @return
+     */
     public int maxEvents(int[][] events) {
-        // 按照结束时间升序排序
+        // 按照开始时间升序排序
         Arrays.sort(events, new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
-                return Integer.compare(o1[1], o2[1]);
+                return Integer.compare(o1[0], o2[0]);
             }
         });
-        // visit 数组 维护 一个 1_00000 bool 是否访问过
-        boolean[] visited = new boolean[1_000_00 + 1];
+        int current = 1;
+        int index = 0;
+        // 参加会议数量
         int count = 0;
-        for (int i = 0; i < events.length; i++) {
-            for (int j = events[i][0]; j <= events[i][1]; j++) {
-                if (!visited[j]) {
-                    visited[j] = true;
-                    count++;
-                    break;
-                }
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+        while (index < events.length || !priorityQueue.isEmpty()) {
+            // 遍历 events 维护一个 数组 将 开始时间 等于 current 的 的结束时间 放入小堆
+            while (index < events.length && events[index][0] == current) {
+                priorityQueue.add(events[index][1]);
+                index++;
             }
+            // 放完了 判定 小根堆 中结束时间小于当前时间的 丢弃 参加不了
+            while (!priorityQueue.isEmpty() && priorityQueue.peek() < current) {
+                priorityQueue.poll();
+            }
+            // 选择一个最小的参加 时间往后推一天
+            if (!priorityQueue.isEmpty()) {
+                priorityQueue.poll();
+                count++;
+            }
+            current++;
         }
         return count;
     }
