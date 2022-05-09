@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01849.t001;
 
+import org.junit.Assert;
+
 /**
  * 1849. 将字符串拆分为递减的连续值
 
@@ -54,7 +56,71 @@ package com.potato.study.leetcodecn.p01849.t001;
 public class Solution {
 
     public boolean splitString(String s) {
+        // 遍历 s 找到第一个数字
+        long pre = 0;
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < s.length()-1; i++) {
+            pre *= 10;
+            pre += (chars[i] - '0');
 
+            boolean result = dfs(s, i+1, pre);
+            if (result) {
+                return true;
+            }
+        }
         return false;
+    }
+
+    /**
+     *
+     * @param s
+     * @param index
+     * @param pre 之前那个数字是多少 本次要找的数字 要是 pre - 1
+     * @return
+     */
+    private boolean dfs(String s, int index, long pre) {
+        if (index == s.length()) {
+            return true;
+        }
+        if (pre == 0) {
+            return false;
+        }
+        // 枚举当前数字
+        long current = 0;
+        char[] chars = s.toCharArray();
+        for (int i = index; i < s.length(); i++) {
+            current *= 10;
+            current += (chars[i] - '0');
+            if (current == pre - 1) {
+                // 往后找
+                boolean result = dfs(s, i+1, current);
+                if (result) {
+                    return true;
+                }
+            } else if (current >= pre) {
+                // 小于的情况 可能是 还没有到 位数，大于则一定没有了
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "1234";
+        boolean b = solution.splitString(s);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        s = "050043";
+        b = solution.splitString(s);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+        s = "21474836482147483647";
+        b = solution.splitString(s);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 }
