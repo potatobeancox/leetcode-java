@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p02265.t001;
 
+import com.potato.study.leetcode.domain.Node;
 import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import com.potato.study.leetcode.util.TreeNodeUtil;
+import org.junit.Assert;
 
 /**
  * 2265. 统计值等于子树平均值的节点数
@@ -55,11 +59,53 @@ public class Solution {
         return count;
     }
 
-    private void dfs(TreeNode root) {
+    /**
+     * 返回 当前子树的和 和个数
+     * @param root
+     * @return
+     */
+    private NodeInfo dfs(TreeNode root) {
         if (root == null) {
-            return;
+            return null;
         }
-        
+        NodeInfo leftInfo = dfs(root.left);
+        NodeInfo rightInfo = dfs(root.right);
+        if (leftInfo == null && rightInfo == null) {
+            count++;
+//            System.out.println(root);
+            NodeInfo nodeInfo = new NodeInfo();
+            nodeInfo.num = 1;
+            nodeInfo.sum = root.val;
+            return nodeInfo;
+        } else if (leftInfo == null) {
+            return getNodeInfo(root, rightInfo);
+        } else if (rightInfo == null) {
+            // 判断是否平均值相同
+            return getNodeInfo(root, leftInfo);
+        } else {
+            long thisSum = root.val + leftInfo.sum + rightInfo.sum;
+            int thisCount = 1 + leftInfo.num + rightInfo.num;
+            if (thisSum / thisCount == root.val) {
+                count++;
+//                System.out.println(root);
+            }
+            NodeInfo nodeInfo = new NodeInfo();
+            nodeInfo.num = thisCount;
+            nodeInfo.sum = thisSum;
+            return nodeInfo;
+        }
+    }
+
+    private NodeInfo getNodeInfo(TreeNode root, NodeInfo chilidNodeInfo) {
+        // 判断是否平均值相同
+        if ((chilidNodeInfo.sum + root.val) / (chilidNodeInfo.num + 1) == root.val) {
+            count++;
+//            System.out.println(root);
+        }
+        NodeInfo nodeInfo = new NodeInfo();
+        nodeInfo.num = 1 + chilidNodeInfo.num;
+        nodeInfo.sum = root.val + chilidNodeInfo.sum;
+        return nodeInfo;
     }
 
     class NodeInfo {
@@ -67,5 +113,14 @@ public class Solution {
         public long sum;
         // 个数
         public int num;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[4,8,5,0,1,null,6]";
+        TreeNode treeNode = TreeNodeUtil.generateTreeByArrayString(input);
+        int i = solution.averageOfSubtree(treeNode);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
     }
 }
