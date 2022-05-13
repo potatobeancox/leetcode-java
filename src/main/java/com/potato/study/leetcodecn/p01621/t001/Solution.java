@@ -51,14 +51,39 @@ package com.potato.study.leetcodecn.p01621.t001;
 public class Solution {
 
     /**
-     * https://leetcode-cn.com/problems/number-of-sets-of-k-non-overlapping-line-segments/solution/da-xiao-wei-k-de-bu-zhong-die-xian-duan-de-shu-mu-/
+     * https://leetcode.cn/problems/number-of-sets-of-k-non-overlapping-line-segments/solution/javadong-tai-gui-hua-jie-fa-by-huanglin/
      * @param n
      * @param k
      * @return
      */
     public int numberOfSets(int n, int k) {
-        return -1;
+        // dpEnd ij 以 前i个点 划分成 j段 的可能数，以 i作为最后一个的末尾 init 划分1段 n 种
+        int[][] dpEnd = new int[n+1][k+1];
+        // dp ij 以 前i个点 划分成 j段 的可能数 init 划分1段  cn2
+        int[][] dp = new int[n+1][k+1];
+        for (int i = 2; i <= n; i++) {
+            dp[i][1] = i * (i-1) / 2;
+            dpEnd[i][1] = i - 1;
+        }
+        int mod = 1_000_000_000 + 7;
+        // dpEnd ij = dpEnd i-1 j + dp i-1， j-1 （i-1， i ） 作为一个
+        for (int j = 2; j <= k; j++) {
+            // j+1 个点 分成j段只有一个分法
+            dp[j+1][j] = 1;
+            // j+1 个点 分成j段只有一个分法
+            dpEnd[j+1][j] = 1;
+            for (int i = j+2; i <= n; i++) {
+                dpEnd[i][j] = dpEnd[i-1][j] + dp[i-1][j-1];
+                dpEnd[i][j] %= mod;
+                // 以i作为最后一个点 分成j段
+                dp[i][j] = dp[i-1][j] + dpEnd[i][j];
+                dp[i][j] %= mod;
+            }
+        }
+        return dp[n][k];
     }
+
+
 
 
 }
