@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p01959.t001;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 1959. K 次调整数组大小浪费的最小总空间
@@ -53,8 +57,50 @@ import org.junit.Assert;
 public class Solution {
 
     public int minSpaceWastedKResizing(int[] nums, int k) {
+        // 使用一个 数组 proMax ij 记录 ij 的max * ij之间的长度
+        int n = nums.length;
+        long [][] proMax = new long[n][n];
+        long sum = 0;
+        // 开始位置
+        for (int i = 0; i < n; i++) {
+            int max = 0;
+            for (int j = i; j < n; j++) {
+                max = Math.max(max, nums[j]);
+                proMax[i][j] = max * (j - i + 1);
+            }
+            sum += nums[i];
+        }
+        // dp ij 表示 前i个数组 被分成 k 组 最小代价 最后一组是k+1
+        long [][] dp = new long[n][k+2];
+        // 填充最大值
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
+        }
 
-        return -1;
+        // dp ij = min dp k-1 j-1 + proMax k, i   k == 1 时 为 0
+        for (int i = 0; i < n; i++) {
+            // 控制分成多少组
+            for (int j = 1; j <= k+1; j++) {
+                // 0 - i 中间取一个点
+                for (int l = 0; l <= i; l++) {
+                    if (l == 0) {
+                        dp[i][j] = Math.min(dp[i][j], proMax[l][i]);
+                    } else {
+                        dp[i][j] = Math.min(dp[i][j], dp[l-1][j-1] + proMax[l][i]);
+                    }
+                }
+            }
+        }
+        return (int) (dp[n-1][k+1] - sum);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = LeetcodeInputUtils.inputString2IntArray("[10,20]");
+        int k = 0;
+        int i = solution.minSpaceWastedKResizing(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(10, i);
     }
 
 }
