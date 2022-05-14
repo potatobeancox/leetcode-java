@@ -1,8 +1,12 @@
 package com.potato.study.leetcodecn.p01443.t001;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+
+import com.potato.study.leetcode.util.ArrayUtil;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 1443. 收集树上所有苹果的最少时间
@@ -51,6 +55,79 @@ import org.junit.Assert;
 public class Solution {
 
     public int minTime(int n, int[][] edges, List<Boolean> hasApple) {
-        return -1;
+        // edges 转换成 child list
+        List<Integer>[] childList = new List[n];
+        for (int i = 0; i < n; i++) {
+            childList[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < edges.length; i++) {
+            int from = edges[i][0];
+            int to = edges[i][1];
+
+            childList[from].add(to);
+            childList[to].add(from);
+        }
+        // 还需要一个 visited【n】
+        boolean[] visit = new boolean[n];
+        //  dfs 先孩子 后父亲 每次计算 返回的 孩子的 sum  和苹果数 如果 平果大于 0 那么 路程要增加
+        int index = 0;
+        ChildDetail childDetail = dfs(visit, childList, hasApple, index);
+        if (childDetail == null) {
+            return 0;
+        }
+        return childDetail.sumPath;
+    }
+
+    private ChildDetail dfs(boolean[] visit, List<Integer>[] childList,
+            List<Boolean> hasApple, int index) {
+        if (visit[index]) {
+            return null;
+        }
+        visit[index] = true;
+        // 找到左右孩子
+        List<Integer> list = childList[index];
+        int appleCount = 0;
+        int pathSum = 0;
+        for (int childIndex : list) {
+            if (visit[childIndex]) {
+                continue;
+            }
+            ChildDetail childDetail = dfs(visit, childList, hasApple, childIndex);
+            if (childDetail == null) {
+                continue;
+            }
+            appleCount += childDetail.appleCount;
+            pathSum += childDetail.sumPath;
+            if (childDetail.appleCount > 0) {
+                pathSum += 2;
+            }
+        }
+
+        if (hasApple.get(index)) {
+            appleCount += 1;
+        }
+
+        ChildDetail childDetail = new ChildDetail();
+        childDetail.appleCount = appleCount;
+        childDetail.sumPath = pathSum;
+        return childDetail;
+    }
+
+
+    class ChildDetail {
+        public int appleCount;
+        public int sumPath;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 7;
+        String input = "[[0,1],[0,2],[1,4],[1,5],[2,3],[2,6]]";
+        int[][] ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        String s = "[false,false,true,false,true,true,false]";
+        List<Boolean> booleans = LeetcodeInputUtils.inputString2BooleanList(s);
+        int i = solution.minTime(n, ints, booleans);
+        System.out.println(i);
+        Assert.assertEquals(8, i);
     }
 }
