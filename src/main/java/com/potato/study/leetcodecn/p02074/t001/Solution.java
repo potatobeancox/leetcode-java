@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p02074.t001;
 
 import com.potato.study.leetcode.domain.ListNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import com.potato.study.leetcode.util.ListNodeUtil;
 
 /**
  * 2074. 反转偶数长度组的节点
@@ -74,32 +76,51 @@ public class Solution {
             // pre 节点 已经有了 找到 tail节点
             ListNode thisHead = p;
             ListNode thisPre = pre;
+            int len = 0;
             for (int i = 0; i < levelIndex && p!=null ; i++) {
                 p = p.next;
                 pre = pre.next;
+                len++;
             }
-            if (levelIndex % 2 == 1) {
+            if (len % 2 == 1) {
                 levelIndex++;
                 continue;
             }
             // 需要进行 反转
             ListNode q = thisHead;
             ListNode qPre = thisPre;
-            for (int i = 0; i < levelIndex && p!=null ; i++) {
+            for (int i = 0; i < levelIndex && q!=null ; i++) {
                 ListNode tmp = q.next;
                 q.next = qPre;
                 qPre = q;
                 q = tmp;
+
             }
             thisPre.next = qPre;
             thisHead.next = q;
             // 层数 + 1
             levelIndex++;
+            // pre 修改 p 修改
+            pre = thisHead;
         }
         return head;
     }
 
     public static void main(String[] args) {
+
+        Solution solution = new Solution();
+        String input = "[5,2,6,3,9,1,7,3,8,4]";
+        ListNode head = ListNodeUtil.arrayStringToListNode(input);
+        ListNode listNode = solution.reverseEvenLengthGroups(head);
+        // [5,6,2,3,9,1,4,8,3,7]
+        System.out.println(listNode);
+
+
+        input = "[1,1,0,6,5]";
+        head = ListNodeUtil.arrayStringToListNode(input);
+        listNode = solution.reverseEvenLengthGroups(head);
+        //[1,0,1,5,6]
+        System.out.println(listNode);
     }
 
 
