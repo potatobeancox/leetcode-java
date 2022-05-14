@@ -56,8 +56,41 @@ import com.potato.study.leetcode.util.TreeNodeUtil;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/count-number-of-texts/solution/dao-ge-shua-ti-by-lcfgrn-z2cp/
+     * @param pressedKeys
+     * @return
+     */
     public int countTexts(String pressedKeys) {
+        // dp i 以第i 个字符为结尾的可能数量
+        int n = pressedKeys.length();
+        int[] dp = new int[n];
+        dp[0] = 1;
+        char[] chars = pressedKeys.toCharArray();
+        int mod = 1_000_000_000 + 7;
+        for (int i = 1; i < pressedKeys.length(); i++) {
+            if (chars[i] != chars[i-1]) {
+                dp[i] = dp[i-1];
+                continue;
+            }
+            // i-1 == i
+            if (i == 1) {
+                dp[i] = dp[i-1] + 1;
+                dp[i] %= mod;
+                continue;
+            }
+            if (i == 2) {
+                if (chars[i-2] != chars[i]) {
+                    dp[i] = dp[i-1] + dp[i-2];
+                } else {
+                    // 都相同
+                }
+            }
 
-        return -1;
+
+        }
+        // 如果是 非 79 dpi = dp i-1 + dpi-2 + dpi-3
+        // 如果是 79 dpi = dp i-1 + dpi-2 + dpi-3 + dp i-4
+        return dp[n-1];
     }
 }
