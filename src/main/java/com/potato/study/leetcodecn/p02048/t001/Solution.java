@@ -52,6 +52,30 @@ import org.junit.Assert;
 public class Solution {
 
     public int nextBeautifulNumber(int n) {
+        // 严格大于 n
+        for (int i = n+1; i < Integer.MAX_VALUE; i++) {
+            int[] count = new int[10];
+            int tmp = i;
+            while (tmp > 0) {
+                int bit = tmp % 10;
+                count[bit]++;
+                tmp /= 10;
+            }
+            boolean isValid = true;
+            // 所有出现的数字都满足 i
+            for (int j = 0; j < 10; j++) {
+                if (count[j] == 0) {
+                    continue;
+                }
+                if (count[j] != j) {
+                    isValid = false;
+                    break;
+                }
+            }
+            if (isValid) {
+                return i;
+            }
+        }
         return -1;
     }
 
