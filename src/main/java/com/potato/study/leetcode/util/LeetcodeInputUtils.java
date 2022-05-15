@@ -68,6 +68,27 @@ public class LeetcodeInputUtils {
     }
 
 
+    public static List<Boolean> inputString2BooleanList(String input) {
+        if (StringUtils.isBlank(input)) {
+            return new ArrayList<>();
+        }
+        if ("".equals(input) || "[]".equals(input)) {
+            return new ArrayList<>();
+        }
+        // 去掉"[]"
+        String substring = input.substring(1, input.length() - 1);
+        // ，拆分
+        String[] split = substring.split(",");
+        List<Boolean> resultList = new ArrayList<>();
+        for (int i = 0; i < split.length; i++) {
+            String word = split[i].trim();
+            resultList.add(Boolean.parseBoolean(word));
+        }
+        // 返回数组
+        return resultList;
+    }
+
+
     public static List<List<String>> inputString2StringListList(String input) {
         if (StringUtils.isBlank(input)) {
             return new ArrayList<>();

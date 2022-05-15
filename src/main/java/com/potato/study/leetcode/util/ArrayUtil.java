@@ -70,5 +70,29 @@ public class ArrayUtil {
 		int[] arr = string2ArrayiInt(arrayStr);
 		System.out.println(Arrays.toString(arr));
 	}
+
+
+	/**
+	 * [3,2,0,-4] 类似字符串 转换成数组
+	 * []  -> 空数组
+	 * null -> null
+	 * 不校验入参合法性
+	 * @param arrayStr
+	 * @return
+	 */
+	public static boolean[] string2ArrayBoolean(String arrayStr) {
+		if (null == arrayStr || arrayStr.length() < 2) {
+			return null;
+		}
+		if (arrayStr.length() == 2) {
+			return new boolean[0];
+		}
+		String[] booleanParts = arrayStr.substring(1, arrayStr.length() - 1).split(",");
+		boolean[] boolArray = new boolean[booleanParts.length];
+		for (int i = 0; i < booleanParts.length; i++) {
+			boolArray[i] = Boolean.parseBoolean(booleanParts[i].trim());
+		}
+		return boolArray;
+	}
 	
 }

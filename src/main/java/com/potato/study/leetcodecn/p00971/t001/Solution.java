@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p00971.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import com.potato.study.leetcode.util.TreeNodeUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,9 +61,59 @@ import java.util.Set;
  */
 public class Solution {
 
-    public List<Integer> flipMatchVoyage(TreeNode root, int[] voyage) {
+    private List<Integer> list;
 
-        return null;
+    private int index;
+
+    public List<Integer> flipMatchVoyage(TreeNode root, int[] voyage) {
+        // 从 root 开始 dfs 记录 index
+        this.list = new ArrayList<>();
+        if (root.val != voyage[0]) {
+            list.add(-1);
+            return list;
+        }
+        this.index = 0;
+        dfs(root, voyage);
+        if (list.size() == 0) {
+            list.add(-1);
+        }
+        return list;
+    }
+
+    private void dfs(TreeNode root, int[] voyage) {
+        if (index >= voyage.length) {
+            return;
+        }
+        if (root == null) {
+            return;
+        }
+        // index + 1是left
+        if (root.val != voyage[index]) {
+            return;
+        }
+        int thisIndex = index;
+        index++;
+        if (index >= voyage.length) {
+            return;
+        }
+        if (root.left != null && voyage[index] != root.left.val) {
+            list.add(root.val);
+            dfs(root.right, voyage);
+            dfs(root.left, voyage);
+        } else {
+            dfs(root.left, voyage);
+            dfs(root.right, voyage);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = TreeNodeUtil.generateTreeByArrayString("[1,2,3]");
+        String input = "[1,3,2]";
+        int[] voyage = LeetcodeInputUtils.inputString2IntArray(input);
+        List<Integer> list = solution.flipMatchVoyage(root, voyage);
+        System.out.println(list);
     }
 
 }
