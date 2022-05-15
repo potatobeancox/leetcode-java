@@ -53,30 +53,39 @@ public class Solution {
 
     public int numOfSubarrays(int[] arr) {
         // 遍历 arr 记录 以当前位置 i 为最后一个位置的奇数子数组的长度 偶数子数组的长度 进行求和
+        // 奇数前缀的数量
         int oddCount = 0;
+        // 偶数前缀的数量
         int evenCount = 0;
+        // 前缀和
+        long prefixSum = 0;
+        // 总的可能数
         int total = 0;
         int mod = 1_000_000_000 + 7;
         for (int i = 0; i < arr.length; i++) {
-            int lastOddCount = oddCount;
-            int lastEvenCount = evenCount;
-            if (arr[i] % 2 == 0) {
-                if (lastOddCount > 0) {
-                    oddCount = lastOddCount + 1;
-                }
-                evenCount = lastEvenCount + 1;
+            // 求前缀和
+            prefixSum += arr[i];
+            // 通过前缀和的奇偶行，确定 本次有多少种可能
+            if (prefixSum % 2 == 0) {
+                total += oddCount;
             } else {
-                oddCount = lastEvenCount + 1;
-                if (lastOddCount > 0) {
-                    evenCount = lastOddCount + 1;
-                }
+                total += evenCount + 1;
             }
-            total += oddCount;
             total %= mod;
+            // 处理奇偶个数
+            if (prefixSum % 2 == 0) {
+                evenCount++;
+            } else {
+                oddCount++;
+            }
         }
         return total;
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Solution solution = new Solution();
         int[] arr = new int[] {
