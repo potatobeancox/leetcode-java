@@ -54,6 +54,12 @@ import java.util.PriorityQueue;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/linked-list-in-binary-tree/solution/zhe-ti-jiu-shi-subtreeyi-mao-yi-yang-by-jerry_nju/
+     * @param head
+     * @param root
+     * @return
+     */
     public boolean isSubPath(ListNode head, TreeNode root) {
         if (head == null) {
             return true;
