@@ -55,17 +55,33 @@ import java.util.PriorityQueue;
 public class Solution {
 
     public boolean isSubPath(ListNode head, TreeNode root) {
-        if (head == null && root == null) {
+        if (head == null) {
             return true;
         }
-        if (head == null || root == null) {
+        // head != null &&
+        if (root == null) {
+            return false;
+        }
+        return isSub(head, root) || isSubPath(head, root.left) || isSubPath(head, root.right);
+    }
+
+
+    public boolean isSub(ListNode head, TreeNode root) {
+        if (head == null) {
+            return true;
+        }
+        // head != null &&
+        if (root == null) {
             return false;
         }
         if (head.val != root.val) {
-            return isSubPath(head, root.left) || isSubPath(head, root.right);
+            return false;
         }
         // 当前点值相等
-        return isSubPath(head, root.left) || isSubPath(head, root.right)
-                || isSubPath(head.next, root.left) || isSubPath(head.next, root.right);
+        return isSub(head.next, root.left)
+                || isSub(head.next, root.right);
     }
+
+
+
 }
