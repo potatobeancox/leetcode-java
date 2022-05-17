@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p01391.t001;
 
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 1391. 检查网格中是否存在有效路径
  *
@@ -65,13 +69,94 @@ package com.potato.study.leetcodecn.p01391.t001;
  */
 public class Solution {
 
+
+    // 初始化 记录 mn
+    private int m;
+    private int n;
+    // 初始化 记录 4个方向
+    private int[][] dir = new int[][] {
+            {0, -1}, // 往左 0
+            {0, 1},  // 往右 1
+            {-1, 0}, // 往上 2
+            {1, 0}   // 往下 3
+    };
+    // 初始化 每个 街道对应的方向改变
+    private int[][] streets = new int[][] {
+            {},
+            {0, 1},  // street 1
+            {2, 3},  // street 2
+            {0, 3},  // street 3
+            {1, 3},  // street 4
+            {0, 2},  // street 5
+            {1, 2}   // street 6
+    };
+
     /**
-     * https://leetcode-cn.com/problems/check-if-there-is-a-valid-path-in-a-grid/solution/java-mo-ni-dfs-by-fei-xiao-r-zvyi/
+     *
+     * https://leetcode.cn/problems/check-if-there-is-a-valid-path-in-a-grid/solution/1391-jian-cha-wang-ge-zhong-shi-fou-cun-r8mp3/
      * @param grid
      * @return
      */
     public boolean hasValidPath(int[][] grid) {
+        // 记录每个方向
+        this.m = grid.length;
+        this.n = grid[0].length;
+        return dfs(0, 0, 0, grid);
+    }
 
+    private boolean dfs(int i, int j, int pre, int[][] grid) {
+        // ij 是否越界
+        if (i < 0 || i >= m || j < 0 || j >= n) {
+            return false;
+        }
+        // ij 是否已经 找过了
+        if (grid[i][j] == 0) {
+            return false;
+        }
+        int current = grid[i][j];
+        grid[i][j] = 0;
+        // pre 跟当前点是否连通
+        if (!check(pre, streets[current][0]) && !check(pre, streets[current][1])) {
+            return false;
+        }
+        // 找到m-1 n-1
+        if (i==m-1 && j==n-1) {
+            return true;
+        }
+        // 找到当前点的两个位置 往后dfs 找
+        for (int dirIndex : streets[current]) {
+            // 找到当前点的两个方向
+            int di = i + dir[dirIndex][0];
+            int dj = j + dir[dirIndex][1];
+            boolean res = dfs(di, dj, dirIndex, grid);
+            if (res) {
+                return true;
+            }
+        }
         return false;
+    }
+
+    /**
+     * 判断从 pre 到 cur
+     * @param pre
+     * @param cur
+     * @return
+     */
+    private boolean check(int pre, int cur) {
+        //  pre 从最开始 位置来 一定能连通
+        if (pre == 0) {
+            return true;
+        }
+        // 左右 对上 或者 上下对上了 就是 连通
+        return pre + cur == 1 || pre + cur == 5;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[2,4,3],[6,5,2]]";
+        int[][] grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        boolean b = solution.hasValidPath(grid);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 }
