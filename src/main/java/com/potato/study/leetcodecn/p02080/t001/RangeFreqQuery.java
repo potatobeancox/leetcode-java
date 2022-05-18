@@ -78,6 +78,9 @@ public class RangeFreqQuery {
         if (leftIndex >= list.size()) {
             return 0;
         }
+        if (leftIndex == -1) {
+            return 0;
+        }
         // 大于等于 右边的位置
         int rightIndex = getCeilIndex(right, list);
         // list 里边左右都小雨 eight 才会返回-1
@@ -154,5 +157,12 @@ public class RangeFreqQuery {
         Assert.assertEquals(1, query);
 
 
+        arr = new int[] {
+                8,4,2,5,4,5,8,6,2,3
+        };
+        rangeFreqQuery = new RangeFreqQuery(arr);
+        query = rangeFreqQuery.query(6, 8, 4);
+        System.out.println(query);
+        Assert.assertEquals(0, query);
     }
 }
