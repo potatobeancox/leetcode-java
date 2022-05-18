@@ -72,15 +72,22 @@ public class RangeFreqQuery {
         if (list == null || list.size() == 0) {
             return 0;
         }
+        // 比左边大于等于的位置 left
         int leftIndex = getCeilIndex(left, list);
         // 如果左边已经到头了 那么这个区间就没有值了 直接返回 0
         if (leftIndex >= list.size()) {
             return 0;
         }
-
+        // 大于等于 右边的位置
         int rightIndex = getCeilIndex(right, list);
+        // list 里边左右都小雨 eight 才会返回-1
+        if (rightIndex == -1) {
+            rightIndex = list.size() - 1;
+        }
+        if (list.get(rightIndex) > right) {
+            rightIndex--;
+        }
         return rightIndex - leftIndex + 1;
-
     }
 
 
@@ -91,24 +98,20 @@ public class RangeFreqQuery {
      * @return
      */
     private int getCeilIndex(int target, List<Integer> list) {
-        if (target < list.get(0)) {
-            return -1;
-        }
         int left = 0;
         int right = list.size() - 1;
+        int res = -1;
         while (left <= right) {
             int mid = (left + right) / 2;
             if (list.get(mid) < target) {
                 left = mid + 1;
             } else {
                 // mid 位置 大于等于 target
-                if (mid - 1 < 0 || list.get(mid - 1) < target) {
-                    return mid;
-                }
+                res = mid;
                 right = mid - 1;
             }
         }
-        return right;
+        return res;
     }
 
     public static void main(String[] args) {
@@ -119,6 +122,8 @@ public class RangeFreqQuery {
         int query = rangeFreqQuery.query(1, 2, 4);
         System.out.println(query);
         Assert.assertEquals(1, query);
+
+
         query = rangeFreqQuery.query(0, 11, 33);
         System.out.println(query);
         Assert.assertEquals(2, query);
@@ -131,5 +136,23 @@ public class RangeFreqQuery {
         query = rangeFreqQuery.query(0,1,2);
         System.out.println(query);
         Assert.assertEquals(0, query);
+
+        arr = new int[] {
+                2,2,1,2,2
+        };
+        rangeFreqQuery = new RangeFreqQuery(arr);
+        query = rangeFreqQuery.query(2, 4, 1);
+        System.out.println(query);
+        Assert.assertEquals(1, query);
+
+        query = rangeFreqQuery.query(1, 3, 1);
+        System.out.println(query);
+        Assert.assertEquals(1, query);
+
+        query = rangeFreqQuery.query(0, 2, 1);
+        System.out.println(query);
+        Assert.assertEquals(1, query);
+
+
     }
 }
