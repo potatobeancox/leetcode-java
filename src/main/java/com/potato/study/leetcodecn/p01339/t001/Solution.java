@@ -54,7 +54,10 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
     public int maxProduct(TreeNode root) {
+        // dfs 统计一次 每个点和他子树的和 root 值就是 sum
+        Map<TreeNode, Integer> rootSumMap = new HashMap<>();
 
+        // dfs 每个点计算一次
         return -1;
     }
 }
