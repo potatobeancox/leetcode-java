@@ -50,6 +50,13 @@ import java.util.*;
  */
 public class Solution {
 
+
+    /**
+     * https://leetcode.cn/problems/cinema-seat-allocation/solution/java-hashmap-by-yuruiyin/
+     * @param n
+     * @param reservedSeats
+     * @return
+     */
     public int maxNumberOfFamilies(int n, int[][] reservedSeats) {
         // 使用一个 map key 排的index value 是 list 占座的index 首先排序
         Map<Integer, List<Integer>> reservedSeatMap = new HashMap<>();
@@ -64,14 +71,11 @@ public class Solution {
 
             reservedSeatMap.put(line, seatList);
         }
+        // 基础运算 那些空的位置
+        int blankLine = n - reservedSeatMap.size();
+        int blankCount = blankLine * 2;
         // 遍历 求中间空的位置
-        int blankCount = 0;
-        for (int i = 1; i <= n; i++) {
-            if (!reservedSeatMap.containsKey(i)) {
-                blankCount += (10 / 4);
-                continue;
-            }
-            List<Integer> seatList = reservedSeatMap.get(i);
+        for (List<Integer> seatList : reservedSeatMap.values()) {
             Collections.sort(seatList);
             for (int j = 0; j < seatList.size(); j++) {
                 int len;
@@ -90,7 +94,7 @@ public class Solution {
                         continue;
                     }
                     // 4 or 8 检查
-                    if (lastFullSeat == 8 && len == 4) {
+                    if (len == 4 && (lastFullSeat == 8 || lastFullSeat == 6 || lastFullSeat == 10)) {
                         blankCount++;
                         continue;
                     }
@@ -133,6 +137,17 @@ public class Solution {
 
         n = 5;
         String input = "[[4,7],[4,1],[3,1],[5,9],[4,4],[3,7],[1,3],[5,5],[1,6],[1,8],[3,9],[2,9],[1,4],[1,9],[1,10]]";
+        reservedSeats = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        i = solution.maxNumberOfFamilies(n, reservedSeats);
+        System.out.println(i);
+        Assert.assertEquals(i, 2);
+
+
+//        2
+//
+
+        n = 2;
+        input = "[[2,1],[1,8],[2,6]]";
         reservedSeats = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
         i = solution.maxNumberOfFamilies(n, reservedSeats);
         System.out.println(i);
