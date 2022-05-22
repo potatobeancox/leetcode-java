@@ -53,11 +53,63 @@ import com.potato.study.leetcode.domain.TreeNode;
  */
 public class Solution {
 
+    private long max;
+    private int mod;
+
     public int maxProduct(TreeNode root) {
         // dfs 统计一次 每个点和他子树的和 root 值就是 sum
-        Map<TreeNode, Integer> rootSumMap = new HashMap<>();
-
+        Map<TreeNode, Long> rootSumMap = new HashMap<>();
+        this.mod = 1_000_000_000 + 7;
+        dfsBuildTheMap(root, rootSumMap);
         // dfs 每个点计算一次
-        return -1;
+        long sum = rootSumMap.get(root);
+        this.max = 0;
+        dfs(root, rootSumMap, sum);
+        return (int)max;
+    }
+
+    /**
+     *
+     * @param root
+     * @param rootSumMap
+     */
+    private void dfs(TreeNode root, Map<TreeNode, Long> rootSumMap, long sum) {
+        if (root == null) {
+            return;
+        }
+        long rootSum = rootSumMap.get(root);
+        long remind = sum - rootSum;
+        if (remind < 0) {
+            remind += mod;
+        }
+        max = Math.max(max, (remind * rootSum) % mod);
+        dfs(root.left, rootSumMap, sum);
+        dfs(root.right, rootSumMap, sum);
+    }
+
+    private void dfsBuildTheMap(TreeNode root, Map<TreeNode, Long> rootSumMap) {
+        // 终止条件 叶子节点
+        if (root == null) {
+            return;
+        }
+        // leaf
+        if (root.left == null && root.right == null) {
+            rootSumMap.put(root, (long)root.val);
+            return;
+        }
+        dfsBuildTheMap(root.left, rootSumMap);
+        dfsBuildTheMap(root.right, rootSumMap);
+        long sum = root.val;
+        if (root.left != null) {
+            sum += rootSumMap.getOrDefault(root.left, 0L);
+            sum %= mod;
+        }
+        if (root.right != null) {
+            sum += rootSumMap.getOrDefault(root.right, 0L);
+            sum %= mod;
+        }
+        // put
+        rootSumMap.put(root, sum);
+        return;
     }
 }
