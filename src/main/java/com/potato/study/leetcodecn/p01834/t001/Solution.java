@@ -1,6 +1,11 @@
 package com.potato.study.leetcodecn.p01834.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 /**
  * 1834. 单线程 CPU
@@ -60,7 +65,89 @@ import java.util.Arrays;
 public class Solution {
 
     public int[] getOrder(int[][] tasks) {
-        // 对 tasks 按照达到时间
-        return null;
+        // 对 tasks 按照达到时间 升序 排序
+        Integer[] indexArr = new Integer[tasks.length];
+        for (int i = 0; i < indexArr.length; i++) {
+            indexArr[i] = i;
+        }
+        Arrays.sort(indexArr, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(tasks[o1][0], tasks[o2][0]);
+            }
+        });
+        // 当前时间从 1开始往后 每次 先吧 task 时间小于等于 time 入 优先级队列
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((o1, o2) -> {
+            // 0->执行时间, 1->index
+            int compare = Integer.compare(o1[0], o2[0]);
+            if (compare != 0) {
+                return compare;
+            }
+            return Integer.compare(o1[1], o2[1]);
+        });
+        // 队列 排序优先级： 执行时间升序， index 升序
+        int time = 1;
+        int taskIndex = 0;
+        int[] result = new int[indexArr.length];
+        int resultIndex = 0;
+        while (taskIndex < indexArr.length || !priorityQueue.isEmpty()) {
+            // 当前时间 比task 时间小
+            if (taskIndex < indexArr.length && time < tasks[indexArr[taskIndex]][0]) {
+                time = tasks[indexArr[taskIndex]][0];
+            }
+            // 先往里遍 放已经到达的任务
+            while (taskIndex < indexArr.length && tasks[indexArr[taskIndex]][0] <= time) {
+                priorityQueue.add(new int[] {
+                        tasks[indexArr[taskIndex]][1], indexArr[taskIndex]
+                });
+                taskIndex++;
+            }
+            // 执行一个任务 修改 time 时间
+            if (!priorityQueue.isEmpty()) {
+                int[] poll = priorityQueue.poll();
+                result[resultIndex] = poll[1];
+                resultIndex++;
+                time += poll[0];
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[1,2],[2,4],[3,2],[4,1]]";
+        int[][] ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int[] order = solution.getOrder(ints);
+        System.out.println(Arrays.toString(order));
+        Assert.assertArrayEquals(new int[] {
+                0,2,3,1
+        }, order);
+
+
+        input = "[[7,10],[7,12],[7,5],[7,4],[7,2]]";
+        ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        order = solution.getOrder(ints);
+        System.out.println(Arrays.toString(order));
+        Assert.assertArrayEquals(new int[] {
+                4,3,2,0,1
+        }, order);
+
+        // [[19,13],[16,9],[21,10],[32,25],[37,4],[49,24],[2,15],[38,41],[37,34],[33,6],[45,4],[18,18],[46,39],[12,24]]
+        input = "[[19,13],[16,9],[21,10],[32,25],[37,4],[49,24],[2,15],[38,41],[37,34],[33,6],[45,4],[18,18],[46,39],[12,24]]";
+        ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        order = solution.getOrder(ints);
+        System.out.println(Arrays.toString(order));
+        Assert.assertArrayEquals(new int[] {
+                6,1,2,9,4,10,0,11,5,13,3,8,12,7
+        }, order);
+
+
+        input = "[[35,36],[11,7],[15,47],[34,2],[47,19],[16,14],[19,8],[7,34],[38,15],[16,18],[27,22],[7,15],[43,2],[10,5],[5,4],[3,11]]";
+        ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        order = solution.getOrder(ints);
+        System.out.println(Arrays.toString(order));
+        Assert.assertArrayEquals(new int[] {
+                15,14,13,1,6,3,5,12,8,11,9,4,10,7,0,2
+        }, order);
     }
 }
