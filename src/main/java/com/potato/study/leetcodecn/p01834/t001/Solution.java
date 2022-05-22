@@ -92,7 +92,7 @@ public class Solution {
         int resultIndex = 0;
         while (taskIndex < indexArr.length || !priorityQueue.isEmpty()) {
             // 当前时间 比task 时间小
-            if (taskIndex < indexArr.length && time < tasks[indexArr[taskIndex]][0]) {
+            if (taskIndex < indexArr.length && time < tasks[indexArr[taskIndex]][0] && priorityQueue.isEmpty()) {
                 time = tasks[indexArr[taskIndex]][0];
             }
             // 先往里遍 放已经到达的任务
