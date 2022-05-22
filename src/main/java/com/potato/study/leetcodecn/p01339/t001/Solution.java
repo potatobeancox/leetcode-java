@@ -59,13 +59,13 @@ public class Solution {
     public int maxProduct(TreeNode root) {
         // dfs 统计一次 每个点和他子树的和 root 值就是 sum
         Map<TreeNode, Long> rootSumMap = new HashMap<>();
-        this.mod = 1_000_000_000 + 7;
         dfsBuildTheMap(root, rootSumMap);
         // dfs 每个点计算一次
         long sum = rootSumMap.get(root);
         this.max = 0;
+        this.mod = 1_000_000_000 + 7;
         dfs(root, rootSumMap, sum);
-        return (int)max;
+        return (int) (max % mod);
     }
 
     /**
@@ -79,10 +79,7 @@ public class Solution {
         }
         long rootSum = rootSumMap.get(root);
         long remind = sum - rootSum;
-        if (remind < 0) {
-            remind += mod;
-        }
-        max = Math.max(max, (remind * rootSum) % mod);
+        max = Math.max(max, (remind * rootSum));
         dfs(root.left, rootSumMap, sum);
         dfs(root.right, rootSumMap, sum);
     }
@@ -102,11 +99,9 @@ public class Solution {
         long sum = root.val;
         if (root.left != null) {
             sum += rootSumMap.getOrDefault(root.left, 0L);
-            sum %= mod;
         }
         if (root.right != null) {
             sum += rootSumMap.getOrDefault(root.right, 0L);
-            sum %= mod;
         }
         // put
         rootSumMap.put(root, sum);
