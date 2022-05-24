@@ -1,5 +1,12 @@
 package com.potato.study.leetcodecn.p00853.t001;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.junit.Assert;
+
 /**
  * 853. 车队
  *
@@ -57,8 +64,74 @@ package com.potato.study.leetcodecn.p00853.t001;
  */
 public class Solution {
 
+    /**
+     * https://leetcode-cn.com/problems/car-fleet/solution/che-dui-by-leetcode/
+     * @param target
+     * @param position
+     * @param speed
+     * @return
+     */
     public int carFleet(int target, int[] position, int[] speed) {
+        // 记录每个车起始位置和当前位置往重点 数据结构 记录起始位置和 花费时间
+        List<Car> carList = new ArrayList<>();
+        for (int i = 0; i < position.length; i++) {
+            Car car = new Car();
+            car.pos = position[i];
+            car.costTime = 1.0 * (target - position[i]) / speed[i];
+            carList.add(car);
+        }
+        // 最开始将车 按照起始位置降序排列
+        Collections.sort(carList, new Comparator<Car>() {
+            @Override
+            public int compare(Car car1, Car car2) {
+                return Integer.compare(car2.pos, car1.pos);
+            }
+        });
+        // 第一个肯定一个车
+        int fleet = 0;
+        for (int i = 0; i < carList.size() - 1; i++) {
+            Car afterCar = carList.get(i+1);
+            Car car = carList.get(i);
+            if (afterCar.costTime > car.costTime) {
+                // 从前往后遍历 如果当前位置比之前的满花费时间比较 说明出来一个车队
+                fleet++;
+            } else {
+                // 否则就是同一个车队 到达时间为上一个
+                afterCar.costTime = car.costTime;
+            }
+        }
+        //最后一个 是否能作为一个车
+        return fleet + 1;
+    }
 
-        return -1;
+    class Car {
+        public int pos;
+        public double costTime;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int target = 12;
+        int[] position = new int[]{
+                10,8,0,5,3
+        };
+        int[] speed = new int[]{
+                2,4,1,1,3
+        };
+        int i = solution.carFleet(target, position, speed);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        target = 10;
+        position = new int[]{
+                3
+        };
+        speed = new int[]{
+                3
+        };
+        i = solution.carFleet(target, position, speed);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
 }
