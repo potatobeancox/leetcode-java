@@ -72,24 +72,69 @@ public class Solution {
         double maximum = -1;
         // 出现最多的数字
         double mode  = -1;
-        // todo 中位数
-        double median = -1;
-        // todo 平均值
-        double mean;
 
+        double sum = 0;
+        int num = 0;
+        long[] sumCount = new long[count.length];
         for (int i = 0; i < 256; i++) {
+            if (i == 0) {
+                sumCount[i] = count[i];
+            } else {
+                sumCount[i] = sumCount[i-1] + count[i];
+            }
             if (count[i] == 0) {
                 continue;
             }
+            // 有统计次数
             if (minimum == -1) {
                 minimum = i;
             }
-            // 最大值
+            // 最大值 每次更新
             maximum = i;
+            // 出现次数最多的数字
             if (mode == -1 || count[(int)mode] < count[i]) {
                 mode = i;
             }
+            sum += 1.0 * i * count[i];
+            num += count[i];
         }
-        return null;
+        // 平均值
+        double mean = sum / num;
+        // 知道 num 找到 中位数 是第几个
+        int target = (num + 1) / 2;
+        int ans = getTargetIndex(count, sumCount, target);
+        // 中位数
+        double median = -1;
+        if (ans != -1) {
+            median = ans;
+        }
+
+        if (num % 2 == 0) {
+            ans = getTargetIndex(count, sumCount, target+1);
+            median += ans;
+            median /= 2;
+        }
+
+        return new double[] {
+                minimum, maximum, mean, median, mode
+        };
+    }
+
+    private int getTargetIndex(int[] count, long[] sumCount, int target) {
+        int left = 0;
+        int right = count.length - 1;
+        int ans = -1;
+        while (left <= right) {
+            int midIndex = (left + right) / 2;
+            if (sumCount[midIndex] < target) {
+                //  target 在后边
+                left = midIndex + 1;
+            } else {
+                // sumCount[midIndex] >= target
+                ans = midIndex;
+                right = midIndex - 1;
+            }
+        }
+        return ans;
     }
 }
