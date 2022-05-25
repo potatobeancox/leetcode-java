@@ -56,10 +56,41 @@ package com.potato.study.leetcodecn.p01937.t001;
 public class Solution {
 
 
-
+    /**
+     * https://leetcode.cn/problems/maximum-number-of-points-with-cost/solution/omndong-tai-gui-hua-by-seiei-5dm2/
+     * @param points
+     * @return
+     */
     public long maxPoints(int[][] points) {
-
-        return -1;
+        // dp i 表示 当前行 i列 最大的分是多少
+        int m = points.length;
+        int n = points[0].length;
+        long[] dp = new long[n];
+        // 每次维护一个 lmax 和 rmax 分别从左往右和 从右往左 并且 过程中
+        for (int i = 0; i < m; i++) {
+            // 遍历一行
+            long[] current = new long[n];
+            long lmax = 0;
+            for (int j = 0; j < n; j++) {
+                lmax = Math.max(lmax - 1, dp[j]);
+                // 当前这个点最大值
+                current[j] = Math.max(lmax, current[j]);
+            }
+            long rmax = 0;
+            for (int j = n-1; j >= 0; j--) {
+                rmax = Math.max(rmax - 1, dp[j]);
+                current[j] = Math.max(rmax, current[j]);
+            }
+            // current 往dp上转移 加上 point【i】【j】最终将 当前层 复制个 dp
+            for (int j = 0; j < n; j++) {
+                dp[j] = current[j] + points[i][j];
+            }
+        }
+        long max = 0;
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, dp[i]);
+        }
+        return max;
     }
 
 
