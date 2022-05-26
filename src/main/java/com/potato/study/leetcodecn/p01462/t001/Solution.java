@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p01462.t001;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +10,8 @@ import org.junit.Assert;
 /**
  * 1462. 课程表 IV
  *
- * 你总共需要上 numCourses 门课，课程编号依次为 0 到 numCourses-1 。你会得到一个数组 prerequisite ，其中 prerequisites[i] = [ai, bi] 表示如果你想选 bi
+ * 你总共需要上 numCourses 门课，课程编号依次为 0 到 numCourses-1 。你会得到一个数组 prerequisite ，
+ * 其中 prerequisites[i] = [ai, bi] 表示如果你想选 bi
  * 课程，你 必须 先选 ai 课程。
  *
  * 有的课会有直接的先修课程，比如如果想上课程 1 ，你必须先上课程 0 ，那么会以 [0,1] 数对的形式给出先修课程数对。
@@ -60,9 +62,36 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/course-schedule-iv/solution/floyed-suan-fa-by-15228207-7r9k/
+     * @param numCourses
+     * @param prerequisites
+     * @param queries
+     * @return
+     */
     public List<Boolean> checkIfPrerequisite(int numCourses,
             int[][] prerequisites, int[][] queries) {
+        // floyd 每次 枚举中间点 判断 两个点是否可以通过中间点 邻接
+        boolean[][] floyd = new boolean[numCourses][numCourses];
+        // 初始化
+        for (int[] prerequisite : prerequisites) {
+            int from = prerequisite[0];
+            int to = prerequisite[1];
 
-        return null;
+            floyd[from][to] = true;
+        }
+        // 返回 query的结果 prerequisites[i] = [ai, bi] 表示如果你想选 bi 课程，你 必须 先选 ai 课程。
+        for (int mid = 0; mid < numCourses; mid++) {
+            for (int i = 0; i < numCourses; i++) {
+                for (int j = 0; j < numCourses; j++) {
+                    floyd[i][j] = floyd[i][j] || (floyd[i][mid] && floyd[mid][j]);
+                }
+            }
+        }
+        List<Boolean> result = new ArrayList<>();
+        for (int i = 0; i < queries.length; i++) {
+            result.add(floyd[queries[i][0]][queries[i][1]]);
+        }
+        return result;
     }
 }
