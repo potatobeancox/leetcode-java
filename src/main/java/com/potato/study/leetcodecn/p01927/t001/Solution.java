@@ -54,8 +54,74 @@ package com.potato.study.leetcodecn.p01927.t001;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/sum-game/solution/1927-qiu-he-you-xi-java-by-wa-pian-d-cgy8/
+     * @param num
+     * @return
+     */
     public boolean sumGame(String num) {
-        return false;
+        // 遍历 num 统计 左边 ？ 个数 和左边的和 右边个数和右边的和
+        int leftNum = 0;
+        int rightNum = 0;
+        int leftSum = 0;
+        int rightSum = 0;
+        for (int i = 0; i < num.length() / 2; i++) {
+            char ch = num.charAt(i);
+            if ('?' == ch) {
+                leftNum++;
+            } else {
+                leftSum += (ch - '0');
+            }
+        }
+
+        for (int i = num.length() / 2; i < num.length(); i++) {
+            char ch = num.charAt(i);
+            if ('?' == ch) {
+                rightNum++;
+            } else {
+                rightSum += (ch - '0');
+            }
+        }
+
+//    System.out.println(leftNum + "_" + rightNum + "_" + leftSum + "_" + rightSum);
+        // 如果 个数相等 且 判断 和是否相同  相等 b总能找平，不相同 a就取9 b一定输了
+        if (leftNum == rightNum) {
+            return leftSum != rightSum;
+        }
+        // 个数不同 判断多的那边 是否还大，是的话 a肯定赢 否则计算 差值 两个的差值 a 找到多的那边一直放9 一直无法相同
+        int numDiff = 0;
+        int sumDiff = 0;
+        if (leftNum > rightNum) {
+            if (leftSum >= rightSum) {
+                return true;
+            }
+            numDiff = leftNum - rightNum;
+            sumDiff = rightSum - leftSum;
+        } else {
+            // leftnum < right num
+            if (leftSum <= rightSum) {
+                return true;
+            }
+            numDiff = rightNum - leftNum;
+            sumDiff = leftSum - rightSum;
+
+        }
+        // 判断是否为奇数 奇数一定 a获胜
+        if (numDiff % 2 == 1) {
+            // a最后一手不配平
+            return true;
+        }
+        // 判断 个数差值 / 2 * 9 是否等于 sum差值 是的话 b赢 不是 a赢  最后b操作
+        return (numDiff / 2) * 9 != sumDiff;
+    }
+
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String num = "?0?3105????1834??7382?997?3?????7?63116?566?701?065?13?3??38?7?488?????9";
+        boolean b = solution.sumGame(num);
+        System.out.println(b);
     }
 
 
