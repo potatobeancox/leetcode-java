@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01574.t001;
 
+import org.junit.Assert;
+
 /**
  * 1574. 删除最短的子数组使剩余数组有序
  *
@@ -47,11 +49,67 @@ public class Solution {
 
 
     /**
-     *
+     * https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/solution/by-dylsini4yh-z1k4/
      * @param arr
      * @return
      */
     public int findLengthOfShortestSubarray(int[] arr) {
-        return -1;
+        // 首先从左边开始 找到 第一个 下降位置 记录为 leftEnd leftEnd 》 leftEnd+ 1
+        int leftEndIndex = 0;
+        while (leftEndIndex < arr.length - 1 && arr[leftEndIndex] <= arr[leftEndIndex+1]) {
+            leftEndIndex++;
+        }
+        // 从右边开始 找到第一个 下降位置 记录为 rightEnd rightEnd -1 》 rightEnd
+        int rightEndIndex = arr.length - 1;
+        while (rightEndIndex > 0 && arr[rightEndIndex-1] <= arr[rightEndIndex]) {
+            rightEndIndex--;
+        }
+        // 不用删除 全员有序
+        if (leftEndIndex >= rightEndIndex) {
+            return 0;
+        }
+        // 枚举每个 leftEnd 开始位置 往0 找 二分法找到 第一个 大于等于 arr i 的右边位置 【rightEnd， n-1】 每次找到 记录 间距最小值
+        int minDeleteLength = Integer.MAX_VALUE;
+        minDeleteLength = Math.min(arr.length - leftEndIndex - 1, rightEndIndex);
+        for (int i = leftEndIndex; i >= 0; i--) {
+            int target = arr[i];
+            int left = rightEndIndex;
+            int right = arr.length - 1;
+            int ans = -1;
+            while (left <= right) {
+                int mid = (left + right) / 2;
+                if (arr[mid] >= target) {
+                    ans = mid;
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+            if (ans == -1) {
+                minDeleteLength = Math.min(minDeleteLength, arr.length - i - 1);
+            } else {
+                minDeleteLength = Math.min(minDeleteLength, ans - i - 1);
+            }
+        }
+        return minDeleteLength;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                1,2,3,10,4,2,3,5
+        };
+        int len = solution.findLengthOfShortestSubarray(arr);
+        System.out.println(len);
+        Assert.assertEquals(3, len);
+
+
+        arr = new int[] {
+                16,10,0,3,22,1,14,7,1,12,15
+        };
+        len = solution.findLengthOfShortestSubarray(arr);
+        System.out.println(len);
+        Assert.assertEquals(8, len);
     }
 }
