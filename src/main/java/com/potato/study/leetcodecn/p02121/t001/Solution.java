@@ -59,29 +59,75 @@ public class Solution {
 
 
 
-    // 2121
+    /**
+     * 2121
+     * https://leetcode.cn/problems/intervals-between-identical-elements/solution/2121-xiang-tong-yuan-su-de-jian-ge-zhi-h-drq7/
+     * @param arr
+     * @return
+     */
     public long[] getDistances(int[] arr) {
-        // 遍历 arr 记录 相同 value 对应的坐标list （a + b + c）
-        Map<Integer, List<Integer>> valueIndexListMap = new HashMap<>();
+        long[] total = new long[arr.length];
+        // 从左向右遍历 记录 最后一次出现 这个 值的索引 之前出现的数量 之前dis的累加和 map 存储 key 是 arr的值
+        Map<Integer, long[]> infoMap = new HashMap<>();
         for (int i = 0; i < arr.length; i++) {
-            List<Integer> list = valueIndexListMap.getOrDefault(arr[i], new ArrayList<>());
-            list.add(i);
-            valueIndexListMap.put(arr[i], list);
-        }
-        // 遍历 每个位置 index 假设为 c 求 c-a  + c - b 的和
-        long[] distance = new long[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            int element = arr[i];
-            List<Integer> list = valueIndexListMap.get(element);
-            long dis = 0;
-            for (int index : list) {
-                if (index == i) {
-                    continue;
-                }
-                dis += Math.abs((long) index - i);
+            int target = arr[i];
+            // 之前没有遇到
+            if (!infoMap.containsKey(target)) {
+                // 0-index 1-个数 2-差值当前和
+                infoMap.put(target, new long[] {
+                        i, 1, 0
+                });
+                continue;
             }
-            distance[i] = dis;
+            long[] temp = infoMap.get(target);
+            // 更新这个值
+            long lastIndex = temp[0];
+            long size = temp[1];
+            long addNum = (i - lastIndex) * size * 1;
+            long sum = temp[2] + addNum;
+
+            temp[0] = i;
+            temp[1]++;
+            temp[2] = sum;
+            total[i] = sum;
         }
-        return distance;
+        // 从右向左遍历 记录 最后一次出现 这个 值的索引 之前出现的数量 之前dis的累加和 map 存储 key 是 arr的值
+        infoMap = new HashMap<>();
+        for (int i = arr.length - 1; i >= 0; i--) {
+            int target = arr[i];
+            // 之前没有遇到
+            if (!infoMap.containsKey(target)) {
+                infoMap.put(target, new long[] {
+                        i, 1, 0
+                });
+                continue;
+            }
+
+            long[] temp = infoMap.get(target);
+            // 更新这个值
+            long lastIndex = temp[0];
+            long size = temp[1];
+            long addNum = (lastIndex - i) * size * 1;
+            long sum = temp[2] + addNum;
+
+            temp[0] = i;
+            temp[1]++;
+            temp[2] = sum;
+
+            total[i] += sum;
+        }
+
+        // 过程中维护 结果值
+        return total;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[]{2,1,3,1,2,3,3};
+        long[] distances = solution.getDistances(arr);
+        System.out.println(Arrays.toString(distances));
+        Assert.assertArrayEquals(new long[] {
+                4,2,7,2,4,4,5
+        }, distances);
     }
 }
