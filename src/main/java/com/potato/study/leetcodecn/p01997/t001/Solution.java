@@ -66,8 +66,23 @@ public class Solution {
      */
     public int firstDayBeenInAllRooms(int[] nextVisit) {
         // f(x) = 2f(x - 1) - f(nextVisit(x - 1)) + 2;
+        int n = nextVisit.length;
+        // dp1 i 第一次到达i的时间
+        long[] dp1 = new long[n];
+        // dp2 第二次到达 哦么时间
+        long[] dp2 = new long[n];
+        dp1[0] = 0;
+        dp2[0] = 1;
+        int mod = 1_000_000_000 + 7;
+        for (int i = 1; i < n; i++) {
+            dp1[i] = dp2[i-1] + 1;
+            dp2[i] = dp1[i] + 1 + (dp1[i] - dp1[nextVisit[i]]) + mod;
 
-        return -1;
+
+            dp1[i] %= mod;
+            dp2[i] %= mod;
+        }
+        return (int) dp1[n-1];
     }
 
 }
