@@ -170,6 +170,65 @@ public class LeetcodeInputUtils {
 
 
     /**
+     * rectangles = [[".",".","W",".","B","W","W","B"],["B","W",".","W",".","W","B","B"],[".","W","B","W","W",".",
+     * "W","W"],["W","W",".","W",".",".","B","B"],["B","W","B","B","W","W","B","."],["W",".","W",".",".","B","W",
+     * "W"],["B",".","B","B",".",".","B","B"],[".","W",".","W",".","W",".","W"]]
+     * 5
+     * 4
+     * "W"
+     * 测试用例
+     * []
+     * null
+     * 返回 int 2维 数组
+     * @param input
+     * @return
+     */
+    public static char[][] inputString2CharArrayTwoDimensional(String input) {
+        if (input == null) {
+            return null;
+        }
+        // 去掉"
+        input = input.replace("\"", "");
+
+        if ("".equals(input) || "[]".equals(input)) {
+            return new char[0][0];
+        }
+        // [".",".","W",".","B","W","W","B"],["B","W",".","W",".","W","B","B"]"
+        String substring = input.substring(1, input.length() - 1);
+        // ，拆分
+        String[] split = substring.split("]");
+        //        String[] result = new String[split.length];
+        char[][] result = new char[split.length][];
+        for (int i = 0; i < split.length; i++) {
+            // 去掉引号 [2,3 或者 ,[3,7
+            String word = split[i].trim();
+            if ("".equals(word)) {
+                continue;
+            }
+            // [2 或者 3 或者 ""
+            String[] charSplit = word.split(",");
+            List<Character> list = new ArrayList<>();
+            for (String charStr : charSplit) {
+                if (charStr.startsWith("[")) {
+                    charStr = charStr.substring(1);
+                }
+                if ("".equals(charStr)) {
+                    continue;
+                }
+                list.add(charStr.charAt(0));
+            }
+            char[] arr = new char[list.size()];
+            for (int j = 0; j < list.size(); j++) {
+                arr[j] = list.get(j);
+            }
+            result[i] = arr;
+        }
+        // 返回数组
+        return result;
+    }
+
+
+    /**
      * rectangles = [[2,3],[3,7],[4,3],[3,7]]
      * 测试用例
      * []
