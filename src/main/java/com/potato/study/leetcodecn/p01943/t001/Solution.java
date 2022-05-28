@@ -1,8 +1,12 @@
 package com.potato.study.leetcodecn.p01943.t001;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 1943. 描述绘画结果
@@ -71,10 +75,59 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/describe-the-painting/solution/chai-fen-shu-zu-qian-zhui-he-by-xiao-hui-9d11/
+     * @param segments
+     * @return
+     */
     public List<List<Long>> splitPainting(int[][] segments) {
+        // 遍历 segments 第一次用 Treeset 记录每个数组开始位置和结束位置 并记录 最大值
+        TreeSet<Integer> treeSet = new TreeSet<>();
+        int maxIndex = 0;
+        for (int[] segment : segments) {
+            treeSet.add(segment[0]);
+            treeSet.add(segment[1]);
+            maxIndex = Math.max(maxIndex, segment[1]);
+        }
+        // 使用 一个 array 数组 最大值大小
+        long[] nums = new long[maxIndex + 1];
+        // 遍历 segments 对 每个位置 开始 + value 结束 -value
+        for (int[] segment : segments) {
+            int val = segment[2];
+            nums[segment[0]] += val;
+            nums[segment[1]] -= val;
+        }
+        // 求上面数组的前缀和 就是 结果
+        for (int i = 1; i < nums.length; i++) {
+            nums[i] += nums[i-1];
+        }
+        // 遍历 treeset 求每个区间的值
+        List<List<Long>> result = new ArrayList<>();
+        while (treeSet.size() > 1) {
+            int left = treeSet.pollFirst();
+            int right = treeSet.first();
+            long value = nums[left];
 
-        return null;
+            if (value == 0) {
+                continue;
+            }
+
+            List<Long> list = new ArrayList<>();
+            list.add((long)left);
+            list.add((long)right);
+            list.add(value);
+
+            result.add(list);
+        }
+        return result;
     }
 
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[1,4,5],[4,7,7],[1,7,9]]";
+        int[][] ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        List<List<Long>> lists = solution.splitPainting(ints);
+        System.out.println(lists);
+    }
 
 }
