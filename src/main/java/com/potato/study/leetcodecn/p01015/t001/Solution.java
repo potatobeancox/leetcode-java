@@ -41,8 +41,26 @@ import org.junit.Assert;
  */
 public class Solution {
 
-    public int smallestRepunitDivByK(int k) {
 
-        return -1;
+    /**
+     * https://leetcode.cn/problems/smallest-integer-divisible-by-k/solution/javajie-fa-yi-ji-zheng-ming-de-si-lu-by-jiangzk/
+     * @param k
+     * @return
+     */
+    public int smallestRepunitDivByK(int k) {
+        // 如果 k 是 2 or 5 gg 整除
+        if (k % 2 == 0 || k % 5 == 0) {
+            return -1;
+        }
+
+        long temp = 1;
+        int len = 1;
+        // 每次不能整除 先 % k 再 * 10 + 1i 次计算
+        while (temp % k != 0) {
+            temp %= k;
+            temp = temp * 10 + 1;
+            len++;
+        }
+        return len;
     }
 }
