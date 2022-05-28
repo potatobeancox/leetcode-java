@@ -59,7 +59,13 @@ import java.util.Comparator;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/first-day-where-you-have-been-in-all-the-rooms/solution/tui-dao-chu-gong-shi-fx-2fx-1-fnextvisit-fsh9/
+     * @param nextVisit
+     * @return
+     */
     public int firstDayBeenInAllRooms(int[] nextVisit) {
+        // f(x) = 2f(x - 1) - f(nextVisit(x - 1)) + 2;
 
         return -1;
     }
