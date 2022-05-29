@@ -4,7 +4,9 @@ import com.potato.study.leetcode.domain.TreeNode;
 import com.potato.study.leetcode.util.TreePrintUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 898. 子数组按位或操作
@@ -51,8 +53,27 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     * 因为或就是一直网上堆积1 使用一个 set 记录 即可
+     * https://leetcode.cn/problems/bitwise-ors-of-subarrays/solution/zi-shu-zu-an-wei-huo-cao-zuo-by-leetcode/
+     * @param arr
+     * @return
+     */
     public int subarrayBitwiseORs(int[] arr) {
+        Set<Integer> total = new HashSet<>();
+        Set<Integer> current = new HashSet<>();
+        current.add(0);
+        for (int element : arr) {
+            Set<Integer> temp = new HashSet<>();
+            for (int num : current) {
+                temp.add(num | element);
+            }
+            // 只有自己的时候
+            temp.add(element);
 
-        return -1;
+            current = temp;
+            total.addAll(current);
+        }
+        return total.size();
     }
 }
