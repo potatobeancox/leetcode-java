@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02280.t001;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * 2280. 表示一个折线图的最少线段数
  *
@@ -56,7 +59,42 @@ public class Solution {
      * @return
      */
     public int minimumLines(int[][] stockPrices) {
+        Arrays.sort(stockPrices, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return Integer.compare(o1[0], o2[0]);
+            }
+        });
+        // 从第一个点开始 往后遍历 计算斜率 如果 跟之前不一样就多一条线
+        int lineCount = 0;
+        String lastSlope = null;
+        for (int i = 1; i < stockPrices.length; i++) {
+            int y = stockPrices[i][1] - stockPrices[i-1][1];
+            int x = stockPrices[i][0] - stockPrices[i-1][0];
+            int gcd = gcd(y, x);
 
-        return 1;
+            String key = (y/gcd) + "_" + (x/gcd);
+
+            if (i == 1) {
+                lineCount++;
+                lastSlope = key;
+                continue;
+            }
+            if (key.equals(lastSlope)) {
+                continue;
+            }
+            lineCount++;
+            lastSlope = key;
+        }
+
+        return lineCount;
+    }
+
+
+    private int gcd(int a, int b) {
+        if (a % b == 0) {
+            return b;
+        }
+        return gcd(b, a%b);
     }
 }
