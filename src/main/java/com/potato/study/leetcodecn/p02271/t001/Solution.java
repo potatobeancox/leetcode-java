@@ -1,5 +1,10 @@
 package com.potato.study.leetcodecn.p02271.t001;
 
+import org.junit.Assert;
+
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * 2271. 毯子覆盖的最多白色砖块数
  *
@@ -48,7 +53,52 @@ public class Solution {
 
 
     public int maximumWhiteTiles(int[][] tiles, int carpetLen) {
+        Arrays.sort(tiles, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return Integer.compare(o1[0], o2[0]);
+            }
+        });
+        // 遍历 每个位置 往后找 carpetlen
+        int maxLength = 0;
+        for (int i = 0; i < tiles.length; i++) {
+            // 最终找到的位置 exclude
+            int totalEnd = tiles[i][0] + carpetLen;
+            // 计算当前区间 覆盖度
+            int currentLength = 0;
+            boolean isFindAll = false;
+            // 往下找
+            for (int j =i; j < tiles.length; j++) {
+                int start = tiles[j][0];
+                if (totalEnd <= start) {
+                    break;
+                }
+                if (totalEnd > tiles[j][1]) {
+                    currentLength += (tiles[j][1] - tiles[j][0] + 1);
+                    if (j == tiles.length - 1) {
+                        isFindAll = true;
+                    }
+                } else {
+                    // 这个区间覆盖不全
+                    currentLength += (totalEnd - tiles[j][0]);
+                    maxLength = Math.max(maxLength, currentLength);
+                    break;
+                }
+            }
+            maxLength = Math.max(maxLength, currentLength);
+            if (isFindAll) {
+                break;
+            }
+        }
+        return maxLength;
+    }
 
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] tiles = new int[][]{{10,11},{1,1}};
+        int carpetLen = 2;
+        int i = solution.maximumWhiteTiles(tiles, carpetLen);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 }
