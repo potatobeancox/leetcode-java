@@ -85,6 +85,29 @@ public class Solution {
 
 
     public List<String> removeComments(String[] source) {
-        return null;
+        // 遍历 source
+        List<String> result = new ArrayList<>();
+        for (String s : source) {
+            char[] chars = s.toCharArray();
+            StringBuilder builder = new StringBuilder();
+            int i = 0;
+            while (i < chars.length) {
+                if (i + 1 >= chars.length) {
+                    builder.append(chars[i]);
+                    i++;
+                    continue;
+                }
+                // 找到 前两个字符 整个行
+                if (chars[i] == '/' && chars[i+1] == '/') {
+                    break;
+                }
+
+                i++;
+            }
+            if (builder.length() != 0) {
+                result.add(builder.toString());
+            }
+        }
+        return result;
     }
 }
