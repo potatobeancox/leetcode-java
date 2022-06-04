@@ -37,46 +37,131 @@ import java.util.List;
 public class Solution {
 
     /**
-     * https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/solution/cong-you-wang-zuo-cha-ru-pai-xu-by-utopiahiker/
+     * https://leetcode.cn/problems/count-of-smaller-numbers-after-self/solution/gui-bing-pai-xu-suo-yin-shu-zu-python-dai-ma-java-/
      * @param nums
      * @return
      */
     public List<Integer> countSmaller(int[] nums) {
-        LinkedList<Integer> result = new LinkedList<>();
-        // 使用类似插入排序方法 先确定插入排序的开始位置 从 len - 2 到0
-        for (int i = nums.length - 2; i >= 0; i--) {
-            int j = i + 1;
-            // 记录i的数字
-            int tmp = nums[i];
-            // 将大于 nums[i] 都交换到前边
-            // 因为插入排序会将 大的数字都插入到前边，所以值需要从 i+1 -》 往后遍历 将大的往前移动就行 最终 i停留位置 用len 减去就可以得到 小于的个数了
-            while (j < nums.length && nums[j] >= tmp) {
-                nums[j-1] = nums[j];
-                j++;
-            }
-            // j-1 最终的停留位置 就是 放tmp的
-            nums[j-1] = tmp;
-            // 计算还有多少个小于 tmp的个数
-            int count = nums.length - j;
-            result.addFirst(count);
-
+        // 归并排序
+        int n = nums.length;
+        // 存index
+        int[] indexArray = new int[n];
+        for (int i = 0; i < n; i++) {
+            indexArray[i] = i;
         }
-        // 往最后一个位置 添加 0
-        result.addLast(0);
+        // 存最终结果
+        int[] count = new int[n];
+        // 将处理之前的数组 缓存下来 节省空间
+        int[] tempIndexArray = new int[indexArray.length];
+
+        // 对某个区间进行归并
+        mergeAndSort(nums, indexArray, 0, n-1, count, tempIndexArray);
+        List<Integer> result = new ArrayList<>();
+        // 处理结果
+        for (int i = 0; i < n; i++) {
+            result.add(count[i]);
+        }
         return result;
+
+    }
+
+    /**
+     * 归并排序 left 到 right 的位置
+     * @param nums
+     * @param indexArray
+     * @param left
+     * @param right
+     * @param count
+     */
+    private void mergeAndSort(int[] nums, int[] indexArray, int left, int right, int[] count, int[] tempIndexArray) {
+        // 已经有序
+        if (left == right) {
+            return;
+        }
+        // 往内部 递归归并
+        int mid = (left + right) / 2;
+        mergeAndSort(nums, indexArray, left, mid, count, tempIndexArray);
+        mergeAndSort(nums, indexArray, mid+1, right, count, tempIndexArray);
+
+        // 如果索引数据 有序 说明 不需要进一步合并 因为 到这 本身 两个部分已经排序完毕
+        if (nums[indexArray[mid]] <= nums[indexArray[mid+1]]) {
+            return;
+        }
+
+        // 合并归并结果
+        merge(nums, indexArray, left, mid, right, count, tempIndexArray);
+    }
+
+    /**
+     * 合并 [left, mid], [mid+1, right] 排序 并 找到 小于 每个位置 的 值
+     * @param nums
+     * @param indexArray
+     * @param left
+     * @param mid
+     * @param right
+     * @param count
+     */
+    private void merge(int[] nums, int[] indexArray, int left, int mid, int right, int[] count, int[] tempIndexArray) {
+        for (int i = left; i <= right; i++) {
+            tempIndexArray[i] = indexArray[i];
+        }
+        // 两个数组开始
+        int i = left;
+        int j = mid + 1;
+
+        // 枚举每个 位置 找最小的放上面
+        for (int k = left; k <= right; k++) {
+            if (i > mid) {
+                // 第一个数组 已经用完
+                indexArray[k] = tempIndexArray[j];
+                j++;
+            } else if (j > right) {
+                // 第二个数组已经用完
+                indexArray[k] = tempIndexArray[i];
+                // i 应该在 j前面用 当时 j先用完了 说明 j之前的都比当前i小
+                count[tempIndexArray[i]] += (right - mid);
+                i++;
+            } else {
+                // 两个数组 都还有 找最小的 保证顺序
+                if (nums[tempIndexArray[i]] <= nums[tempIndexArray[j]]) {
+                    // 第二个数组已经用完
+                    indexArray[k] = tempIndexArray[i];
+                    // i 应该在 j前面用 当时 j先用完了 说明 j之前的都比当前i小
+                    count[tempIndexArray[i]] += (j-1 - mid);
+                    i++;
+                } else {
+                    //  nums[tempIndexArray[i]] > nums[tempIndexArray[j]]
+                    indexArray[k] = tempIndexArray[j];
+                    j++;
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
-//        Solution solution = new Solution();
-//        String input = "bcabc";
-//        String s = solution.removeDuplicateLetters(input);
-//        System.out.println(s);
-//        Assert.assertEquals("abc", s);
-//
-//
-//        input = "cbacdcbc";
-//        s = solution.removeDuplicateLetters(input);
-//        System.out.println(s);
-//        Assert.assertEquals("acdb", s);
+
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                5,2,6,1
+        };
+        // 2,1,1,0
+        List<Integer> list = solution.countSmaller(arr);
+        System.out.println(list);
+
+
+        arr = new int[] {
+                -1
+        };
+        // 0
+        list = solution.countSmaller(arr);
+        System.out.println(list);
+
+
+        arr = new int[] {
+                -1 , -1
+        };
+        // 0, 0
+        list = solution.countSmaller(arr);
+        System.out.println(list);
     }
 }
