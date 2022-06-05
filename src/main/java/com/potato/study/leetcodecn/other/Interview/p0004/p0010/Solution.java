@@ -33,16 +33,25 @@ public class Solution {
 
 
     /**
-     *
+     * https://leetcode.cn/problems/check-subtree-lcci/solution/by-feyl-ercf/
      * @param t1
      * @param t2
      * @return
      */
     public boolean checkSubTree(TreeNode t1, TreeNode t2) {
-
-
-
-
-        return false;
+        // 先判断 是不是
+        if (t1 == null && t2 == null) {
+            return true;
+        } else if (t1 == null || t2 == null) {
+            return false;
+        } else {
+            // 都不空
+            if (t1.val != t2.val) {
+                // 去子树 找找
+                return checkSubTree(t1.left, t2) || checkSubTree(t1.right, t2);
+            } else {
+                return checkSubTree(t1.left, t2.left) && checkSubTree(t1.right, t2.right);
+            }
+        }
     }
 }
