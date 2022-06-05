@@ -54,8 +54,45 @@ public class  Solution {
      * @return
      */
     public int[] maxNumber(int[] nums1, int[] nums2, int k) {
+        // 遍历长度  1-k
+        int[] max = null;
+        for (int i = 1; i <= nums1.length; i++) {
+            // i 表示 nums1 中 最大i个数字串
+            int[] max1 = getMaxNumberSubString(nums1, i);
+            // 先对 num1 和 num2 找到 最长的 n个子序列
+            int[] max2 = getMaxNumberSubString(nums2, k-i);
+            // 对于 上面求的 num1和 num2 需求 merge 一下
+            int[] current = merge(max1, max2);
+            // 比较并更新 merge 结果
+            if (compare(current, max) > 0) {
+                max = current;
+            }
+        }
+        return max;
+    }
 
-        return null;
+    private int[] merge(int[] max1, int[] max2) {
+        return new int[0];
+    }
+
+    /**
+     * 比较两个相同长度的数组 -1 前边的小 0 相等 1前面的大
+     * @param current
+     * @param max
+     * @return
+     */
+    private int compare(int[] current, int[] max) {
+        return 1;
+    }
+
+    /**
+     * 获取 nums1
+     * @param nums1
+     * @param i
+     * @return
+     */
+    private int[] getMaxNumberSubString(int[] nums1, int i) {
+        return new int[0];
     }
 
 //    public static void main(String[] args) {
