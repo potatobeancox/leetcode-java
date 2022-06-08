@@ -45,8 +45,18 @@ import java.util.List;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/count-good-triplets-in-an-array/solution/2179-tong-ji-shu-zu-zhong-hao-san-yuan-z-0gob/
+     * @param nums1
+     * @param nums2
+     * @return
+     */
     public long goodTriplets(int[] nums1, int[] nums2) {
+        // 使用一个 position 存储 nums1 i 对应在 nums2 中 的index
 
+        // 那么结果就是 计算每个 i 对应位置 前面有多少小于 i的数字 （index）后面有多少大于 的index
+
+        // 升序排列 对于 前面的index 计算右边 对与后面的index 计算左边
         return -1;
     }
 }
