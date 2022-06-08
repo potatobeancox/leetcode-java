@@ -40,6 +40,33 @@ package com.potato.study.leetcodecn.other.swordoffer2.p0005.t001;
  */
 public class Solution {
     public int maxProduct(String[] words) {
-        return -1;
+        // 转化成数字掩码
+        int max = 0;
+        int[] masks = new int[words.length];
+        for (int i = 0; i < words.length; i++) {
+            masks[i] = getMask(words[i]);
+        }
+
+        for (int i = 0; i < masks.length; i++) {
+            for (int j = i+1; j < masks.length; j++) {
+                if ((masks[i] & masks[j]) == 0) {
+                    max = Math.max(max, words[i].length() * words[j].length());
+                }
+            }
+        }
+
+        return max;
+    }
+
+
+
+    private int getMask(String word) {
+        char[] chars = word.toCharArray();
+        int mask = 0;
+        for (char ch : chars) {
+            int bit = 1<<(ch - 'a');
+            mask |= bit;
+        }
+        return mask;
     }
 }
