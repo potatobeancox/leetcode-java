@@ -40,8 +40,48 @@ import java.util.List;
  */
 public class Solution {
 
-    public int maxAreaOfIsland(int[][] grid) {
 
-        return -1;
+    public int maxAreaOfIsland(int[][] grid) {
+        // 便利 grid 从每个不为 0 的位置开始找
+        int max = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 0) {
+                    continue;
+                }
+                // dfs 遍历并记录 当前 岛屿大小
+                grid[i][j] = 0;
+                int area = dfs(grid, i, j);
+                max = Math.max(max, area);
+            }
+        }
+        // 返回最大
+        return max;
+    }
+
+
+    private int dfs(int[][] grid, int i, int j) {
+        // 四个方向
+        int[][] dir = new int[][] {
+                {1, 0},
+                {-1, 0},
+                {0, 1},
+                {0, -1}
+        };
+        int total = 1;
+        for (int k = 0; k < dir.length; k++) {
+            int di = i + dir[k][0];
+            int dj = j + dir[k][1];
+            if (di < 0 || di >= grid.length
+                    || dj < 0 || dj >= grid[0].length) {
+                continue;
+            }
+            if (grid[di][dj] == 0) {
+                continue;
+            }
+            grid[di][dj] = 0;
+            total += dfs(grid, di, dj);
+        }
+        return total;
     }
 }
