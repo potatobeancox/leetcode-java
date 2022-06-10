@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.p02179.t001;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 2179. 统计数组中好三元组数目
@@ -52,11 +54,41 @@ public class Solution {
      * @return
      */
     public long goodTriplets(int[] nums1, int[] nums2) {
-        // 使用一个 position 存储 nums1 i 对应在 nums2 中 的index
-
+        int length = nums1.length;
+        // 使用一个 position 存储 nums1 index i 对应在 nums2 中 的index
+        int[] position = new int[length];
+        // 初始化position
+        Map<Integer, Integer> valueIndexMap = new HashMap<>();
+        for (int i = 0; i < length; i++) {
+            valueIndexMap.put(nums2[i], i);
+        }
+        for (int i = 0; i < length; i++) {
+            position[i] = valueIndexMap.get(nums1[i]);
+        }
         // 那么结果就是 计算每个 i 对应位置 前面有多少小于 i的数字 （index）后面有多少大于 的index
-
+        long[] leftCount = new long[length];
+        long[] rightCount = new long[length];
         // 升序排列 对于 前面的index 计算右边 对与后面的index 计算左边
-        return -1;
+        mergeAndSort(leftCount, rightCount, position, 0, length-1);
+        long total = 0;
+        for (int i = 0; i < length; i++) {
+            total += (leftCount[i] * rightCount[i]);
+        }
+        return total;
+    }
+
+    private void mergeAndSort(long[] leftCount, long[] rightCount, int[] position, int left, int right) {
+        if (left == right) {
+            return;
+        }
+        int mid = (left + right) / 2;
+        mergeAndSort(leftCount, rightCount, position, left, mid);
+        mergeAndSort(leftCount, rightCount, position, mid+1, right);
+        // 如果已经有序了 说明可以不用继续了
+        if (false) {
+
+        }
+        
+        // 合并并生成最终结果
     }
 }
