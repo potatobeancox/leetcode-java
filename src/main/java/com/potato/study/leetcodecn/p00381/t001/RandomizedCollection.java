@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p00381.t001;
 
 import java.util.*;
 
+import com.potato.study.leetcodecn.p02121.t001.Solution;
+
 /**
  * 381. O(1) 时间插入、删除和获取随机元素 - 允许重复
  *
@@ -50,26 +52,81 @@ import java.util.*;
  */
 public class RandomizedCollection {
 
+    // 存当前有的数字
+    private List<Integer> numList;
+
+    private Random random;
+
+    private Map<Integer, Set<Integer>> valueIndexMap;
+
     /** Initialize your data structure here. */
     public RandomizedCollection() {
-
+        this.numList = new ArrayList<>();
+        this.random = new Random();
+        this.valueIndexMap = new HashMap<>();
     }
 
     /** Inserts a value to the collection. Returns true if the collection did not already contain the specified element. */
     public boolean insert(int val) {
-
-        return false;
+        // 将 val 放到 num最后
+        this.numList.add(val);
+        int index = numList.size() - 1;
+        // 将 val 对应 index 放入 map 中的位置
+        Set<Integer> indexSet = valueIndexMap.getOrDefault(val, new HashSet<>());
+        indexSet.add(index);
+        valueIndexMap.put(val, indexSet);
+        // 等于 1 说明刚刚 插入的
+        return indexSet.size() == 1;
     }
 
     /** Removes a value from the collection. Returns true if the collection contained the specified element. */
     public boolean remove(int val) {
+        // 看下 val 是否存在
+        if (!valueIndexMap.containsKey(val) || valueIndexMap.get(val).size() <= 0) {
+            return false;
+        }
+        // 找到 val 出现的第一个位置 和 最后一个元素 出现的位置
+        Set<Integer> set = valueIndexMap.get(val);
+        Iterator<Integer> iterator = set.iterator();
+        Integer removeIndex = iterator.next();
 
-        return false;
+        Integer lastNum = numList.get(numList.size() - 1);
+        numList.set(removeIndex, lastNum);
+
+        set.remove(removeIndex);
+        Set<Integer> lastNumIndexSet = valueIndexMap.get(lastNum);
+        lastNumIndexSet.remove(numList.size() - 1);
+
+        if (removeIndex < numList.size() - 1) {
+            lastNumIndexSet.add(removeIndex);
+        }
+
+        if (set.size() == 0) {
+            valueIndexMap.remove(val);
+        }
+
+        numList.remove(numList.size() - 1);
+        return true;
     }
 
     /** Get a random element from the collection. */
     public int getRandom() {
+        // 随机数
+        int index = random.nextInt(numList.size());
+        return numList.get(index);
+    }
 
-        return -1;
+    public static void main(String[] args) {
+
+//        ["RandomizedCollection","insert","remove","insert","remove","getRandom","getRandom","getRandom","getRandom","getRandom","getRandom","getRandom","getRandom","getRandom","getRandom"]
+//           [[],                    [0],     [0],     [-1],    [0],     [],[],[],[],[],[],[],[],[],[]]
+
+        RandomizedCollection randomizedCollection = new RandomizedCollection();
+        randomizedCollection.insert(0);
+        randomizedCollection.remove(0);
+        randomizedCollection.insert(-1);
+        randomizedCollection.remove(0);
+
+        randomizedCollection.getRandom();
     }
 }
