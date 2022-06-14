@@ -70,9 +70,44 @@ public class Solution {
 
     public double calculateTax(int[][] brackets, int income) {
         // brackets 本身就是 生序
-
+        double tax = 0;
+        int lastLimit = 0;
+        for (int i = 0; i < brackets.length; i++) {
+            if (income >= brackets[i][0]) {
+                tax += 1.0 * (brackets[i][0] - lastLimit) * brackets[i][1];
+            } else {
+                tax += 1.0 * (income - lastLimit) * brackets[i][1];
+                break;
+            }
+            lastLimit = brackets[i][0];
+        }
         // 遍历 brackets 计算 总的 tax 值
-        return 0.1;
+        return tax / 100;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[3,50],[7,10],[12,25]]";
+        int[][] brackets = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int income = 10;
+        double v = solution.calculateTax(brackets, income);
+        System.out.println(v);
+
+
+        input = "[[1,0],[4,25],[5,50]]";
+        brackets = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        income = 2;
+        v = solution.calculateTax(brackets, income);
+        // 0.25000
+        System.out.println(v);
+
+
+        input = "[[2,50]]";
+        brackets = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        income = 0;
+        // 0
+        v = solution.calculateTax(brackets, income);
+        System.out.println(v);
     }
 
 }
