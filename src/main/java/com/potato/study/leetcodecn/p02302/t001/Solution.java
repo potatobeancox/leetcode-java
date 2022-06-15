@@ -56,8 +56,31 @@ public class Solution {
 
 
 
+    /**
+     * 2302
+     * @param nums
+     * @param k
+     * @return
+     */
     public long countSubarrays(int[] nums, long k) {
-        return -1;
+        int left = 0;
+        long total = 0;
+        // 滑动窗口 计算 乘积 符合条件计算 sum
+        long sum = 0;
+        for (int right = 0; right < nums.length; right++) {
+            sum += nums[right];
+            long score = sum * (right - left + 1);
+            while (left <= right && score >= k) {
+                sum -= nums[left];
+                left++;
+
+                score = sum * (right - left + 1);
+            }
+            if (score < k && right >= left) {
+                total += (right - left + 1);
+            }
+        }
+        return total;
     }
 
 }
