@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02304.t001;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
@@ -56,9 +58,18 @@ import com.potato.study.leetcode.util.LeetcodeInputUtils;
  */
 public class Solution {
 
+
+
+
+
+
+
     public int minPathCost(int[][] grid, int[][] moveCost) {
         // dp ij 到达ij 最小花费
         int[][] dp = new int[grid.length][grid[0].length];
+        for (int i = 0; i < grid.length; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
+        }
         // 初始 dp 值
         for (int i = 0; i < grid[0].length; i++) {
             dp[0][i] = grid[0][i];
@@ -69,7 +80,7 @@ public class Solution {
             for (int j = 0; j < grid[0].length; j++) {
                 // 上一行的每个位置 往这个走
                 for (int k = 0; k < grid[0].length; k++) {
-                    dp[i][j] = Math.min(dp[i][j], moveCost[grid[i-1][k]][j] + dp[i-1][k]) + grid[i][j];
+                    dp[i][j] = Math.min(dp[i][j], moveCost[grid[i-1][k]][j] + dp[i-1][k] + grid[i][j]);
                 }
             }
         }
