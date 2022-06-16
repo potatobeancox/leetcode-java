@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02290.t001;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 /**
@@ -49,9 +52,67 @@ import java.util.Stack;
  */
 public class Solution {
 
+    /**
+     * 2290
+     * @param grid
+     * @return
+     */
     public int minimumObstacles(int[][] grid) {
-
-        return -1;
+        // bfs 使用一个 二维数组 记录 从 0 点到每个位置 的cost 最小值
+        int[][] cost = new int[grid.length][grid[0].length];
+        for (int i = 0; i < grid.length; i++) {
+            // 初始化成最大值
+            Arrays.fill(cost[i], Integer.MAX_VALUE);
+        }
+        // 使用一个 优先级队列 记录 ij 位置 优先级是 花费 生序
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(
+                new Comparator<int[]>() {
+                    @Override
+                    public int compare(int[] o1, int[] o2) {
+                        return Integer.compare(cost[o1[0]][o1[1]], cost[o2[0]][o2[1]]);
+                    }
+                }
+        );
+        // 使用一个 visit 判断是否访问过
+        boolean[][] visit = new boolean[grid.length][grid[0].length];
+        // 开始位置
+        cost[0][0] = grid[0][0];
+        priorityQueue.add(new int[] {0, 0});
+        visit[0][0] = true;
+        // 4个方向
+        int[][] dir = new int[][] {
+                {1, 0},
+                {-1, 0},
+                {0, 1},
+                {0, -1}
+        };
+        while (!priorityQueue.isEmpty()) {
+            int[] poll = priorityQueue.poll();
+            int i = poll[0];
+            int j = poll[1];
+            for (int k = 0; k < 4; k++) {
+                int di = i + dir[k][0];
+                int dj = j + dir[k][1];
+                // 是不是处于边界
+                if (di < 0 || di >= grid.length
+                        || dj < 0 || dj >= grid[0].length) {
+                    continue;
+                }
+                // 访问过
+                if (visit[di][dj]) {
+                    continue;
+                }
+                // 找到了
+                if (di == grid.length - 1 && dj == grid[0].length - 1) {
+                    return grid[di][dj] + cost[i][j];
+                }
+                // 访问这个点
+                visit[di][dj] = true;
+                cost[di][dj] = grid[di][dj] + cost[i][j];
+                priorityQueue.add(new int[] {di, dj});
+            }
+        }
+        return cost[grid.length - 1][grid[0].length - 1];
     }
 
 
