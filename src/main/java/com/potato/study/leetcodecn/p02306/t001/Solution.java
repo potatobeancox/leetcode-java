@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02306.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -95,7 +97,7 @@ public class Solution {
             // 从每个点开始 换 换了之后 看看 在不在 set里边
             for (int i = 0; i < 26; i++) {
                 char fromChar = (char) ('a' + i);
-                if (fromChar == fromChar) {
+                if (fromChar == toChar) {
                     continue;
                 }
                 // 没存在 可以换
@@ -109,6 +111,19 @@ public class Solution {
             }
         }
         return totalResult;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] ideas = new String[] {
+                "coffee",
+                "donuts",
+                "time",
+                "toffee"
+        };
+        long l = solution.distinctNames(ideas);
+        System.out.println(l);
+        Assert.assertEquals(6, l);
     }
 
 }
