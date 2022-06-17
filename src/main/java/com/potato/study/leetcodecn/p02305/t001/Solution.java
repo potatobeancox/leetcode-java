@@ -64,7 +64,6 @@ public class Solution {
     public int distributeCookies(int[] cookies, int k) {
         // 回溯减枝 k 个捅
         int[] buckets = new int[k];
-        min = Integer.MAX_VALUE;
         Arrays.sort(cookies);
         // 反转
         int left = 0;
@@ -77,6 +76,7 @@ public class Solution {
             left++;
             right--;
         }
+        min = Integer.MAX_VALUE;
         backtracking(cookies, buckets, 0);
         return min;
     }
@@ -86,6 +86,10 @@ public class Solution {
             // 遍历 bucket 找到最大值
             int max = Integer.MIN_VALUE;
             for (int bucket : buckets) {
+                // 没有填满
+                if (bucket == 0) {
+                    return;
+                }
                 max = Math.max(max, bucket);
             }
             // 与结果值比较
@@ -98,9 +102,9 @@ public class Solution {
             if (index == 0 && i > 0) {
                 return;
             }
-            // 两个捅一样
+            // 两个捅一样 往下一个找
             if (i != 0 && buckets[i] == buckets[i-1]) {
-                return;
+                continue;
             }
             // 当前剩余的 空桶大于 个数
             if (buckets[i] == 0 && buckets.length - i > cookies.length - index) {
@@ -110,6 +114,29 @@ public class Solution {
             backtracking(cookies, buckets, index + 1);
             buckets[i] -= cookies[index];
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] cookies = new int[]{8,15,10,20,8};
+        int k = 2;
+        int i = solution.distributeCookies(cookies, k);
+        System.out.println(i);
+        Assert.assertEquals(31, i);
+
+        cookies = new int[]{6,1,3,2,2,4,1,2};
+        k = 3;
+        solution = new Solution();
+        i = solution.distributeCookies(cookies, k);
+        System.out.println(i);
+        Assert.assertEquals(7, i);
+
+        cookies = new int[]{3,19,17,19,10};
+        k = 4;
+        solution = new Solution();
+        i = solution.distributeCookies(cookies, k);
+        System.out.println(i);
+        Assert.assertEquals(19, i);
     }
 
 }
