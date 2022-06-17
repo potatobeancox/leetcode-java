@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02301.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 /**
  * 2301. 替换字符后匹配
  *
@@ -69,8 +72,9 @@ public class Solution {
         for (int i = 0; i <= s.length() - sub.length(); i++) {
             int j = i;
             int index = 0;
-            while (index < s.length() && (s.charAt(j) == sub.charAt(index)
-                    || canReplace[s.charAt(j)][sub.charAt(index)]) ) {
+            // sub -> s
+            while (index < sub.length() && (s.charAt(j) == sub.charAt(index)
+                    || canReplace[sub.charAt(index)][s.charAt(j)]) ) {
                 index++;
                 j++;
             }
@@ -79,6 +83,17 @@ public class Solution {
             }
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "fool3e7bar";
+        String sub = "leet";
+        String input = "[[\"e\",\"3\"],[\"t\",\"7\"],[\"t\",\"8\"]]";
+        char[][] mappings = LeetcodeInputUtils.inputString2CharArrayTwoDimensional(input);
+        boolean b = solution.matchReplacement(s, sub, mappings);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 
 }
