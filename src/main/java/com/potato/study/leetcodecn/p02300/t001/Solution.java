@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02300.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -67,11 +69,12 @@ public class Solution {
         Arrays.sort(indexes, (o1, o2) -> {
             return Integer.compare(spells[o2], spells[o1]);
         });
+        Arrays.sort(potions);
         // 便利 spells 从 0 开始 找 potions 是的 乘法大小 大于等于 success 记录个数
         int[] result = new int[spells.length];
         int index = 0;
         for (int i = 0; i < indexes.length; i++) {
-            int spell = spells[indexes[i]];
+            long spell = spells[indexes[i]];
             while (index < potions.length && spell * potions[index] < success) {
                 index++;
             }
@@ -82,6 +85,36 @@ public class Solution {
             result[indexes[i]] = potions.length - index;
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] spells = new int[] {
+                5,1,3
+        };
+        int[] potions = new int[] {
+                1,2,3,4,5
+        };
+        long success = 7;
+        int[] ints = solution.successfulPairs(spells, potions, success);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[]{
+                4,0,3
+        }, ints);
+
+
+        spells = new int[] {
+                3,1,2
+        };
+        potions = new int[] {
+                8,5,8
+        };
+        success = 16;
+        ints = solution.successfulPairs(spells, potions, success);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[]{
+                2,0,2
+        }, ints);
     }
 
 }
