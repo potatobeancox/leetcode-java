@@ -1,11 +1,6 @@
 package com.potato.study.leetcodecn.p02296.t001;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import org.junit.Assert;
 
@@ -120,19 +115,29 @@ public class TextEditor {
      * @return
      */
     public String cursorLeft(int k) {
-        // 左边移动 往右边放
-        StringBuilder builder = new StringBuilder();
-        int len = 0;
         for (int i = 0; i < k && !stackPre.isEmpty(); i++) {
             Character pop = stackPre.pop();
             stackAfter.add(pop);
-            builder.append(pop);
-            len++;
         }
-        //
-        int min = Math.min(10, len);
-        String s = builder.reverse().toString();
-        return s.substring(0, min);
+        // 光标左边位置
+        String s = getCursorLeftString();
+        return s;
+    }
+
+    /**
+     * 获取左边的字符串
+     * @return
+     */
+    private String getCursorLeftString() {
+        int min = Math.min(10, stackPre.size());
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < min; i++) {
+            Character pop = stackPre.pop();
+            builder.append(pop);
+        }
+        String input = builder.reverse().toString();
+        this.addText(input);
+        return input;
     }
 
 
@@ -144,16 +149,25 @@ public class TextEditor {
     public String cursorRight(int k) {
         // 左边移动 往右边放
         StringBuilder builder = new StringBuilder();
-        int len = 0;
         for (int i = 0; i < k && !stackAfter.isEmpty(); i++) {
             Character pop = stackAfter.pop();
             stackPre.add(pop);
-            builder.append(pop);
-            len++;
         }
-        //
-        int min = Math.min(10, len);
-        String s = builder.toString();
-        return s.substring(0, min);
+        // 光标左边位置
+        String s = getCursorLeftString();
+        return s;
+    }
+
+    public static void main(String[] args) {
+//        ["TextEditor","addText","deleteText","addText","cursorRight","cursorLeft","deleteText","cursorLeft","cursorRight"]
+//        [[],         ["leetcode"], [4],     ["practice"],  [3],        [8],         [10],         [2],       [6]]
+        TextEditor textEditor = new TextEditor();
+        textEditor.addText("leetcode");
+        textEditor.deleteText(4);
+        textEditor.addText("practice");
+        textEditor.cursorRight(3);
+
+
+
     }
 }
