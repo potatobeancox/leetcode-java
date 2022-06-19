@@ -84,11 +84,49 @@ public class Solution {
         int mid = (left + right) / 2;
         mergeAndSort(leftCount, rightCount, position, left, mid);
         mergeAndSort(leftCount, rightCount, position, mid+1, right);
-        // 如果已经有序了 说明可以不用继续了
-        if (false) {
+        int index1 = left;
+        int index2 = mid + 1;
+        // 升序
+        int index = 0;
+        int[] temp = new int[right - left + 1];
+        while (index1 <= mid || index2 <= right) {
+            if (index1 > mid) {
+                // 左边用完了
+                temp[index] = position[index2];
+                // 比 所有的 index1 都比 index2 小
+                leftCount[position[index2]] += (mid - left + 1);
 
+                index++;
+                index2++;
+
+            } else if (index2 > right) {
+                temp[index] = position[index1];
+
+                index++;
+                index1++;
+            } else {
+                // 都没用完
+                if (position[index1] < position[index2]) {
+                    temp[index] = position[index1];
+                    // 有多少 比 index1 位置大的数字
+                    rightCount[position[index1]] += (right - index2 + 1);
+
+                    index++;
+                    index1++;
+
+                } else {
+                    temp[index] = position[index2];
+                    // 都比 index2 小 的数字
+                    leftCount[position[index2]] += (index1 - left + 1);
+                    index++;
+                    index2++;
+                }
+            }
         }
-        
-        // 合并并生成最终结果
+        // 有序数组
+        for (int i = 0; i < temp.length; i++) {
+            position[left + i] = temp[i];
+        }
+
     }
 }
