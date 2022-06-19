@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02276.t001;
 
+import java.util.TreeMap;
+
 /**
  * 2276. 统计区间中的整数数目
  *
@@ -53,16 +55,51 @@ package com.potato.study.leetcodecn.p02276.t001;
  */
 public class CountIntervals {
 
-    public CountIntervals() {
 
+    private TreeMap<Integer, Integer> treeMap;
+    private int count;
+
+    /**
+     * https://leetcode.cn/problems/count-integers-in-intervals/solution/by-endlesscheng-clk2/
+     */
+    public CountIntervals() {
+        this.treeMap = new TreeMap<>();
+        this.count = 0;
     }
 
     public void add(int left, int right) {
-
+        // treeMap key right value left 找到第一个大于 left 的right
+        Integer nextRight = treeMap.ceilingKey(left);
+        // 需要合并 判断是否有交集
+        while (nextRight != null && treeMap.get(nextRight) <= right) {
+            // 减去这个区间
+            Integer nextLeft = treeMap.remove(nextRight);
+            this.count -= (nextRight - nextLeft + 1);
+            left = Math.min(left, nextLeft);
+            right = Math.max(right, nextRight);
+            // 往下一个 继续寻找
+            nextRight = treeMap.ceilingKey(left);
+        }
+        // 最终加入总的区间
+        this.count += (right - left + 1);
+        treeMap.put(right, left);
     }
 
     public int count() {
+        return this.count;
+    }
 
-        return 0;
+    public static void main(String[] args) {
+        CountIntervals countIntervals = new CountIntervals();
+        countIntervals.add(2, 3);
+        countIntervals.add(7, 10);
+        int count1 = countIntervals.count();
+        // 6
+        System.out.println(count1);
+
+        countIntervals.add(5, 8);
+        // 8
+        int count2 = countIntervals.count();
+        System.out.println(count2);
     }
 }
