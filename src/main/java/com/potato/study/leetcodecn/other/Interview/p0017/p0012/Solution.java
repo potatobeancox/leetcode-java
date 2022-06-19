@@ -33,28 +33,26 @@ import java.util.PriorityQueue;
 public class Solution {
 
 
-
+    private TreeNode minNode;
+    /**
+     *
+     * https://leetcode.cn/problems/binode-lcci/solution/ni-zhong-xu-bian-li-si-lu-jian-ji-gao-xi-d9au/
+     * @param root
+     * @return
+     */
     public TreeNode convertBiNode(TreeNode root) {
-        // 中序遍历 二叉 搜索树
-        if (root == null) {
-            return null;
+        if (null == root) {
+            return root;
         }
-        TreeNode left = convertBiNode(root.left);
-        if (left != null) {
-            left.right = root;
-            root.left = left;
-        } else {
-            root.left = null;
-        }
-
-        TreeNode right = convertBiNode(root.right);
-        if (right != null) {
-            right.left = root;
-            root.right = right;
-        } else {
-            root.right = null;
-        }
-
-        return root;
+        // right
+        convertBiNode(root.right);
+        // root 指向当前右边
+        root.right = minNode;
+        // 当前这个点最小
+        minNode = root;
+        convertBiNode(root.left);
+        // 左边搞完了 修改左边
+        root.left = null;
+        return minNode;
     }
 }
