@@ -1,11 +1,11 @@
 package com.potato.study.leetcodecn.p02097.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import com.potato.study.leetcode.util.TreeNodeUtil;
 import org.junit.Assert;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 2097. 合法重新排列数对
@@ -62,12 +62,77 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     * 找到一条欧拉通路
+     * @param pairs
+     * @return
+     */
     public int[][] validArrangement(int[][] pairs) {
+        // 将 pairs 做成list 图表示
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+        // 从哪个点开始 统计入度和 出度 每个点
+        Map<Integer, int[]> degreeMap = new HashMap<>();
+        // 统计入度和 出度 出度比入度多1的 是开始点 否则 0开始
+        for (int[] pair : pairs) {
+            int from = pair[0];
+            // 出度 ++
+            int[] orDefault = degreeMap.getOrDefault(from, new int[2]);
+            orDefault[1]++;
+            degreeMap.put(from, orDefault);
+            int to = pair[1];
+            orDefault = degreeMap.getOrDefault(to, new int[2]);
+            orDefault[0]++;
+            degreeMap.put(to, orDefault);
+            // graph
+            List<Integer> toList = graph.getOrDefault(from, new ArrayList<>());
+            toList.add(to);
+            graph.put(from, toList);
+        }
+        int start = pairs[0][0];
+        for (Map.Entry<Integer, int[]> entry : degreeMap.entrySet()) {
+            int[] value = entry.getValue();
+            if (value[1] - value[0] == 1) {
+                start = entry.getKey();
+                break;
+            }
+        }
 
-        return null;
+        List<Integer> path = new ArrayList<>();
+        // dfs 找到结果
+        dfs(graph, path, start);
+        // 将结果list 翻转成最终结果
+        int[][] result = new int[pairs.length][];
+        for (int i = 0; i < pairs.length; i++) {
+            // 开始点和 结束点
+            int from = path.get(path.size() - 1 - i);
+            int to = path.get(path.size() - 2 - i);
+            result[i] = new int[] {
+                    from, to
+            };
+        }
+        return result;
     }
 
+    private void dfs(Map<Integer, List<Integer>> graph, List<Integer> path, int start) {
+        // 找到 start 能到的点
+        List<Integer> nextList = graph.get(start);
+        while (nextList != null && nextList.size() > 0) {
+            Integer remove = nextList.remove(nextList.size() - 1);
+            // 往下找
+            dfs(graph, path, remove);
+        }
+        // 遍历过了 将 start 放入结果
+        path.add(start);
 
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[1,3],[3,2],[2,1]]";
+        int[][] pairs = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int[][] ints = solution.validArrangement(pairs);
+        System.out.println(Arrays.deepToString(ints));
+    }
 
 
 }
