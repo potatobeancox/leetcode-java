@@ -47,8 +47,49 @@ import java.util.Set;
  */
 public class Solution {
 
-    public String crackSafe(int n, int k) {
 
-        return null;
+    private StringBuilder builder;
+    private boolean[] visited;
+    private int limit;
+    private int k;
+
+
+    /**
+     * https://leetcode.cn/problems/cracking-the-safe/solution/eulerhui-lu-by-antonioxv-pfd5/
+     * @param n
+     * @param k
+     * @return
+     */
+    public String crackSafe(int n, int k) {
+        // limit 访问过某个点 用来移除最高位
+        this.limit = (int) Math.pow(10, n-1);
+        // 最大n 位数
+        this.visited = new boolean[limit * 10];
+        // 从 0 开始遍历
+        this.builder = new StringBuilder();
+        this.k = k;
+        dfs(0 % limit);
+        // 最开始 的0 放入结果集合
+        for (int i = 0; i < n - 1; i++) {
+            builder.append("0");
+        }
+        return builder.toString();
+    }
+
+    /**
+     *
+     * @param current
+     */
+    private void dfs(int current) {
+        // 枚举下一个数字拼接到后边
+        for (int i = 0; i < k; i++) {
+            int next = current * 10 + i;
+            if (visited[next]) {
+                continue;
+            }
+            visited[next] = true;
+            dfs(next % limit);
+            builder.append(i);
+        }
     }
 }
