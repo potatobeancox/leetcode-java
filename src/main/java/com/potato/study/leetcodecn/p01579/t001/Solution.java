@@ -63,12 +63,32 @@ public class Solution {
      * @return
      */
     public int maxNumEdgesToRemove(int n, int[][] edges) {
-        Arrays.sort(edges, (o1, o2) -> {
-            return Integer.compare(o2[0], o1[0]);
-        });
         UnionFind unionFind1 = new UnionFind(n);
         UnionFind unionFind2 = new UnionFind(n);
+
+        // 先处理 type = 3
         int total = 0;
+        for (int[] edge : edges) {
+            int type = edge[0];
+            if (type == 3) {
+                // 两组都相等才行
+                int p1 = unionFind1.find(edge[1]);
+                int p2 = unionFind1.find(edge[2]);
+
+                int p3 = unionFind2.find(edge[1]);
+                int p4 = unionFind2.find(edge[2]);
+
+                if (p1 == p2 && p3 == p4) {
+                    total++;
+                } else {
+                    unionFind1.union(edge[1], edge[2]);
+                    unionFind2.union(edge[1], edge[2]);
+                }
+            }
+        }
+
+
+
         for (int[] edge : edges) {
             int type = edge[0];
             if (type == 1) {
@@ -87,20 +107,6 @@ public class Solution {
                 } else {
                     unionFind2.union(edge[1], edge[2]);
                 }
-            } else {
-                // 两组都相等才行
-                int p1 = unionFind1.find(edge[1]);
-                int p2 = unionFind1.find(edge[2]);
-
-                int p3 = unionFind2.find(edge[1]);
-                int p4 = unionFind2.find(edge[2]);
-
-                if (p1 == p2 && p3 == p4) {
-                    total++;
-                } else {
-                    unionFind1.union(edge[1], edge[2]);
-                    unionFind2.union(edge[1], edge[2]);
-                }
             }
         }
         if (unionFind1.getPartCount() != 1 || unionFind2.getPartCount() != 1) {
@@ -111,6 +117,7 @@ public class Solution {
 
     class UnionFind {
         private int[] parent;
+        private int[] rank;
         private int partCount;
 
         public int getPartCount() {
@@ -119,8 +126,10 @@ public class Solution {
 
         public UnionFind(int n) {
             this.parent = new int[n + 1];
+            this.rank = new int[n+1];
             for (int i = 0; i < n + 1; i++) {
                 parent[i] = i;
+                rank[i] = 1;
             }
             this.partCount = n;
         }
@@ -132,7 +141,14 @@ public class Solution {
             if (p1 == p2) {
                 return;
             }
-            parent[p1] = p2;
+
+            if (rank[p2] >= rank[p1]) {
+                parent[p1] = p2;
+                rank[p2] += rank[p1];
+            } else {
+                parent[p2] = p1;
+                rank[p1] += rank[p2];
+            }
             partCount--;
         }
 
@@ -142,7 +158,6 @@ public class Solution {
             }
             return target;
         }
-
 
     }
 
