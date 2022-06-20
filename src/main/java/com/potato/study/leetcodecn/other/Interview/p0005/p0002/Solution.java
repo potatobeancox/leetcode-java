@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.other.Interview.p0005.p0002;
 
 
+import org.junit.Assert;
+
 /**
  * 面试题 05.02. 二进制数转字符串
  *
@@ -28,8 +30,34 @@ package com.potato.study.leetcodecn.other.Interview.p0005.p0002;
  *
  */
 public class Solution {
-    public String printBin(double num) {
 
-        return null;
+    /**
+     * https://leetcode.cn/problems/bianry-number-to-string-lcci/solution/mian-shi-ti-0502-er-jin-zhi-shu-zhuan-zi-7w76/
+     * @param num
+     * @return
+     */
+    public String printBin(double num) {
+        // 一直使用 2 * 下去
+        StringBuilder builder = new StringBuilder("0.");
+        while (num != 0 && builder.length() <= 32) {
+            num *= 2;
+            if (num >= 1) {
+                num -= 1;
+                builder.append(1);
+            } else {
+                builder.append(0);
+            }
+        }
+        if (builder.length() > 32) {
+            return "ERROR";
+        }
+        return builder.toString();
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = solution.printBin(0.625);
+        System.out.println(s);
+        Assert.assertEquals("0.101", s);
     }
 }
