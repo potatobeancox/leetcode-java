@@ -53,7 +53,7 @@ public class Solution {
         }
         int[][] dp = new int[nums.length+1][m+1];
         // 初始化成最大值
-        for (int i = 0; i < nums.length + 1; i++) {
+        for (int i = 0; i < nums.length+1; i++) {
             Arrays.fill(dp[i], Integer.MAX_VALUE);
         }
         // 0 个元素 分成0组
@@ -64,10 +64,11 @@ public class Solution {
             for (int j = 1; j <= Math.min(m, i); j++) {
                 // 枚举
                 for (int k = 0; k < i; k++) {
-                    dp[i][j] = Math.min(dp[i][j], Math.max(dp[k][j-1], sum[i] - sum[k]));
+                    dp[i][j] = Math.min(dp[i][j],
+                            Math.max(dp[k][j-1], sum[i] - sum[k]));
                 }
             }
         }
-        return dp[nums.length-1][m-1];
+        return dp[nums.length][m];
     }
 }
