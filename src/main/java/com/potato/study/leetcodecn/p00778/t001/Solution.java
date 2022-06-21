@@ -82,6 +82,9 @@ public class Solution {
      */
     private boolean checkSwim(int limit, int[][] grid) {
         Queue<int[]> posQueue = new LinkedList<>();
+        if (grid[0][0] > limit) {
+            return false;
+        }
         posQueue.add(new int[]{0, 0});
         boolean[][] visit = new boolean[grid.length][grid[0].length];
         visit[0][0] = true;
@@ -114,7 +117,18 @@ public class Solution {
                 posQueue.add(new int[]{di, dj});
             }
         }
-        return false;
+        return visit[n-1][n-1];
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] grid = new int[][] {
+                {0}
+        };
+        int i = solution.swimInWater(grid);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
     }
 
 }
