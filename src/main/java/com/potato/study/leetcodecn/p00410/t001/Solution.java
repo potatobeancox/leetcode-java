@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p00410.t001;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,10 +44,30 @@ import java.util.List;
  */
 public class Solution {
 
+    // 410
     public int splitArray(int[] nums, int m) {
-        // dp ij 前i个数组 包括 i 分成j个数组的 和中的最大值
-        int[][] dp = new int[nums.length][m];
-        // dp ij = min 将i 单独分成一组  or i与之前分在一个里
-        return -1;
+        // 前缀和
+        int[] sum = new int[nums.length + 1];
+        for (int i = 1; i < sum.length; i++) {
+            sum[i] = sum[i-1] + nums[i-1];
+        }
+        int[][] dp = new int[nums.length+1][m+1];
+        // 初始化成最大值
+        for (int i = 0; i < nums.length + 1; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
+        }
+        // 0 个元素 分成0组
+        dp[0][0] = 0;
+        // 到某个位置 i-1位置 分成 j组
+        for (int i = 1; i <= nums.length; i++) {
+            // 最多不能超过 1 因为 只有一个元素 不能搞太多
+            for (int j = 1; j <= Math.min(m, i); j++) {
+                // 枚举
+                for (int k = 0; k < i; k++) {
+                    dp[i][j] = Math.min(dp[i][j], Math.max(dp[k][j-1], sum[i] - sum[k]));
+                }
+            }
+        }
+        return dp[nums.length-1][m-1];
     }
 }
