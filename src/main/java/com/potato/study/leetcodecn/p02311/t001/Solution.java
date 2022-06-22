@@ -46,9 +46,34 @@ public class Solution {
 
 
 
+    // 2311
     public int longestSubsequence(String s, int k) {
-
-        return -1;
+        // 贪心 不证明了
+        int zeroCount = 0;
+        // 先统计前缀0 的个数
+        for (char ch : s.toCharArray()) {
+            if (ch == '0') {
+                zeroCount++;
+            }
+        }
+        // 从后往前 获取 生成数字 直到 数字大于k 途中1的和数就是 所求
+        char[] chars = s.toCharArray();
+        int oneCount = 0;
+        long num = 0;
+        long bit = 0;
+        for (int i = chars.length - 1; i >= 0; i--) {
+            char ch = chars[i];
+            long target = (long)(ch - '0') << bit;
+            num += target;
+            bit++;
+            if (num > k) {
+                break;
+            }
+            if (ch == '1') {
+                oneCount++;
+            }
+        }
+        return zeroCount + oneCount;
     }
 
 }
