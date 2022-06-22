@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01665.t001;
 
+import java.util.Arrays;
+
 /**
  * 1665. 完成所有任务的最少初始能量
  *
@@ -63,7 +65,22 @@ package com.potato.study.leetcodecn.p01665.t001;
 public class Solution {
 
     public int minimumEffort(int[][] tasks) {
-
-        return -1;
+        // 排序 反向计算最大值 差值越小 越往前 差相等 minimumi 越小 越往前
+        Arrays.sort(tasks, (o1, o2) -> {
+            int compare = Integer.compare(o1[1] - o1[0], o2[1] - o2[0]);
+            if (compare != 0) {
+                return compare;
+            }
+            compare = Integer.compare(o1[1], o2[1]);
+            return compare;
+        });
+        // 计算 当前的开始值
+        int start = 0;
+        for (int i = 0; i < tasks.length; i++) {
+            int min = tasks[i][1];
+            int effort = tasks[i][0];
+            start = Math.max(start + effort, min);
+        }
+        return start;
     }
 }
