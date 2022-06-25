@@ -1,5 +1,10 @@
 package com.potato.study.leetcodecn.p00966.t001;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.potato.study.leetcode.domain.TreeNode;
 
 /**
@@ -51,9 +56,56 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
 
+    // 966
     public String[] spellchecker(String[] wordlist, String[] queries) {
+        // 一个 set 两个map key 是替换之后 的 残次 value 是 第一个出现的 单词
+        Set<String> originalWordSet = new HashSet<>();
+        Map<String,String> lowerMap = new HashMap<>();
+        Map<String,String> vowelMap = new HashMap<>();
+        // set 是记录 完全相同的单词 另外 其他key 使用 小写 和 。 替代
+        for (String word : wordlist) {
+            originalWordSet.add(word);
+            String lowerCase = word.toLowerCase();
+            if (!lowerMap.containsKey(lowerCase)) {
+                lowerMap.put(lowerCase, word);
+            }
+            String vowelReplaceKey = getVowelReplaceKey(word);
+            if (!vowelMap.containsKey(vowelReplaceKey)) {
+                vowelMap.put(vowelReplaceKey, word);
+            }
+        }
+        // queries 遍历
+        String[] result = new String[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            if (originalWordSet.contains(queries[i])) {
+                result[i] = queries[i];
+                continue;
+            }
+            if (lowerMap.containsKey(queries[i])) {
+                result[i] = lowerMap.get(queries[i]);
+                continue;
+            }
 
-        return null;
+            if (vowelMap.containsKey(queries[i])) {
+                result[i] = vowelMap.get(queries[i]);
+                continue;
+            }
+        }
+        return result;
+    }
+
+    private String getVowelReplaceKey(String word) {
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == 'a'
+                    || chars[i] == 'e'
+                    || chars[i] == 'i'
+                    || chars[i] == 'o'
+                    || chars[i] == 'u') {
+                chars[i] = '-';
+            }
+        }
+        return new String(chars);
     }
 
 
