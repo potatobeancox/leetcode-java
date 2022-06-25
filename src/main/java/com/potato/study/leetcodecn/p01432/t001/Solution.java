@@ -85,13 +85,17 @@ public class Solution {
             }
             num9 = Integer.parseInt(String.valueOf(clone));
         }
-        // 求差
+        // 求差 可以选择 0
         int num1 = num;
         if (firstNot1Index != -1) {
             char[] clone = chars.clone();
             for (int i = 0; i < clone.length; i++) {
                 if (clone[i] == chars[firstNot1Index]) {
-                    clone[i] = '1';
+                    if (firstNot1Index != 0) {
+                        clone[i] = '0';
+                    } else {
+                        clone[i] = '1';
+                    }
                 }
             }
             num1 = Integer.parseInt(String.valueOf(clone));
@@ -104,5 +108,9 @@ public class Solution {
         int i = solution.maxDiff(555);
         System.out.println(i);
         Assert.assertEquals(888, i);
+
+        i= solution.maxDiff(123456);
+        System.out.println(i);
+        Assert.assertEquals(820000, i);
     }
 }
