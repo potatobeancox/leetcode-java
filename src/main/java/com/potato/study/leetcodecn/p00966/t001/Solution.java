@@ -1,9 +1,12 @@
 package com.potato.study.leetcodecn.p00966.t001;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.Assert;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
@@ -81,21 +84,23 @@ public class Solution {
                 result[i] = queries[i];
                 continue;
             }
-            if (lowerMap.containsKey(queries[i])) {
-                result[i] = lowerMap.get(queries[i]);
+            String lowerCase = queries[i].toLowerCase();
+            if (lowerMap.containsKey(lowerCase)) {
+                result[i] = lowerMap.get(lowerCase);
                 continue;
             }
-
-            if (vowelMap.containsKey(queries[i])) {
-                result[i] = vowelMap.get(queries[i]);
+            String vowelReplaceKey = getVowelReplaceKey(queries[i]);
+            if (vowelMap.containsKey(vowelReplaceKey)) {
+                result[i] = vowelMap.get(vowelReplaceKey);
                 continue;
             }
+            result[i] = "";
         }
         return result;
     }
 
     private String getVowelReplaceKey(String word) {
-        char[] chars = word.toCharArray();
+        char[] chars = word.toLowerCase().toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == 'a'
                     || chars[i] == 'e'
@@ -106,6 +111,22 @@ public class Solution {
             }
         }
         return new String(chars);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] wordlist = new String[] {
+                "KiTe","kite","hare","Hare"
+        };
+        String[] queries = new String[] {
+                "kite","Kite","KiTe","Hare","HARE","Hear","hear","keti","keet","keto"
+        };
+        String[] spellchecker = solution.spellchecker(wordlist, queries);
+        System.out.println(Arrays.toString(spellchecker));
+        // ["kite","KiTe","KiTe","Hare","hare","","","KiTe","","KiTe"]
+        Assert.assertArrayEquals(new String[] {
+                "kite","KiTe","KiTe","Hare","hare","","","KiTe","","KiTe"
+        }, spellchecker);
     }
 
 
