@@ -68,16 +68,13 @@ public class Solution {
         }
         Arrays.sort(time);
         // 遍历 找到第一个 不相同的数字
-        int count = 0;
-        for (int i = 0; i < n; i++) {
-            if (i == n - 1) {
-                count++;
-                continue;
-            }
+        int count = 1;
+        for (int i = 1; i < n; i++) {
             // 一样的 直接 返回
-            if (time[i] == time[i+1]) {
+            if (time[i] == time[i-1]) {
                 break;
             }
+            count++;
         }
         return count;
     }
