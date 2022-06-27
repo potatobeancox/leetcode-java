@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 1620. 网络信号最好的坐标
  *
@@ -65,23 +67,17 @@ public class Solution {
     // 1620
     public int[] bestCoordinate(int[][] towers, int radius) {
         // 遍历 towers 找到横纵坐标的最大值 最小值
-        int minX = towers[0][0];
-        int minY = towers[0][1];
-        int maxX = towers[0][0];
-        int maxY = towers[0][1];
-        for (int i = 0; i < towers.length; i++) {
-            minX = Math.min(towers[i][0], minX);
-            maxX = Math.max(towers[i][0], maxX);
+        int minX = 0;
+        int minY = 0;
+        int maxX = 50;
+        int maxY = 50;
 
-            minY = Math.min(towers[i][1], minY);
-            maxY = Math.max(towers[i][1], maxY);
-        }
         // 枚举 上面矩形区域里边的每一个 点  每个 tower 对这个点的 信号值是多少 记录最大值 坐标
-        double max = 0;
+        long max = Integer.MIN_VALUE;
         int[] maxIndex = null;
         for (int i = minX; i <= maxX; i++) {
             for (int j = minY; j <= maxY; j++) {
-                double weight = weight(towers, radius, i, j);
+                long weight = weight(towers, radius, i, j);
                 if (weight > max) {
                     max = weight;
                     maxIndex = new int[] {
@@ -101,16 +97,34 @@ public class Solution {
      * @param y
      * @return
      */
-    private double weight(int[][] towers, int radius, int x, int y) {
-        double w = 0;
+    private long weight(int[][] towers, int radius, int x, int y) {
+        long w = 0;
         for (int i = 0; i < towers.length; i++) {
-            double d = Math.sqrt((towers[i][0] - x)*(towers[i][0] - x)
-                    + (towers[i][1] - y)*(towers[i][1] - y));
+            double d = Math.sqrt(((double) towers[i][0] - x)*((double)towers[i][0] - x)
+                    + ((double)towers[i][1] - y)*((double)towers[i][1] - y));
             if (d > radius) {
                 continue;
             }
-            w += (towers[i][2] / (1 + d));
+            w += (long) ((double)towers[i][2] / (1 + d));
         }
         return w;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] towers = new int[][] {
+                {42,0,0}
+        };
+        int radius = 7;
+        int[] ints = solution.bestCoordinate(towers, radius);
+        System.out.println(Arrays.toString(ints));
+
+        String input = "[[30,34,31],[10,44,24],[14,28,23],[50,38,1],[40,13,6],[16,27,9],[2,22,23],[1,6,41],[34,22,40],[40,10,11]]";
+        radius = 20;
+        towers = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        ints = solution.bestCoordinate(towers, radius);
+        // [1,6]
+        System.out.println(Arrays.toString(ints));
     }
 }
