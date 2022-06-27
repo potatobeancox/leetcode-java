@@ -64,7 +64,7 @@ public class Solution {
         int[] right = new int[n];
         Stack<Integer> stack = new Stack<>();
         for (int i = 0; i < left.length; i++) {
-            if (!stack.isEmpty()
+            while (!stack.isEmpty()
                     && nums[stack.peek()] >= nums[i]) {
                 stack.pop();
             }
@@ -77,15 +77,15 @@ public class Solution {
         }
         // 遍历 nums i 找到 这个区间 以 i为最小值的 乘积 的最大值
         stack = new Stack<>();
-        for (int i = right.length - 1; i < right.length; i--) {
-            if (!stack.isEmpty()
+        for (int i = right.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty()
                     && nums[stack.peek()] >= nums[i]) {
                 stack.pop();
             }
             if (stack.isEmpty()) {
-                left[i] = n;
+                right[i] = n;
             } else {
-                left[i] = stack.peek();
+                right[i] = stack.peek();
             }
             stack.add(i);
         }
@@ -110,5 +110,22 @@ public class Solution {
         }
         int mod = 1_000_000_000 + 7;
         return (int) (max % mod);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                1,2,3,2
+        };
+        int i = solution.maxSumMinProduct(nums);
+        System.out.println(i);
+        Assert.assertEquals(14, i);
+
+        nums = new int[] {
+                2,3,3,1,2
+        };
+        i = solution.maxSumMinProduct(nums);
+        System.out.println(i);
+        Assert.assertEquals(18, i);
     }
 }
