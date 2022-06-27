@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p02090.t001;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,17 @@ public class Solution {
     // 2090
     public int[] getAverages(int[] nums, int k) {
         // 直接遍历计算
-        int sum = 0;
+        long sum = 0;
         int[] ave = new int[nums.length];
+        // 先计算 2 * 看+ 1 个
+        if (nums.length < 2 * k + 1) {
+            Arrays.fill(ave, -1);
+            return ave;
+        }
+        // 先算一个 2*k + 1 的值
+        for (int i = 0; i < 2 * k; i++) {
+            sum += (long)nums[i];
+        }
         for (int i = 0; i < nums.length; i++) {
             if (i - k < 0 || i + k >= nums.length) {
                 ave[i] = -1;
@@ -76,9 +86,25 @@ public class Solution {
                 if (i - k > 0) {
                     sum -= nums[i-k-1];
                 }
-                ave[i] = sum / (2 * k + 1);
+                ave[i] = (int)(sum / (2 * k + 1));
             }
         }
         return ave;
+    }
+
+
+//    [7,4,3,9,1,8,5,2,6]
+//            3
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {7,4,3,9,1,8,5,2,6};
+        int k = 3;
+        int[] averages = solution.getAverages(nums, k);
+        System.out.println(Arrays.toString(averages));
+        Assert.assertArrayEquals(new int[] {
+                -1,-1,-1,5,4,4,-1,-1,-1
+        }, averages);
+
     }
 }
