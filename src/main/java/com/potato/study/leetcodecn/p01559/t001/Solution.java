@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p01559.t001;
 
 import org.junit.Assert;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 1559. 二维网格图中探测环
  *
@@ -62,11 +64,11 @@ public class Solution {
     public boolean containsCycle(char[][] grid) {
         UnionFind unionFind = new UnionFind(grid.length * grid[0].length + 1);
         // 遍历 grid 判断 上面和左边是否相同， 形同的话 利用一个 并查 判断是否存在环
-        for (int i = 1; i < grid.length; i++) {
-            for (int j = 1; j < grid[0].length; j++) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
                 // 计算当前坐标
                 int current = i * grid[0].length + j;
-                if (grid[i][j] == grid[i][j-1]) {
+                if (j > 0 && grid[i][j] == grid[i][j-1]) {
                     int leftIndex = current - 1;
                     boolean isConnected = unionFind.union(current, leftIndex);
                     if (isConnected) {
@@ -74,7 +76,7 @@ public class Solution {
                     }
                 }
                 // 左边坐标和 上面坐标
-                if (grid[i][j] == grid[i-1][j]) {
+                if (i > 0 && grid[i][j] == grid[i-1][j]) {
                     int upIndex = current - grid[0].length;
                     boolean isConnected = unionFind.union(current, upIndex);
                     if (isConnected) {
@@ -113,12 +115,15 @@ public class Solution {
             }
             return target;
         }
+    }
 
-        public boolean isConnected(int target1, int target2) {
-            int p1 = find(target1);
-            int p2 = find(target2);
-
-            return p1 == p2;
-        }
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[\"c\",\"c\",\"c\",\"a\"],[\"c\",\"d\",\"c\",\"c\"],[\"c\",\"c\",\"e\",\"c\"],[\"f\",\"c\","
+                + "\"c\",\"c\"]]";
+        char[][] chars = LeetcodeInputUtils.inputString2CharArrayTwoDimensional(input);
+        boolean b = solution.containsCycle(chars);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 }
