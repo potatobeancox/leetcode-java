@@ -6,6 +6,8 @@ import java.util.PriorityQueue;
 
 import org.junit.Assert;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 2054. 两个最好的不重叠活动
  *
@@ -76,11 +78,13 @@ public class Solution {
         // 用 max 记录之前完事的 事务的最大价值
         int maxEverValue = 0;
         int maxTwo = 0;
+        int maxOne = 0;
         for (int i = 0; i < events.length; i++) {
             int[] event = events[i];
             int start = event[0];
             int end = event[1];
             int value = event[2];
+            maxOne = Math.max(maxOne, value);
             // priorityQueue 开始时间之前的券poll
             while (!priorityQueue.isEmpty() && priorityQueue.peek()[0] < start) {
                 int[] poll = priorityQueue.poll();
@@ -94,10 +98,30 @@ public class Solution {
             });
         }
         // 遍历 排序 后的 events 计算 当前 结束 的最大值 和 当前时间的value 和 max的和记录
-        return maxTwo;
+        return Math.max(maxOne, maxTwo);
     }
 
 
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[1,3,2],[4,5,2],[1,5,5]]";
+        int[][] events = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.maxTwoEvents(events);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
 
 
+        input = "[[1,3,2],[4,5,2],[2,4,3]]";
+        events = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        i = solution.maxTwoEvents(events);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
+
+
+        input = "[[1,5,3],[1,5,1],[6,6,5]]";
+        events = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        i = solution.maxTwoEvents(events);
+        System.out.println(i);
+        Assert.assertEquals(8, i);
+    }
 }
