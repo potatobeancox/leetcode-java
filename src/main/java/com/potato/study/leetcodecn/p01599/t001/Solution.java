@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01599.t001;
 
+import org.junit.Assert;
+
 /**
  * 1599. 经营摩天轮的最大利润
  *
@@ -75,6 +77,8 @@ public class Solution {
         // 从 0开始 转计算 目前还有多少个乘客可以上传 计算划分，一直到所有人都 被消耗 期间最大的利润返回
         int remainCustomerCount = 0;
         int currentProfit = 0;
+        int times = 0;
+        int maxTimes = -1;
         for (int i = 0; i < customers.length; i++) {
             remainCustomerCount += customers[i];
             if (remainCustomerCount >= 4) {
@@ -84,7 +88,11 @@ public class Solution {
                 currentProfit += (remainCustomerCount * boardingCost - runningCost);
                 remainCustomerCount = 0;
             }
-            maxProfit = Math.max(maxProfit, currentProfit);
+            times++;
+            if (currentProfit > maxProfit) {
+                maxProfit = currentProfit;
+                maxTimes = times;
+            }
         }
         // 如果还有剩余
         while (remainCustomerCount > 0) {
@@ -95,9 +103,36 @@ public class Solution {
                 currentProfit += (remainCustomerCount * boardingCost - runningCost);
                 remainCustomerCount = 0;
             }
-            maxProfit = Math.max(maxProfit, currentProfit);
+            times++;
+            if (currentProfit > maxProfit) {
+                maxProfit = currentProfit;
+                maxTimes = times;
+            }
         }
-        return maxProfit;
+        return maxTimes;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] customers = new int[] {
+                8,3
+        };
+        int boardingCost = 5;
+        int runningCost = 6;
+        int i = solution.minOperationsMaxProfit(customers, boardingCost, runningCost);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        customers = new int[] {
+                3,4,0,5,1
+        };
+        boardingCost = 1;
+        runningCost = 92;
+        i = solution.minOperationsMaxProfit(customers, boardingCost, runningCost);
+        System.out.println(i);
+        Assert.assertEquals(-1, i);
+
     }
 
 
