@@ -56,7 +56,7 @@ public class Solution {
             countMap.put(current, count);
         }
         // 遍历 countmap 获取数量
-        int pairCount = 0;
+        long pairCount = 0;
         int mod = 1_000_000_000 + 7;
         for (Map.Entry<Long, Long> entry : countMap.entrySet()) {
             long times = entry.getValue();
@@ -65,7 +65,7 @@ public class Solution {
                 pairCount %= mod;
             }
         }
-        return pairCount % mod;
+        return (int)(pairCount % mod);
     }
 
     private long rec(int num) {
