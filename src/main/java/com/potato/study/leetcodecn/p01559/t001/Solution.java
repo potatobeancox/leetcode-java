@@ -55,12 +55,70 @@ import org.junit.Assert;
 public class Solution {
 
     /**
-     * https://leetcode-cn.com/problems/detect-cycles-in-2d-grid/solution/1559-er-wei-wang-luo-tu-zhong-tan-ce-hua-wrpv/
+     * 1559
      * @param grid
      * @return
      */
     public boolean containsCycle(char[][] grid) {
-
+        UnionFind unionFind = new UnionFind(grid.length * grid[0].length + 1);
+        // 遍历 grid 判断 上面和左边是否相同， 形同的话 利用一个 并查 判断是否存在环
+        for (int i = 1; i < grid.length; i++) {
+            for (int j = 1; j < grid[0].length; j++) {
+                // 计算当前坐标
+                int current = i * grid[0].length + j;
+                if (grid[i][j] == grid[i][j-1]) {
+                    int leftIndex = current - 1;
+                    boolean isConnected = unionFind.union(current, leftIndex);
+                    if (isConnected) {
+                        return true;
+                    }
+                }
+                // 左边坐标和 上面坐标
+                if (grid[i][j] == grid[i-1][j]) {
+                    int upIndex = current - grid[0].length;
+                    boolean isConnected = unionFind.union(current, upIndex);
+                    if (isConnected) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
+    }
+
+    class UnionFind {
+
+        private int[] parent;
+
+        public UnionFind(int n) {
+            this.parent = new int[n+1];
+            for (int i = 0; i < n + 1; i++) {
+                parent[i] = i;
+            }
+        }
+
+        public boolean union(int target1, int target2) {
+            int p1 = find(target1);
+            int p2 = find(target2);
+            if (p1 == p2) {
+                return true;
+            }
+            parent[p1] = p2;
+            return false;
+        }
+
+        public int find(int target) {
+            while (target != parent[target]) {
+                target = parent[target];
+            }
+            return target;
+        }
+
+        public boolean isConnected(int target1, int target2) {
+            int p1 = find(target1);
+            int p2 = find(target2);
+
+            return p1 == p2;
+        }
     }
 }
