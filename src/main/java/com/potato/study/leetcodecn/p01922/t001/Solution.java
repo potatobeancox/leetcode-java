@@ -47,8 +47,8 @@ public class Solution {
         }
         // 看着就是 求 4 和5 的个数
         int mod = 1_000_000_000 + 7;
-        long count = 5;
-        for (int i = 2; i <= n; i++) {
+        long count = 1;
+        for (int i = 0; i < n; i++) {
             if (i % 2 == 0) {
                 count *= 5;
             } else {
@@ -58,5 +58,7 @@ public class Solution {
         }
         return (int) count;
     }
+
+
 
 }
