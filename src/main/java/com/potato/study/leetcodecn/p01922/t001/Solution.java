@@ -61,4 +61,10 @@ public class Solution {
 
 
 
+    private long pow(long base, long index) {
+        return -1;
+    }
+
+
+
 }
