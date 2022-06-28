@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01802.t001;
 
+import org.junit.Assert;
+
 /**
  * 1802. 有界数组中指定下标处的最大值
  *
@@ -45,16 +47,30 @@ public class Solution {
         int right = index;
         int temp = maxSum;
         int height = 0;
-        while (left >= 0 && right < n && temp >= right - left + 1) {
+        while ((left >= 0 || right < n ) && temp >= right - left + 1) {
             height++;
             temp -= (right - left + 1);
-            left--;
-            right++;
+            if (left > 0) {
+                left--;
+            }
+            if (right < n) {
+                right++;
+            }
         }
         if (temp >= n) {
             height += temp / n;
         }
         return height;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 3;
+        int index = 2;
+        int maxSum = 18;
+        int i = solution.maxValue(n, index, maxSum);
+        System.out.println(i);
+        Assert.assertEquals(7, i);
     }
 
 }
