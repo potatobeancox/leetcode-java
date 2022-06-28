@@ -58,12 +58,32 @@ import com.google.common.collect.Lists;
  */
 public class Solution {
 
-    // 1770
+    /**
+     * 1770
+     * @param nums
+     * @param multipliers
+     * @return
+     */
     public int maximumScore(int[] nums, int[] multipliers) {
-        // dp ij 前i个最大值 和 后j个最大值 i+j 小于等于 nums.length
-        int n = nums.length;
-        int[][] dp = new int[n+1][n+1];
-
-        return -1;
+        int m = multipliers.length;
+        int[][] dp = new int[m+1][m+1];
+        // dp 0i   dp i0
+        dp[0][0] = 0;
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = dp[i-1][0] + multipliers[i-1] * nums[i-1];
+            dp[0][i] = dp[0][i-1] + multipliers[m-i] * nums[i-1];
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; i + j <= m; j++) {
+                dp[i][j] = Math.max(dp[i][j-1] * multipliers[i+j-2],
+                        dp[i][j-1] * multipliers[i+j-2]);
+            }
+        }
+        // 找到最大值
+        int max = 0;
+        for (int i = 0; i <= m; i++) {
+            max = Math.max(max, dp[i][m-i]);
+        }
+        return max;
     }
 }
