@@ -57,6 +57,9 @@ public class Solution {
             if (right < n - 1) {
                 right++;
             }
+            if (right - left + 1 == n) {
+                break;
+            }
         }
         if (temp >= n) {
             height += temp / n;
@@ -93,6 +96,14 @@ public class Solution {
         n = 4;
         index = 0;
         maxSum = 4;
+        i = solution.maxValue(n, index, maxSum);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+        n = 10;
+        index = 5;
+        maxSum = 420121961;
         i = solution.maxValue(n, index, maxSum);
         System.out.println(i);
         Assert.assertEquals(1, i);
