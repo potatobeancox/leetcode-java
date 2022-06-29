@@ -3,6 +3,10 @@ package com.potato.study.leetcodecn.p02316.t001;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 2316. 统计无向图中无法互相到达点对数
  *
@@ -77,6 +81,9 @@ public class Solution {
 
         public UnionFind(int n) {
             this.parent = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
         }
 
         public void union(int target1, int target2) {
@@ -94,6 +101,26 @@ public class Solution {
             }
             return target;
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        // n = 3, edges = [[0,1],[0,2],[1,2]]
+        int n = 3;
+        String input = "[[0,1],[0,2],[1,2]]";
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        long l = solution.countPairs(n, edges);
+        System.out.println(l);
+        Assert.assertEquals(0, l);
+
+        // n = 7, edges = [[0,2],[0,5],[2,4],[1,6],[5,4]] 14
+        n = 7;
+        input = "[[0,2],[0,5],[2,4],[1,6],[5,4]]";
+        edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        l = solution.countPairs(n, edges);
+        System.out.println(l);
+        Assert.assertEquals(14, l);
+
     }
 
 }
