@@ -45,15 +45,16 @@ public class Solution {
     public int maxValue(int n, int index, int maxSum) {
         int left = index;
         int right = index;
-        int temp = maxSum;
-        int height = 0;
+        // 先垫个底
+        int temp = maxSum - n;
+        int height = 1;
         while ((left >= 0 || right < n ) && temp >= right - left + 1) {
             height++;
             temp -= (right - left + 1);
             if (left > 0) {
                 left--;
             }
-            if (right < n) {
+            if (right < n - 1) {
                 right++;
             }
         }
@@ -65,12 +66,36 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        int n = 3;
+        int n = 4;
         int index = 2;
-        int maxSum = 18;
+        int maxSum = 6;
         int i = solution.maxValue(n, index, maxSum);
         System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        n = 6;
+        index = 1;
+        maxSum = 10;
+        i = solution.maxValue(n, index, maxSum);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        n = 3;
+        index = 2;
+        maxSum = 18;
+        i = solution.maxValue(n, index, maxSum);
+        System.out.println(i);
         Assert.assertEquals(7, i);
+
+
+        n = 4;
+        index = 0;
+        maxSum = 4;
+        i = solution.maxValue(n, index, maxSum);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
 
 }
