@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p02315.t001;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
+
 /**
  * 2315. 统计星号
  *
@@ -53,19 +55,11 @@ public class Solution {
     // 2315
     public int countAsterisks(String s) {
         // 遍历 s 往后找 ||
-        int verticalBarCount = 0;
         int index = 0;
         int innerStarCount = 0;
         char[] chars = s.toCharArray();
         while (index < s.length()) {
             // 找到第一个 |
-            while (index < s.length() && chars[index] != '|') {
-                index++;
-            }
-            if (index >= s.length()) {
-                break;
-            }
-            index++;
             while (index < s.length() && chars[index] != '|') {
                 if ('*' == chars[index]) {
                     innerStarCount++;
@@ -75,10 +69,35 @@ public class Solution {
             if (index >= s.length()) {
                 break;
             }
+            index++;
+            while (index < s.length() && chars[index] != '|') {
+                index++;
+            }
+            if (index >= s.length()) {
+                break;
+            }
             //  往后下一组
             index++;
         }
         return innerStarCount;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "l|*e*et|c**o|*de|";
+        int i = solution.countAsterisks(s);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+        s = "iamprogrammer";
+        i = solution.countAsterisks(s);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
+
+        s = "yo|uar|e**|b|e***au|tifu|l";
+        i = solution.countAsterisks(s);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
     }
 
 }
