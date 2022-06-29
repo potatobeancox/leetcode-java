@@ -78,11 +78,15 @@ public class Solution {
 
     class UnionFind {
         private int[] parent;
+        private int[] count;
 
         public UnionFind(int n) {
             this.parent = new int[n];
+            this.count = new int[n];
             for (int i = 0; i < n; i++) {
                 parent[i] = i;
+                // 每个连通分量最开始为1
+                count[i] = 1;
             }
         }
 
@@ -93,6 +97,7 @@ public class Solution {
                 return;
             }
             parent[p1] = p2;
+            count[p2] += count[p1];
         }
 
         public int find(int target) {
