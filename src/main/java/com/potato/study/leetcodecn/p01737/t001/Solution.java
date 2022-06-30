@@ -96,4 +96,19 @@ public class Solution {
     }
 
 
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String a = "aba";
+        String b = "caa";
+        int i = solution.minCharacters(a, b);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+        a = "a";
+        b = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+        i = solution.minCharacters(a, b);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+    }
+
 }
