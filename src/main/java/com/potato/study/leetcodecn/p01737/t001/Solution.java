@@ -69,7 +69,7 @@ public class Solution {
             min = Math.min(min, a.length() - count1[i] + b.length() - count2[i]);
         }
         // 如果 a 字母 严格 小于 b 枚举 计算 ai 小于  小于等于 i的个数
-        for (int i = 1; i < 26; i++) {
+        for (int i = 0; i < 25; i++) {
             // b 的小于等于 a的字母 券都改了
             int editCount = 0;
             for (int j = i + 1; j < 26; j++) {
@@ -81,7 +81,7 @@ public class Solution {
             min = Math.min(min, editCount);
         }
         // 同理 如果 b 严格 小于 a 枚举 a中 小的 改了
-        for (int i = 1; i < 26; i++) {
+        for (int i = 0; i < 25; i++) {
             // b 的小于等于 a的字母 券都改了
             int editCount = 0;
             for (int j = i + 1; j < 26; j++) {
