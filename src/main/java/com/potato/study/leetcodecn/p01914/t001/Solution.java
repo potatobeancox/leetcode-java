@@ -121,6 +121,7 @@ public class Solution {
         k = 1;
         grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
         ints = solution.rotateGrid(grid, k);
+        // [[1,4,8,10],[10,3,7,10],[6,6,6,1],[7,4,1,10],[1,10,9,2],[2,1,10,10],[3,8,4,9],[7,1,4,2],[7,1,2,10],[2,10,7,5]]
         System.out.println(Arrays.deepToString(ints));
     }
 
