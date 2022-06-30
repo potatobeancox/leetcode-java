@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p00840.t001;
 
 import com.google.common.collect.Lists;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 import java.util.ArrayList;
@@ -81,10 +82,21 @@ public class Solution {
                 || grid[i+1][j-1] + grid[i-1][j+1] != 10) {
             return false;
         }
+        // 每行 每列 都是 15
+        if (grid[i-1][j-1] + grid[i-1][j] + grid[i-1][j+1] != 15
+                || grid[i+1][j-1] + grid[i+1][j] + grid[i+1][j+1] != 15
+                || grid[i-1][j-1] + grid[i][j-1] + grid[i+1][j-1] != 15
+                || grid[i-1][j+1] + grid[i][j+1] + grid[i+1][j+1] != 15) {
+            return false;
+        }
+
         // 1-9
         int[] count = new int[10];
         for (int k = i-1; k <= i+1; k++) {
-            for (int l = j-1; l < j+1; l++) {
+            for (int l = j-1; l <= j+1; l++) {
+                if (grid[k][l] < 1 || grid[k][l] > 9) {
+                    return false;
+                }
                 count[grid[k][l]]++;
             }
         }
@@ -94,5 +106,21 @@ public class Solution {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[4,3,8,4],[9,5,1,9],[2,7,6,2]";
+        int[][] ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.numMagicSquaresInside(ints);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+        input = "[[4,7,8],[9,5,1],[2,3,6]]";
+        ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        i = solution.numMagicSquaresInside(ints);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
     }
 }
