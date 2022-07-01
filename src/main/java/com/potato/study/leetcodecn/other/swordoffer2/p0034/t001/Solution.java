@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.other.swordoffer2.p0034.t001;
 
 import java.util.*;
 
+import org.junit.Assert;
+
 /**
  * 剑指 Offer II 034. 外星语言是否排序
  *
@@ -63,6 +65,8 @@ public class Solution {
                     int num2 = indexMap.get(o2.charAt(idx2));
 
                     if (num1 == num2) {
+                        idx1++;
+                        idx2++;
                         continue;
                     }
 
@@ -84,5 +88,28 @@ public class Solution {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] words = new String[]{"hello","leetcode"};
+        String order = "hlabcdefgijkmnopqrstuvwxyz";
+        boolean alienSorted = solution.isAlienSorted(words, order);
+        System.out.println(alienSorted);
+        Assert.assertEquals(true, alienSorted);
+
+
+        words = new String[]{"word","world","row"};
+        order = "worldabcefghijkmnpqstuvxyz";
+        alienSorted = solution.isAlienSorted(words, order);
+        System.out.println(alienSorted);
+        Assert.assertEquals(false, alienSorted);
+
+
+        words = new String[]{"apple","app"};
+        order = "abcdefghijklmnopqrstuvwxyz";
+        alienSorted = solution.isAlienSorted(words, order);
+        System.out.println(alienSorted);
+        Assert.assertEquals(false, alienSorted);
     }
 }

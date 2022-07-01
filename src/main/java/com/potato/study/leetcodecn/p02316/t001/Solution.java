@@ -1,10 +1,13 @@
 package com.potato.study.leetcodecn.p02316.t001;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
 
+import com.potato.study.leetcode.domain.UnionFind;
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
@@ -55,57 +58,49 @@ public class Solution {
 
     // 2316
     public long countPairs(int n, int[][] edges) {
-        // 并查集 统计 parent
-        UnionFind unionFind = new UnionFind(n);
-        for (int[] edge : edges) {
-            unionFind.union(edge[0], edge[1]);
-        }
-        // 遍历 parent 找到每个parent 对应次数
-        Map<Integer, Integer> parentCountMap = new HashMap<>();
+        // 将 edges 转成 list
+        List<Integer>[] graph = new List[n];
         for (int i = 0; i < n; i++) {
-            int p = unionFind.find(i);
-            int count = parentCountMap.getOrDefault(p, 0);
-            count++;
-            parentCountMap.put(p, count);
+            graph[i] = new ArrayList<>();
         }
-        long count = 0;
-        // map计算
-        for (int nodeCount : parentCountMap.values()) {
-            count += ((long)nodeCount * ((long)n-nodeCount));
+        for (int[] edge : edges) {
+            int from = edge[0];
+            int to = edge[1];
+
+            graph[from].add(to);
+            graph[to].add(from);
         }
-        return count / 2;
+
+
+        // dfs 找到当前 连分量个数 * 之前 的 sum 求和
+        boolean[] visited = new boolean[n];
+        int totalCount = 0;
+        int currentSum = 0;
+        for (int i = 0; i < n; i++) {
+            if (visited[i]) {
+                continue;
+            }
+            int count = dfs(i, visited, graph);
+            if (count > 0) {
+                totalCount += currentSum * count;
+                currentSum += count;
+            }
+        }
+
+        return totalCount;
     }
 
-    class UnionFind {
-        private int[] parent;
-        private int[] count;
-
-        public UnionFind(int n) {
-            this.parent = new int[n];
-            this.count = new int[n];
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
-                // 每个连通分量最开始为1
-                count[i] = 1;
+    private int dfs(int i, boolean[] visited, List<Integer>[] graph) {
+        int count = 1;
+        visited[i] = true;
+        List<Integer> list = graph[i];
+        for (int next : list) {
+            if (visited[next]) {
+                continue;
             }
+            count += dfs(next, visited, graph);
         }
-
-        public void union(int target1, int target2) {
-            int p1 = find(target1);
-            int p2 = find(target2);
-            if (p1 == p2) {
-                return;
-            }
-            parent[p1] = p2;
-            count[p2] += count[p1];
-        }
-
-        public int find(int target) {
-            while (parent[target] != target) {
-                target = parent[target];
-            }
-            return target;
-        }
+        return count;
     }
 
     public static void main(String[] args) {

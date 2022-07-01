@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02312.t001;
 
+import org.junit.Assert;
+
 /**
  * 2312. 卖木头块
  *
@@ -69,13 +71,13 @@ public class Solution {
         long[][] price = new long[m+1][n+1];
         for (int i = 0; i < prices.length; i++) {
             int[] eachPrice = prices[i];
-            int hight = eachPrice[0];
+            int height = eachPrice[0];
             int width = eachPrice[1];
             int p = eachPrice[2];
-            price[hight][width] = Math.max(price[hight][width], p);
+            price[height][width] = Math.max(price[height][width], p);
         }
         // 另一个记录 高块的 大块 最多卖多少钱
-        long[][]totalPrice = new long[m+1][n+1];
+        long[][] totalPrice = new long[m+1][n+1];
         // 每次 从中间点开始 分割 找到 最大值 返回 dfs
         long maxPrice = dfs(m, n, price, totalPrice);
         return maxPrice;
@@ -101,17 +103,44 @@ public class Solution {
         if (price[m][n] > 0) {
             return price[m][n];
         }
-        // 计算mn
         long maxTotal = 0;
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                long total = dfs(i, j, price, totalPrice)
-                        + dfs(m-i, n-j, price, totalPrice);
-                maxTotal = Math.max(maxTotal, total);
-            }
+        // 计算mn 水平分割 和竖直分割
+        for (int i = 1; i <= m / 2; i++) {
+            long total = dfs(i, n, price, totalPrice)
+                    + dfs(m-i, n, price, totalPrice);
+            maxTotal = Math.max(maxTotal, total);
+        }
+
+
+        for (int i = 1; i <= n / 2; i++) {
+            long total = dfs(m, i, price, totalPrice)
+                    + dfs(m, n-i, price, totalPrice);
+            maxTotal = Math.max(maxTotal, total);
         }
         totalPrice[m][n] = maxTotal;
         return maxTotal;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int m = 3;
+        int n = 5;
+        int[][] prices = new int[][]{{1,4,2},{2,2,7},{2,1,3}};
+        long l = solution.sellingWood(m, n, prices);
+        System.out.println(l);
+        Assert.assertEquals(19, l);
+
+
+        m = 4;
+        n = 6;
+        prices = new int[][]{
+                {3,2,10},
+                {1,4,2},
+                {4,1,3}
+        };
+        l = solution.sellingWood(m, n, prices);
+        System.out.println(l);
+        Assert.assertEquals(32, l);
     }
 
 }
