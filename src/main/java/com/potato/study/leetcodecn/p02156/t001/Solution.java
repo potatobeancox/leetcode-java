@@ -70,7 +70,8 @@ public class Solution {
         //        (val(s[0]) * p0 + val(s[1]) * p1 + ... + val(s[k-1]) * pk-1)
         int hashCode = 0;
         for (int i = 0; i < word.length(); i++) {
-            hashCode += ((((int) Math.pow(power, i) % power) * ((word.charAt(i) - 'a') % power)) % modulo);
+            hashCode += ((((int) Math.pow(power, i)) * ((word.charAt(i) - 'a' + 1))));
+            hashCode %= modulo;
         }
         return hashCode % modulo;
     }
