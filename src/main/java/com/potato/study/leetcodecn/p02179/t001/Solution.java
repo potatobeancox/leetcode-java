@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
+
 /**
  * 2179. 统计数组中好三元组数目
  *
@@ -60,10 +62,10 @@ public class Solution {
         // 初始化position
         Map<Integer, Integer> valueIndexMap = new HashMap<>();
         for (int i = 0; i < length; i++) {
-            valueIndexMap.put(nums2[i], i);
+            valueIndexMap.put(nums1[i], i);
         }
         for (int i = 0; i < length; i++) {
-            position[i] = valueIndexMap.get(nums1[i]);
+            position[i] = valueIndexMap.get(nums2[i]);
         }
         // 那么结果就是 计算每个 i 对应位置 前面有多少小于 i的数字 （index）后面有多少大于 的index
         long[] leftCount = new long[length];
@@ -128,5 +130,14 @@ public class Solution {
             position[left + i] = temp[i];
         }
 
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums1 = new int[]{2,0,1,3};
+        int[] nums2 = new int[]{0,1,2,3};
+        long l = solution.goodTriplets(nums1, nums2);
+        System.out.println(l);
+        Assert.assertEquals(1, l);
     }
 }
