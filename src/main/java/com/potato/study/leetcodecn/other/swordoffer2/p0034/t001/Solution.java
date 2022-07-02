@@ -47,6 +47,12 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     *
+     * @param words
+     * @param order
+     * @return
+     */
     public boolean isAlienSorted(String[] words, String order) {
         Map<Character, Integer> indexMap = new HashMap<>();
         char[] chars = order.toCharArray();
