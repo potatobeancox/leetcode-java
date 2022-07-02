@@ -30,4 +30,7 @@
 -- 链接：https://leetcode-cn.com/problems/classes-more-than-5-students
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-SELECT class,COUNT (1) as ccc FROM courses  GROUP BY class WHERE ccc > 5
+SELECT class
+  FROM courses
+GROUP BY class
+HAVING COUNT(DISTINCT student) >= 5
