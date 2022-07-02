@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01477.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -57,11 +59,61 @@ public class Solution {
 
     /**
      *
+     * https://leetcode.cn/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/solution/yi-ci-bian-li-hua-dong-chuang-kou-jia-dong-tai-gui/
      * @param arr
      * @param target
      * @return
      */
     public int minSumOfLengths(int[] arr, int target) {
-        return -1;
+        // dp i i包含这个位置 之前 最小的等于 target的大小
+        int n = arr.length;
+        long[] dp = new long[n];
+        // 初始值都是 Iny max
+        Arrays.fill(dp, Integer.MAX_VALUE / 2);
+        // dp i = min dp i-1, dp i, 当 【j-i】 和为 target 时间 j-i+1 + dpi-1
+        int leftIndex = 0;
+        int currentSum = 0;
+        long ans = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            currentSum += arr[i];
+            while (leftIndex <= i && currentSum > target) {
+                currentSum -= arr[leftIndex];
+                leftIndex++;
+            }
+            // 求现在和 是否满足等于 target
+            if (target == currentSum) {
+                // 计算之前的结果
+                if (i > 0) {
+                    // 最开始的第一次没有啥意义
+                    if (leftIndex > 0) {
+                        ans = Math.min(ans, dp[leftIndex-1] + i - leftIndex + 1);
+                    }
+                    dp[i] = Math.min(dp[i], dp[i-1]);
+                }
+                // 统计下 i之前的情况
+                dp[i] = Math.min(i - leftIndex + 1, dp[i]);
+            } else {
+                // 当前不相等
+                if (i > 0) {
+                    dp[i] = Math.min(dp[i], dp[i-1]);
+                }
+            }
+        }
+        // 从 i= 0 开始 转移
+        if (ans >= Integer.MAX_VALUE / 2) {
+            return -1;
+        }
+        return (int) ans;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                1,6,1
+        };
+        int target = 7;
+        int i = solution.minSumOfLengths(arr, target);
+        System.out.println(i);
+        Assert.assertEquals(-1, i);
     }
 }
