@@ -74,13 +74,13 @@ public class Solution {
 
         // dfs 找到当前 连分量个数 * 之前 的 sum 求和
         boolean[] visited = new boolean[n];
-        int totalCount = 0;
-        int currentSum = 0;
+        long totalCount = 0;
+        long currentSum = 0;
         for (int i = 0; i < n; i++) {
             if (visited[i]) {
                 continue;
             }
-            int count = dfs(i, visited, graph);
+            long count = dfs(i, visited, graph);
             if (count > 0) {
                 totalCount += currentSum * count;
                 currentSum += count;
@@ -90,8 +90,8 @@ public class Solution {
         return totalCount;
     }
 
-    private int dfs(int i, boolean[] visited, List<Integer>[] graph) {
-        int count = 1;
+    private long dfs(int i, boolean[] visited, List<Integer>[] graph) {
+        long count = 1;
         visited[i] = true;
         List<Integer> list = graph[i];
         for (int next : list) {
