@@ -112,6 +112,7 @@ public class Solution {
         return dfs(i+1, j, status, grid, visit) || dfs(i, j+1, status, grid, visit);
     }
 
+
     public static void main(String[] args) {
         Solution solution = new Solution();
         String input = "[[\"(\",\"(\",\"(\"],[\")\",\"(\",\")\"],[\"(\",\"(\",\")\"],[\"(\",\"(\",\")\"]]";
