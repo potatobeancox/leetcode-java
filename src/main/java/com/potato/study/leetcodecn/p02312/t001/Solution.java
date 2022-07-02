@@ -141,6 +141,21 @@ public class Solution {
         l = solution.sellingWood(m, n, prices);
         System.out.println(l);
         Assert.assertEquals(32, l);
+
+
+        m = 4;
+        n = 2;
+        // [[4,1,18],[4,2,5],[1,1,20],[3,1,21]]
+        prices = new int[][]{
+
+                {4,1,18},
+                {4,2,5},
+                {1,1,20},
+                {3,1,21},
+        };
+        l = solution.sellingWood(m, n, prices);
+        System.out.println(l);
+        Assert.assertEquals(160, l);
     }
 
 }
