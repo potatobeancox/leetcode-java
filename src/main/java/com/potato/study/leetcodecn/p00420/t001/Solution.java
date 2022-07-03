@@ -46,11 +46,86 @@ public class Solution {
 
     /**
      * https://leetcode.cn/problems/strong-password-checker/solution/by-livorth-u-dsz3/
+     * https://leetcode.cn/problems/strong-password-checker/solution/by-livorth-u-dsz3/
      * @param password
      * @return
      */
     public int strongPasswordChecker(String password) {
+        // 计算种类数量
+        int lower = 0;
+        int upper = 0;
+        int digit = 0;
+        char[] passwordArray = password.toCharArray();
+        for (int i = 0; i < password.length(); i++) {
+            char ch = passwordArray[i];
+            if (Character.isLowerCase(ch)) {
+                lower = 1;
+            } else if (Character.isUpperCase(ch)) {
+                upper = 1;
+            } else if (Character.isDigit(ch)) {
+                digit = 1;
+            }
+        }
+        int len = password.length();
+        if (len < 6) {
+            // 小于 6的情况 值考虑添加 也就是 6-长度 max
+            return Math.max(6 - len, 3 - lower - upper - digit);
 
-        return -1;
+        } else if (len <= 20) {
+            // [6-20] 使用替换 每个超过 3连的数字 / 3 , 需要考虑种类
+            int i = 0;
+            int needReplaceTime = 0;
+            while (i < len) {
+                int j = i;
+                while (j < len && passwordArray[j] == passwordArray[i]) {
+                    j++;
+                }
+                // 计算长度 j不算 因为 j已经不相同了
+                int currentLen = j - i;
+                needReplaceTime += currentLen / 3;
+
+                i = j;
+            }
+            return Math.max(needReplaceTime, 3 - lower - upper - digit);
+        } else {
+            // 20 大于 主要考虑 删除 再考虑替换 先删除 超3连 直到 到了 20 进行 替换
+            int deleteCount = len - 20;
+            // 替换次数
+            int i = 0;
+            int needReplaceTime = 0;
+            int[] counts = new int[3];
+            while (i < len) {
+                int j = i;
+                while (j < len && passwordArray[j] == passwordArray[i]) {
+                    j++;
+                }
+                // 计算长度 j不算 因为 j已经不相同了
+                int currentLen = j - i;
+                if (currentLen >= 3) {
+                    needReplaceTime += currentLen / 3;
+                    // 计算每种结尾个数
+                    counts[currentLen % 3]++;
+                }
+                i = j;
+            }
+            // 剩下的操作 可以替换删除
+            int remind = deleteCount;
+            for (int j = 0; j < 3; j++) {
+
+                if (j == 2) {
+                    counts[j] = needReplaceTime;
+                }
+
+                if (counts[j] != 0 && remind != 0) {
+                    int times = Math.min(remind, counts[j] * (j + 1));
+                    remind -= times;
+
+                    needReplaceTime -= times / (j+1);
+                }
+
+            }
+            // 需要至少被删除的才做
+            return deleteCount + Math.max(3-digit-lower-upper, needReplaceTime);
+        }
     }
 }
