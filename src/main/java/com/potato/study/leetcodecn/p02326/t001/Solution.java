@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p02326.t001;
 
 import com.potato.study.leetcode.domain.ListNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import com.potato.study.leetcode.util.ListNodeUtil;
+
+import java.util.Arrays;
 
 /**
  * 2326. 螺旋矩阵 IV
@@ -48,8 +52,73 @@ public class Solution {
 
 
     public int[][] spiralMatrix(int m, int n, ListNode head) {
+        int[][] result = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            Arrays.fill(result[i], -1);
+        }
+        int[][] direction = new int[][] {
+                {0, 1}, // right
+                {1, 0},
+                {0, -1},
+                {-1, 0}
+        };
+        int dirIndex = 0;
+        int i = 0;
+        int j = 0;
+        ListNode p = head;
+        while (p != null && result[i][j] == -1) {
+            // 右边
+            while (j < n && result[i][j] == -1 && p != null) {
+                result[i][j] = p.val;
+                p = p.next;
+                j++;
+            }
+            if (p == null) {
+                break;
+            }
+            // 下
+            j--;
+            while (i < m && result[i][j] == -1 && p != null) {
+                result[i][j] = p.val;
+                p = p.next;
+                i++;
+            }
+            if (p == null) {
+                break;
+            }
+            // 左
+            i--;
+            while (j >= 0 && result[i][j] == -1 && p != null) {
+                result[i][j] = p.val;
+                p = p.next;
+                j--;
+            }
+            if (p == null) {
+                break;
+            }
+            // 上
+            j++;
+            while (i >= 0 && result[i][j] == -1 && p != null) {
+                result[i][j] = p.val;
+                p = p.next;
+                i--;
+            }
+            if (p == null) {
+                break;
+            }
+        }
+        return result;
+    }
 
-        return null;
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int m = 10;
+        int n = 1;
+        String input = "[8,24,5,21,10,11,11,12,6,17]";
+        ListNode head = ListNodeUtil.arrayStringToListNode(input);
+        int[][] ints = solution.spiralMatrix(m, n, head);
+        System.out.println(Arrays.deepToString(ints));
     }
 
 }
