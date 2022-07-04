@@ -59,6 +59,9 @@ public class Solution {
         Map<Character, Character> map = new HashMap<>();
         int index = 0;
         for (char ch : key.toCharArray()) {
+            if (' ' == ch) {
+                continue;
+            }
             if (!map.containsKey(ch)) {
                 map.put(ch, (char) (index + 'a'));
                 index++;
