@@ -66,46 +66,30 @@ public class Solution {
         int i = 0;
         int j = 0;
         ListNode p = head;
-        while (p != null && result[i][j] == -1) {
-            // 右边
-            while (j < n && result[i][j] == -1 && p != null) {
-                result[i][j] = p.val;
-                p = p.next;
-                j++;
+        while (result[i][j] == -1 && p != null) {
+            result[i][j] = p.val;
+            // di dj
+            boolean hasFound = false;
+            for (int k = 0; k < 5; k++) {
+                int di = i + direction[dirIndex][0];
+                int dj = j + direction[dirIndex][1];
+                if (di < 0 || di >= m
+                        || dj < 0 || dj >= n
+                        || result[di][dj] != -1) {
+                    dirIndex++;
+                    dirIndex %= 4;
+                } else {
+                    // 找到了
+                    hasFound = true;
+                    break;
+                }
             }
-            if (p == null) {
+            if (!hasFound) {
                 break;
             }
-            // 下
-            j--;
-            while (i < m && result[i][j] == -1 && p != null) {
-                result[i][j] = p.val;
-                p = p.next;
-                i++;
-            }
-            if (p == null) {
-                break;
-            }
-            // 左
-            i--;
-            while (j >= 0 && result[i][j] == -1 && p != null) {
-                result[i][j] = p.val;
-                p = p.next;
-                j--;
-            }
-            if (p == null) {
-                break;
-            }
-            // 上
-            j++;
-            while (i >= 0 && result[i][j] == -1 && p != null) {
-                result[i][j] = p.val;
-                p = p.next;
-                i--;
-            }
-            if (p == null) {
-                break;
-            }
+            i += direction[dirIndex][0];
+            j += direction[dirIndex][1];
+            p = p.next;
         }
         return result;
     }
