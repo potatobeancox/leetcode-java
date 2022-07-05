@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0063.t001;
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,11 +62,92 @@ import java.util.List;
  */
 public class Solution {
 
+
+    private DictTreeNode root;
+
     // 字典树
     public String replaceWords(List<String> dictionary, String sentence) {
+        this.root = new DictTreeNode();
+        // 遍历 dictionary 往root 中添加单词
+        for (String word : dictionary) {
+            root.addWord(word);
+        }
+        // split sentence 在 root 中查找前缀 拼接成 builder 最终返回
+        StringBuilder builder = new StringBuilder();
+        String[] split = sentence.split(" ");
+        for (String word : split) {
+            String prefix = root.prefix(word);
+            if (prefix == null) {
+                builder.append(word);
+            } else {
+                builder.append(prefix);
+            }
+            builder.append(" ");
+        }
 
-        return null;
+        if (builder.charAt(builder.length() - 1) == ' ') {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+
+        return builder.toString();
     }
 
+
+    /**
+     * 字典树 节点数据结构
+     */
+    class DictTreeNode {
+        public DictTreeNode[] child;
+        public boolean isEnd;
+
+        public DictTreeNode() {
+            this.child = new DictTreeNode[26];
+        }
+
+
+        /**
+         * 添加单词
+         * @param word
+         */
+        public void addWord(String word) {
+            DictTreeNode node = this;
+            for (char ch : word.toCharArray()) {
+                int index = ch - 'a';
+                if (node.child[index] == null) {
+                    node.child[index] = new DictTreeNode();
+                }
+                node = node.child[index];
+            }
+            node.isEnd = true;
+        }
+
+        public String prefix(String word) {
+            DictTreeNode node = this;
+            for (int i = 0; i < word.length(); i++) {
+                int index = word.charAt(i) - 'a';
+                if (node.child[index] == null) {
+                    return null;
+                }
+                node = node.child[index];
+                if (node.isEnd) {
+                    return word.substring(0, i+1);
+                }
+            }
+            return null;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        List<String> dictionary = new ArrayList<>();
+        dictionary.add("cat");
+        dictionary.add("bat");
+        dictionary.add("rat");
+        String sentence = "the cattle was rattled by the battery";
+        String s = solution.replaceWords(dictionary, sentence);
+        System.out.println(s);
+//        Assert.assertEquals("", s);
+    }
 
 }
