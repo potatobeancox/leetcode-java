@@ -54,7 +54,7 @@ import java.util.Queue;
 public class Solution {
 
     public int[][] rotateGrid(int[][] grid, int k) {
-        for (int i = 0; i <= Math.min(grid.length / 2, grid[0].length / 2); i++) {
+        for (int i = 0; i < Math.min((grid.length +1) / 2, (grid[0].length+1) / 2); i++) {
             Queue<Integer> queue = new LinkedList<>();
             // 从左 - 》 右边
             for (int j = i; j < grid[0].length - i; j++) {
