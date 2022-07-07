@@ -1,5 +1,9 @@
 package com.potato.study.leetcodecn.p02018.t001;
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 2018. 判断单词是否能放入填字游戏内
  *
@@ -55,7 +59,12 @@ package com.potato.study.leetcodecn.p02018.t001;
 public class Solution {
 
 
-    // 2018
+    /**
+     * 注意要检查 下方的空格
+     * @param board
+     * @param word
+     * @return
+     */
     public boolean placeWordInCrossword(char[][] board, String word) {
         // 如果每个位置 可以开始 那么就开始 分别往 8个方向找
         for (int i = 0; i < board.length; i++) {
@@ -87,12 +96,17 @@ public class Solution {
                 {0, -1}
         };
         char[] chars = word.toCharArray();
-        int di = i;
-        int dj = j;
         for (int k = 0; k < 4; k++) {
             int[] direction = dir[k];
             boolean canPlace = true;
+            int di = i;
+            int dj = j;
             for (int l = 0; l < word.length(); l++) {
+                if (di < 0 || di >= board.length
+                        || dj < 0 || dj >= board[0].length) {
+                    canPlace = false;
+                    break;
+                }
                 if (board[di][dj] == '#'
                         || (board[di][dj] != ' ' && board[di][dj] != chars[l])) {
                     canPlace = false;
@@ -102,10 +116,33 @@ public class Solution {
                 di += direction[1];
             }
             if (canPlace) {
-                return true;
+                if ((di < 0 || di >= board.length
+                        || dj < 0 || dj >= board[0].length
+                        || board[di][dj] == '#')) {
+                    return true;
+                }
+                return false;
             }
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[\"#\", \" \", \"#\"], [\" \", \" \", \"#\"], [\"#\", \"c\", \" \"]]";
+        char[][] board = LeetcodeInputUtils.inputString2CharArrayTwoDimensional(input);
+        String word = "abc";
+        boolean b = solution.placeWordInCrossword(board, word);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+
+        input = "[[\" \", \"#\", \"a\"], [\" \", \"#\", \"c\"], [\" \", \"#\", \"a\"]]";
+        board = LeetcodeInputUtils.inputString2CharArrayTwoDimensional(input);
+        word = "ac";
+        b = solution.placeWordInCrossword(board, word);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
     }
 
 }
