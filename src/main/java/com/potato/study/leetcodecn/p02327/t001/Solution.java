@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02327.t001;
 
+import org.junit.Assert;
+
 /**
  * 2327. 知道秘密的人数
  *
@@ -48,7 +50,43 @@ public class Solution {
 
 
     public int peopleAwareOfSecret(int n, int delay, int forget) {
-        return -1;
+        // 1. dp[i] 表示 第i天新增的知道秘密的人数
+        int[] dp = new int[n+1];
+        // 2. 初始化条件 第1天 有1个人知道秘密 即 dp[1] = 1;
+        dp[1] = 1;
+        int mod = 1_000_000_000 + 7;
+        // 3. 转移方程 对于i天来说 dp[i] = sum （n-forget, n-delay] 也就是 具备传播能力的 且还没有忘记的 sum,转移方向从1天开始往后转移,
+        for (int i = 2; i <= n; i++) {
+            for (int j = Math.max(i - forget + 1, 1); j <= Math.max(i - delay, 0); j++) {
+                dp[i] += dp[j];
+                dp[i] %= mod;
+            }
+        }
+        // 4. 得到 dp 后 计算 sum dp （n-forget, n-1] （左开右闭区间），也就是还没有忘记的人数之和
+        long result = 0;
+        for (int i = n - forget + 1; i <= n; i++) {
+            result += dp[i];
+            result %= mod;
+        }
+        return (int) (result % mod);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 6;
+        int delay = 2;
+        int forget = 4;
+        int i = solution.peopleAwareOfSecret(n, delay, forget);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
+
+
+        n = 4;
+        delay = 1;
+        forget = 3;
+        i = solution.peopleAwareOfSecret(n, delay, forget);
+        System.out.println(i);
+        Assert.assertEquals(6, i);
     }
 
 }
