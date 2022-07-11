@@ -44,16 +44,59 @@ import java.util.PriorityQueue;
  */
 public class MedianFinder {
 
+    private PriorityQueue<Integer> priorityQueue1;
+    private PriorityQueue<Integer> priorityQueue2;
+
     /** initialize your data structure here. */
     public MedianFinder() {
-        // 两个 堆
+        // 两个 堆 后面 小根队 前面大根堆 保证 前面的 size 等于 后面 或者比后面多一个
+        this.priorityQueue2 = new PriorityQueue<>();
+        // 大根堆
+        this.priorityQueue1 = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return Integer.compare(o2, o1);
+            }
+        });
     }
 
     public void addNum(int num) {
-
+        if (priorityQueue1.isEmpty()) {
+            priorityQueue1.add(num);
+            return;
+        }
+        priorityQueue1.add(num);
+        // 先搞定个数
+        while (priorityQueue1.size() != priorityQueue2.size()
+                && priorityQueue1.size() != priorityQueue2.size() + 1) {
+            // 只可能 priorityQueue1 多
+            priorityQueue2.add(priorityQueue1.poll());
+        }
+        if (priorityQueue2.isEmpty()) {
+            return;
+        }
+        // 个数相等比较两个peek
+        if (priorityQueue1.peek() <= priorityQueue2.peek()) {
+            return;
+        }
+        int poll1 = priorityQueue1.poll();
+        int poll2 = priorityQueue2.poll();
+        priorityQueue1.add(poll2);
+        priorityQueue2.add(poll1);
     }
 
     public double findMedian() {
-        return 1.0;
+        int length = priorityQueue1.size() + priorityQueue2.size();
+        if (length == 0) {
+            return 0.0;
+        }
+        if (length % 2 == 1) {
+            int peek = priorityQueue1.peek();
+            return peek;
+        } else {
+            int p1 = priorityQueue1.peek();
+            int p2 = priorityQueue2.peek();
+            return (1.0 * p1 + p2) / 2;
+        }
     }
 }
