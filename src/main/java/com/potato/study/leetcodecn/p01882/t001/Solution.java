@@ -74,14 +74,10 @@ public class Solution {
     public int[] assignTasks(int[] servers, int[] tasks) {
         // 构造 arr Server 按照 weight 升序 id 升序排序
         Server[] serverArray = new Server[servers.length];
-        PriorityQueue<Server> priorityQueue = new PriorityQueue<>(new Comparator<Server>() {
+        // 两个队列了 一个 是空闲的 一个是满的
+        PriorityQueue<Server> idlePriorityQueue = new PriorityQueue<>(new Comparator<Server>() {
             @Override
             public int compare(Server o1, Server o2) {
-                // 先按照空闲时间排序
-                int compareTime = Integer.compare(o1.idleFromTime, o2.idleFromTime);
-                if (compareTime != 0) {
-                    return compareTime;
-                }
                 int compare = Integer.compare(o1.weight, o2.weight);
                 if (compare != 0) {
                     return compare;
@@ -90,32 +86,52 @@ public class Solution {
                 return compare;
             }
         });
+
+
+        PriorityQueue<Server> fullPriorityQueue = new PriorityQueue<>(new Comparator<Server>() {
+            @Override
+            public int compare(Server o1, Server o2) {
+                // 先按照空闲时间排序
+                int compareTime = Integer.compare(o1.idleFromTime, o2.idleFromTime);
+                return compareTime;
+            }
+        });
+
+
         for (int i = 0; i < servers.length; i++) {
             serverArray[i] = new Server();
             serverArray[i].id = i;
             serverArray[i].weight = servers[i];
             serverArray[i].idleFromTime = 0;
 
-            priorityQueue.add(serverArray[i]);
+            idlePriorityQueue.add(serverArray[i]);
         }
-
-
 
         // 遍历 task 对于 并记录时间 也就是 index 从 arr 中 从头开始 遍历得到 第一个当前秒空闲的服务器 ，然后就用这个生成结果
         int[] res = new int[tasks.length];
+        // 当前时间
+        int time = 0;
         for (int i = 0; i < tasks.length; i++) {
-            Server poll = priorityQueue.poll();
-            res[i] = poll.id;
-
-            int idleFromTime = poll.idleFromTime;
-
-            if (idleFromTime + tasks[i] + 1 <= i + 1) {
-                poll.idleFromTime = 0;
-            } else {
-                poll.idleFromTime += tasks[i] + 1;
+            // 对于当前时间 full 之前的 pop 出来 放到idle里边
+            while (!fullPriorityQueue.isEmpty() && fullPriorityQueue.peek().idleFromTime <= time) {
+                Server poll = fullPriorityQueue.poll();
+                idlePriorityQueue.add(poll);
             }
+            // 如果当前还没到时间 那么将time 推移到 fullPriorityQueue .peek
+            if (idlePriorityQueue.isEmpty()) {
+                time = fullPriorityQueue.peek().idleFromTime;
+                while (!fullPriorityQueue.isEmpty() && fullPriorityQueue.peek().idleFromTime <= time) {
+                    Server poll = fullPriorityQueue.poll();
+                    idlePriorityQueue.add(poll);
+                }
+            }
+            // idlePriorityQueue 肯定有了
+            Server poll = idlePriorityQueue.poll();
+            res[i] = poll.id;
+            poll.idleFromTime = tasks[i] + time;
+            fullPriorityQueue.add(poll);
 
-            priorityQueue.add(poll);
+            time = Math.max(time, i + 1);
         }
         return res;
     }
