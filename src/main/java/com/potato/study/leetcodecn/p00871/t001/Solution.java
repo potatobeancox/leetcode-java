@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 871. 最低加油次数
  *
@@ -64,8 +68,13 @@ public class Solution {
         int position = 0;
         int remindFuel = startFuel;
         int count = 0;
-        for (int i = 0; i < stations.length; i++) {
-            int cost = stations[i][0] - position;
+        for (int i = 0; i <= stations.length; i++) {
+            int cost;
+            if (i == stations.length) {
+                cost = target - position;
+            } else {
+                cost = stations[i][0] - position;
+            }
             while (remindFuel < cost && !priorityQueue.isEmpty()) {
                 remindFuel += priorityQueue.poll();
                 count++;
@@ -75,12 +84,43 @@ public class Solution {
                 return -1;
             }
             remindFuel -= cost;
-            priorityQueue.add(stations[i][1]);
+
+            if (i != stations.length) {
+                priorityQueue.add(stations[i][1]);
+                position = stations[i][0];
+            }
+
         }
         return count;
     }
 
     public static void main(String[] args) {
+        Solution solution = new Solution();
+        int target = 1;
+        int startFuel = 1;
+        int[][] stations = new int[][] {};
+        int i = solution.minRefuelStops(target, startFuel, stations);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
 
+
+        target = 100;
+        startFuel = 1;
+        stations = new int[][] {{
+                10,100
+        }};
+        i = solution.minRefuelStops(target, startFuel, stations);
+        System.out.println(i);
+        Assert.assertEquals(-1, i);
+
+
+        target = 100;
+        startFuel = 10;
+        //  [[10,60],[20,30],[30,30],[60,40]]
+        String input = "[[10,60],[20,30],[30,30],[60,40]]";
+        stations = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        i = solution.minRefuelStops(target, startFuel, stations);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 }
