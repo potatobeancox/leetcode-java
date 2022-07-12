@@ -93,6 +93,9 @@ public class Solution {
 
     public int pick() {
         int i = this.random.nextInt(remind);
+        if (replace.containsKey(i)) {
+            return replace.get(i);
+        }
         return i;
     }
 
