@@ -66,24 +66,67 @@ public class Solution {
      */
     public int maximumScore(int[] nums, int[] multipliers) {
         int m = multipliers.length;
-        int[][] dp = new int[m+1][m+1];
-        // dp 0i   dp i0
+        // dp ij 表示 前面 取了i个元素的总得分 后面取了j个元素得分的 最大得分
+        long[][] dp = new long[m+1][m+1];
+        // dp 0i   dp i0 前面没有取 后面也没有取 肯定是0
         dp[0][0] = 0;
-        for (int i = 1; i <= m; i++) {
-            dp[i][0] = dp[i-1][0] + multipliers[i-1] * nums[i-1];
-            dp[0][i] = dp[0][i-1] + multipliers[m-i] * nums[i-1];
-        }
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; i + j <= m; j++) {
-                dp[i][j] = Math.max(dp[i][j-1] * multipliers[i+j-2],
-                        dp[i][j-1] * multipliers[i+j-2]);
+        // 控制当前取了多少 总计
+        for (int total = 1; total <= m; total++) {
+            for (int i = 0;  i <= total; i++) {
+                // 从i-1 过来的
+                if (i > 0) {
+                    dp[i][total-i] = dp[i - 1][total - i] + multipliers[total-1] * nums[i - 1];
+                }
+                if (total-i > 0) {
+                    dp[i][total-i] = Math.max(dp[i][total-i],
+                            dp[i][total-i-1] + multipliers[total-1] * nums[nums.length - (total-i)]);
+                }
             }
         }
         // 找到最大值
-        int max = 0;
+        long max = 0;
         for (int i = 0; i <= m; i++) {
             max = Math.max(max, dp[i][m-i]);
         }
-        return max;
+        return (int)max;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[]{1,2,3};
+        int[] multipliers = new int[]{3,2,1};
+        int i = solution.maximumScore(nums, multipliers);
+        System.out.println(i);
+        Assert.assertEquals(14, i);
+
+
+        nums = new int[]{-5,-3,-3,-2,7,1};
+        multipliers = new int[]{-10,-5,3,4,6};
+        i = solution.maximumScore(nums, multipliers);
+        System.out.println(i);
+        Assert.assertEquals(102, i);
+
+
+        nums = new int[]{
+                -947,897,328,-467,14,-918,-858,-701,-518,-997,22,259,-4,968,947,582,-449,895,-121,-403,633,490,
+                64,543,-396,-997,841,-398,247,297,-147,-708,804,-199,-765,-547,-599,406,-223,-11,663,746,-365,-859,256,
+                -25,919,-334,490,-511,865,-139,-968,961,-793,451,317,645,-294,240,-312,-822,961,-572,309,579,161,780,525,
+                -622,-511,423,946,-28,-199,822,-123,-316,-913,113,-458,-428,-414,49,922,722,-854,323,-219,581,302,124,164,
+                31,727,186,308,-936,-937,-862,939,213,966,-74,-76,-1,521,777,-966,454,-199,526,-895,447,-749,-518,-639,849,
+                -771,979,-760,-763,-601,-201,40,-911,207,890,-942,-352,700,267,830,-396,536,877,-896,-687,262,-60,-373,-373,
+                526};
+        multipliers = new int[]{
+                864,849,586,769,309,-413,318,652,883,-690,796,251,-648,433,1000,-969,422,194,-785,-242,-118,
+                69,187,-925,-418,-556,88,-399,-619,-383,-188,206,-793,-9,738,-587,878,360,640,318,-399,-366,365,-291,-75,-451,
+                -674,-199,177,862,1,11,390,-52,-101,127,-354,-717,-717,180,655,817,-898,28,-641,-35,-563,-737,283,-223,-322,-59,
+                955,172,230,512,-205,-180,899,169,-663,-253,270,651,168,417,613,-443,980,-189,417,372,-891,-272,993,-877,906,680,
+                -630,-328,-873,-811,78,-667,-2,190,-773,878,529,620,-951,-687,314,-989,-48,-601,-950,31,-789,-663,-480,750,-872,
+                -358,529,-426,-111,517,750,-536,-673,370
+        };
+        i = solution.maximumScore(nums, multipliers);
+        System.out.println(i);
+        Assert.assertEquals(32383191, i);
+
+
     }
 }
