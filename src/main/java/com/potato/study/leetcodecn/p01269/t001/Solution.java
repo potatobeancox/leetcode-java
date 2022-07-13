@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import org.junit.Assert;
+
 /**
  * 1269. 停在原地的方案数
  *
@@ -56,7 +58,8 @@ public class Solution {
 
     public int numWays(int steps, int arrLen) {
         // 1269
-        // dp ij 凑了 i步 停在了 j位置 种类数
+        // dp ij 凑了 i步 停在了 j位置 种类数 做多走 steps + 1 步
+        arrLen = Math.min(arrLen, steps+1);
         int[][] dp = new int[steps+1][arrLen];
         // dp 00 = 1 走了0步 在最开始位置 只有1种
         dp[0][0] = 1;
@@ -77,6 +80,16 @@ public class Solution {
             }
         }
         return dp[steps][0];
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        int steps = 430;
+        int arrLen = 148488;
+        int i = solution.numWays(steps, arrLen);
+        System.out.println(i);
+//        Assert.assertEquals(, i);
     }
 
 
