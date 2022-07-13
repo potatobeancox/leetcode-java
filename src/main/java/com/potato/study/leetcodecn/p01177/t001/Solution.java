@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p01177.t001;
 
 
 import com.potato.study.leetcode.domain.ListNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,13 +66,24 @@ public class Solution {
         List<Boolean> resultList = new ArrayList<>();
         for (int[] query : queries) {
             int leftIndex = query[0];
-            int rightIndex = query[1];
+            int rightIndex = query[1] + 1;
             int k = query[2];
             int limit = 2 * k + 1;
             int currentStatus = status[leftIndex] ^ status[rightIndex];
             resultList.add(Integer.bitCount(currentStatus) <= limit);
         }
         return resultList;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "abcda";
+        String input = "[[3,3,0],[1,2,0],[0,3,1],[0,3,2],[0,4,1]]";
+        int[][] queries = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        List<Boolean> list = solution.canMakePaliQueries(s, queries);
+        // [true,false,false,true,true]
+        System.out.println(list);
+
     }
 
 
