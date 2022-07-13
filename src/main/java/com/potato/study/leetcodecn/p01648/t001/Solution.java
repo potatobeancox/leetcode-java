@@ -54,25 +54,38 @@ import java.util.Set;
  */
 public class Solution {
 
-    // 1648
     public int maxProfit(int[] inventory, int orders) {
-        // inventory sort
+        // 1648
+        // 升序排序 从第一个位置 开始 找可以使用的index
         Arrays.sort(inventory);
-        // 从后往前 遍历 找到第一个 i inventory【i】 ！= inventory【i-1】
-        // 或者 i==0 记录 目前相同的有多少个元素 记录当前的值
-        int index = inventory.length - 1;
+        // 计算 目前使用的球 的数量 和当前的价值 （一批的总数量）
+        int index = inventory.length - 2;
         int sameCount = 1;
-        while (index >= 0) {
-            // 找到 找到第一个 i inventory【i】 ！= inventory【i-1】
-            if (index == 0) {
-
+        int eachProfit = inventory[inventory.length - 1];
+        // 如果剩余价值大于 未使用的 循环优先用这些 加到 profit 上 ，否则往前移动 index 直到0
+        long maxProfit = 0;
+        int mod = 1_000_000_000 + 7;
+        int tmp = orders;
+        while (tmp > 0) {
+            // 往后找看有多少个现在是一样的
+            // 找到 下一个
+            while (index >= 0 && inventory[index] == eachProfit) {
+                index--;
+                sameCount++;
             }
-
+            // 当前 eachProfit 计算
+            if (tmp >= sameCount) {
+                maxProfit += (sameCount * eachProfit);
+                maxProfit %= mod;
+                eachProfit--;
+                tmp -= sameCount;
+            } else {
+                maxProfit += (tmp * eachProfit);
+                maxProfit %= mod;
+                //                tmp = 0;
+                break;
+            }
         }
-        for (int i = inventory.length - 1; i >= 0; i--) {
-
-        }
-        // 从order 往后减去
-        return -1;
+        return (int) maxProfit;
     }
 }
