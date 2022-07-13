@@ -99,6 +99,14 @@ public class Solution {
         for (int k = 0; k < 4; k++) {
             int[] direction = dir[k];
             boolean canPlace = true;
+            // 这个方向 ij 之前的到头了 或者是 #
+            int firstI = i - direction[0];
+            int firstJ = j - direction[1];
+            if (firstI >= 0 && firstI < board.length
+                    && firstJ >= 0 && firstJ < board[0].length
+                    && board[firstI][firstJ] != '#') {
+                continue;
+            }
             int di = i;
             int dj = j;
             for (int l = 0; l < word.length(); l++) {
@@ -113,15 +121,17 @@ public class Solution {
                     break;
                 }
                 di += direction[0];
-                di += direction[1];
+                dj += direction[1];
             }
+            // 这个方向 ij 之后的到头了 或者是 #
             if (canPlace) {
-                if ((di < 0 || di >= board.length
-                        || dj < 0 || dj >= board[0].length
-                        || board[di][dj] == '#')) {
-                    return true;
+                // 最后一个节点
+                if (di >= 0 && di < board.length
+                        && dj >= 0 && dj < board[0].length
+                        && board[di][dj] != '#') {
+                    continue;
                 }
-                return false;
+                return true;
             }
         }
         return false;
