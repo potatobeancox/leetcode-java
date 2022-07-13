@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
+
 /**
  * 1648. 销售价值减少的颜色球
  *
@@ -82,10 +84,19 @@ public class Solution {
             } else {
                 maxProfit += (tmp * eachProfit);
                 maxProfit %= mod;
-                //                tmp = 0;
+                // tmp = 0;
                 break;
             }
         }
         return (int) maxProfit;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] inventory = new int[] {100};
+        int orders = 100;
+        int i = solution.maxProfit(inventory, orders);
+        System.out.println(i);
+//        Assert.assertEquals(1, i);
     }
 }
