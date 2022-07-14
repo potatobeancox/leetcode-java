@@ -61,42 +61,77 @@ public class Solution {
         // 升序排序 从第一个位置 开始 找可以使用的index
         Arrays.sort(inventory);
         // 计算 目前使用的球 的数量 和当前的价值 （一批的总数量）
-        int index = inventory.length - 2;
-        int sameCount = 1;
-        int eachProfit = inventory[inventory.length - 1];
+        // 当前 价值 eachProfit 有多少种颜色
+        long sameCount = 1;
+        long eachProfit = inventory[inventory.length - 1];
         // 如果剩余价值大于 未使用的 循环优先用这些 加到 profit 上 ，否则往前移动 index 直到0
         long maxProfit = 0;
         int mod = 1_000_000_000 + 7;
-        int tmp = orders;
-        while (tmp > 0) {
-            // 往后找看有多少个现在是一样的
-            // 找到 下一个
-            while (index >= 0 && inventory[index] == eachProfit) {
-                index--;
+        long tmp = orders;
+        // 从倒数第二个位置 往前依次找每个
+        for (int i = inventory.length - 2; i >= 0 && tmp > 0; i--) {
+            if (eachProfit == inventory[i]) {
                 sameCount++;
+                continue;
             }
-            // 当前 eachProfit 计算
-            if (tmp >= sameCount) {
-                maxProfit += (sameCount * eachProfit);
-                maxProfit %= mod;
-                eachProfit--;
-                tmp -= sameCount;
-            } else {
-                maxProfit += (tmp * eachProfit);
-                maxProfit %= mod;
-                // tmp = 0;
+            // 当前价值和 最终价值的差
+            long diff = eachProfit - inventory[i];
+            // 计算能不能都用掉
+            long thisCount = diff * sameCount;
+            if (thisCount > tmp) {
                 break;
             }
+            tmp -= thisCount;
+            // 计算收益 从 inventory[i+1] - inventory[i] 等差数列
+            maxProfit += ((eachProfit + inventory[i] + 1) * (eachProfit - inventory[i]) / 2) * sameCount;
+            maxProfit %= mod;
+            // 之前的都消耗了
+            sameCount++;
+            eachProfit = inventory[i];
+        }
+        // 处理剩下的
+        if (tmp > 0) {
+            // 计算还能完整用几次
+            long loopCount = tmp / sameCount;
+            maxProfit += ((eachProfit + eachProfit - loopCount + 1) * loopCount / 2) * sameCount;
+            maxProfit %= mod;
+            eachProfit -= loopCount;
+            long remindCount = tmp % sameCount;
+
+            maxProfit += remindCount * eachProfit;
+            maxProfit %= mod;
+
         }
         return (int) maxProfit;
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-        int[] inventory = new int[] {100};
-        int orders = 100;
+
+        int[] inventory = new int[] {1000000000};
+        int orders = 1000000000;
         int i = solution.maxProfit(inventory, orders);
         System.out.println(i);
-//        Assert.assertEquals(1, i);
+        Assert.assertEquals(21, i);
+
+        inventory = new int[] {2,5};
+        orders = 4;
+        i = solution.maxProfit(inventory, orders);
+        System.out.println(i);
+        Assert.assertEquals(14, i);
+
+
+        inventory = new int[] {3,5};
+        orders = 6;
+        i = solution.maxProfit(inventory, orders);
+        System.out.println(i);
+        Assert.assertEquals(19, i);
+
+
+        inventory = new int[] {2,8,4,10,6};
+        orders = 20;
+        i = solution.maxProfit(inventory, orders);
+        System.out.println(i);
+        Assert.assertEquals(110, i);
     }
 }
