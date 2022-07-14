@@ -1,7 +1,6 @@
 package com.potato.study.leetcodecn.p02336.t001;
 
-import java.util.Arrays;
-import java.util.PriorityQueue;
+import java.util.TreeSet;
 
 /**
  * 2336. 无限集中的最小数字
@@ -52,23 +51,27 @@ public class SmallestInfiniteSet {
     // 如果没有召回的数据 使用limit 返回
     private int limit;
 
-    private PriorityQueue<Integer> priorityQueue;
+    private TreeSet<Integer> treeSet;
 
     public SmallestInfiniteSet() {
         this.limit = 1;
-        this.priorityQueue = new PriorityQueue<>();
+        this.treeSet = new TreeSet<>();
     }
 
     public int popSmallest() {
-        if (priorityQueue.isEmpty()) {
+        if (treeSet.isEmpty()) {
             int res = this.limit;
             limit++;
             return res;
         }
-        return priorityQueue.poll();
+        return treeSet.pollFirst();
     }
 
     public void addBack(int num) {
-        priorityQueue.add(num);
+        if (limit <= num) {
+            return;
+        }
+        // limit 已经移动到 num之后了 判断下 priorityQueue 里边有没有
+        treeSet.add(num);
     }
 }
