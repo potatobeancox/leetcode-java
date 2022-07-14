@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p02333.t001;
 
 import java.util.Arrays;
 
+import org.junit.Assert;
+
 /**
  * 2333. 最小差值平方和
  *
@@ -54,10 +56,15 @@ public class Solution {
     public long minSumSquareDiff(int[] nums1, int[] nums2, int k1, int k2) {
         int n = nums1.length;
         long[] diff = new long[n];
+        long sum = 0;
         for (int i = 0; i < n; i++) {
             diff[i] = Math.abs(nums1[i] - nums2[i]);
+            sum += diff[i];
         }
         int changeTime = k1 + k2;
+        if (changeTime >= sum) {
+            return 0;
+        }
         Arrays.sort(diff);
         int sameCount = 1;
         long current = diff[diff.length - 1];
@@ -68,7 +75,7 @@ public class Solution {
                 sameCount++;
                 continue;
             }
-            long d = diff[i] - current;
+            long d = current - diff[i];
             long totalCount = d * sameCount;
             if (changeTime >= totalCount) {
                 // 超过了 总个数
@@ -100,6 +107,37 @@ public class Solution {
             res += diff[j] * diff[j];
         }
         return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+//        nums1 = [1,2,3,4], nums2 = [2,10,20,19], k1 = 0, k2 = 0
+        int[] nums1 = new int[] {1,2,3,4};
+        int[] nums2 = new int[] {2,10,20,19};
+        int k1 = 0;
+        int k2 = 0;
+        long l = solution.minSumSquareDiff(nums1, nums2, k1, k2);
+        System.out.println(l);
+        Assert.assertEquals(579, l);
+
+
+        // nums1 = [1,4,10,12], nums2 = [5,8,6,9], k1 = 1, k2 = 1
+        nums1 = new int[] {1,4,10,12};
+        nums2 = new int[] {5,8,6,9};
+        k1 = 1;
+        k2 = 1;
+        l = solution.minSumSquareDiff(nums1, nums2, k1, k2);
+        System.out.println(l);
+        Assert.assertEquals(43, l);
+
+
+        nums1 = new int[] {10,10,10,11,5};
+        nums2 = new int[] {1,0,6,6,1};
+        k1 = 11;
+        k2 = 27;
+        l = solution.minSumSquareDiff(nums1, nums2, k1, k2);
+        System.out.println(l);
+        Assert.assertEquals(0, l);
     }
 
 }
