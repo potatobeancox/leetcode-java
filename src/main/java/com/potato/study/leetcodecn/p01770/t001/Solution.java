@@ -70,21 +70,22 @@ public class Solution {
         long[][] dp = new long[m+1][m+1];
         // dp 0i   dp i0 前面没有取 后面也没有取 肯定是0
         dp[0][0] = 0;
+        // 最开始 0 的转移
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = dp[i - 1][0] + multipliers[i-1] * nums[i-1];
+            dp[0][i] = dp[0][i - 1] +  multipliers[i-1] * nums[nums.length-i];
+        }
+
+
         // 控制当前取了多少 总计
-        for (int total = 1; total <= m; total++) {
-            for (int i = 0;  i <= total; i++) {
-                // 从i-1 过来的
-                if (i > 0) {
-                    dp[i][total-i] = dp[i - 1][total - i] + multipliers[total-1] * nums[i - 1];
-                }
-                if (total-i > 0) {
-                    dp[i][total-i] = Math.max(dp[i][total-i],
-                            dp[i][total-i-1] + multipliers[total-1] * nums[nums.length - (total-i)]);
-                }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j + i <= m; j++) {
+                dp[i][j] = Math.max(dp[i-1][j] + multipliers[i+j-1] * nums[i-1],
+                        dp[i][j-1] + multipliers[i+j-1] * nums[nums.length-j]);
             }
         }
         // 找到最大值
-        long max = 0;
+        long max = Integer.MIN_VALUE;
         for (int i = 0; i <= m; i++) {
             max = Math.max(max, dp[i][m-i]);
         }
