@@ -4,6 +4,8 @@ import org.junit.Assert;
 
 import java.util.Arrays;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 1589. 所有排列中的最大和
  *
@@ -62,10 +64,14 @@ public class Solution {
         int[] count = new int[nums.length];
         for (int[] request : requests) {
             int start = request[0];
-            int end = request[1];
-            for (int i = start; i <= end; i++) {
-                count[i]++;
+            int end = request[1] + 1;
+            count[start]++;
+            if (end < nums.length) {
+                count[end]--;
             }
+        }
+        for (int i = 1; i < count.length; i++) {
+            count[i] += count[i-1];
         }
         // 出现次数 升序排列
         Arrays.sort(count);
@@ -79,5 +85,14 @@ public class Solution {
             result %= mod;
         }
         return (int)(result % mod);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = LeetcodeInputUtils.inputString2IntArray("[1,2,3,4,5]");
+        int[][] requests = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,3],[0,1]]");
+        int i = solution.maxSumRangeQuery(nums, requests);
+        System.out.println(i);
+        Assert.assertEquals(19, i);
     }
 }
