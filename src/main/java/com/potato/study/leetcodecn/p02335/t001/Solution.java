@@ -55,10 +55,16 @@ public class Solution {
 
     public int fillCups(int[] amount) {
         Arrays.sort(amount);
-        int total = amount[1];
-        amount[2] -= amount[1];
-        total += Math.max(amount[2], amount[0]);
-        return total;
+        int tmp1 = amount[0];
+        int tmp2 = amount[1];
+        int tmp3 = amount[2];
+
+        if (tmp3 >= tmp1 + tmp2) {
+            return tmp3;
+        } else {
+            // 先消耗 t3 耗费 tmp3次，后续剩下的 自己消耗 保证两个差最小为1
+            return (tmp1 + tmp2 - tmp3 + 1) / 2 + tmp3;
+        }
     }
 
 }
