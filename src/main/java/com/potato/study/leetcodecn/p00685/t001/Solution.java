@@ -43,22 +43,53 @@ public class Solution {
 
     // 685
     public int[] findRedundantDirectedConnection(int[][] edges) {
-        // 并查集
-        UnionFind unionFind = new UnionFind(edges.length);
-        for (int i = 0; i < edges.length; i++) {
-            int from = edges[i][0];
-            int to = edges[i][1];
+        // 并查集 有可能有两种形式的问题
+        int n = edges.length;
+        // 存每个节点父亲的值
+        int[] parent = new int[n+1];
+        //  最开始就是 父亲孩子是同一个值
+        for (int i = 0; i < n+1; i++) {
+            parent[i] = i;
+        }
+        UnionFind unionFind = new UnionFind(n);
+        int conflictParentIndex = -1;
+        int cylceIndex = -1;
+        for (int i = 0; i < n; i++) {
+            int[] edge = edges[i];
+            int p = edge[0];
+            int child = edge[1];
 
-            int p1 = unionFind.find(from);
-            int p2 = unionFind.find(to);
-
-            if (p1 == p2) {
-                return edges[i];
+            // 如果 当前已经有一个父亲了
+            if (parent[child] != child) {
+                // 1.一个 点有多个父亲 此时优先基于 index
+                conflictParentIndex = i;
             } else {
-                unionFind.union(from, to);
+                parent[child] = p;
+                // 2. 途中存在环 记录下 不是 1的 形成环的index
+                int p1 = unionFind.find(p);
+                int p2 = unionFind.find(child);
+                if (p1 == p2) {
+                    cylceIndex = i;
+                } else {
+                    unionFind.union(p, child);
+                }
             }
         }
-        return null;
+
+        // 检查情况
+        if (conflictParentIndex == -1) {
+            // 只有 cycle
+            return edges[cylceIndex];
+        }
+
+        if (cylceIndex == -1) {
+            return edges[conflictParentIndex];
+        }
+        // 都有 那么就是 parent[edges[conflictParentIndex][1]], edges[conflictParentIndex][1]
+        return new int[] {
+                parent[edges[conflictParentIndex][1]],
+                edges[conflictParentIndex][1]
+        };
     }
 
     class UnionFind {
