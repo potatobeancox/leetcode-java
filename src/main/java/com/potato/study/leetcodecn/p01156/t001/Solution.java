@@ -61,8 +61,11 @@ public class Solution {
         }
         // 遍历 text 使用数组 windowCount 记录窗口内部的出现次数
         int[] windowCount = new int[26];
+        // window 中最多的元素个数
         int maxCount = 0;
         int maxCharIndex = 0;
+        // window 中 加上一次交换之后的个数
+        int maxWin = 0;
         // 如果当前记录长度已经大于 最大长度了，说明当前出现次数就是 最大长度 修改最大长度 最大长度 + 1等
         int startIndex = 0;
         for (int i = 0; i < text.length(); i++) {
@@ -72,19 +75,22 @@ public class Solution {
             windowCount[charIndex]++;
             // 如果当前窗口长度 比最大窗口 + 1还要大 说明 需要移动遍 一次
             if (windowCount[charIndex] > maxCount) {
+                // 当前计数超过窗口最大大小，需要扩大窗口
                 maxCount = windowCount[charIndex];
+                maxWin = maxCount + 1;
                 maxCharIndex = charIndex;
             } else {
-                // 窗口是否需要缩小
-                if (i - startIndex + 1 > maxCount + 1) {
+                // 窗口是否需要缩小 中间有没啥用的字符
+                if (i - startIndex + 1 > maxWin) {
                     windowCount[chars[startIndex] - 'a']--;
                     startIndex++;
                 }
             }
         }
-        // 返回最大字符出现次数 和 maxCount + 1 的最小值
-        return Math.min(maxCount + 1, totalCount[maxCharIndex]);
+        // 返回最大字符出现次数 和 maxCount + 1 的最小值 解决全是aaa的问题
+        return Math.min(maxWin, totalCount[maxCharIndex]);
     }
+
 
     public static void main(String[] args) {
         Solution solution = new Solution();
