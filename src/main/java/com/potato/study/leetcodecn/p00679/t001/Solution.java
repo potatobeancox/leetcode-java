@@ -83,8 +83,60 @@ public class Solution {
             return false;
         }
         // 超过2 选出来2个 其他的放进
-        List<Double> temp = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.size(); j++) {
+                if (i == j) {
+                    continue;
+                }
+                List<Double> temp = new ArrayList<>();
+                // 先把其他的元素 放进temp中
+                for (int k = 0; k < list.size(); k++) {
+                    if (k == i || k == j) {
+                        continue;
+                    }
+                    temp.add(list.get(k));
+                }
+                // 找到2个元素 运算
+                double a = list.get(i);
+                double b = list.get(j);
 
+                if (i < j) {
+                    double new1 = a + b;
+                    temp.add(new1);
+                    boolean backtracking = backtracking(temp);
+                    if (backtracking) {
+                        return true;
+                    }
+                    temp.remove(temp.size() - 1);
+                    double new2 = a * b;
+                    temp.add(new2);
+                    backtracking = backtracking(temp);
+                    if (backtracking) {
+                        return true;
+                    }
+                    temp.remove(temp.size() - 1);
+
+                }
+
+                double new3 = a - b;
+                temp.add(new3);
+                boolean backtracking = backtracking(temp);
+                if (backtracking) {
+                    return true;
+                }
+                temp.remove(temp.size() - 1);
+
+                if (b != 0) {
+                    double new4 = a / b;
+                    temp.add(new4);
+                    backtracking = backtracking(temp);
+                    if (backtracking) {
+                        return true;
+                    }
+                    temp.remove(temp.size() - 1);
+                }
+            }
+        }
         return false;
     }
 }
