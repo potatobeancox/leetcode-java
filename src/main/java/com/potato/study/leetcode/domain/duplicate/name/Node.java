@@ -3,7 +3,8 @@ package com.potato.study.leetcode.domain.duplicate.name;
 import java.util.List;
 
 /**
- * 多叉树的node
+ * 多叉树 的node
+ * n叉树 节点
  */
 public class Node {
 
