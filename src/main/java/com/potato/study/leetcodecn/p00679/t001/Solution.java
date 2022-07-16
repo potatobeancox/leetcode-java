@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p00679.t001;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 679. 24 点游戏
  *
@@ -42,6 +46,45 @@ package com.potato.study.leetcodecn.p00679.t001;
 public class Solution {
 
     public boolean judgePoint24(int[] cards) {
+        // 回溯 先对 card 进行排序 cards 分别放进一个 list中，list内部存储每个中间数字
+        Arrays.sort(cards);
+        List<Double> list = new ArrayList<>();
+        for (int card : cards) {
+            list.add(1.0 * card);
+        }
+        return backtracking(list);
+    }
+
+    private boolean backtracking(List<Double> list) {
+        // 任意找到 2个 值 求 加减乘除 放入 list中
+        if (list.size() < 2) {
+            return false;
+        }
+        double DIFF = 10e-6;
+        if (list.size() == 2) {
+            double a = list.get(0);
+            double b = list.get(1);
+
+            if (Math.abs(a + b - 24) <= DIFF) {
+                return true;
+            }
+
+            if (Math.abs(a - b - 24) <= DIFF) {
+                return true;
+            }
+
+            if (Math.abs(a * b - 24) <= DIFF) {
+                return true;
+            }
+
+            if (b != 0 && Math.abs(a / b - 24) <= DIFF) {
+                return true;
+            }
+            return false;
+        }
+        // 超过2 选出来2个 其他的放进
+        List<Double> temp = new ArrayList<>();
+
         return false;
     }
 }
