@@ -1,9 +1,14 @@
 package com.potato.study.leetcodecn.p00253.t001;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import com.potato.study.leetcode.domain.TreeNode;
+
+import jdk.nashorn.internal.ir.IdentNode;
 
 /**
  * 253. 会议室 II
@@ -36,9 +41,32 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
     public int minMeetingRooms(int[][] intervals) {
-        // 差分数组 10——00000
-        int[] count = new int[0];
-        return -1;
+        // 按照开始时间 升序 排序当前会议array
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return Integer.compare(o1[0], o2[0]);
+            }
+        });
+        // 用一个小跟堆维护目前在占用的会议室的结束时间
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+        // 遍历 intervals 如果当前堆中存在结束时间小于开始时间 的将 这个值pop 加入新会议的结束时间
+        int maxCount = 0;
+        for (int[] interval : intervals) {
+            int start = interval[0];
+            int end = interval[1];
+            // 最小结束时间的 会议 都大于当前开始时间
+            if (priorityQueue.isEmpty() || priorityQueue.peek() > start) {
+                priorityQueue.add(end);
+                maxCount = Math.max(maxCount, priorityQueue.size());
+            }  else {
+                // 当前需要pop 再add
+                priorityQueue.poll();
+                priorityQueue.add(end);
+            }
+        }
+        // 过程中维护 堆的最大值
+        return maxCount;
     }
 
 
