@@ -60,3 +60,10 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- | 100          | 22             |
 -- | 200          | 15             |
 -- +--------------+----------------+
+
+SELECT
+  product_id,
+  SUM(quantity) as total_quantity
+FROM Sales
+  GROUP BY product_id
+  ORDER BY product_id
