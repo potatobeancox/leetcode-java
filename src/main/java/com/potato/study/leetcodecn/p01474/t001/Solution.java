@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Stack;
 
 import com.potato.study.leetcode.domain.ListNode;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import com.potato.study.leetcode.util.ListNodeUtil;
 
 /**
  * 1474. 删除链表 M 个节点之后的 N 个节点
@@ -63,22 +65,11 @@ public class Solution {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     public ListNode deleteNodes(ListNode head, int m, int n) {
         // 哨兵
         ListNode newHead = new ListNode(-1);
         newHead.next = head;
-        ListNode p = head;
+        ListNode p = newHead;
         while (p != null) {
             // 往前走 m 包括 p在内的点 都是保留的
             for (int i = 0; i < m && p != null; i++) {
@@ -96,5 +87,14 @@ public class Solution {
             p.next = q;
         }
         return newHead.next;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[1,2,3,4,5,6,7,8,9,10,11,12,13]";
+        ListNode listNode = ListNodeUtil.arrayStringToListNode(input);
+        ListNode node = solution.deleteNodes(listNode, 2, 3);
+        ListNodeUtil.printListNode(node);
+
     }
 }
