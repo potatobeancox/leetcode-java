@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p00431.t001;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.potato.study.leetcode.domain.TreeNode;
 import com.potato.study.leetcode.domain.node.val.children.Node;
 
@@ -35,19 +38,65 @@ public class Codec {
 
     // Encodes an n-ary tree to a binary tree.
     public TreeNode encode(Node root) {
+        if (root == null) {
+            return null;
+        }
         // 递归处理 对当前节点 生成 TreeNode 并设置
-        return null;
+        TreeNode treeRoot = new TreeNode(root.val);
+        // 处理当前的孩子节点的逻辑 TreeNode 左边孩子是 孩子的第一个 其他的都是右孩子
+        treeRoot.left = encodeChildren(root.children);
+        return treeRoot;
+    }
+
+    /**
+     *
+     * @param children
+     * @return
+     */
+    private TreeNode encodeChildren(List<Node> children) {
+        // 通过 children 构建子树 返回 子树的根
+        if (children == null || children.size() == 0) {
+            return null;
+        }
+        // 哨兵节点
+        TreeNode treeNode = new TreeNode(-1);
+        TreeNode p = treeNode;
+        // 对于每个 chilren 都要递归生成 treenode 再有孩子连接
+        for (int i = 0; i < children.size(); i++) {
+            Node nextChild = children.get(i);
+            TreeNode encodeChild = this.encode(nextChild);
+            p.right = encodeChild;
+            p = p.right;
+        }
+        return treeNode.right;
     }
 
     // Decodes your binary tree to an n-ary tree.
     public Node decode(TreeNode root) {
-        return null;
+        if (root == null) {
+            return null;
+        }
+        // 当前节点转换
+        Node rootNode = new Node(root.val);
+        // 生成 chilidren root 左孩子和 左边孩子的右边孩子
+        rootNode.children = getTreeNodeChild(root);
+        return rootNode;
     }
 
-    class NodeContext {
-        public Node root;
-        public TreeNode treeRoot;
+    private List<Node> getTreeNodeChild(TreeNode root) {
+        if (root == null || root.left == null) {
+            return null;
+        }
+        // root 左边孩子 每个孩子都要在搞一次 decode
+        TreeNode firstChild = root.left;
+        TreeNode p = firstChild;
+        List<Node> childrenList = new ArrayList<>();
+        while (p != null) {
+            Node decode = decode(p);
+            childrenList.add(decode);
+            p = p.right;
+        }
+        return childrenList;
     }
-
 
 }
