@@ -1,11 +1,5 @@
 package com.potato.study.leetcodecn.p00427.t001;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
-import com.potato.study.leetcode.domain.duplicate.name.Node;
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**

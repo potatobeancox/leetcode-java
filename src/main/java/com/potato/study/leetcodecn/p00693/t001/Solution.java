@@ -1,11 +1,6 @@
 package com.potato.study.leetcodecn.p00693.t001;
 
 
-import com.potato.study.leetcode.domain.duplicate.name.Node;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 693. 交替位二进制数
  *

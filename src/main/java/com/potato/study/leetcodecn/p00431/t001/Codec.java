@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.p00431.t001;
 
-import com.potato.study.leetcode.domain.Node;
 import com.potato.study.leetcode.domain.TreeNode;
+import com.potato.study.leetcode.domain.node.val.children.Node;
 
 /**
  * 431. 将 N 叉树编码为二叉树
@@ -35,6 +35,7 @@ public class Codec {
 
     // Encodes an n-ary tree to a binary tree.
     public TreeNode encode(Node root) {
+        // 递归处理 对当前节点 生成 TreeNode 并设置
         return null;
     }
 

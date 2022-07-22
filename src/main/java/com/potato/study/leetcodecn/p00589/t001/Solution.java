@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.p00589.t001;
 
 
-import com.potato.study.leetcode.domain.duplicate.name.Node;
+import com.potato.study.leetcode.domain.node.val.children.Node;
 
 import java.util.ArrayList;
 import java.util.List;

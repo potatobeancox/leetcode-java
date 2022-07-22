@@ -1,13 +1,6 @@
 package com.potato.study.leetcodecn.p00423.t001;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
 import org.junit.Assert;
-
-import com.potato.study.leetcode.domain.duplicate.name.Node;
 
 /**
  * 423. 从英文中重建数字

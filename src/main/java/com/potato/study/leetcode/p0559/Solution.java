@@ -1,6 +1,6 @@
 package com.potato.study.leetcode.p0559;
 
-import com.potato.study.leetcode.domain.duplicate.name.Node;
+import com.potato.study.leetcode.domain.node.val.children.Node;
 
 /**
  * 

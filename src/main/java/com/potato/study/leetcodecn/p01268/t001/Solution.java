@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.p01268.t001;
 
 
-import com.potato.study.leetcode.domain.duplicate.name.Node;
-
 import java.util.*;
 
 /**

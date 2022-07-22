@@ -1,11 +1,7 @@
 package com.potato.study.leetcodecn.p00581.t001;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
-import com.potato.study.leetcode.domain.duplicate.name.Node;
 
 /**
  * 581. 最短无序连续子数组

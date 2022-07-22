@@ -1,4 +1,4 @@
-package com.potato.study.leetcode.domain.duplicate.name;
+package com.potato.study.leetcode.domain.node.val.children;
 
 import java.util.ArrayList;
 import java.util.List;

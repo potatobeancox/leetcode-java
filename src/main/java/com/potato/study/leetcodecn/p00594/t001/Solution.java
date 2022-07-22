@@ -1,14 +1,10 @@
 package com.potato.study.leetcodecn.p00594.t001;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-
-import com.potato.study.leetcode.domain.duplicate.name.Node;
 
 /**
  * 594. 最长和谐子序列

@@ -1,12 +1,9 @@
 package com.potato.study.leetcodecn.p01650.t001;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
-
-import com.potato.study.leetcode.domain.val.left.right.parent.Node;
+import com.potato.study.leetcode.domain.node.val.left.right.parent.Node;
 
 /**
  * 1650. 二叉树的最近公共祖先 III

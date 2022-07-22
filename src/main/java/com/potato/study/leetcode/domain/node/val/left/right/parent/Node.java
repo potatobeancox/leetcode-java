@@ -1,4 +1,4 @@
-package com.potato.study.leetcode.domain.val.left.right.parent;
+package com.potato.study.leetcode.domain.node.val.left.right.parent;
 
 /**
  * @author liuzhao03 <liuzhao03@kuaishou.com>
