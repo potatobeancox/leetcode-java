@@ -67,6 +67,9 @@ public class Solution {
 
 
     public NodeCopy copyRandomBinaryTree(Node root) {
+        if (root == null) {
+            return null;
+        }
         // 层序便利 先将 节点建立出来
         Map<Node, NodeCopy> map = new HashMap<>();
         Queue<Node> queue = new LinkedList<>();
@@ -94,10 +97,12 @@ public class Solution {
             if (poll.left != null) {
                 NodeCopy left = map.get(poll.left);
                 nodeCopy.left = left;
+                queue.add(poll.left);
             }
             if (poll.right != null) {
                 NodeCopy right = map.get(poll.right);
                 nodeCopy.right = right;
+                queue.add(poll.right);
             }
             if (poll.random != null) {
                 NodeCopy random = map.get(poll.random);
