@@ -42,3 +42,13 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- +-------------+--------+--------+--------+
 -- 产品 0 的价格在商店 1 为 95 ，商店 2 为 100 ，商店 3 为 105 。
 -- 产品 1 的价格在商店 1 为 70 ，商店 3 的产品 1 价格为 80 ，但在商店 2 中没有销售。
+
+-- group by
+-- https://blog.csdn.net/jerrytomcat/article/details/82351605
+
+SELECT product_id,
+ SUM(CASE WHEN store = 'store1' THEN price ELSE null END) AS 'store1',
+ SUM(CASE WHEN store = 'store2' THEN price ELSE null END) AS 'store2',
+ SUM(CASE WHEN store = 'store3' THEN price ELSE null END) AS 'store3'
+FROM Products
+GROUP BY product_id
