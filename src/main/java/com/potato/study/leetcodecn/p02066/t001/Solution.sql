@@ -65,6 +65,8 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 -- https://blog.csdn.net/weixin_44547599/article/details/88764558
+-- partition BY
+-- https://www.jb51.net/article/194784.htm
 
 SELECT
   account_id,
