@@ -37,7 +37,16 @@ package com.potato.study.leetcodecn.p01133.t001;
 public class Solution {
 
     public int largestUniqueNumber(int[] nums) {
+        int[] count = new int[10001];
+        for (int num : nums) {
+            count[num]++;
+        }
 
+        for (int i = count.length - 1; i >= 0; i--) {
+            if (count[i] == 1) {
+                return i;
+            }
+        }
         return -1;
     }
 }
