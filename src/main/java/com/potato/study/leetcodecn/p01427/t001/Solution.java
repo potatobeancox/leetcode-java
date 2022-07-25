@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 1427. 字符串的左右移
  *
@@ -66,6 +70,7 @@ public class Solution {
             }
         }
         // totalShift > 0 左移动
+        totalShift %= s.length();
         if (totalShift == 0) {
             return s;
         }
@@ -79,5 +84,15 @@ public class Solution {
             String left = s.substring(0, s.length() + totalShift);
             return right + left;
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "yisxjwry";
+        String input = "[[1,8],[1,4],[1,3],[1,6],[0,6],[1,4],[0,2],[0,1]]";
+        int[][] shift = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        String str = solution.stringShift(s, shift);
+        System.out.println(str);
+        Assert.assertEquals("yisxjwry", str);
     }
 }
