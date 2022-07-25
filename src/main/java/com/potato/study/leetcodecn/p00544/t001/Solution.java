@@ -52,7 +52,27 @@ import org.junit.Assert;
 public class Solution {
 
     public String findContestMatch(int n) {
+        String[] str = new String[n/2 + 1];
+        // 初始化
+        for (int i = 1; i <= n / 2; i++) {
+            str[i] = "(" + i + "," + (n-i+1) + ")";
+        }
+        int tmp = n / 2;
+        while (tmp > 0) {
+            for (int i = 1; i <= tmp / 2; i++) {
+                str[i] = "(" +  str[i] + "," +  str[tmp-i+1] + ")";
+            }
+            tmp /= 2;
+        }
+        return str[1];
+    }
 
-        return null;
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 4;
+        String contestMatch = solution.findContestMatch(n);
+        System.out.println(contestMatch);
+        Assert.assertEquals("((1,4),(2,3))", contestMatch);
     }
 }
