@@ -59,7 +59,7 @@ public class Solution {
         // 获取高度
         int height = getHeight(nestedList);
         // 遍历求值
-        return getDepthSumInverse(nestedList, height - 1);
+        return getDepthSumInverse(nestedList, height);
     }
 
 
@@ -80,19 +80,13 @@ public class Solution {
 
 
 
-    private int calDep(List<NestedInteger> l) {
-        int dep = 1;
-        for (NestedInteger e : l) {
-            if (!e.isInteger()) {
-                dep = Math.max(dep, calDep(e.getList()) + 1);
-            }
-        }
-        return dep;
-    }
 
 
 
     private int getHeight(List<NestedInteger> nestedList) {
+        if (nestedList.size() == 0) {
+            return 0;
+        }
         int depth = 1;
         for (NestedInteger nestedInteger : nestedList) {
             if (nestedInteger.isInteger()) {
