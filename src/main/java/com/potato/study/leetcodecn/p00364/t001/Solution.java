@@ -50,52 +50,58 @@ import com.potato.study.leetcode.domain.inface.NestedInteger;
 public class Solution {
 
 
-
-
-
+    /**
+     * https://leetcode.cn/problems/nested-list-weight-sum-ii/solution/dfs-jia-quan-qian-tao-xu-lie-he-ii-by-be-5trv/
+     * @param nestedList
+     * @return
+     */
     public int depthSumInverse(List<NestedInteger> nestedList) {
-        int sum = 0;
-        if (null == nestedList || nestedList.size() == 0) {
-            return sum;
-        }
         // 获取高度
         int height = getHeight(nestedList);
         // 遍历求值
-        return getDepthSumInverse(nestedList, height, 1);
+        return getDepthSumInverse(nestedList, height - 1);
     }
 
-    private int getDepthSumInverse(List<NestedInteger> nestedList, int height, int i) {
+
+
+
+
+    private int getDepthSumInverse(List<NestedInteger> nestedList, int height) {
         int sum = 0;
-        if (null == nestedList || nestedList.size() == 0) {
-            return sum;
-        }
         for (NestedInteger nestedInteger : nestedList) {
             if (nestedInteger.isInteger()) {
-                sum += (nestedInteger.getInteger()) * (height - i);
+                sum += (nestedInteger.getInteger() * height);
             } else {
-                sum += getDepthSumInverse(nestedInteger.getList(), height, i + 1);
+                sum += getDepthSumInverse(nestedInteger.getList(), height - 1);
             }
         }
         return sum;
     }
 
 
-    private int getHeight(List<NestedInteger> nestedList) {
-        if (nestedList == null || nestedList.size() == 0) {
-            return 0;
+
+    private int calDep(List<NestedInteger> l) {
+        int dep = 1;
+        for (NestedInteger e : l) {
+            if (!e.isInteger()) {
+                dep = Math.max(dep, calDep(e.getList()) + 1);
+            }
         }
-        int max = 0;
-        for (NestedInteger nestedInteger : nestedList) {
-            int childHeight = getHeight(nestedInteger);
-            max = Math.max(max, childHeight);
-        }
-        return max;
+        return dep;
     }
 
-    private int getHeight(NestedInteger nestedInteger) {
-        if (nestedInteger.isInteger()) {
-            return 0;
+
+
+    private int getHeight(List<NestedInteger> nestedList) {
+        int depth = 1;
+        for (NestedInteger nestedInteger : nestedList) {
+            if (nestedInteger.isInteger()) {
+                continue;
+            }
+            int height = getHeight(nestedInteger.getList()) + 1;
+            depth = Math.max(depth, height);
         }
-        return getHeight(nestedInteger.getList()) + 1;
+        return depth;
     }
+
 }
