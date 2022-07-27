@@ -53,10 +53,43 @@ public class Solution {
 
     public int[][] candyCrush(int[][] board) {
         // 遍历每个位置 往后 行方向
-
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length-2; j++) {
+                // 每个位置横向走 3个
+                if (Math.abs(board[i][j]) == Math.abs(board[i][j+1])
+                        && Math.abs(board[i][j+1]) == Math.abs(board[i][j+2])) {
+                    board[i][j] = -1 * Math.abs(board[i][j]);
+                    board[i][j+1] = -1 * Math.abs(board[i][j+1]);
+                    board[i][j+2] = -1 * Math.abs(board[i][j+2]);
+                }
+            }
+        }
         // 遍历每个位置 往下 列方向 如果一样 变成负数
-
+        for (int i = 0; i < board.length-2; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                // 每个位置横向走 3个
+                if (Math.abs(board[i][j]) == Math.abs(board[i+1][j])
+                        && Math.abs(board[i+1][j]) == Math.abs(board[i+2][j])) {
+                    board[i][j] = -1 * Math.abs(board[i][j]);
+                    board[i+1][j] = -1 * Math.abs(board[i+1][j]);
+                    board[i+2][j] = -1 * Math.abs(board[i+2][j]);
+                }
+            }
+        }
         // 再次遍历 从没裂开始 都往下走 最终 设置 剩余的为0
-        return null;
+        for (int i = 0; i < board[0].length; i++) {
+            // 从下
+            int index = board.length - 1;
+            for (int j = board.length - 1; j >= 0; j--) {
+                if (board[j][i] > 0) {
+                    board[index--][i] = board[j][i];
+                }
+            }
+            // index - 0 都变成 0
+            for (int j = 0; j <= index; j++) {
+                board[j][i] = 0;
+            }
+        }
+        return board;
     }
 }
