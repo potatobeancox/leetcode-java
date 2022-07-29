@@ -79,18 +79,14 @@ public class Codec {
         // 当前节点转换
         Node rootNode = new Node(root.val);
         // 生成 chilidren root 左孩子和 左边孩子的右边孩子
-        rootNode.children = getTreeNodeChild(root);
+        rootNode.children = getTreeNodeChild(root.left);
         return rootNode;
     }
 
     private List<Node> getTreeNodeChild(TreeNode root) {
-        if (root == null || root.left == null) {
-            return null;
-        }
-        // root 左边孩子 每个孩子都要在搞一次 decode
-        TreeNode firstChild = root.left;
-        TreeNode p = firstChild;
         List<Node> childrenList = new ArrayList<>();
+        // root 左边孩子 每个孩子都要在搞一次 decode
+        TreeNode p = root;
         while (p != null) {
             Node decode = decode(p);
             childrenList.add(decode);
