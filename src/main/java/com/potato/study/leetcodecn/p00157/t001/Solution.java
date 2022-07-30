@@ -81,34 +81,26 @@ public class Solution extends Reader4 {
      * @param buf Destination buffer
      * @param n   Number of characters to read
      * @return    The number of actual characters read
+     * https://leetcode.cn/problems/read-n-characters-given-read4/solution/java-pu-tong-si-lu-1009773-by-hxz1998-0grl/
      */
     public int read(char[] buf, int n) {
-        int times = n / 4;
+        char[] buf4 = new char[4];
+        int size = read4(buf4);
         int index = 0;
-        int count = 0;
-        for (int i = 0; i < times; i++) {
-            char[] chars = new char[4];
-            int thisTime = read4(chars);
-            for (int j = 0; j < thisTime; j++) {
-                buf[index++] = chars[j];
+        while (size > 0 && index < n) {
+            // 将buf4 放入 buf中
+            for (int i = 0; i < size && index < n; i++) {
+                buf[index] = buf4[i];
+                index++;
             }
-            count += thisTime;
-            if (thisTime < 4) {
-                return count;
+            if (index >= n) {
+                return n;
             }
+            // 再次获取
+            size = read4(buf4);
         }
-        // 最后一次
-        int remid = times % 4;
-        if (remid == 0) {
-            return count;
-        }
-        char[] chars = new char[4];
-        int thisTime = read4(chars);
-        for (int j = 0; j < thisTime; j++) {
-            buf[index++] = chars[j];
-        }
-        count += thisTime;
-        return count;
+        // 返回当前个数
+        return index;
     }
 }
 
