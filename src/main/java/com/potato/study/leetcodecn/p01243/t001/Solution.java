@@ -48,9 +48,10 @@ import java.util.List;
 public class Solution {
 
     public List<Integer> transformArray(int[] arr) {
-        int[] newArr = new int[arr.length];
+        int[] newArr;
         boolean arraySame = false;
         do {
+            newArr = new int[arr.length];
             newArr[0] = arr[0];
             newArr[arr.length - 1] = arr[arr.length - 1];
             for (int i = 1; i < arr.length - 1; i++) {
@@ -88,6 +89,31 @@ public class Solution {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                6,2,3,4
+        };
+        List<Integer> list = solution.transformArray(arr);
+        // [6, 3, 3, 4]
+        System.out.println(list);
+
+
+        arr = new int[] {
+                1,6,3,4,3,5
+        };
+        list = solution.transformArray(arr);
+        // 1,4,4,4,4,5
+        System.out.println(list);
+
+        arr = new int[] {
+                6,5,8,6,7,7,3,9,8,8,3,1,2,9,8,3
+        };
+        list = solution.transformArray(arr);
+        // [6,6,7,7,7,7,7,8,8,8,3,2,2,8,8,3]
+        System.out.println(list);
     }
 
 }
