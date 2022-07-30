@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00408.t001;
 
+import org.junit.Assert;
+
 import java.util.PriorityQueue;
 
 /**
@@ -52,6 +54,90 @@ public class Solution {
 
 
     public boolean validWordAbbreviation(String word, String abbr) {
-        return false;
+        int wordIndex = 0;
+        int abbrIndex = 0;
+        int abbrCountStartIndex = -1;
+        int abbrCountStartEnd = -1;
+        while (abbrIndex < abbr.length()) {
+            // 字母的话比较一下
+            char abbrCh = abbr.charAt(abbrIndex);
+            if (Character.isLowerCase(abbrCh)) {
+                // 如果 abbrCount 》 0 需要移动
+                if (abbrCountStartIndex >= 0) {
+                    // 前导0判断
+                    if (abbr.charAt(abbrCountStartIndex) == '0') {
+                        return false;
+                    }
+                    String substring = abbr.substring(abbrCountStartIndex, abbrCountStartEnd + 1);
+                    int abbrCount = Integer.parseInt(substring);
+                    wordIndex += abbrCount;
+                    if (wordIndex >= word.length()) {
+                        return false;
+                    }
+                    abbrCountStartIndex = -1;
+                    abbrCountStartEnd = -1;
+                }
+                // 不相同 肯定不是这个单词的缩写
+                if (wordIndex >= word.length()
+                        || abbrCh != word.charAt(wordIndex)) {
+                    return false;
+                }
+                // 相同 index 转移
+                wordIndex++;
+            } else {
+                // 不是单词 那就是数字
+                if (abbrCountStartIndex == -1) {
+                    abbrCountStartIndex = abbrIndex;
+                }
+                abbrCountStartEnd = abbrIndex;
+            }
+            abbrIndex++;
+        }
+        // 最后一次 如果还有剩余的 数字 还需要比较一次
+        if (abbrCountStartIndex >= 0) {
+            // 前导0判断
+            if (abbr.charAt(abbrCountStartIndex) == '0') {
+                return false;
+            }
+            String substring = abbr.substring(abbrCountStartIndex, abbrCountStartEnd + 1);
+            int abbrCount = Integer.parseInt(substring);
+            wordIndex += abbrCount;
+        }
+        if (wordIndex != word.length()) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+
+        String word = "internationalization";
+        String abbr = "i5a11o1";
+        boolean b = solution.validWordAbbreviation(word, abbr);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+
+        word = "a";
+        abbr = "01";
+        b = solution.validWordAbbreviation(word, abbr);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        word = "word";
+        abbr = "w0ord";
+        b = solution.validWordAbbreviation(word, abbr);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        word = "a";
+        abbr = "ab";
+        b = solution.validWordAbbreviation(word, abbr);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
     }
 }
