@@ -1,9 +1,6 @@
 package com.potato.study.leetcodecn.p00734.t001;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.Assert;
 
@@ -71,18 +68,17 @@ public class Solution {
         if (sentence1.length != sentence2.length) {
             return false;
         }
-
-        Map<String, String> map = new HashMap<>();
+        Set<String> set = new HashSet<>();
         for (List<String> list : similarPairs) {
-            map.put(list.get(0), list.get(1));
+            set.add(list.get(0) + "#" + list.get(1));
         }
 
         for (int i = 0; i < sentence1.length; i++) {
             if (sentence1[i].equals(sentence2[i])) {
                 continue;
             }
-            if (sentence2[i].equals(map.get(sentence1[i]))
-                    || sentence1[i].equals(map.get(sentence2[i]))) {
+            if (set.contains(getKey(sentence1[i], sentence2[i]))
+                    || set.contains(getKey(sentence2[i], sentence1[i]))) {
                 continue;
             }
             // 不一样且不相似
@@ -90,6 +86,11 @@ public class Solution {
         }
         return true;
     }
+
+    private String getKey(String word1, String word2) {
+        return word1 + "#" + word2;
+    }
+
 
 
     public static void main(String[] args) {
