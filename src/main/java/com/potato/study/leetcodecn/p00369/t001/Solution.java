@@ -40,7 +40,51 @@ public class Solution {
 
 
     public ListNode plusOne(ListNode head) {
+        // 单链表翻转
+        ListNode pre = null;
+        ListNode p = head;
+        while (p != null) {
+            ListNode next = p.next;
+            p.next = pre;
+            // p pre 转移
+            pre = p;
+            p = next;
+        }
+        // pre 是新的head
+        ListNode q = pre;
+        // 单链表 + 1
+        boolean needPlus = true;
+        while (q != null) {
+            if (needPlus) {
+                q.val++;
+                needPlus = false;
+            }
+            // 判断是否需要进位
+            if (q.val >= 10) {
+                needPlus = true;
+                q.val %= 10;
+            } else {
+                // 没超过10 直接返回
+                break;
+            }
+            q = q.next;
+        }
+        // 是否需要插入节点 在最终节点
+        if (needPlus) {
+            ListNode one = new ListNode(1);
+            head.next = one;
+            head = head.next;
+        }
+        // 再次翻转
+        ListNode r = pre;
+        ListNode newPre = null;
+        while (r != null) {
+            ListNode next = r.next;
+            r.next = newPre;
 
-        return null;
+            newPre = r;
+            r = next;
+        }
+        return head;
     }
 }
