@@ -42,7 +42,31 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
     public String addBoldTag(String s, String[] words) {
-
-        return null;
+        boolean[] status = new boolean[s.length()];
+        for (String word : words) {
+            // s 中循环找
+            int fromIndex = s.indexOf(word);
+            while (fromIndex >= 0) {
+                // 更改自按照
+                for (int i = 0; i < word.length(); i++) {
+                    status[fromIndex + i] = true;
+                }
+                fromIndex = s.indexOf(word, fromIndex + 1);
+            }
+        }
+        // 遍历 status 对于 切换成 高亮之前和之后 加了字符
+        char[] chars = s.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < status.length; i++) {
+            if (status[i] && (i == 0 || !status[i-1])) {
+                builder.append("<b>");
+            }
+            builder.append(chars[i]);
+            // 是不是需要终止符号
+            if (status[i] && (i == status.length - 1 || !status[i+1])) {
+                builder.append("</b>");
+            }
+        }
+        return builder.toString();
     }
 }
