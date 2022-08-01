@@ -4,15 +4,14 @@ package com.potato.study.leetcodecn.p01136.t001;
 /**
  * 1136. 并行课程
  *
- * 给你一个整数 n ，表示编号从 1 到 n 的 n 门课程。另给你一个数组 relations ，其中 relations[i] = [prevCoursei, nextCoursei] ，表示课程 prevCoursei 和课程 nextCoursei 之间存在先修关系：课程 prevCoursei 必须在 nextCoursei 之前修读完成。
+ * 给你一个整数 n ，表示编号从 1 到 n 的 n 门课程。另给你一个数组 relations ，
+ * 其中 relations[i] = [prevCoursei, nextCoursei] ，
+ * 表示课程 prevCoursei 和课程 nextCoursei 之间存在先修关系：课程 prevCoursei 必须在 nextCoursei 之前修读完成。
+ *
+ * 在一个学期内，你可以学习 任意数量 的课程，但前提是你已经在上一学期修读完待学习课程的所有先修课程。
+ *
+ * 请你返回学完全部课程所需的 最少 学期数。如果没有办法做到学完全部这些课程的话，就返回 -1。
 
- 在一个学期内，你可以学习 任意数量 的课程，但前提是你已经在上一学期修读完待学习课程的所有先修课程。
-
- 请你返回学完全部课程所需的 最少 学期数。如果没有办法做到学完全部这些课程的话，就返回 -1。
-
-  
-
-  
 
  示例 1：
 
