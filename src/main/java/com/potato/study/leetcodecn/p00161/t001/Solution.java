@@ -38,6 +38,62 @@ import com.potato.study.leetcode.domain.ListNode;
 public class Solution {
 
     public boolean isOneEditDistance(String s, String t) {
-        return false;
+        // 交换 是 s 一直为小的那个
+        if (null == s && t == null) {
+            return false;
+        } else if (null == s) {
+            return t.length() == 1;
+        } else if (null == t) {
+            return s.length() == 1;
+        }
+        // 都不是空 先比较 大小交换
+        if (s.length() > t.length()) {
+            String tmp = t;
+            t = s;
+            s = tmp;
+        }
+        if (t.length() - s.length() > 1) {
+            return false;
+        }
+        // 找到 第一个不同的位置
+        int len1 = s.length();
+        int len2 = t.length();
+        int diffIndex = -1;
+        for (int i = 0; i < len1; i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                diffIndex = i;
+                break;
+            }
+        }
+        // 没有不同 判断是不是 有长度不一样 如果没有不同的地方且相同 返回 false 否则 返回 true
+        if (diffIndex == -1) {
+            return len1 != len2;
+        }
+        // 有不同的字母， 如果两个字符串 相同 和不同 两种情况
+        if (len1 == len2) {
+            // 之后所有位置必须都一样
+            for (int i = diffIndex + 1; i < len1; i++) {
+                if (s.charAt(i) != t.charAt(i)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            // 长度相同情况 往后找 不同情况 短的不变 长的往后挪一个看看 能不能匹配
+            int index1 = diffIndex;
+            int index2 = diffIndex + 1;
+
+            while (index1 < s.length() && index2 < t.length()) {
+
+                if (s.charAt(index1) != t.charAt(index2)) {
+                    return false;
+                }
+
+                index1++;
+                index2++;
+            }
+
+            return true;
+        }
     }
 }
