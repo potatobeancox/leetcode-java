@@ -48,6 +48,9 @@ import com.potato.study.leetcode.util.TreeNodeUtil;
 public class Solution {
 
     public List<List<Integer>> verticalOrder(TreeNode root) {
+        if (null == root) {
+            return new ArrayList<>();
+        }
         TreeMap<Integer, List<Integer>> listMap = new TreeMap<>();
         Queue<TreeNodeContext> queue = new LinkedList<>();
         TreeNodeContext nodeContext = new TreeNodeContext();
