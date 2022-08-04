@@ -1,7 +1,10 @@
 package com.potato.study.leetcodecn.p00723.t001;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  *
@@ -52,44 +55,91 @@ public class Solution {
 
 
     public int[][] candyCrush(int[][] board) {
-        // 遍历每个位置 往后 行方向
+        int[][] candyCrushBoard = getCandyCrush(board);
+        while (!isMatrixSame(candyCrushBoard, board)) {
+            board = candyCrushBoard;
+            candyCrushBoard = getCandyCrush(candyCrushBoard);
+        }
+        return candyCrushBoard;
+    }
+
+
+    private boolean isMatrixSame(int[][] board1, int[][] board2) {
+        for (int i = 0; i < board1.length; i++) {
+            for (int j = 0; j < board1[i].length; j++) {
+                if (board1[i][j] != board2[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private int[][] getCandyCrush(int[][] board) {
+        int[][] newBoard = new int[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length-2; j++) {
+            for (int j = 0; j < board[0].length; j++) {
+                newBoard[i][j] = board[i][j];
+            }
+        }
+
+
+        // 遍历每个位置 往后 行方向
+        for (int i = 0; i < newBoard.length; i++) {
+            for (int j = 0; j < newBoard[0].length-2; j++) {
                 // 每个位置横向走 3个
-                if (Math.abs(board[i][j]) == Math.abs(board[i][j+1])
-                        && Math.abs(board[i][j+1]) == Math.abs(board[i][j+2])) {
-                    board[i][j] = -1 * Math.abs(board[i][j]);
-                    board[i][j+1] = -1 * Math.abs(board[i][j+1]);
-                    board[i][j+2] = -1 * Math.abs(board[i][j+2]);
+                if (Math.abs(newBoard[i][j]) == Math.abs(newBoard[i][j+1])
+                        && Math.abs(newBoard[i][j+1]) == Math.abs(newBoard[i][j+2])) {
+                    newBoard[i][j] = -1 * Math.abs(newBoard[i][j]);
+                    newBoard[i][j+1] = -1 * Math.abs(newBoard[i][j+1]);
+                    newBoard[i][j+2] = -1 * Math.abs(newBoard[i][j+2]);
                 }
             }
         }
         // 遍历每个位置 往下 列方向 如果一样 变成负数
-        for (int i = 0; i < board.length-2; i++) {
-            for (int j = 0; j < board[0].length; j++) {
+        for (int i = 0; i < newBoard.length-2; i++) {
+            for (int j = 0; j < newBoard[0].length; j++) {
                 // 每个位置横向走 3个
-                if (Math.abs(board[i][j]) == Math.abs(board[i+1][j])
-                        && Math.abs(board[i+1][j]) == Math.abs(board[i+2][j])) {
-                    board[i][j] = -1 * Math.abs(board[i][j]);
-                    board[i+1][j] = -1 * Math.abs(board[i+1][j]);
-                    board[i+2][j] = -1 * Math.abs(board[i+2][j]);
+                if (Math.abs(newBoard[i][j]) == Math.abs(newBoard[i+1][j])
+                        && Math.abs(newBoard[i+1][j]) == Math.abs(newBoard[i+2][j])) {
+                    newBoard[i][j] = -1 * Math.abs(newBoard[i][j]);
+                    newBoard[i+1][j] = -1 * Math.abs(newBoard[i+1][j]);
+                    newBoard[i+2][j] = -1 * Math.abs(newBoard[i+2][j]);
                 }
             }
         }
         // 再次遍历 从没裂开始 都往下走 最终 设置 剩余的为0
-        for (int i = 0; i < board[0].length; i++) {
+        for (int i = 0; i < newBoard[0].length; i++) {
             // 从下
-            int index = board.length - 1;
-            for (int j = board.length - 1; j >= 0; j--) {
-                if (board[j][i] > 0) {
-                    board[index--][i] = board[j][i];
+            int index = newBoard.length - 1;
+            for (int j = newBoard.length - 1; j >= 0; j--) {
+                if (newBoard[j][i] > 0) {
+                    newBoard[index--][i] = newBoard[j][i];
                 }
             }
             // index - 0 都变成 0
             for (int j = 0; j <= index; j++) {
-                board[j][i] = 0;
+                newBoard[j][i] = 0;
             }
         }
-        return board;
+        return newBoard;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input =
+                 "[[110,5,112,113,114],"
+                + "[210,211,5,213,214],"
+                + "[310,311,3,313,314],"
+                 + "[410,411,412,5,414],"
+                 + "[5,1,512,3,3],"
+                 + "[610,4,1,613,614],"
+                 + "[710,1,2,713,714],"
+                 + "[810,1,2,1,1],"
+                 + "[1,1,2,2,2],"
+                 + "[4,1,4,4,1014]]";
+        int[][] board = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int[][] ints = solution.candyCrush(board);
+        System.out.println(Arrays.deepToString(ints));
     }
 }
