@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 
+import com.sun.xml.internal.xsom.XSUnionSimpleType;
+
 /**
  * 573. 松鼠模拟
  *
@@ -56,4 +58,23 @@ public class Solution {
         return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]);
     }
 
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int height = 1;
+        int width = 3;
+        int[] tree = new int[] {
+                0,1
+        };
+        int[] squirrel = new int[] {
+                0,0
+        };
+        int[][] nuts = new int[][] {
+                {},
+                {}
+        };
+        int distance = solution.minDistance(height, width, tree, squirrel, nuts);
+        System.out.println(distance);
+        Assert.assertEquals(3, distance);
+    }
 }
