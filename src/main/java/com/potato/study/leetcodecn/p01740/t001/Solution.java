@@ -51,7 +51,68 @@ import com.potato.study.leetcode.domain.TreeNode;
 public class Solution {
 
     public int findDistance(TreeNode root, int p, int q) {
+        // 找到 共同的父亲
+        TreeNode parent = getCommonParent(root, p, q);
+        // 求 父亲到这两个点 距离多少
+        int path1 = getPath(parent, p);
+        int path2 = getPath(parent, q);
+        return path1 + path2;
+    }
 
-        return -1;
+    /**
+     * 距离
+     * @param parent
+     * @param p
+     * @return
+     */
+    private int getPath(TreeNode parent, int p) {
+        if (parent == null) {
+            return -1;
+        }
+        if (parent.val == p) {
+            return 0;
+        }
+        int path1 = getPath(parent.left, p);
+        int path2 = getPath(parent.right, p);
+
+        if (path1 >= 0 && path2 >= 0) {
+            return Math.min(path1, path2) + 1;
+        } else if (path1 >= 0) {
+            return path1 + 1;
+        } else if (path2 >= 0) {
+            return path2 + 1;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * 找到共同的父亲
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    private TreeNode getCommonParent(TreeNode root, int p, int q) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val == p || root.val == q) {
+            return root;
+        }
+        // 这个节点不是
+        TreeNode left = getCommonParent(root.left, p, q);
+        TreeNode right = getCommonParent(root.right, p, q);
+
+        if (left != null && right != null) {
+            // 一遍一个
+            return root;
+        } else if (left != null) {
+            return left;
+        } else if (right != null) {
+            return right;
+        } else {
+            return null;
+        }
     }
 }
