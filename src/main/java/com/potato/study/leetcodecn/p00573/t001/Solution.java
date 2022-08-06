@@ -47,7 +47,7 @@ public class Solution {
             sum += getDistance(nut, tree) * 2;
         }
         // 再次遍历 nuts 此时 减去 nut 到tree 距离 + 松鼠 到nut距离 求最小值
-        int min = sum;
+        int min = Integer.MAX_VALUE;
         for (int[] nut : nuts) {
             min = Math.min(min, sum - getDistance(tree, nut) + getDistance(squirrel, nut));
         }
@@ -70,8 +70,7 @@ public class Solution {
                 0,0
         };
         int[][] nuts = new int[][] {
-                {},
-                {}
+                {0,2}
         };
         int distance = solution.minDistance(height, width, tree, squirrel, nuts);
         System.out.println(distance);
