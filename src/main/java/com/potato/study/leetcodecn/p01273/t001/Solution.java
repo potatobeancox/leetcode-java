@@ -73,7 +73,7 @@ public class Solution {
             }
             int p = parent[i];
             int child = i;
-            childList.get(p).add(i);
+            childList.get(p).add(child);
         }
         // dfs
         this.deleteCount = 0;
@@ -84,8 +84,29 @@ public class Solution {
         return nodes - this.deleteCount;
     }
 
-    private void dfs(List<List<Integer>> childList, int[] value, int startIndex) {
 
+    /**
+     *
+     * @param childList
+     * @param value
+     * @param startIndex
+     * @return 0-这个子树节点的和 1-这个子树节点个数
+     */
+    private long[] dfs(List<List<Integer>> childList, int[] value, int startIndex) {
+        // 分别获取 孩子的值 sum 如果子树和 和当前节点和 等于 0 那么删除节点多1
+        List<Integer> children = childList.get(startIndex);
+        long sum = value[startIndex];
+        long count = 1;
+        // 统计孩子们的值
+        for (int childIndex : children) {
+            long[] childInfo = dfs(childList, value, childIndex);
+            sum += childInfo[0];
+            count += childInfo[1];
+        }
+
+        return new long[] {
+                sum, count
+        };
     }
 
 }
