@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02046.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import com.potato.study.leetcode.util.ListNodeUtil;
 import org.junit.Assert;
 
 import com.potato.study.leetcode.domain.ListNode;
@@ -60,6 +62,8 @@ public class Solution {
         ListNode p = head;
         ListNode negativeTail = null;
         while (p != null) {
+            ListNode next = p.next;
+            p.next = null;
             if (p.val >= 0) {
                 // 大于 0 尾插法
                 q.next = p;
@@ -72,7 +76,7 @@ public class Solution {
                 p.next= r.next;
                 r.next = p;
             }
-            p = p.next;
+            p = next;
         }
         // 将两个链表链接起来
         if (negativeTail != null) {
@@ -82,6 +86,14 @@ public class Solution {
             // 没有 负数链表
             return positiveHead.next;
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[0,2,-5,5,10,-10]";
+        ListNode head = ListNodeUtil.arrayStringToListNode(input);
+        ListNode listNode = solution.sortLinkedList(head);
+        ListNodeUtil.printListNode(listNode);
     }
 
 }
