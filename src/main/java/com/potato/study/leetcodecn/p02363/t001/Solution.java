@@ -1,6 +1,12 @@
 package com.potato.study.leetcodecn.p02363.t001;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * 2363. 合并相似的物品
@@ -61,9 +67,33 @@ public class Solution {
 
 
     public List<List<Integer>> mergeSimilarItems(int[][] items1, int[][] items2) {
-        return null;
+        Map<Integer, Integer> valueWeightMap = new HashMap<>();
+        buildMap(items1, valueWeightMap);
+        buildMap(items2, valueWeightMap);
+        // 便利 map 生成结果
+        List<List<Integer>> result = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : valueWeightMap.entrySet()) {
+            List<Integer> list = new ArrayList<>();
+            list.add(entry.getKey());
+            list.add(entry.getValue());
+
+            result.add(list);
+        }
+
+        Collections.sort(result, (o1, o2) -> Integer.compare(o1.get(0), o2.get(0)));
+
+        return result;
     }
 
+    private void buildMap(int[][] items1, Map<Integer, Integer> valueWeightMap) {
+        for (int[] item : items1) {
+            int value = item[0];
+            int weight = item[1];
+            int totalWeight = valueWeightMap.getOrDefault(value, 0);
+            totalWeight += weight;
+            valueWeightMap.put(value, totalWeight);
+        }
+    }
 
 
 }
