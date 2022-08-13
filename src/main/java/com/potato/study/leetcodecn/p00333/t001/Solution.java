@@ -93,9 +93,9 @@ public class Solution {
         // 记录历史最大值
         if (leftChildInfo != null && rightChildInfo != null && rootValue > leftChildInfo[0] && rootValue < rightChildInfo[1]) {
             this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
-        } else if (leftChildInfo != null && rootValue > leftChildInfo[0]) {
+        } else if (leftChildInfo != null && rootValue > leftChildInfo[0] && rightChildInfo == null) {
             this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
-        } else if (rightChildInfo != null && rootValue < rightChildInfo[1]) {
+        } else if (rightChildInfo != null && rootValue < rightChildInfo[1] && leftChildInfo == null) {
             this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
         }
         return rootInfo;
