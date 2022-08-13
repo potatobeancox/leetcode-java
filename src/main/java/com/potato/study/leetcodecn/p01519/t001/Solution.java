@@ -2,6 +2,9 @@ package com.potato.study.leetcodecn.p01519.t001;
 
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 1519. 子树中标签相同的节点数
  *
@@ -60,6 +63,52 @@ import org.junit.Assert;
 public class Solution {
 
     public int[] countSubTrees(int n, int[][] edges, String labels) {
-        return null;
+        // 将 edges 转换成 list list parent 对应的孩子们
+        List<List<Integer>> connection = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            connection.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            int a = edge[0];
+            int b = edge[1];
+
+            connection.get(a).add(b);
+            connection.get(b).add(a);
+        }
+        boolean[] visit = new boolean[n];
+        // dfs 从 节点 0 开始查找 先子节点遍历 返回值 是 count array 每次dfs 需要计算孩子有多少个节点
+        int[] count = new int[n];
+        dfs(visit, count, connection, labels, 0);
+        return count;
     }
+
+    private int[] dfs(boolean[] visit, int[] count, List<List<Integer>> connection, String labels, int i) {
+        int[] totalCount = new int[26];
+        // 终止条件
+        if (visit[i]) {
+            return totalCount;
+        }
+        visit[i] = true;
+        // 找到子树
+        List<Integer> list = connection.get(i);
+        for (int child : list) {
+            if (visit[child]) {
+                continue;
+            }
+            int[] childCount = dfs(visit, count, connection, labels, child);
+            // 计算和
+            for (int j = 0; j < 26; j++) {
+                totalCount[j] += childCount[j];
+            }
+        }
+        // 计算 子树的个数 中某个点的个数
+        char thisChar = labels.charAt(i);
+        totalCount[thisChar - 'a']++;
+        int thisCharCount = totalCount[thisChar - 'a'];
+        count[i] = thisCharCount;
+        return totalCount;
+    }
+
+
+
 }
