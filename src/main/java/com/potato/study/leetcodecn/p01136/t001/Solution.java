@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01136.t001;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 1136. 并行课程
  *
@@ -46,6 +49,14 @@ package com.potato.study.leetcodecn.p01136.t001;
 public class Solution {
 
     public int minimumSemesters(int n, int[][] relations) {
+        // 遍历 relations 生成 每个 节点到 孩子的list list
+        List<List<Integer>> graph = new ArrayList<>();
+        // 上述遍历 过程中 记录 节点的度
+        int[] indegree = new int[n+1];
+
+        // 把节点 0 度的 方入queue 中 每次 弹出 作为 set 遍历过 bfs
+
+        // 最终看看 还有没有没访问过的
 
         return -1;
     }
