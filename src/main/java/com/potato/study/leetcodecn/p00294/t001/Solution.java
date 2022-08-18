@@ -2,7 +2,9 @@ package com.potato.study.leetcodecn.p00294.t001;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 294. 翻转游戏 II
@@ -37,11 +39,34 @@ import java.util.List;
  */
 public class Solution {
 
+    // 使用一个 map 缓存先手 对应某种局面结果
+    private Map<String, Boolean> keyResultMap = new HashMap<>();
+
     public boolean canWin(String currentState) {
-        //
-
-
-        return true;
+        if (keyResultMap.containsKey(currentState)) {
+            return keyResultMap.get(currentState);
+        }
+        // 如果本次没有遇到过 替换一个++ 依次选择 递归看看 对方能不能输
+        for (int i = 0; i < currentState.length() - 1; i++) {
+            if (currentState.charAt(i) == '+'
+                    && currentState.charAt(i+1) == '+') {
+                // 替换一下试试
+                String newState = "";
+                if (i > 0) {
+                    newState += currentState.substring(0, i);
+                }
+                newState += "--";
+                if (i + 2 <= currentState.length()) {
+                    newState += currentState.substring(i+2);
+                }
+                if (!canWin(newState)) {
+                    keyResultMap.put(currentState, true);
+                    return true;
+                }
+            }
+        }
+        keyResultMap.put(currentState, false);
+        return false;
     }
 
 
