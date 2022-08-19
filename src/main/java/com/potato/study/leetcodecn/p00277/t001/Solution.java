@@ -55,11 +55,42 @@ package com.potato.study.leetcodecn.p00277.t001;
  */
 public class Solution extends Relation {
     public int findCelebrity(int n) {
+        // 其他所有 n - 1 个人都认识他/她，而他/她并不认识其他任何人。
+        // 从 0 -n-1 开始遍历 当前i 看下 其他是不是 有人不认识他 是的话 continue 不是的话 看看 他是不是 所有人都不认识
+        for (int i = 0; i < n; i++) {
+            boolean allKnowHim = true;
+            boolean heKnowNone = true;
+            // 其他是不是 有人不认识他
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    continue;
+                }
+                if (!knows(j, i)) {
+                    allKnowHim = false;
+                    break;
+                }
+                // i 不认识任何人
+                if (knows(i, j)) {
+                    heKnowNone = false;
+                    break;
+                }
+
+            }
+            if (allKnowHim && heKnowNone) {
+                return i;
+            }
+        }
         return -1;
     }
 }
 
 class Relation {
+    /**
+     *  获取到 A 是否认识 B
+     * @param a
+     * @param b
+     * @return
+     */
     public boolean knows(int a, int b) {
         return false;
     }
