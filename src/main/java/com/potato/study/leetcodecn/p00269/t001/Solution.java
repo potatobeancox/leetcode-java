@@ -47,6 +47,7 @@ import java.util.*;
  */
 public class Solution {
 
+
     public String alienOrder(String[] words) {
         // 遍历 word 每个位置 生成一个 parent list child 的 list list
         List<List<Character>> graph = new ArrayList<>();
