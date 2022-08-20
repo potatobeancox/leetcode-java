@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 302. 包含全部黑色像素的最小矩形
  *
@@ -50,8 +54,70 @@ import java.util.Set;
 public class Solution {
 
 
-    public int minArea(char[][] image, int x, int y) {
+    private int x1;
+    private int x2;
+    private int y1;
+    private int y2;
 
-        return -1;
+    public int minArea(char[][] image, int x, int y) {
+        // 遍历 image 找到 行出现最小值和 列出现最小值
+        this.x1 = Integer.MAX_VALUE;
+        this.y1 = Integer.MAX_VALUE;
+
+        this.x2 = Integer.MIN_VALUE;
+        this.y2 = Integer.MIN_VALUE;
+
+        dfs(image, x, y);
+
+        return Math.abs(x2 - x1 + 1) * Math.abs(y2 - y1 + 1);
+    }
+
+    private void dfs(char[][] image, int x, int y) {
+        if (image[x][y] != '1') {
+            return;
+        }
+
+        image[x][y] = '2';
+        // 黑色
+        x1 = Math.min(x, x1);
+        x2 = Math.max(x, x2);
+        y1 = Math.min(y, y1);
+        y2 = Math.max(y, y2);
+
+        int[][] dir = new int[][] {
+                {-1, 0},
+                {1, 0},
+                {0, -1},
+                {0, 1}
+        };
+
+        for (int i = 0; i < 4; i++) {
+            int dx = x + dir[i][0];
+            int dy = y + dir[i][1];
+
+            // 坐标是否合理
+            if (dx < 0 || dx >= image.length || dy < 0 || dy >= image[0].length) {
+                continue;
+            }
+
+            // 白色 或者已经访问过
+            if (image[dx][dy] != '1') {
+                continue;
+            }
+            dfs(image, dx, dy);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        // [["0","0","1","0"],["0","1","1","0"],["0","1","0","0"]], x = 0, y = 2
+        String input = "[[\"0\",\"0\",\"1\",\"0\"],[\"0\",\"1\",\"1\",\"0\"],[\"0\",\"1\",\"0\",\"0\"]]";
+        char[][] image = LeetcodeInputUtils.inputString2CharArrayTwoDimensional(input);
+        int x = 0;
+        int y = 2;
+        int area = solution.minArea(image, x, y);
+        System.out.println(area);
+        Assert.assertEquals(6, area);
     }
 }
