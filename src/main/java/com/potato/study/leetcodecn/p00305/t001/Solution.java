@@ -51,7 +51,59 @@ import org.junit.Assert;
  */
 public class Solution {
 
+    /**
+     * 并查集
+     * https://leetcode.cn/problems/number-of-islands-ii/solution/dao-yu-shu-liang-ii-by-leetcode/
+     * @param m
+     * @param n
+     * @param positions
+     * @return
+     */
     public List<Integer> numIslands2(int m, int n, int[][] positions) {
+        // 遍历 positions 每次增加是判断 4个方向 是否可以连通 如果可以连通 进行 union 操作
+        int total = m * n;
+        UnionFind unionFind = new UnionFind(total);
+
+
+        // 得到并查集 个数
+
         return null;
+    }
+
+
+    class UnionFind {
+
+        private int[] parent;
+
+        private int areaCount;
+
+        public void addAreaCount() {
+            areaCount++;
+        }
+
+        public UnionFind(int count) {
+            this.parent = new int[count];
+            for (int i = 0; i < count; i++) {
+                parent[i] = i;
+            }
+        }
+
+        public void union(int target1, int target2) {
+            int p1 = find(target1);
+            int p2 = find(target2);
+
+            if (p1 == p2) {
+                return;
+            }
+            areaCount--;
+            parent[p1] = p2;
+        }
+
+        public int find(int target) {
+            while (parent[target] != target) {
+                parent[target] = target;
+            }
+            return target;
+        }
     }
 }
