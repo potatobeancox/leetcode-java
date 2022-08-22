@@ -1,8 +1,13 @@
 package com.potato.study.leetcodecn.p00305.t001;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 305. 岛屿数量 II
@@ -60,14 +65,52 @@ public class Solution {
      * @return
      */
     public List<Integer> numIslands2(int m, int n, int[][] positions) {
-        // 遍历 positions 每次增加是判断 4个方向 是否可以连通 如果可以连通 进行 union 操作
         int total = m * n;
         UnionFind unionFind = new UnionFind(total);
+        Set<Integer> islandSet = new HashSet<>();
+        // 遍历 positions 每次增加是判断 4个方向 是否可以连通 如果可以连通 进行 union 操作
+        int[][] dir = new int[][] {
+                {-1, 0},
+                {1, 0},
+                {0, -1},
+                {0, 1}
+        };
+        List<Integer> isLandCountList = new ArrayList<>();
+        for (int i = 0; i < positions.length; i++) {
+            int x = positions[i][0];
+            int y = positions[i][1];
 
+            int key = x * n + y;
+            // 出现重复的点
+            if (islandSet.contains(key)) {
+                isLandCountList.add(unionFind.getAreaCount());
+                continue;
+            }
+            // 添加当前点作为岛屿
+            islandSet.add(key);
+            // 增加岛屿个数
+            unionFind.addAreaCount();
 
-        // 得到并查集 个数
-
-        return null;
+            // 连接的四个方向
+            for (int j = 0; j < 4; j++) {
+                int dx = x + dir[j][0];
+                int dy = y + dir[j][1];
+                // 超出边界
+                if (dx < 0 || dx >= m || dy < 0 || dy >= n) {
+                    continue;
+                }
+                // 看下周边是否已经存在岛屿
+                int nextKey = dx * n + dy;
+                if (!islandSet.contains(nextKey)) {
+                    continue;
+                }
+                // 存在岛屿
+                unionFind.union(key, nextKey);
+            }
+            isLandCountList.add(unionFind.getAreaCount());
+        }
+        // 得到并查集 连通分量 个数 就是目前岛屿个数
+        return isLandCountList;
     }
 
 
@@ -76,6 +119,10 @@ public class Solution {
         private int[] parent;
 
         private int areaCount;
+
+        public int getAreaCount() {
+            return this.areaCount;
+        }
 
         public void addAreaCount() {
             areaCount++;
@@ -96,14 +143,34 @@ public class Solution {
                 return;
             }
             areaCount--;
-            parent[p1] = p2;
+            parent[p2] = p1;
         }
 
         public int find(int target) {
             while (parent[target] != target) {
-                parent[target] = target;
+                target = parent[target];
             }
             return target;
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int m = 3;
+        int n = 3;
+        String input = "[[0,1],[1,2],[2,1],[1,0],[0,2],[0,0],[1,1]]";
+        int[][] positions = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        List<Integer> list = solution.numIslands2(m, n, positions);
+        // [1,2,3,4,3,2,1]
+        System.out.println(list);
+
+
+        m = 3;
+        n = 3;
+        input = "[[0,0],[0,1],[1,2],[1,2]]";
+        positions = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        list = solution.numIslands2(m, n, positions);
+        // [1,1,2,2]
+        System.out.println(list);
     }
 }
