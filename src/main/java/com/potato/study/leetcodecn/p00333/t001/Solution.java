@@ -4,6 +4,8 @@ import com.potato.study.leetcode.domain.TreeNode;
 
 import java.util.*;
 
+import org.junit.Assert;
+
 /**
  * 333. 最大 BST 子树
  *
@@ -68,36 +70,72 @@ public class Solution {
         if (root == null) {
             return null;
         }
-        // 如果有孩子 找到孩子的信息
-        int[] leftChildInfo = dfs(root.left);
-        int[] rightChildInfo = dfs(root.right);
-
-        // 当前节点信息
+        // 终止条件叶子
         int rootValue = root.val;
         int[] rootInfo = new int[3];
         rootInfo[0] = rootValue;
         rootInfo[1] = rootValue;
         rootInfo[2] = 1;
-        // 大于 左孩子的最大值
-        if (leftChildInfo != null) {
-            rootInfo[0] = Math.min(leftChildInfo[0], rootInfo[0]);
-            rootInfo[1] = Math.max(leftChildInfo[1], rootInfo[1]);
-            rootInfo[2] += leftChildInfo[2];
+        // 叶子节点
+        if (root.left == null && root.right == null) {
+            this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
+            return rootInfo;
         }
-        // 小于 右孩子的最小值
-        if (rightChildInfo != null) {
-            rootInfo[0] = Math.min(rightChildInfo[0], rootInfo[0]);
-            rootInfo[1] = Math.max(rightChildInfo[1], rootInfo[1]);
+        // 只有 左子树
+        if (root.left != null && root.right == null) {
+            int[] leftChildInfo = dfs(root.left);
+            // 左子树无法构成 那这个数就废了 小于等于 左子树的最大值
+            if (leftChildInfo == null || rootValue <= leftChildInfo[0]) {
+                return null;
+            }
+            rootInfo[0] = Math.max(leftChildInfo[0], rootInfo[0]);
+            rootInfo[1] = Math.min(leftChildInfo[1], rootInfo[1]);
+            rootInfo[2] += leftChildInfo[2];
+        } else if (root.right != null && root.left == null) {
+            // 只有 右子树
+            int[] rightChildInfo = dfs(root.right);
+            if (rightChildInfo == null || rootValue >= rightChildInfo[1]) {
+                return null;
+            }
+            rootInfo[0] = Math.max(rightChildInfo[0], rootInfo[0]);
+            rootInfo[1] = Math.min(rightChildInfo[1], rootInfo[1]);
+            rootInfo[2] += rightChildInfo[2];
+
+        } else {
+            // 如果有孩子 找到孩子的信息
+            int[] leftChildInfo = dfs(root.left);
+            int[] rightChildInfo = dfs(root.right);
+
+            if (leftChildInfo == null || rightChildInfo == null) {
+                return null;
+            }
+            if (rootValue <= leftChildInfo[0] || rootValue >= rightChildInfo[1]) {
+                return null;
+            }
+
+            rootInfo[1] = Math.min(leftChildInfo[1], rootInfo[1]);
+            rootInfo[2] += leftChildInfo[2];
+
+            rootInfo[0] = Math.max(rightChildInfo[0], rootInfo[0]);
             rootInfo[2] += rightChildInfo[2];
         }
-        // 记录历史最大值
-        if (leftChildInfo != null && rightChildInfo != null && rootValue > leftChildInfo[0] && rootValue < rightChildInfo[1]) {
-            this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
-        } else if (leftChildInfo != null && rootValue > leftChildInfo[0] && rightChildInfo == null) {
-            this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
-        } else if (rightChildInfo != null && rootValue < rightChildInfo[1] && leftChildInfo == null) {
-            this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
-        }
+        this.maxSubtreeCount = Math.max(this.maxSubtreeCount, rootInfo[2]);
         return rootInfo;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(10);
+
+        root.left = new TreeNode(5);
+        root.left.left = new TreeNode(1);
+        root.left.right = new TreeNode(8);
+
+        root.right = new TreeNode(15);
+        root.right.right = new TreeNode(7);
+
+        int i = solution.largestBSTSubtree(root);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 }
