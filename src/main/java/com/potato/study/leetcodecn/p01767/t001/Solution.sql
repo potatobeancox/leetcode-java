@@ -74,3 +74,23 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 来源：力扣（LeetCode）
 -- 链接：https://leetcode.cn/problems/find-the-subtasks-that-did-not-execute
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+
+-- 利用 Tasks 表: 生成 task_id subtask_id 全
+-- WITH RECURSIVE 用法
+-- https://blog.csdn.net/mjfppxx/article/details/124879326
+-- 题解
+-- https://leetcode.cn/problems/find-the-subtasks-that-did-not-execute/solution/1767-jian-ji-xie-fa-recursive-xian-zhao-wl15z/
+-- using 用法
+-- https://blog.csdn.net/weiguang102/article/details/122957768
+
+with recursive t(task_id, subtask_id) as (
+    select task_id,subtasks_count from Tasks
+    union all
+    select task_id, subtask_id-1 from t where subtask_id-1>0
+
+)
+-- union all 将两个表组成一个 字段数量类型必须相同
+
+select * from t left join Executed using(task_id, subtask_id)
+where Executed.subtask_id is null
