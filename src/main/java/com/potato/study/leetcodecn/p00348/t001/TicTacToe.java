@@ -75,75 +75,69 @@ import java.util.Set;
  */
 public class TicTacToe {
 
-    private Set<Long> set1;
-    private Set<Long> set2;
+    // line
+    private int[] status1;
+    // col
+    private int[] status2;
+    // 正对角线
+    private int positive;
+    // 负对角线
+    private int negative;
+
+
 
     private int n;
 
+    /**
+     *
+     * @param n
+     */
     public TicTacToe(int n) {
-        this.set1 = new HashSet<>();
-        this.set2 = new HashSet<>();
         this.n = n;
+        this.status1 = new int[n];
+        this.status2 = new int[n];
+        this.positive = 0;
+        this.negative = 0;
     }
 
+    /**
+     * player = 1 +1
+     * player = 2 -1
+     * @param row
+     * @param col
+     * @param player
+     * @return
+     */
     public int move(int row, int col, int player) {
-        long key = row * n + col;
         if (player == 1) {
-            set1.add(key);
+            status1[row]++;
+            status2[col]++;
+            if (row == col) {
+                positive++;
+            }
+            if (row + col == n-1) {
+                negative++;
+            }
         } else {
-            set2.add(key);
-        }
-        // row 行
-        boolean isRow1AllSame = true;
-        boolean isRow2AllSame = true;
-        for (int i = 0; i < n-1; i++) {
-            long rowKey = row * n + i;
-            long nextRowKey = row * n + i + 1;
-
-            if (set1.contains(rowKey) != set1.contains(nextRowKey)) {
-                isRow1AllSame = false;
+            status1[row]--;
+            status2[col]--;
+            if (row == col) {
+                positive--;
             }
-
-            if (set2.contains(rowKey) != set2.contains(nextRowKey)) {
-                isRow2AllSame = false;
-            }
-
-            if (!isRow1AllSame || !isRow2AllSame) {
-                break;
+            if (row + col == n-1) {
+                negative--;
             }
         }
-
-        if (isRow1AllSame) {
-            return 1;
+        // 看下有没有赢了
+        if (positive == n || negative == n
+                || positive == -n || negative == -n) {
+            return player;
         }
-
-        if (isRow2AllSame) {
-            return 2;
-        }
-
-        // col 列
-        boolean isCol1AllSame = true;
-        boolean isCol2AllSame = true;
-        for (int i = 0; i < n-1; i++) {
-            long colKey = i * n + col;
-            long nextColKey = (i+1) * n + col;
-
-            if (set1.contains(colKey) != set1.contains(nextColKey)) {
-                isCol1AllSame = false;
-            }
-
-            if (set2.contains(colKey) != set2.contains(nextColKey)) {
-                isCol2AllSame = false;
-            }
-
-            if (!isCol1AllSame || !isCol2AllSame) {
-                break;
+        for (int i = 0; i < n; i++) {
+            if (status1[i] == n || status1[i] == -n || status2[i] == n || status2[i] == -n) {
+                return player;
             }
         }
-
-        // 对角线
-
-
-        return player;
+        return 0;
     }
 }
