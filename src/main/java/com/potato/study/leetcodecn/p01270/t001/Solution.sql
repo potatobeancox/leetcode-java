@@ -57,3 +57,10 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 来源：力扣（LeetCode）
 -- 链接：https://leetcode.cn/problems/all-people-report-to-the-given-manager
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+-- https://leetcode.cn/problems/all-people-report-to-the-given-manager/solution/xiang-gong-si-ceohui-bao-gong-zuo-de-suo-you-ren-b/
+
+select e1.employee_id as employee_id from Employees as e1
+    join Employees as e2 on e1.manager_id = e2.employee_id
+    join Employees as e3 on e2.manager_id = e3.employee_id
+where e1.employee_id != 1 and e3.manager_id = 1
