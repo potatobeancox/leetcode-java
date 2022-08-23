@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.p00362.t001;
 
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -57,28 +59,22 @@ import org.junit.Assert;
  */
 public class HitCounter {
 
-    private TreeMap<Integer, AtomicInteger> countMap;
+    private Queue<Integer> queue;
 
     public HitCounter() {
-        this.countMap = new TreeMap<>();
+        this.queue = new LinkedList<>();
     }
 
     public void hit(int timestamp) {
-        AtomicInteger count = countMap.getOrDefault(timestamp, new AtomicInteger(0));
-        count.addAndGet(1);
+        queue.add(timestamp);
     }
 
     public int getHits(int timestamp) {
-        // 小于等于
-        int count = 0;
-        for (Map.Entry<Integer, AtomicInteger> entry : countMap.entrySet()) {
-            int key = entry.getKey();
-            if (key < timestamp - 300 || key > timestamp) {
-                continue;
-            }
-            count += entry.getValue().get();
+        while (!queue.isEmpty()
+                && queue.peek() <= timestamp - 300) {
+            queue.poll();
         }
-        return count;
+        return queue.size();
     }
 }
 
