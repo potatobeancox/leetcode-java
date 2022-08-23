@@ -63,6 +63,10 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 链接：https://leetcode.cn/problems/drop-type-1-orders-for-customers-with-type-0-orders
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+-- 有 0订单的 customer_id
 
-SELECT * FROM Orders
-WHERE order_type=0
+
+SELECT * FROM Orders where order_type = 0 or (order_type = 1 and customer_id not in (
+    SELECT customer_id FROM Orders
+    WHERE order_type = 0
+))
