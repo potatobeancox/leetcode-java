@@ -2,6 +2,10 @@ package com.potato.study.leetcodecn.p00361.t001;
 
 import java.util.Arrays;
 
+import org.junit.Assert;
+
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 /**
  * 361. 轰炸敌人
  *
@@ -43,7 +47,76 @@ import java.util.Arrays;
 public class Solution {
 
     public int maxKilledEnemies(char[][] grid) {
-        return -1;
+        int m = grid.length;
+        int n = grid[0].length;
+        // 上下左右 dp
+        int[][] up = new int[m][n];
+        int[][] down = new int[m][n];
+        int[][] left = new int[m][n];
+        int[][] right = new int[m][n];
+        // 左上 往右下
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // 如果是墙continue
+                if (grid[i][j] == 'W') {
+                    continue;
+                }
+                if (grid[i][j] == 'E') {
+                    up[i][j] = 1;
+                    left[i][j] = 1;
+                }
+                // 不是敌人
+                if (i > 0) {
+                    up[i][j] += up[i-1][j];
+                }
+                if (j > 0) {
+                    left[i][j] += left[i][j-1];
+                }
+
+            }
+        }
+
+        for (int i = m-1; i >= 0; i--) {
+            for (int j = n-1; j >= 0; j--) {
+                // 如果是墙continue
+                if (grid[i][j] == 'W') {
+                    continue;
+                }
+                if (grid[i][j] == 'E') {
+                    down[i][j] = 1;
+                    right[i][j] = 1;
+                }
+                // 不是敌人
+                if (i < m-1) {
+                    down[i][j] += down[i+1][j];
+                }
+                if (j < n-1) {
+                    right[i][j] += right[i][j+1];
+                }
+            }
+        }
+
+        // 上下左右
+        int max = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != '0') {
+                    continue;
+                }
+                max = Math.max(max, up[i][j] + down[i][j] + left[i][j] + right[i][j]);
+            }
+        }
+        return max;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[\"0\",\"E\",\"0\",\"0\"],[\"E\",\"0\",\"W\",\"E\"],[\"0\",\"E\",\"0\",\"0\"]]";
+        char[][] chars = LeetcodeInputUtils.inputString2CharArrayTwoDimensional(input);
+        int i = solution.maxKilledEnemies(chars);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 }
 
