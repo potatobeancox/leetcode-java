@@ -81,6 +81,8 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 题解
 -- https://leetcode.cn/problems/confirmation-rate/solution/shi-yong-zuo-lian-jie-jin-xing-fen-zu-by-xvx7/
 -- ifnull
+-- join等价于inner join内连接抄，是返回两个表中都有的符合条件的行。
+-- https://www.cnblogs.com/xxl910/p/12856211.html
 
 SELECT
   Signups.user_id as user_id,
