@@ -2,7 +2,7 @@ package com.potato.study.leetcodecn.p00353.t001;
 
 import org.junit.Assert;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * 353. 贪吃蛇
@@ -61,12 +61,122 @@ import java.util.Arrays;
  */
 public class SnakeGame {
 
-    public SnakeGame(int width, int height, int[][] food) {
 
+
+    private int width;
+    private int height;
+
+    private int x;
+    private int y;
+
+    // 食物
+//    private Set<String> foodPosition;
+    private int[][] food;
+    private int foodIndex;
+
+    // snake
+    private Set<String> snakeSet;
+    private Queue<String> snakeQueue;
+
+
+    // 得分
+    private int score;
+
+
+    /**
+     *
+     * @param width
+     * @param height
+     * @param food
+     */
+    public SnakeGame(int width, int height, int[][] food) {
+        // 需要记录 当前蛇尾位 当前蛇头位置  蛇头用坐标 蛇尾记录在queue中
+        this.width = width;
+        this.height = height;
+        // 当前位置
+        this.x = 0;
+        this.y = 0;
+        // set string 存food位置
+        this.food = food;
+        this.foodIndex = 0;
+        // queue 代表蛇的身子
+        this.snakeSet = new HashSet<>();
+        snakeSet.add(getKey(0,0));
+        this.snakeQueue = new LinkedList<>();
+        snakeQueue.add(getKey(0, 0));
+
+        this.score = 0;
+    }
+
+
+    private String getKey(int x, int y) {
+        return x + "_" + y;
     }
 
     public int move(String direction) {
+        // 走完之后 蛇头位置
+        switch (direction) {
+            case "U" :
+                x--;
+                break;
+            case "D" :
+                x++;
+                break;
+            case "L" :
+                y--;
+                break;
+            case "R" :
+                y++;
+                break;
+        }
+        // 判断待增加蛇头 是否已经越界
+        if (x < 0 || y < 0 || x >= this.height | y >= this.width) {
+            return -1;
+        }
+        // 当前位置 是否是 食物
+        String currentPosition = getKey(x, y);
 
-        return -1;
+        if (foodIndex < food.length) {
+            String foodPosition = getKey(food[foodIndex][0], food[foodIndex][1]);
+            if (foodPosition.equals(currentPosition)) {
+                score++;
+                foodIndex++;
+            } else {
+                // 没有食物 尾巴修改
+                String poll = snakeQueue.poll();
+                snakeSet.remove(poll);
+            }
+        } else {
+            // 没有食物 尾巴修改
+            String poll = snakeQueue.poll();
+            snakeSet.remove(poll);
+        }
+        // 直接判断 是不是撞上了 是否已经碰到蛇身子 使用 set
+        if (snakeSet.contains(currentPosition)) {
+            return -1;
+        }
+        // 弹出蛇尾 (如果没有吃的) 增加蛇头
+        snakeQueue.add(currentPosition);
+        snakeSet.add(currentPosition);
+        return this.score;
+    }
+
+    public static void main(String[] args) {
+        int width = 3;
+        int height = 2;
+
+        int[][] food = new int[][] {
+                {1,2},
+                {0,1}
+        };
+        SnakeGame snakeGame = new SnakeGame(width, height, food);
+        // [null,0,0,1,1,2,-1]
+        System.out.println(snakeGame.move("R"));
+        System.out.println(snakeGame.move("D"));
+        System.out.println(snakeGame.move("R"));
+        System.out.println(snakeGame.move("U"));
+        System.out.println(snakeGame.move("L"));
+        System.out.println(snakeGame.move("U"));
+
     }
 }
