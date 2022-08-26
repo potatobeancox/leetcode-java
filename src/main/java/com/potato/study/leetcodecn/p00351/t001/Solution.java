@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00351.t001;
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,87 @@ public class Solution {
 
 
     public int numberOfPatterns(int m, int n) {
+        int totalCount = 0;
+        // 每个长度的可能性
+        for (int i = m; i <= n; i++) {
+            boolean[] used = new boolean[9];
+            // 回溯 使用current 记录当前字符没用之前的可能性
+            int lastIndex = -1;
+            totalCount += backtracking(i, 0, used, lastIndex);
+        }
+        return totalCount;
+    }
 
-        return -1;
+    /**
+     *
+     * @param len   密码长度
+     * @param currentCount  当前这个字符使用之前的种类数
+     * @param used  使用的状态
+     * @param lastIndex 上一个使用的 index
+     * @return
+     */
+    private int backtracking(int len, int currentCount, boolean[] used, int lastIndex) {
+        // 啥也没有 那只有一种可能
+        if (len == 0) {
+            return 1;
+        }
+        // 从每个字符开始找 确定当前位置
+        int count = 0;
+        // 遍历 1-9 每一个字符 如果 没有 visit 的时候 使用
+        for (int i = 0; i < 9; i++) {
+            // 使用过么
+            if (used[i]) {
+                continue;
+            }
+            // 能不能用
+            if (!isValid(lastIndex, i, used)) {
+                continue;
+            }
+            used[i] = true;
+            // 并累加记录 可能性 返回
+            count += backtracking(len - 1, currentCount, used, i);
+            used[i] = false;
+        }
+        return count;
+    }
+
+    private boolean isValid(int lastIndex, int i, boolean[] used) {
+        // 加和是 计数可以
+        if (used[i]) {
+            return false;
+        }
+        if (lastIndex == -1) {
+            return true;
+        }
+        // 相邻 象棋马跳跃的形式 可以
+        if ((i+1+lastIndex+1) % 2 == 1) {
+            return true;
+        }
+        // 同行 同列 对角线判断
+        if (i/3 == lastIndex/3 || i%3 == lastIndex%3) {
+            int mid = (lastIndex + i) / 2;
+            return used[mid];
+        }
+        // 对角线
+        int mid = (lastIndex + i) / 2;
+        if (mid == 4) {
+            return used[mid];
+        }
+        // 应该不会到这个分支
+        return true;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int i = solution.numberOfPatterns(1, 1);
+        System.out.println(i);
+        Assert.assertEquals(9, i);
+
+
+
+        i = solution.numberOfPatterns(1, 2);
+        System.out.println(i);
+        Assert.assertEquals(65, i);
     }
 }
