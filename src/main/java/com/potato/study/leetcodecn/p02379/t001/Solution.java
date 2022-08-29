@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02379.t001;
 
+import org.junit.Assert;
+
 /**
  * 2379. 得到 K 个黑块的最少涂色次数
  *
@@ -47,8 +49,36 @@ public class Solution {
 
 
     public int minimumRecolors(String blocks, int k) {
+        // 窗口 k 滑到到末尾 找到中间最小的w数量
+        int min = Integer.MAX_VALUE;
+        int windowNum = 0;
+        int left = 0;
+        for (int i = 0; i < blocks.length(); i++) {
+            char ch = blocks.charAt(i);
+            if ('W' == ch) {
+                windowNum++;
+            }
+            if (i - left + 1 > k) {
+                char temp = blocks.charAt(left);
+                if ('W' == temp) {
+                    windowNum--;
+                }
+                left++;
+            }
+            if (i - left + 1 == k) {
+                min = Math.min(windowNum, min);
+            }
+        }
+        return min;
+    }
 
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String blocks = "WBWBBBW";
+        int k = 2;
+        int i = solution.minimumRecolors(blocks, k);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
     }
 
 
