@@ -108,3 +108,24 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- Jerry (customer 4) 只一次订购键盘, 所以键盘是 Jerry 最经常订购的商品.
 -- John (customer 5) 没有订购过商品, 所以我们并没有把 John 包含在结果表中.
 
+-- 通过 order 表计算出 每个顾客 每种商品 订购的次数
+
+-- https://leetcode.cn/problems/the-most-frequently-ordered-products-for-each-customer/solution/by-jam007-ugw1/
+
+
+SELECT
+  t1.customer_id as customer_id,
+  t1.product_id as product_id,
+  Products.product_name as product_name
+FROM (
+  SELECT
+      customer_id,
+      product_id,
+      rank() over(partition by customer_id order by count(1) desc) as rk
+  FROM Orders
+  GROUP BY customer_id, product_id
+) t1 INNER join Products using(product_id)
+WHERE t1.rk = 1
+
+
+
