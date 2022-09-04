@@ -71,4 +71,17 @@ package com.potato.study.leetcodecn.p01757.t001;
 --
 
 
+-- https://leetcode.cn/problems/average-time-of-process-per-machine/solution/by-jam007-1apw/
+-- 先将 end 处理成 +1 start 处理成 -
 
+SELECT
+  machine_id,
+  round(SUM(cost_time) / COUNT(DISTINCT process_id), 3) as processing_time
+FROM (
+  SELECT
+  machine_id,
+  process_id,
+  if(activity_type = 'start', -1*timestamp, timestamp) as cost_time
+  FROM Activity
+) as t
+GROUP BY machine_id
