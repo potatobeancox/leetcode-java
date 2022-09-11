@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.other.Interview.p0003p0002;
+package com.potato.study.leetcodecn.other.Interview.p0003.p0002;
 
 
 import java.util.Stack;
