@@ -48,23 +48,13 @@ public class Solution {
 
 
     public boolean findSubarrays(int[] nums) {
-        int[] prefixSum = new int[nums.length];
-        prefixSum[0] = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            prefixSum[i] = prefixSum[i-1] + nums[i];
-        }
         Set<Integer> set = new HashSet<>();
-        // 枚举数组结束为止
-        for (int i = 0; i < prefixSum.length; i++) {
-            if (set.contains(prefixSum[i])) {
+        for (int i = 0; i < nums.length - 1; i++) {
+            int target = nums[i] + nums[i+1];
+            if (set.contains(target)) {
                 return true;
             }
-            for (int j = i + 1; j < prefixSum.length; j++) {
-                int sum = prefixSum[j] - prefixSum[i];
-                if (set.contains(sum)) {
-                    return true;
-                }
-            }
+            set.add(target);
         }
         return false;
     }
