@@ -37,7 +37,18 @@ package com.potato.study.leetcodecn.other.swordoffer2.p0072.t001;
 public class Solution {
 
     public int mySqrt(int x) {
-
-        return -1;
+        long left = 0;
+        long right = x;
+        long res = -1;
+        while (left <= right) {
+            long mid = (left + right) / 2;
+            if (mid * mid <= x) {
+                res = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return (int)res;
     }
 }
