@@ -59,5 +59,18 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- - 员工3的直属部门是3
 -- - 员工4的直属部门是3
 
+-- 使用 union
+-- https://leetcode.cn/problems/primary-department-for-each-employee/solution/mysql-unionlian-he-cha-xun-zi-dong-qu-zh-t95j/
 
-
+SELECT
+  employee_id,
+  department_id as department_id
+FROM Employee
+WHERE primary_flag = 'Y'
+UNION
+SELECT
+  employee_id,
+  department_id as department_id
+FROM Employee
+GROUP BY employee_id
+HAVING COUNT(department_id) = 1
