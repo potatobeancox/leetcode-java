@@ -101,12 +101,18 @@ package com.potato.study.leetcodecn.p01757.t001;
 
 
 
+
+--  学生 * 科目主表
 SELECT
-  Examinations.student_id,
+  Students.student_id,
   Students.student_name,
-  Examinations.subject_name,
-  ifnull(COUNT(Examinations.student_id), 0) as attended_exams
-FROM Examinations RIGHT JOIN Students USING(student_id)
-GROUP BY student_id, subject_name
+  Subjects.subject_name,
+  ifnull(COUNT(Examinations.subject_name), 0) as attended_exams
+FROM Students
+INNER JOIN Subjects
+LEFT JOIN Examinations ON Students.student_id = Examinations.student_id and Subjects.subject_name = Examinations.subject_name
+GROUP BY Students.student_id, Subjects.subject_name
+ORDER BY Students.student_id, Subjects.subject_name
+
 
 
