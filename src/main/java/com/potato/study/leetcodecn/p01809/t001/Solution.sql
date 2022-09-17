@@ -79,3 +79,11 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 链接：https://leetcode.cn/problems/ad-free-sessions
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+
+SELECT session_id FROM Playback
+WHERE session_id not IN (
+  SELECT DISTINCT Playback.session_id FROM Playback INNER JOIN Ads USING(customer_id)
+  where Ads.timestamp BETWEEN Playback.start_time and Playback.end_time
+)
+
+
