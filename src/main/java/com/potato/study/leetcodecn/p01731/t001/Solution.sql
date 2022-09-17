@@ -45,12 +45,24 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- +-------------+-------+---------------+-------------+
 -- Hercy 有两个需要向他汇报的员工, 他们是 Alice and Bob. 他们的平均年龄是 (41+36)/2 = 38.5, 四舍五入的结果是 39.
 
+
 SELECT
-  e2.employee_id as employee_id,
-  e2.name as name,
-  count(e1.employee_id) as reports_count,
-  AVG(e1.age) as average_age
-FROM Employees e1
-INNER join Employees e2 on e1.reports_to = e1.employee_id
-GROUP BY e2.employee_id
-ORDER by e2.employee_id asc
+  t1.manager_id as employee_id,
+  t2.name,
+  t1.reports_count,
+  t1.average_age
+FROM (
+  -- 计算每个非空的汇报次数
+  SELECT
+    reports_to as manager_id,
+    COUNT(employee_id) as reports_count,
+    round(avg(age), 0) as average_age
+  FROM Employees
+  WHERE reports_to is not NULL
+  GROUP BY reports_to
+
+) t1 LEFT JOIN Employees t2
+ON t1.manager_id = t2.employee_id
+ORDER BY employee_id
+
+
