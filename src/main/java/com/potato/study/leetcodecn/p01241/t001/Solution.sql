@@ -69,12 +69,19 @@ package com.potato.study.leetcodecn.p01757.t001;
 
 
 SELECT
-  Submissions.parent_id as post_id,
-  COUNT(DISTINCT t.sub_id) as number_of_comments
+  t1.sub_id as post_id,
+  ifnull(t2.number_of_comments, 0) as number_of_comments
 FROM (
-  SELECT sub_id FROM Submissions WHERE parent_id is NULL
-) as t
-left join Submissions
-ON t.sub_id = Submissions.parent_id
-GROUP BY Submissions.parent_id
-ORDER BY post_id ASC
+  -- 帖子
+  SELECT DISTINCT sub_id FROM Submissions WHERE parent_id IS NULL
+) t1 left JOIN (
+  -- 评论数
+  SELECT
+    parent_id,
+    count(DISTINCT sub_id) as number_of_comments
+  FROM Submissions
+  WHERE parent_id IS NOT NULL
+  GROUP BY parent_id
+) t2
+ON t1.sub_id = t2.parent_id
+ORDER BY post_id
