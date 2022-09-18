@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p01858.t001;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 import org.junit.Assert;
@@ -45,7 +46,70 @@ import org.junit.Assert;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/longest-word-with-all-prefixes/solution/java-qian-zhui-shu-by-regan-hoo-tmvd/
+     * @param words
+     * @return
+     */
     public String longestWord(String[] words) {
-        return null;
+        // 将 words 按照长度排序
+        Arrays.sort(words, (w1, w2) -> {
+            int compare = Integer.compare(w1.length(), w2.length());
+            if (compare != 0) {
+                return compare;
+            }
+            return w1.compareTo(w2);
+        });
+        // 遍历 每个 word 将其 依次插入 到字典树中，
+        TrieNode root = new TrieNode();
+        // 插入过程中记录 本次插入是不是已经有了 字母站位 记录最长的字符串
+        String maxWord = "";
+        for (String word : words) {
+            TrieNode temp = root;
+            boolean isAllContain = true;
+            // 遍历 word 每个字母 插入
+            for (int i = 0; i < word.length(); i++) {
+                int index = word.charAt(i) - 'a';
+                TrieNode node = temp.nexts[index];
+                // 不存在申请 一个新的
+                if (node == null) {
+                    temp.nexts[index] = new TrieNode();
+                    node = temp.nexts[index];
+                }
+                temp = node;
+                // 不是结尾判断 前缀是不是 里边的字符串
+                if (i != word.length() - 1 && !node.isEnd) {
+                    isAllContain = false;
+                }
+            }
+            // 插入结尾标志
+            temp.isEnd = true;
+            // 处理前缀是不是都在里边
+            if ((word.length() == 1 || isAllContain) && maxWord.length() < word.length()) {
+                maxWord = word;
+            }
+        }
+        return maxWord;
+    }
+
+    class TrieNode {
+        public TrieNode[] nexts;
+        public boolean isEnd;
+
+        public TrieNode() {
+            this.nexts = new TrieNode[26];
+            this.isEnd = false;
+        }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] words = new String[] {
+                "k","ki","kir","kira", "kiran"
+        };
+        String s = solution.longestWord(words);
+        System.out.println(s);
+        Assert.assertEquals("kiran", s);
+
     }
 }
