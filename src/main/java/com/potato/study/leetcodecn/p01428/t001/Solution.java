@@ -66,8 +66,24 @@ import java.util.List;
 public class Solution {
 
     public int leftMostColumnWithOne(BinaryMatrix binaryMatrix) {
-
-        return 0;
+        // 获取右下角位置
+        List<Integer> dimensions = binaryMatrix.dimensions();
+        Integer rows = dimensions.get(0);
+        Integer cols = dimensions.get(1);
+        int i = rows - 1;
+        int j = cols - 1;
+        int targetIndex = -1;
+        while (i >= 0 && j >= 0) {
+            int value = binaryMatrix.get(i, j);
+            if (value == 1) {
+                targetIndex = j;
+                j--;
+            } else {
+                i--;
+            }
+        }
+        // 从右下角位置开始 遇到 1 往左走 没有的话往上走
+        return targetIndex;
     }
 }
 
@@ -75,5 +91,7 @@ class BinaryMatrix {
     public int get(int row, int col) {
         return -1;
     }
-    public List<Integer> dimensions;
+    public List<Integer> dimensions() {
+        return null;
+    };
 }
