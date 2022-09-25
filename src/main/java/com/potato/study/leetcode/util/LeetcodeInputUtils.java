@@ -125,7 +125,7 @@ public class LeetcodeInputUtils {
         // 去掉引号
         List<List<String>> resultList = new ArrayList<>();
         for (int i = 0; i < split.length; i++) {
-            resultList.add(inputString2StringList(split[i]));
+            resultList.add(inputString2StringList("[" + split[i] + "]"));
         }
         // 返回数组
         return resultList;
