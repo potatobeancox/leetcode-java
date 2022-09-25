@@ -39,6 +39,11 @@ package com.potato.study.leetcodecn.p02387.t001;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/median-of-a-row-wise-sorted-matrix/comments/
+     * @param grid
+     * @return
+     */
     public int matrixMedian(int[][] grid) {
         // 从上往下 遍历一遍 grid 获取 max 和min
         int min = grid[0][0];
