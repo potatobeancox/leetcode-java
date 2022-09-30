@@ -50,7 +50,59 @@ import com.potato.study.leetcode.domain.node.val.next.Node;
 public class Solution {
 
 
+    /**
+     *
+     * @param head
+     * @param insertVal
+     * @return
+     */
     public Node insert(Node head, int insertVal) {
-        return null;
+        Node node = new Node();
+        node.val = insertVal;
+        // 1. 第一种情况 null 的时候直接创建
+        if (null == head) {
+            node.next = node;
+            return node;
+        }
+        // 2. 只有一个节点  直接插入在后面就行
+        Node next = head.next;
+        if (next == head) {
+            head.next = node;
+            node.next = next;
+            return head;
+        }
+        // 3. 如果和这个连表有环存在的情况 需要先找到位置 再插入，有几种条件
+        Node pre = head;
+        // 找到插入位置 在  pre 和 next之间
+        while (next != head) {
+            // 当前点在 两个点之间
+            if (pre.val <= insertVal && insertVal <= next.val) {
+                pre.next = node;
+                node.next = next;
+                return head;
+            }
+            // 当前是不是 分界点
+            // 3.1 当前是分界点 且 当前点大于等于 大的那个 那么就是 直接插在最后
+            // 3.2 当前是分界点 且当前点 小于 大的那个，从小的那个依次往后找 定位到 node 小于等于 interval 小于等于 next点
+            // 3.3 当前点不是分界点 等于 insertVal 小于等于 next 插在之间
+            next = next.next;
+            pre = pre.next;
+        }
+        // 不是 3.3 往后找
+        pre.next = node;
+        node.next = next;
+        return head;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        Node head = new Node(3);
+        head.next = new Node(4);
+        head.next.next = new Node(1);
+        head.next.next.next = head;
+
+        Node insert = solution.insert(head, 2);
+        System.out.println(insert.val);
     }
 }
