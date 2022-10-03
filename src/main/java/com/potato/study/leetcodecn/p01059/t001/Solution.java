@@ -1,9 +1,6 @@
 package com.potato.study.leetcodecn.p01059.t001;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 1059. 从始点到终点的所有路径
@@ -58,10 +55,46 @@ public class Solution {
 
 
     public boolean leadsToDestination(int n, int[][] edges, int source, int destination) {
+        if (n == 1) {
+            return true;
+        }
+        // 将 edges 转换成 list list int 记录每个店的连接点
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            int from = edge[0];
+            int to = edge[1];
 
-        return false;
+            graph.get(from).add(to);
+        }
+        boolean[] visit = new boolean[n];
+        // 从 source 开始 往每个临界点 dfs
+        return dfs(graph, source, destination, visit);
     }
 
+    /**
+     *
+     * @param graph
+     * @param index
+     * @param destination
+     * @return
+     */
+    private boolean dfs(List<List<Integer>> graph, int index, int destination, boolean[] visit) {
+        // dfs 过程中 如果 连接点如果遇到了已经用过的点 返回false 有一个 false 就是 false
+        List<Integer> nextList = graph.get(index);
+        if (index == destination) {
+            return nextList.size() == 0;
+        }
+        if (visit[index]) {
+            return false;
+        }
+        visit[index] = true;
+
+        // dfs
+        return false;
+    }
 
 
 }
