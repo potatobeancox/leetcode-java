@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01102.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -50,10 +53,23 @@ public class Solution {
 
     public int maximumMinimumPath(int[][] grid) {
         // 开始和结束点 的最小分数 最为上限值 0 作为下限值
-
+        int left = 0;
+        int right = Math.min(grid[0][0], grid[grid.length - 1][grid[0].length - 1]);
         // 二分查找 以 分数 k作为最小分数 是否能到达终点 可以的话 继续小，不能的话 往大了找
-
-        return -1;
+        int res = -1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            boolean canReach = dfs(grid, mid, new boolean[grid.length][grid[0].length], 0, 0);
+            if (canReach) {
+                // 当前mid 大于等于 路径最小值 往大的尝试
+                res = mid;
+                left = mid + 1;
+            } else {
+                // 需要变小
+                right = mid - 1;
+            }
+        }
+        return res;
     }
 
     /**
@@ -64,9 +80,49 @@ public class Solution {
      */
     private boolean dfs(int[][] grid, int target, boolean[][] visit,
             int i, int j) {
-        if (true) {
-
+        // 如果当前 已经被访问 返回 false
+        if (visit[i][j]) {
+            return false;
+        }
+        // 如果当前 的 值小于 target 值返回 false
+        if (grid[i][j] < target) {
+            return false;
+        }
+        // 往之后的几个方向 走 如果遇到最后一个位置 那么直接返回true
+        int[][] dir = new int[][] {
+                {-1, 0},
+                {1, 0},
+                {0, -1},
+                {0, 1}
+        };
+        visit[i][j] = true;
+        for (int k = 0; k < 4; k++) {
+            int di = i + dir[k][0];
+            int dj = j + dir[k][1];
+            // 边界
+            if (di < 0 || di >= grid.length
+                    || dj < 0 || dj >= grid[0].length) {
+                continue;
+            }
+            // 是不是已经到了 位置
+            if (i == grid.length - 1 && j == grid[0].length - 1) {
+                return true;
+            }
+            // 递归
+            boolean dfsResult = dfs(grid, target, visit, di, dj);
+            if (dfsResult) {
+                return true;
+            }
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[5,4,5],[1,2,6],[7,4,6]]";
+        int[][] ints = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.maximumMinimumPath(ints);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 }
