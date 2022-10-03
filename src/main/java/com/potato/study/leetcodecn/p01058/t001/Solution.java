@@ -1,5 +1,10 @@
 package com.potato.study.leetcodecn.p01058.t001;
 
+import org.junit.Assert;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 /**
  * 1058. 最小化舍入误差以满足目标
  *
@@ -42,7 +47,48 @@ public class Solution {
 
 
     public String minimizeError(String[] prices, int target) {
-        return null;
+        // 先计算base 值 再使用一个 大根堆计算
+        int base = 0;
+        PriorityQueue<Double> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        for (String price : prices) {
+            String[] split = price.split("\\.");
+            // 元 和 分
+            int yuan = Integer.parseInt(split[0]);
+            base += yuan;
+            if (!"000".equals(split[1])) {
+                priorityQueue.add(Double.parseDouble("0." + split[1]));
+            }
+        }
+        // 有的可以网上走
+        double diff = 0;
+        while (!priorityQueue.isEmpty() && base < target) {
+            Double poll = priorityQueue.poll();
+            diff += (1 - poll);
+            base++;
+        }
+
+        // 转换成 返回 字符串
+        if (base != target) {
+            return "-1";
+        }
+        // 三位输出
+        while (!priorityQueue.isEmpty()) {
+            Double poll = priorityQueue.poll();
+            diff += poll;
+        }
+        // https://zhuanlan.zhihu.com/p/365669071
+        return String.format("%.3f",diff);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] prices = new String[] {
+                "0.700","2.800","4.900"
+        };
+        int target = 8;
+        String s = solution.minimizeError(prices, target);
+        System.out.println(s);
+        Assert.assertEquals("1.000", s);
     }
 
 
