@@ -1,8 +1,13 @@
 package com.potato.study.leetcodecn.p01136.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * 1136. 并行课程
@@ -51,13 +56,66 @@ public class Solution {
     public int minimumSemesters(int n, int[][] relations) {
         // 遍历 relations 生成 每个 节点到 孩子的list list
         List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n+1; i++) {
+            graph.add(new ArrayList<>());
+        }
+
         // 上述遍历 过程中 记录 节点的度
         int[] indegree = new int[n+1];
+        for (int[] relation : relations) {
+            int from = relation[0];
+            int to = relation[1];
 
+            indegree[to]++;
+            // 关系
+            graph.get(from).add(to);
+            graph.get(to).add(from);
+        }
         // 把节点 0 度的 方入queue 中 每次 弹出 作为 set 遍历过 bfs
-
+        Queue<Integer> queue = new LinkedList<>();
+        int semestersCount = 0;
+        for (int i = 1; i < n+1; i++) {
+            if (indegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+        boolean[] visited = new boolean[n+1];
         // 最终看看 还有没有没访问过的
+        while (!queue.isEmpty()) {
+            // 本学期可以学的课程
+            semestersCount++;
+            int size = queue.size();
+            // 找到下学期的课程
+            for (int i = 0; i < size; i++) {
+                int studyIndex = queue.poll();
+                visited[studyIndex] = true;
 
-        return -1;
+                List<Integer> list = graph.get(studyIndex);
+                // 更新入度
+                for (int nextIndex : list) {
+                    indegree[nextIndex]--;
+                    if (indegree[nextIndex] == 0) {
+                        queue.add(nextIndex);
+                    }
+                }
+            }
+        }
+        // 如果有的课程没有学 返回 -1
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
+                return -1;
+            }
+        }
+        return semestersCount;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 3;
+        String input = "[[1,3],[2,3]]";
+        int[][] relations = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.minimumSemesters(n, relations);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 }
