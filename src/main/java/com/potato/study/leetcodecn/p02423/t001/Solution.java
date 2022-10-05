@@ -45,32 +45,27 @@ public class Solution {
 
 
     public boolean equalFrequency(String word) {
+        if (word.length() == 0) {
+            return false;
+        }
         // 统计一下出现的次数
         int[] count = new int[26];
         for (char ch : word.toCharArray()) {
             count[ch - 'a']++;
         }
-        // 每种出现次数
-        Map<Integer, List<Integer>> timesMap = new HashMap<>();
+        // 是否所有字母都出现一次
+        boolean isAllCharAppearOnce = true;
+        // 某个字母出现a1次 b2次 c3次
         for (int i = 0; i < 26; i++) {
-            if (count[i] == 0) {
-                continue;
+            if (count[i] > 1) {
+                isAllCharAppearOnce = false;
             }
-            List<Integer> orDefault = timesMap.getOrDefault(count[i], new ArrayList<>());
-            orDefault.add(i);
-            timesMap.put(count[i], orDefault);
         }
-        // 最多只能有2种数量分布
-        if (timesMap.size() > 2) {
-            return false;
+        // 所有字母都只出现一次 随意删除
+        if (isAllCharAppearOnce) {
+            return true;
         }
-        // true 只可能所有字母都出现一次 ，或者出现多的那个字母 次数 比少的那个多1
-        if (timesMap.size() == 1) {
-            // 看下 是不是都只出现了1次 看看 key 是不是 1
-            List<Integer> timesList = new ArrayList<>(timesMap.keySet());
-            return timesList.get(0) == 1;
-        }
-
+        // 某个字母出现一次 ，其他字母都出现n次
         return false;
     }
 
