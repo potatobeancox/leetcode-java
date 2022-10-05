@@ -53,22 +53,45 @@ public class Solution {
         for (char ch : word.toCharArray()) {
             count[ch - 'a']++;
         }
-        // 是否所有字母都出现一次
-        boolean isAllCharAppearOnce = true;
-        // 某个字母出现a1次 b2次 c3次
-        for (int i = 0; i < 26; i++) {
-            if (count[i] > 1) {
-                isAllCharAppearOnce = false;
+        // 每个位置单词剔除看看 count
+        for (char ch : word.toCharArray()) {
+            count[ch - 'a']--;
+            boolean res = this.isAllSame(count);
+            if (res) {
+                return true;
             }
+            count[ch - 'a']++;
         }
-        // 所有字母都只出现一次 随意删除
-        if (isAllCharAppearOnce) {
-            return true;
-        }
-        // 某个字母出现一次 ，其他字母都出现n次
         return false;
     }
 
+    /**
+     * 所有 count 》 0 的是不是都一样
+     * @param count
+     * @return
+     */
+    private boolean isAllSame(int[] count) {
+        int index = 0;
+        while (index < count.length && count[index] == 0) {
+            index++;
+        }
+        if (index >= count.length) {
+            return false;
+        }
+        int target = count[index];
+        index++;
+        while (index < count.length) {
+            if (count[index] == 0) {
+                index++;
+                continue;
+            }
+            if (count[index] != target) {
+                return false;
+            }
+            index++;
+        }
+        return true;
+    }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
@@ -87,6 +110,24 @@ public class Solution {
         b = solution.equalFrequency("abbcc");
         System.out.println(b);
         Assert.assertEquals(true, b);
+
+
+        solution = new Solution();
+        b = solution.equalFrequency("zz");
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+
+        solution = new Solution();
+        b = solution.equalFrequency("cccd");
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+
+        solution = new Solution();
+        b = solution.equalFrequency("cbccca");
+        System.out.println(b);
+        Assert.assertEquals(false, b);
     }
 
 }
