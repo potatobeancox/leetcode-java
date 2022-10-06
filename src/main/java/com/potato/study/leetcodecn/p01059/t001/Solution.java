@@ -84,13 +84,18 @@ public class Solution {
     private boolean dfs(List<List<Integer>> graph, int index, int destination, boolean[] visit) {
         // dfs 过程中 如果 连接点如果遇到了已经用过的点 返回false 有一个 false 就是 false
         List<Integer> nextList = graph.get(index);
+        // 当前点已经到了终点 判断下 终点是否还有临街点
         if (index == destination) {
             return nextList.size() == 0;
         }
+        // 中间遇到了 访问过的点 肯定到不了终点了
         if (visit[index]) {
             return false;
         }
+        // 这个点标记
         visit[index] = true;
+        // 往临街点访问
+
 
         // dfs
         return false;
