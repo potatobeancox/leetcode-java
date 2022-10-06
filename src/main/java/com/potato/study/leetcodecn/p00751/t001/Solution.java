@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p00751.t001;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ import java.util.List;
 public class Solution {
 
     public List<String> ipToCIDR(String ip, int n) {
-
-        return null;
+        List<String> list = new ArrayList<>();
+        return list;
     }
 }
