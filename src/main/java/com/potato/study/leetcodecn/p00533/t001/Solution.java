@@ -49,8 +49,55 @@ public class Solution {
 
 
     public int findBlackPixel(char[][] picture, int target) {
-        // 统计
-        return 0;
+        // 统计 每行每列 有多少个黑的
+        int m = picture.length;
+        int n = picture[0].length;
+        int[] rowCount = new int[m];
+        int[] colCount = new int[n];
+        String[] rowStringArray = new String[m];
+        for (int i = 0; i < m; i++) {
+            StringBuilder builder = new StringBuilder();
+            for (int j = 0; j < n; j++) {
+                if (picture[i][j] == 'B') {
+                    rowCount[i]++;
+                    colCount[j]++;
+                }
+                builder.append(picture[i][j]);
+            }
+            // 将每行 用 builder 存储起来
+            rowStringArray[i] = builder.toString();
+        }
+        // 遍历 每个位置 如果是黑的 比较一下 看看 其他行跟着行是不是一致 黑色元素所在行
+        int picCount = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (picture[i][j] == 'W') {
+                    continue;
+                }
+                if (target != rowCount[i]|| target != colCount[j]) {
+                    continue;
+                }
+                // 列 中黑的元素所在行与这个都一致
+                boolean allBlackRowSame = true;
+                for (int k = 0; k < m; k++) {
+                    if (k == i) {
+                        continue;
+                    }
+                    // 这行的 j 位置不是黑的
+                    if (picture[k][j] != 'B') {
+                        continue;
+                    }
+                    if (!rowStringArray[k].equals(rowStringArray[i])) {
+                        allBlackRowSame = false;
+                        break;
+                    }
+                }
+                if (allBlackRowSame) {
+                    picCount++;
+                }
+            }
+        }
+        return picCount;
     }
 
 
