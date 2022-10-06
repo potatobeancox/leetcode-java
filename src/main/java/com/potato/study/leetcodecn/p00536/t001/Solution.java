@@ -45,6 +45,74 @@ import java.util.Map;
  */
 public class Solution {
     public TreeNode str2tree(String s) {
-        return null;
+        if (s == null || s.length() == 0) {
+            return null;
+        }
+        char[] chars = s.toCharArray();
+        int index = 0;
+        // 解析出来最开始的富豪和数字 找到第一个（ 位置
+        while (index < s.length()
+                && (chars[index] == '-' || Character.isDigit(chars[index]))) {
+            index++;
+        }
+        String numStr = s.substring(0, index);
+        int num = Integer.parseInt(numStr);
+        TreeNode treeNode = new TreeNode();
+        treeNode.val = num;
+        // 没有 （
+        if (index >= s.length()) {
+            return treeNode;
+        }
+        // 如果有 （ 位置 找到）  位置
+        int start = index;
+        int status = 0;
+        int end = -1;
+        while (index < s.length()) {
+            if (chars[index] == '(') {
+                status++;
+            } else if (chars[index] == ')') {
+                status--;
+            }
+            if (status == 0) {
+                end = index;
+                break;
+            }
+            index++;
+        }
+        if (end == -1) {
+            throw new RuntimeException("输入自字符串只有（ 没有 ）");
+        }
+        index++;
+        treeNode.left = str2tree(s.substring(start + 1, end));
+        if (index >= s.length()) {
+            return treeNode;
+        }
+        start = index;
+        end = -1;
+        while (index < s.length()) {
+            if (chars[index] == '(') {
+                status++;
+            } else if (chars[index] == ')') {
+                status--;
+            }
+            if (status == 0) {
+                end = index;
+                break;
+            }
+            index++;
+        }
+        if (end == -1) {
+            throw new RuntimeException("输入自字符串只有第二个（ 没有 ）");
+        }
+        index++;
+        treeNode.right = str2tree(s.substring(start + 1, end));
+        // 如果还有 （） 找到 根据每个位置 subtring 递归生成
+        return treeNode;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode treeNode = solution.str2tree("4(2(3)(1))(6(5))");
+        System.out.println(treeNode);
     }
 }
