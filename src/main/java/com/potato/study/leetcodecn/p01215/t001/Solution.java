@@ -4,6 +4,7 @@ package com.potato.study.leetcodecn.p01215.t001;
 import com.potato.study.leetcode.domain.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +37,18 @@ public class Solution {
 
     public List<Integer> countSteppingNumbers(int low, int high) {
         // 生成 从 0 开始的 截止为 int max 的最大值的数字
-        return null;
+        List<Integer> list = new ArrayList<>();
+        // 生成 步进数
+//        dfs(list);
+        // 选取 low 和 high 之间的 并排序
+        List<Integer> result = new ArrayList<>();
+        for (int res : list) {
+            if (low <= res && res <= high) {
+                result.add(res);
+            }
+        }
+        Collections.sort(result);
+        return result;
     }
 
 }
