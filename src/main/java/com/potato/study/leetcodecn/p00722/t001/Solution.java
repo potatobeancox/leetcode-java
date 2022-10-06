@@ -87,27 +87,83 @@ public class Solution {
     public List<String> removeComments(String[] source) {
         // 遍历 source
         List<String> result = new ArrayList<>();
+        // 遍历每行 是否在 /* 中间
+        boolean isInSkip = false;
+        // 第一个有效优先于其他注释
+        StringBuilder builder = null;
         for (String s : source) {
             char[] chars = s.toCharArray();
-            StringBuilder builder = new StringBuilder();
+            if (!isInSkip) {
+                builder = new StringBuilder();
+            }
             int i = 0;
             while (i < chars.length) {
-                if (i + 1 >= chars.length) {
-                    builder.append(chars[i]);
-                    i++;
+                // 如果当前行位于 isInSkip 中还需要往后找到 */ 先看看本行有没有
+                if (isInSkip) {
+                    // 没到 的符号都需要略过
+                    while (i+1 < chars.length && !(chars[i] == '*' && chars[i+1] == '/')) {
+                        i++;
+                    }
+                    if (i+1 < chars.length && chars[i] == '*' && chars[i+1] == '/') {
+                        isInSkip = false;
+                        i += 2;
+                    } else {
+                        i++;
+                    }
                     continue;
                 }
-                // 找到 前两个字符 整个行
-                if (chars[i] == '/' && chars[i+1] == '/') {
+                // 不在 符号里边 判断是不是遇到了符号
+                if (i+1 < chars.length
+                        && chars[i] == '/' && chars[i+1] == '/') {
                     break;
                 }
-
+                if (i+1 < chars.length &&
+                        chars[i] == '/' && chars[i+1] == '*') {
+                    isInSkip = true;
+                    i+= 2;
+                    continue;
+                }
+                // 当前也没有遇到 各种符号 继续往builder里边放置
+                builder.append(chars[i]);
                 i++;
             }
-            if (builder.length() != 0) {
+            // 当前行边界结束或者因为 // 结束 结算行结果
+            if (!isInSkip && builder != null && builder.length() != 0) {
                 result.add(builder.toString());
             }
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] source = new String[]{
+                "/*Test program */",
+                "int main()",
+                "{ ",
+                "  // variable declaration ",
+                "int a, b, c;",
+                "/* This is a test",
+                "   multiline  ",
+                "   comment for ",
+                "   testing */",
+                "a = b + c;",
+                "}"
+        };
+        List<String> strings = solution.removeComments(source);
+        // ["int main()","{ ","  ","int a, b, c;","a = b + c;","}"]
+        System.out.println(strings);
+
+
+        source = new String[]{
+                "a/*comment",
+                "line",
+                "more_comment*/b"
+        };
+        strings = solution.removeComments(source);
+        // ["ab"]
+        System.out.println(strings);
+
+
     }
 }
