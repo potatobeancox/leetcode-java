@@ -3,7 +3,7 @@ package com.potato.study.leetcodecn.p00742.t001;
 import com.potato.study.leetcode.domain.TreeNode;
 import org.junit.Assert;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * 742. 二叉树最近的叶节点
@@ -51,9 +51,97 @@ import java.util.Arrays;
  */
 public class Solution {
 
+
+    /**
+     * https://leetcode.cn/problems/closest-leaf-in-a-binary-tree/solution/er-cha-shu-zui-jin-de-xie-jie-dian-by-leetcode/
+     * @param root
+     * @param k
+     * @return
+     */
     public int findClosestLeaf(TreeNode root, int k) {
-        // dfs 建图 每个点的
+        // 1.dfs 建图 每个点的 邻接点 （将树转换成图）
+        Map<TreeNode, List<TreeNode>> graph = new HashMap<>();
+        dfs(root, null, graph);
+        // 找到开始的位置
+        TreeNode start = null;
+        for (TreeNode key : graph.keySet()) {
+            if (key != null && key.val == k) {
+                start = key;
+                break;
+            }
+        }
+        if (start == null) {
+            throw new RuntimeException("k 不存在于 树之中");
+        }
+        // 2.利用1生成结果进行bfs 遍历 如果遇到当前点的 邻接点小于等于1， 说明这个已经是一个叶子了 可以返回 当前层了
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(start);
+        Set<TreeNode> visitSet = new HashSet<>();
+        visitSet.add(start);
+        while (!queue.isEmpty()) {
+            TreeNode poll = queue.poll();
+            // 当前节点的叶子
+            List<TreeNode> nextNode = graph.get(poll);
+            // 有一个是因为有父亲节点
+            if (null == nextNode || nextNode.size() <= 1) {
+                return poll.val;
+            }
+            // 当前也不是叶子，往孩子找
+            for (TreeNode next : nextNode) {
+                if (next == null) {
+                    continue;
+                }
+                if (visitSet.contains(next)) {
+                    continue;
+                }
+                visitSet.add(next);
+                queue.add(next);
+            }
+        }
         return -1;
+    }
+
+    private void dfs(TreeNode root, TreeNode parent, Map<TreeNode, List<TreeNode>> graph) {
+        if (root == null) {
+            return;
+        }
+        // 初始化
+        if (graph.get(root) == null) {
+            graph.put(root, new ArrayList<>());
+        }
+        if (graph.get(parent) == null) {
+            graph.put(parent, new ArrayList<>());
+        }
+        graph.get(root).add(parent);
+        graph.get(parent).add(root);
+
+        // 往子节点移动
+        dfs(root.left, root, graph);
+        dfs(root.right, root, graph);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(3);
+        root.right = new TreeNode(2);
+
+        int k = 1;
+        int closestLeaf = solution.findClosestLeaf(root, k);
+        System.out.println(closestLeaf);
+        Assert.assertEquals(3, closestLeaf);
+
+
+
+        root = new TreeNode(1);
+        root.left = new TreeNode(2);
+
+        k = 1;
+        closestLeaf = solution.findClosestLeaf(root, k);
+        System.out.println(closestLeaf);
+        Assert.assertEquals(2, closestLeaf);
+
+
     }
 
 
