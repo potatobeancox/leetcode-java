@@ -52,3 +52,25 @@
 --     - 2020-12-9 至 2021-1-1 ，共计 23 天。
 -- 由此得出，最大的空档期为 65 天。
 -- 对于第三个用户，问题中的唯一空档期在 2020-11-11 至 2021-1-1 之间，共计 51 天。
+
+-- 下一行窗口函数 LEAD
+-- https://leetcode.cn/problems/biggest-window-between-visits/solution/mysql-leadchuang-kou-han-shu-group-bymia-esnc/
+
+-- DATEDIFF 函数 DATEDIFF() 函数返回两个日期之间的天数。
+-- https://www.runoob.com/sql/func-datediff-mysql.html
+
+
+SELECT
+  user_id,
+  max(DATEDIFF(next_visit_date, visit_date)) as biggest_window
+FROM (
+  -- 下一次请求 当前请求 放在一起 (当前用户的下一次，所以PARTITION 且需要指明顺序)
+  SELECT
+    user_id,
+    visit_date,
+    lead(visit_date, 1, '2021-1-1') OVER(PARTITION BY user_id ORDER BY visit_date) as next_visit_date
+  FROM UserVisits
+) t
+GROUP BY user_id
+ORDER BY user_id
+
