@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p02387.t001;
 
 
+import java.util.Arrays;
+
 /**
  * 2387. Median of a Row Wise Sorted Matrix
  *
@@ -45,20 +47,17 @@ public class Solution {
      * @return
      */
     public int matrixMedian(int[][] grid) {
-        // 从上往下 遍历一遍 grid 获取 max 和min
-        int min = grid[0][0];
-        int max = grid[0][grid[0].length-1];
-        for (int[] g : grid) {
-            min = Math.min(min, g[0]);
-            max = Math.max(max, g[grid[0].length-1]);
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] arr = new int[m * n];
+        int index = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                arr[index++] = grid[i][j];
+            }
         }
-        // 求个数 和 target 个数
-        int count = grid.length * grid[0].length;
-        int target = count / 2;
-        // 二分法判断每次有多少个元素小于等于 mid
-
-        // 如果元素 数量就是 target 那么可能就是 这个结果 大于的话 往左找 等于的话 返回 小于 的话 还可以大一点
-        return -1;
+        Arrays.sort(arr);
+        return arr[m * n / 2];
     }
 
 
