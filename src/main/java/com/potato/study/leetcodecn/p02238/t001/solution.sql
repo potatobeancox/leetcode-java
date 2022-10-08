@@ -52,3 +52,17 @@
 -- The driver with ID = 7 was a passenger two times.
 -- The driver with ID = 11 was never a passenger.
 
+
+
+-- 司机的id
+SELECT
+  DISTINCT driver_id as driver_id,
+  ifnull(t.cnt, 0) as cnt
+FROM Rides LEFT JOIN (
+  -- 按照 passenger_id 计算出现次数
+  SELECT
+    passenger_id as driver_id,
+    COUNT(ride_id) as cnt
+  FROM Rides
+  GROUP BY passenger_id
+) t USING(driver_id)
