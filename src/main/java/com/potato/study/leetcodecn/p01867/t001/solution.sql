@@ -75,3 +75,19 @@
 --
 -- 订单1和订单3是不平衡的，因为它们的最大数量超过了它们订单的平均数量。
 
+
+-- 题解
+-- https://leetcode.cn/problems/orders-with-maximum-quantity-above-average/solution/zhi-jie-shi-yong-maxquantity-by-xiao-xia-sjzx/
+
+-- all 关键字
+-- https://www.csdn.net/tags/OtDaMgysNzI2Ny1ibG9n.html
+
+SELECT order_id
+FROM OrdersDetails
+GROUP BY order_id
+having max(quantity) > ALL
+(
+  SELECT avg(quantity)
+  from OrdersDetails
+  group by order_id
+)
