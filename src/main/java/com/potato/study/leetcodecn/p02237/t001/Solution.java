@@ -58,6 +58,29 @@ public class Solution {
 
 
     public int meetRequirement(int n, int[][] lights, int[] requirement) {
-        return -1;
+        // 差分数组 记录 每个位置 的增减情况
+        int[] diff = new int[n];
+        for (int[] light : lights) {
+            int mid = light[0];
+            int range = light[1];
+            int left = Math.max(0, mid - range);
+            int right = Math.min(n-1, mid + range);
+            // 左边开始有灯了
+            diff[left]++;
+            // 右边开始没有了
+            if (right + 1 < n) {
+                diff[right + 1]--;
+            }
+        }
+        // 遍历一遍所有数组 求当前位置 和 requirement 之间的最大
+        int count = 0;
+        int status = 0;
+        for (int i = 0; i < requirement.length; i++) {
+            status += diff[i];
+            if (status >= requirement[i]) {
+                count++;
+            }
+        }
+        return count;
     }
 }
