@@ -48,18 +48,20 @@ import java.util.*;
 public class Solution {
 
     public int smallestRangeII(int[] nums, int k) {
-        Arrays.sort(nums);
-        // 全局分数最大
-        int totalMax = nums[nums.length - 1];
-        // 全局分数最小
-        int totalMin = nums[0];
-        // 维护历史最小分数
-        int minScore = Integer.MAX_VALUE;
-        for (int i = 0; i < 1; i++) {
-
+        if (nums.length <= 1) {
+            return 0;
         }
+        Arrays.sort(nums);
+        // 维护历史最小分数
+        int minScore = nums[nums.length - 1] - nums[0];
+        for (int i = 0; i + 1 < nums.length; i++) {
+            // 当前值 + k 当前值 的下一个 - k
 
+            int max = Math.max(nums[i] + k, nums[nums.length - 1] - k);
+            int min = Math.min(nums[i+1]-k, nums[0] + k);
 
+            minScore = Math.min(minScore, max - min);
+        }
         return minScore;
     }
 
