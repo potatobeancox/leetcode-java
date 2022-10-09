@@ -1,6 +1,5 @@
 --
 --
---
 -- 578. 查询回答率最高的问题
 --
 -- SurveyLog 表：
@@ -58,4 +57,27 @@
 -- 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 --
 
+-- 题解：
+-- https://leetcode.cn/problems/get-highest-answer-rate-question/solution/cha-xun-hui-da-lu-zui-gao-de-wen-ti-by-leetcode-so/
+
+SELECT t1.question_id as survey_log FROM (
+  -- 求 浏览次数
+  SELECT
+    COUNT(*) as show_cnt,
+    question_id
+  FROM SurveyLog
+  WHERE action = 'show'
+  GROUP BY question_id
+) t1 INNER JOIN (
+  -- 求 answer次数
+  SELECT
+    COUNT(*) as answer_cnt,
+    question_id
+  FROM SurveyLog
+  WHERE action = 'answer'
+  GROUP BY question_id
+) t2 USING(question_id)
+-- 内连接 按照 / 排序 limit
+ORDER BY t2.answer_cnt / t1.show_cnt DESC, t1.question_id ASC
+limit 1
 
