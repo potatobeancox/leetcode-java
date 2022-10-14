@@ -59,20 +59,18 @@ public class Solution {
 
     public boolean differByOne(String[] dict) {
         // 放入 Set 中
-        Map<String, Integer> countMap = new HashMap<>();
+        Set<String> set = new HashSet<>();
         // 遍历 每个 dict 对于每个单词 遍历每个字母 使用 a-z 替换 看看 在不在set里边
         for (String word : dict) {
             for (int i = 0; i < word.length(); i++) {
                 StringBuilder builder = new StringBuilder(word);
                 builder.setCharAt(i, '*');
                 // 每个位置单词替换
-                int count = countMap.getOrDefault(builder.toString(), 0);
-                count++;
-                countMap.put(builder.toString(), count);
-
-                if (count >= 2) {
+                String target = builder.toString();
+                if (set.contains(target)) {
                     return true;
                 }
+                set.add(target);
             }
         }
         return false;
