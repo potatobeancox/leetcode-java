@@ -144,27 +144,46 @@ public class FileSharing {
         if (!chunkUsersMap.containsKey(chunkID)) {
             return new ArrayList<>();
         }
-
         List<Integer> result = new ArrayList<>(chunkUsersMap.get(chunkID));
-
-        Set<Integer> chunkIDSet = userChunksMap.get(userID);
-        if (chunkIDSet == null) {
-            chunkIDSet = new HashSet<>();
+        Collections.sort(result);
+        if (result.size() == 0) {
+            return result;
         }
-        chunkIDSet.add(chunkID);
-        userChunksMap.put(userID, chunkIDSet);
-        // 添加user
-        chunkUsersMap.get(chunkID).add(userID);
-
+        // 如果当前用户不存在 就不用填充了
+        if (userChunksMap.containsKey(userID)) {
+            Set<Integer> chunkIDSet = userChunksMap.get(userID);
+            if (chunkIDSet == null) {
+                chunkIDSet = new HashSet<>();
+            }
+            chunkIDSet.add(chunkID);
+            userChunksMap.put(userID, chunkIDSet);
+            // 添加user
+            chunkUsersMap.get(chunkID).add(userID);
+        }
         return result;
     }
 
     public static void main(String[] args) {
         //["FileSharing","join","join","join","request","request","leave","request","leave","join"]
         //[[4],          [[1,2]],[[2,3]],[[4]],  [1,3],    [2,2],    [1],   [2,1],     [2],  [[]]]
-        FileSharing fileSharing = new FileSharing(4);
-        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[[1,2]]"));
-        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[[2,3]]"));
-        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[[4]]"));
+        FileSharing fileSharing = new FileSharing(40);
+        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[35,20,14,40,3,24,10,7,4,31,12,5,39,27,17,36,2,32,37,1,23,30,15,22]"));
+        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[33,35,23,15,8,24,3,34,28,19,36,31]"));
+        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[]"));
+        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[27,18,37,16,9,31,13,22,4,34,36,10,28,26,38]"));
+        fileSharing.join(LeetcodeInputUtils.inputString2IngeterList("[40,39,35,30,16,7,33,32,18,15,25,23,11,22,36,4,8,2,1,29,17,28,3,10,20,37,38,24]"));
+
+
+        System.out.println(fileSharing.request(4,1));
+        System.out.println(fileSharing.request(4,27));
+        System.out.println(fileSharing.request(2,28));
+        System.out.println(fileSharing.request(2,30));
+        System.out.println(fileSharing.request(2,26));
+        System.out.println(fileSharing.request(3,29));
+        System.out.println(fileSharing.request(3,19));
+        System.out.println(fileSharing.request(4,6));
+        System.out.println(fileSharing.request(4,6)); // 空
+//        System.out.println(fileSharing.request(4,38));
+//        System.out.println(fileSharing.request(1,33));
     }
 }
