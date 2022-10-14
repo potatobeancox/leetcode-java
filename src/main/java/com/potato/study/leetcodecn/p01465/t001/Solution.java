@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.p01465.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
+import java.util.Arrays;
 import java.util.PriorityQueue;
 
 /**
@@ -55,25 +57,9 @@ public class Solution {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public int maxArea(int h, int w, int[] horizontalCuts, int[] verticalCuts) {
+        Arrays.sort(horizontalCuts);
+        Arrays.sort(verticalCuts);
         // 遍历 horizontalCuts 两个之前的最大值， verticalCuts 同理
         int max1 = Math.max(0,  horizontalCuts[0] - 0);
         int max2 = Math.max(0,  verticalCuts[0] - 0);
@@ -89,6 +75,17 @@ public class Solution {
         max1 = Math.max(max1, h - horizontalCuts[horizontalCuts.length - 1]);
         max2 = Math.max(max2, w - verticalCuts[verticalCuts.length - 1]);
         int mod = 1_000_000_000 + 7;
-        return (max1 * max2) % mod;
+        return (int)(((long)max1 * max2) % mod);
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] horizontalCuts = LeetcodeInputUtils.inputString2IntArray("[3,1]");
+        int[] verticalCuts = LeetcodeInputUtils.inputString2IntArray("[1]");
+        int i = solution.maxArea(5,4, horizontalCuts, verticalCuts);
+        System.out.println(i);
+        Assert.assertEquals(6, i);
+
     }
 }
