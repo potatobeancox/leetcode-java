@@ -42,25 +42,6 @@ package com.potato.study.leetcodecn.p02433.t001;
 public class Solution {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * 从后往前一直生成
      * @param pref
