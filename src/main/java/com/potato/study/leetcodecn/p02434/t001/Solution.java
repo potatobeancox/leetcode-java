@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02434.t001;
 
+import java.util.Stack;
+
 /**
  * 2434. 使用机器人打印字典序最小的字符串
  *
@@ -52,7 +54,30 @@ public class Solution {
 
 
     public String robotWithString(String s) {
-        return null;
+        // 遍历字母 计数
+        int[] count = new int[26];
+        for (char ch : s.toCharArray()) {
+            count[ch - 'a']++;
+        }
+        // 使用一个栈 记录当前没有使用的字母
+        Stack<Character> stack = new Stack<>();
+        // 先进栈
+        int minCharIndex = 0;
+        StringBuilder builder = new StringBuilder();
+        for (char ch : s.toCharArray()) {
+            count[ch - 'a']--;
+            // 找到 剩余的最小字母
+            while (minCharIndex <= 25 && count[minCharIndex] == 0) {
+                minCharIndex++;
+            }
+            stack.add(ch);
+            // 判断当前栈顶是否小于等于 minCharIndex
+            while (!stack.isEmpty() && stack.peek() - 'a' <= minCharIndex) {
+                builder.append(stack.pop());
+            }
+        }
+        // 如果栈顶小于等于 剩余最小 弹出 放入结集合
+        return builder.toString();
     }
 
 }
