@@ -1,10 +1,11 @@
 package com.potato.study.leetcodecn.p01311.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 1311. 获取你好友已观看的视频
@@ -64,7 +65,80 @@ public class Solution {
 
     public List<String> watchedVideosByFriends(List<List<String>> watchedVideos,
                                                int[][] friends, int id, int level) {
+        // 从id 开始 bfs 记录 level 层的 人的id 在对id 进行计数统计 count
+        Queue<Integer> queue = new LinkedList<>();
+        Set<Integer> visited = new HashSet<>();
+        queue.add(id);
+        visited.add(id);
+        int step = 0;
+        Map<String, Integer> countMap = new HashMap<>();
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            step++;
+            for (int i = 0; i < size; i++) {
+                int poll = queue.poll();
+                for (int nextIndex : friends[poll]) {
+                    if (visited.contains(nextIndex)) {
+                        continue;
+                    }
+                    visited.add(nextIndex);
+                    queue.add(nextIndex);
+                    // 到了指定层级
+                    if (step == level) {
+                        List<String> strings = watchedVideos.get(nextIndex);
+                        for (String watchedVideo : strings) {
+                            countMap.put(watchedVideo, countMap.getOrDefault(watchedVideo, 0) + 1);
+                        }
+                    }
+                }
+            }
+            if (step == level) {
+                break;
+            }
+        }
+        // 对 count 进行排序
+        List<WatchInfo> watchInfoList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
 
-        return null;
+            WatchInfo watchInfo = new WatchInfo();
+            watchInfo.count = entry.getValue();
+            watchInfo.video = entry.getKey();
+
+            watchInfoList.add(watchInfo);
+        }
+        Collections.sort(watchInfoList, (w1, w2) -> {
+            int compare = Integer.compare(w1.count, w2.count);
+            if (compare != 0) {
+                return compare;
+            }
+            compare = w1.video.compareTo(w2.video);
+            return compare;
+        });
+
+        List<String> list = watchInfoList.stream().map(WatchInfo::getVideo).collect(Collectors.toList());
+        return list;
+    }
+
+    class WatchInfo {
+        public String video;
+        public int count;
+
+        public String getVideo() {
+            return this.video;
+        }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        List<List<String>> watchedVideos =
+                LeetcodeInputUtils.inputString2StringListList("[[\"A\",\"B\"],[\"C\"],[\"B\",\"C\"],[\"D\"]]");
+
+        int[][] friends = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,2],[0,3],[0,3],[1,2]]");
+        int id = 0;
+        int level = 1;
+
+        List<String> strings = solution.watchedVideosByFriends(watchedVideos, friends, id, level);
+        System.out.println(strings);
     }
 }
