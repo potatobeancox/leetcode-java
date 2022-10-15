@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01245.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.*;
 
 /**
@@ -47,6 +50,92 @@ import java.util.*;
 public class Solution {
 
     public int treeDiameter(int[][] edges) {
-        return -1;
+        // 将 edges 转换成 graph
+        List<List<Integer>> graph = new ArrayList<>();
+        int n = 0;
+        for (int[] edge : edges) {
+            int a = edge[0];
+            int b = edge[1];
+
+            n = Math.max(n, a);
+            n = Math.max(n, b);
+        }
+        n++;
+
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            int a = edge[0];
+            int b = edge[1];
+
+            graph.get(a).add(b);
+            graph.get(b).add(a);
+        }
+        // 先从某一个点出发 找到最远的点 bfs
+        Queue<Integer> queue = new LinkedList<>();
+        int start = 0;
+        queue.add(start);
+        boolean[] visit = new boolean[n];
+        visit[start] = true;
+        int target = -1;
+        while (!queue.isEmpty()) {
+            int currentIndex = queue.poll();
+            target = currentIndex;
+
+            List<Integer> nextList = graph.get(currentIndex);
+            for (int nextIndex : nextList) {
+                if (visit[nextIndex]) {
+                    continue;
+                }
+                visit[nextIndex] = true;
+                queue.add(nextIndex);
+            }
+        }
+        // 再从这个点出发 找到最远的点
+        if (target == -1) {
+            return -1;
+        }
+        // 从 target出发
+        queue = new LinkedList<>();
+        queue.add(target);
+        visit = new boolean[n];
+        visit[target] = true;
+        int layer = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+
+                int currentIndex = queue.poll();
+                List<Integer> nextList = graph.get(currentIndex);
+                for (int nextIndex : nextList) {
+                    if (visit[nextIndex]) {
+                        continue;
+                    }
+                    visit[nextIndex] = true;
+                    queue.add(nextIndex);
+                }
+
+            }
+            layer++;
+        }
+        return layer - 1;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[0,1],[0,2]]";
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.treeDiameter(edges);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        input = "[[0,1],[1,2],[2,3],[1,4],[4,5]]";
+        edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        i = solution.treeDiameter(edges);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 }
