@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p01166.t001;
 
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -59,15 +60,43 @@ import java.util.Map;
  */
 public class FileSystem {
 
-    public FileSystem() {
+    private Map<String, Integer> pathValueMap;
 
+    public FileSystem() {
+        this.pathValueMap = new HashMap<>();
     }
 
     public boolean createPath(String path, int value) {
-        return false;
+        if (pathValueMap.containsKey(path)) {
+            return false;
+        }
+        // 父亲不存在返回false
+        int index = path.lastIndexOf("/");
+        // 输入有问题
+        if (index < 0) {
+            return false;
+        }
+        String fatherPath = path.substring(0, index);
+        if (fatherPath.length() > 0 && !pathValueMap.containsKey(fatherPath)) {
+            return false;
+        }
+        pathValueMap.put(path, value);
+        return true;
     }
 
     public int get(String path) {
-        return -1;
+        if (!pathValueMap.containsKey(path)) {
+            return -1;
+        }
+        return pathValueMap.get(path);
+    }
+
+    public static void main(String[] args) {
+        FileSystem fileSystem = new FileSystem();
+        String path = "/a";
+        int value = 1;
+        boolean res = fileSystem.createPath(path, value);
+        System.out.println(res);
+        System.out.println(fileSystem.get("/a"));
     }
 }
