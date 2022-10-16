@@ -55,3 +55,15 @@
 -- Account ID 3 --> 该账户在两个不同的网络地址 (9, 13) 激活了，虽然是同一天，但时间上没有交集.
 -- Account ID 4 --> 该账户从 "2021-02-01 17:00:00" 到 "2021-02-01 17:00:00" 在两个不同的网络地址 (10 and 11)上激活了。它应该被禁止.
 
+-- 题解
+-- https://leetcode.cn/problems/leetflex-banned-accounts/solution/sql-by-jamartin-9q4n/
+
+SELECT
+  DISTINCT t1.account_id
+FROM LogInfo as t1
+INNER JOIN LogInfo as t2
+ON
+  t1.account_id = t2.account_id and
+  t1.ip_address != t2.ip_address and
+  t1.login >= t2.login and
+  t1.login <= t2.logout
