@@ -1,5 +1,11 @@
 package com.potato.study.leetcodecn.p02107.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 2107. 分享 K 个糖果后独特口味的数量
  *
@@ -49,7 +55,42 @@ package com.potato.study.leetcodecn.p02107.t001;
 public class Solution {
 
     public int shareCandies(int[] candies, int k) {
+        // 先前k个给妹妹 后n-k个给自己
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int i = k; i < candies.length; i++) {
+            int count = countMap.getOrDefault(candies[i], 0);
+            count++;
+            countMap.put(candies[i], count);
+        }
+        int max = countMap.size();
+        // 滑动
+        for (int i = k; i < candies.length; i++) {
+            // 删除 i
+            int removeCandy = candies[i];
+            Integer removeCount = countMap.get(removeCandy);
+            if (removeCount == 1) {
+                countMap.remove(removeCandy);
+            } else {
+                countMap.put(removeCandy, removeCount - 1);
+            }
 
-        return -1;
+            // 添加 第i-k
+            Integer count = countMap.getOrDefault(candies[i-k], 0);
+            count++;
+            countMap.put(candies[i-k], count);
+
+            // max compute
+            max = Math.max(max, countMap.size());
+        }
+        return max;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] candies = LeetcodeInputUtils.inputString2IntArray("[2,1,5,5,4]");
+        int k = 1;
+        int i = solution.shareCandies(candies, k);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 }
