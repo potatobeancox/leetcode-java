@@ -99,3 +99,41 @@
 -- Bob 有两位联系人, 他们中的任何一位都不是可信联系人。
 -- Alex 只有一位联系人(Alice)，并是一位可信联系人。
 -- John 没有任何联系人。
+
+-- 为每张发票 invoice_id 编写一个SQL查询以查找以下内容：
+SELECT
+  Invoices.invoice_id as invoice_id,
+  Customers.customer_name as customer_name,
+  Invoices.price as price,
+  ifnull(t1.contacts_cnt, 0) as contacts_cnt,
+  ifnull(t2.trusted_contacts_cnt, 0) as trusted_contacts_cnt
+FROM Invoices
+INNER JOIN Customers
+ON Invoices.user_id = Customers.customer_id
+LEFT JOIN (
+  -- 每个userid对应联系人
+  SELECT
+    user_id,
+    count(contact_email) as contacts_cnt
+    FROM Contacts
+  GROUP BY user_id
+) t1 ON t1.user_id = Invoices.user_id
+LEFT JOIN (
+  SELECT
+    user_id,
+    count(contact_email) as trusted_contacts_cnt
+    FROM Contacts
+  WHERE contact_email in (
+    SELECT email FROM Customers
+  )
+  GROUP BY user_id
+) t2 ON t2.user_id = Invoices.user_id
+ORDER BY 1
+
+
+
+
+
+
+
+
