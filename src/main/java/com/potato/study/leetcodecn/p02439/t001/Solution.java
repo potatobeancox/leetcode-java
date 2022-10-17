@@ -49,9 +49,46 @@ import java.util.Stack;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/minimize-maximum-of-array/solution/cppjava-you-shi-yi-dao-jing-dian-de-er-f-w3i6/
+     * @param nums
+     * @return
+     */
     public int minimizeArrayValue(int[] nums) {
+        // 二分法 枚举 最大值
+        long left = 0;
+        long right = 1_000_000_000;
+        // 对于每个位置的最大值进行check
+        long res = -1;
+        while (left <= right) {
+            long mid = (left + right) / 2;
+            if (check(mid, nums)) {
+                res = mid;
+                // 再往小试试
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        // check 逻辑 从前往后累计可以负担的个数，如果某个位置出现了 当前位置的多余量超过了负担量 就gg
+        return (int)res;
+    }
 
-        return -1;
+    private boolean check(long max, int[] nums) {
+        // 还有能承载的空位
+        long hasBlank = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] <= max) {
+                hasBlank += (max - nums[i]);
+            } else {
+                // 比max大 看看能不能调整
+                if (nums[i] - max > hasBlank) {
+                    return false;
+                }
+                hasBlank -= (nums[i] - max);
+            }
+        }
+        return true;
     }
 
 }
