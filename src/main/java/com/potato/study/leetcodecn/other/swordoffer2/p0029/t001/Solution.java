@@ -54,7 +54,67 @@ import java.util.List;
 public class Solution {
 
     public Node insert(Node head, int insertVal) {
+        if (head == null) {
+            Node node = new Node(insertVal);
+            node.next = node;
+            head = node;
+            return head;
+        }
         // 每次获取当前位置的下一个位置
-        return null;
+        Node p = head;
+        Node next = p.next;
+        // 如果当前只有一个节点
+        if (p == next) {
+            Node insert = new Node(insertVal);
+            int cur = head.val;
+            if (insertVal < cur) {
+                insert.next = p;
+                p.next = insert;
+                return insert;
+            } else {
+                head.next = insert;
+                insert.next = head;
+                return head;
+            }
+        }
+        // 多个点
+        while (next != head) {
+            //
+            if (p.val <= insertVal && insertVal <= next.val) {
+                Node insert = new Node(insertVal);
+                p.next = insert;
+                insert.next = next;
+                return head;
+            }
+
+            p = p.next;
+            next = next.next;
+        }
+        // next == head 最后一个节点
+        if (insertVal < head.val) {
+            // insertVal 最小
+            Node insert = new Node(insertVal);
+            insert.next = head;
+            next.next = insert;
+            return insert;
+        } else if (insertVal > p.val) {
+            // insertVal 最大
+            Node insert = new Node(insertVal);
+            insert.next = head;
+            next.next = insert;
+            return head;
+        }
+        return head;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        Node head = new Node(3);
+        head.next = new Node(4);
+        head.next.next = new Node(1);
+        head.next.next.next = head;
+        Node insert = solution.insert(head, 2);
+        System.out.println(insert);
     }
 }
