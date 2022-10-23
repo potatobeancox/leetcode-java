@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01540.t001;
 
+import org.junit.Assert;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,22 +56,35 @@ public class Solution {
         if (s.length() != t.length()) {
             return false;
         }
-        // 遍历 st 如果哪位位置不相同 计算 t-s 位置 + 26 % 26 距离多少个位置 ，
-        Set<Integer> useSet = new HashSet<>();
-        int max = 0;
+        // 计数比较
+        int[] diffCount = new int[26];
         for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) != t.charAt(i)) {
+            if (t.charAt(i) != s.charAt(i)) {
                 int diff = (t.charAt(i) - s.charAt(i) + 26) % 26;
-                while (useSet.contains(diff)) {
-                    diff += 26;
-                }
-                if (diff > k) {
-                    return false;
-                }
-                useSet.add(diff);
+                diffCount[diff]++;
             }
         }
-        // 使用 Set 存储已经使用过的次数 如果使用了 + 26 最后与 k相比
+        // 遍历 统计一下最大值
+        for (int i = 0; i < 26; i++) {
+            if (diffCount[i] == 0) {
+                continue;
+            }
+            // 计算最大值
+            long max = (diffCount[i] - 1) * 26 + i;
+            if (max > k) {
+                return false;
+            }
+        }
         return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "input";
+        String t = "ouput";
+        int k = 9;
+        boolean b = solution.canConvertString(s, t, k);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
     }
 }
