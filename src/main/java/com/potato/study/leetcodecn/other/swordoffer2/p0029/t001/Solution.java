@@ -77,6 +77,15 @@ public class Solution {
                 return head;
             }
         }
+        // 找到最小的点
+        while (next.val >= p.val) {
+            next = next.next;
+            p = p.next;
+        }
+        // 重置head
+        p = next;
+        next = p.next;
+
         // 多个点
         while (next != head) {
             //
