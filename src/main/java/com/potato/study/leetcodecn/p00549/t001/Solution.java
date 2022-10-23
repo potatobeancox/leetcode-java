@@ -48,6 +48,8 @@ import java.util.Queue;
  */
 public class Solution {
 
+    private int max;
+
     /**
      *
      * @param root
@@ -55,7 +57,80 @@ public class Solution {
      */
     public int longestConsecutive(TreeNode root) {
         // dfs 记录 当前预期的下一个是增大还是见效
-        return -1;
+        this.max = 0;
+        dfs(root);
+        return max;
+    }
+
+    /**
+     *
+     * @param root
+     * @return index0 代表以root为开始的连续降序 4321 的长度，index1 连续升序的长度
+     */
+    private int[] dfs(TreeNode root) {
+        if (root == null) {
+            return new int[] {0, 0};
+        }
+        // 先求左右孩子的长度
+        int[] leftChild = dfs(root.left);
+        int[] rightChild = dfs(root.right);
+
+
+        // 初始化结果
+        int[] res = new int[] {1, 1};
+        // 如果没有左右孩子只能返回当前节点
+        if (root.left == null && root.right == null) {
+            max = Math.max(1, max);
+            return res;
+        }
+        // 判断下 当前roo val 和 左孩子是否差1
+        if (root.left != null && Math.abs(root.val - root.left.val) == 1) {
+            // index0 代表以root为开始的连续降序 4321 的长度，index1 连续升序的长度
+            if (root.val - root.left.val == 1) {
+                res[0] = Math.max(res[0], leftChild[0] + 1);
+                // 更新max
+                max = Math.max(max, res[0]);
+
+            }
+            // 1234
+            if (root.val - root.left.val == -1) {
+                res[1] = Math.max(res[1], leftChild[1] + 1);
+                // 更新max
+                max = Math.max(max, res[1]);
+            }
+        }
+        // 判断右孩子是否差1
+        if (root.right != null && Math.abs(root.val - root.right.val) == 1) {
+            // index0 代表以root为开始的连续降序 4321 的长度，index1 连续升序的长度
+            if (root.val - root.right.val == 1) {
+                res[0] = Math.max(res[0], rightChild[0] + 1);
+
+                // 更新max 左边升序 右边降序
+                max = Math.max(max, res[1] + rightChild[0]);
+            }
+            // 1234
+            if (root.val - root.right.val == -1) {
+                res[1] = Math.max(res[1], rightChild[1] + 1);
+
+                // 更新max 左边升序 右边升序
+                max = Math.max(max, res[0] + rightChild[1]);
+            }
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(1);
+        root.right = new TreeNode(4);
+        root.right.left = new TreeNode(3);
+        root.right.left.right = new TreeNode(2);
+
+
+        int i = solution.longestConsecutive(root);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
     }
 
 }
