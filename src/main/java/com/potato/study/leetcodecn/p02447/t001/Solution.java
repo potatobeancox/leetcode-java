@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02447.t001;
 
+import org.junit.Assert;
+
 /**
  * 2447. 最大公因数等于 K 的子数组数目
  *
@@ -40,8 +42,71 @@ package com.potato.study.leetcodecn.p02447.t001;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/solution/gcdbao-li-mei-ju-jian-zhi-by-ronin-f4-8zfn/
+     * @param nums
+     * @param k
+     * @return
+     */
     public int subarrayGCD(int[] nums, int k) {
-        return -1;
+        // 极端情况只有一个数字的时候 判断一下
+        if (nums.length == 1) {
+            if (nums[0] == k) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        int res = 0;
+        // 否则遍历每个位置 ，作为起点 往后开始遍历 直到找到gcd不是 所求的
+        for (int i = 0; i < nums.length; i++) {
+            int current = nums[i];
+            if (current % k != 0) {
+                continue;
+            }
+            for (int j = i; j < nums.length; j++) {
+                current = gcd(current, nums[j]);
+                if (current == k) {
+                    res++;
+                } else if (current < k) {
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 辗转相除
+     * @param a
+     * @param b
+     * @return
+     */
+    private int gcd(int a, int b) {
+        if (a % b == 0) {
+            return b;
+        }
+        return gcd(b, a % b);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                3,12,9,6
+        };
+        int k = 3;
+        int i = solution.subarrayGCD(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(7, i);
+
+
+        nums = new int[] {
+                3,3,4,1,2
+        };
+        k = 1;
+        i = solution.subarrayGCD(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(10, i);
     }
 
 }
