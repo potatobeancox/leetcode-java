@@ -47,6 +47,13 @@ package com.potato.study.leetcodecn.p02445.t001;
 public class Solution {
 
 
+    /**
+     * 翻译一下 一颗树 每次 queries 将 queries【i】 对应子树节点都翻转 看最终多少个1
+     * 初始都是 0
+     * @param n
+     * @param queries
+     * @return
+     */
     public int numberOfNodes(int n, int[] queries) {
 
         return -1;
