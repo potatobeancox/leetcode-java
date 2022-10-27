@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02438.t001;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 2438. 二的幂数组中查询范围内的乘积
  *
@@ -44,9 +47,43 @@ package com.potato.study.leetcodecn.p02438.t001;
 public class Solution {
 
 
-    public int[] productQueries(int n, int[][] queries) {
 
-        return null;
+    public int[] productQueries(int n, int[][] queries) {
+        int mod = 1_000_000_000 + 7;
+        // 先生成数组 递增的
+        List<Long> list = new ArrayList<>();
+        long bit = 1;
+        while (bit * 2 <= n) {
+            bit *= 2;
+        }
+        // 只要n 大于 0
+        while (n > 0) {
+            while (n >= bit) {
+                list.add(bit);
+                n -= bit;
+            }
+            if (n < bit) {
+                bit /= 2;
+            }
+        }
+        // 遍历 query 求成绩
+        int size = queries.length;
+        int[] res = new int[size];
+        int[] arr = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            arr[list.size() - i - 1] = list.get(i).intValue();
+        }
+        for (int i = 0; i < queries.length; i++) {
+            int leftIndex = queries[i][0];
+            int rightIndex = queries[i][1];
+            long total = 1;
+            for (int j = leftIndex; j <= rightIndex; j++) {
+                total = total * arr[j];
+                total %= mod;
+            }
+            res[i] = (int) (total % mod);
+        }
+        return res;
     }
 
 }
