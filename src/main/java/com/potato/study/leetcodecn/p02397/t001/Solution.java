@@ -56,24 +56,23 @@ public class Solution {
     public int maximumRows(int[][] matrix, int numSelect) {
         // 将 matrix 每一行 转换成 一个二进制的数字
         List<Integer> list = new ArrayList<>();
+
         for (int[] arr : matrix) {
             int target = convert2Int(arr);
             list.add(target);
         }
         // 遍历每个数组 如果 当前数字的 bit count 等于 numSelect
         int max = 0;
-        for (int i = 0; i < list.size(); i++) {
-            int target = list.get(i);
-            int bitCount = Integer.bitCount(target);
+        int n = matrix[0].length;
+        int limit = (1 << n);
+        for (int i = 0; i < limit; i++) {
+            int bitCount = Integer.bitCount(i);
             // 如果当前 字节数量 等于 字母数量
-            if (bitCount <= numSelect) {
-                int rowCount = 1;
+            if (bitCount == numSelect) {
                 // 找一下其他数字 看 | 是否等于 本身
+                int rowCount = 0;
                 for (int j = 0; j < list.size(); j++) {
-                    if (i == j) {
-                        continue;
-                    }
-                    if ((list.get(j) | target) == target) {
+                    if ((list.get(j) & i) == list.get(j)) {
                         rowCount++;
                     }
                 }
