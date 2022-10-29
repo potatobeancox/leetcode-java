@@ -3,6 +3,7 @@ package com.potato.study.leetcodecn.p02420.t001;
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +52,41 @@ public class Solution {
 
 
     public List<Integer> goodIndices(int[] nums, int k) {
-        return null;
+        // 下标 i 之前 的 k 个元素是 非递增的 下标 i 之后 的 k 个元素是 非递减的
+        int len = nums.length;
+        int[] left = new int[len];
+        int[] right = new int[len];
+        // left right 数组记录 以i作为结尾 位置 最长递增或者递减的长度
+        for (int i = 0; i < nums.length; i++) {
+            if (i == 0) {
+                left[i] = 1;
+            } else {
+                if (nums[i-1] >= nums[i]) {
+                    left[i] = left[i-1] + 1;
+                } else {
+                    left[i] = 1;
+                }
+            }
+
+            if (nums.length-1-i == nums.length - 1) {
+                right[nums.length-1-i] = 1;
+            } else {
+                // 找递减
+                if (nums[nums.length-1-i] <= nums[nums.length-1-i +1]) {
+                    right[nums.length-1-i] = right[nums.length-1-i + 1] + 1;
+                } else {
+                    right[nums.length-1-i] = 1;
+                }
+            }
+        }
+        // 遍历 一遍 nums 找到左右两边超过 k的
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = k; i < nums.length - k; i++) {
+            if (left[i-1] >= k && right[i+1] >= k) {
+                indexList.add(i);
+            }
+        }
+        return indexList;
     }
 
 }
