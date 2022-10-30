@@ -1,9 +1,4 @@
-package com.potato.study.leetcodecn.p00158.t001.t001;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+package com.potato.study.leetcodecn.p00158.t001;
 
 /**
  * 158. 用 Read4 读取 N 个字符 II
