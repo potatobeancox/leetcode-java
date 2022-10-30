@@ -44,8 +44,25 @@ public class Solution {
 
 
     public int countHousePlacements(int n) {
+        // 先求一侧，另一侧可能就是所求的平方
 
-        return -1;
+        // dp[n][2]  dp i0 代表 第i个位置 不放房子的所有可能数 同理1就是放
+        long[][] dp = new long[n][2];
+        // 初始化 dp 00 = 1 dp01 = 1
+        dp[0][0] = 1;
+        dp[0][1] = 1;
+        // 转移方程 dpi1 放了房子 之前必须不能放 = dp i-1 0 dp i0 = dp i-1 0 + dp i-1 1
+        int mod = 1_000_000_000 + 7;
+        for (int i = 1; i < n; i++) {
+            dp[i][1] = dp[i-1][0];
+            dp[i][0] = dp[i-1][0] + dp[i-1][1];
+
+
+            dp[i][1] %= mod;
+            dp[i][0] %= mod;
+        }
+        long target = (dp[n-1][0] + dp[n-1][1]) * (dp[n-1][0] + dp[n-1][1]) % mod;
+        return (int) target;
     }
 
 }
