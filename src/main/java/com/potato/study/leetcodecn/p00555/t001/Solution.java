@@ -44,9 +44,64 @@ import java.util.Map;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/split-concatenated-strings/solution/555-fen-ge-lian-jie-zi-fu-chuan-by-klb/
+     * @param strs
+     * @return
+     */
     public String splitLoopedString(String[] strs) {
+        // 处理 strs 全调整到 字母降序
+        for (int i = 0; i < strs.length; i++) {
+            StringBuilder builder = new StringBuilder(strs[i]);
 
-        return null;
+            String reverse = builder.reverse().toString();
+            if (reverse.compareTo(strs[i]) > 0) {
+                strs[i] = reverse;
+            }
+        }
+        // 遍历每一个位置 str 其他单词拼接到一块 ，对于每个str的位置 i 分分一下看看 最大的是哪个
+        String res = null;
+        for (int i = 0; i < strs.length; i++) {
+            // 其他字符连接在一起，先添加后面的字符再添加前面的
+            StringBuilder others = new StringBuilder();
+            for (int j = i+1; j < strs.length; j++) {
+                others.append(strs[j]);
+            }
+            // i前面的
+            for (int j = 0; j < i; j++) {
+                others.append(strs[j]);
+            }
+            // i 如何拆
+            String target = strs[i];
+            res = getTargetString(res, others, target);
+
+            StringBuilder builder = new StringBuilder(strs[i]);
+            String reverse = builder.reverse().toString();
+            res = getTargetString(res, others, reverse);
+        }
+        return res;
+    }
+
+    /**
+     * 遍历 target 找到 字母表顺序 最大的
+     * @param res
+     * @param others
+     * @param target
+     * @return
+     */
+    private String getTargetString(String res, StringBuilder others, String target) {
+        for (int j = 0; j <= target.length(); j++) {
+            // 前面
+            String end = target.substring(0, j);
+            String start = target.substring(j);
+
+            String finalWord = start + others.toString() + end;
+
+            if (res == null || finalWord.compareTo(res) > 0) {
+                res = finalWord;
+            }
+        }
+        return res;
     }
 
 }
