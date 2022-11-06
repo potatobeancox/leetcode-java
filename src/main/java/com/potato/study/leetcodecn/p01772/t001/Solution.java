@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p01772.t001;
 
 import com.google.common.collect.Lists;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 import java.util.*;
@@ -49,17 +50,24 @@ public class Solution {
     public String[] sortFeatures(String[] features, String[] responses) {
         // 将 features 存储到 countMap 中
         Map<String, Integer> countMap = new HashMap<>();
-        for (String feature : features) {
-            countMap.put(feature, 0);
+        Map<String, Integer> indexMap = new HashMap<>();
+        for (int i = 0; i < features.length; i++) {
+            countMap.put(features[i], 0);
+            indexMap.put(features[i], i);
         }
         // 遍历 responses 进行数字计算
         for (String response : responses) {
             String[] words = response.split(" ");
+            Set<String> set = new HashSet<>();
             if (words != null && words.length > 0) {
                 for (String word : words) {
                     if (!countMap.containsKey(word)) {
                         continue;
                     }
+                    if (set.contains(word)) {
+                        continue;
+                    }
+                    set.add(word);
                     Integer count = countMap.get(word);
                     count++;
                     countMap.put(word, count);
@@ -67,11 +75,34 @@ public class Solution {
             }
         }
         // 遍历 countMap 进行堆排序
-        PriorityQueue<String> priorityQueue = new PriorityQueue<>((o1, o2) ->
-                Integer.compare(countMap.getOrDefault(o2, 0), countMap.getOrDefault(o1, 0)));
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>((o1, o2) -> {
+            int compare = Integer.compare(countMap.getOrDefault(o2, 0), countMap.getOrDefault(o1, 0));
+            if (compare != 0) {
+                return compare;
+            }
+            return Integer.compare(indexMap.get(o1), indexMap.get(o2));
+        });
         for (String word : countMap.keySet()) {
             priorityQueue.add(word);
         }
-        return null;
+        String[] result = new String[priorityQueue.size()];
+        int size = priorityQueue.size();
+        for (int i = 0; i < size; i++) {
+            result[i] = priorityQueue.poll();
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        String[] features = LeetcodeInputUtils.inputString2StringArray("[\"cooler\",\"lock\",\"touch\"]");
+        String[] responses = LeetcodeInputUtils.inputString2StringArray("[\"i like cooler cooler\",\"lock touch cool\",\"locker like touch\"]");
+
+        String[] strings = solution.sortFeatures(features, responses);
+        System.out.println(Arrays.toString(strings));
+        Assert.assertArrayEquals(new String[] {
+                "touch","cooler","lock"
+        }, strings);
     }
 }
