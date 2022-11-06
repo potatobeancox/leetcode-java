@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01801.t001;
 
+import java.util.PriorityQueue;
+
 /**
  * 1801. 积压订单中的订单总数
  *
@@ -63,7 +65,80 @@ package com.potato.study.leetcodecn.p01801.t001;
 public class Solution {
 
     public int getNumberOfBacklogOrders(int[][] orders) {
-        return -1;
+        // 没卖掉的 小根堆
+        PriorityQueue<Order> sellOrderPriorityQueue = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1.price, o2.price);
+        });
+        // 卖掉嘞的 大根堆
+        PriorityQueue<Order> buyOrderPriorityQueue = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o2.price, o1.price);
+        });
+        // 一个队列 解决积压的卖 一个解决积压的买 买的价格高的往前放 卖的价格低的往往前防止
+        for (int i = 0; i < orders.length; i++) {
+            int[] currentOrder = orders[i];
+            int type = currentOrder[2];
+            Order order = new Order();
+            order.amount = currentOrder[1];
+            order.orderType = type;
+            order.price = currentOrder[0];
+
+            if (type == 1) {
+                // sell 订单
+                sellOrderPriorityQueue.add(order);
+            } else {
+                // buy 订单
+                buyOrderPriorityQueue.add(order);
+            }
+            // 遍历 看看 买家还能不能买了
+            while (!buyOrderPriorityQueue.isEmpty()) {
+                // 当前有限的购买者
+                Order peekBuy = buyOrderPriorityQueue.peek();
+                if (sellOrderPriorityQueue.isEmpty()) {
+                    break;
+                }
+                Order peekSell = sellOrderPriorityQueue.peek();
+                // 如果已经买不起了 直接break
+                if (peekBuy.price < peekSell.price) {
+                    break;
+                }
+                // 还是可以买的起的 循环买
+                while (peekBuy.amount >= 0 && !sellOrderPriorityQueue.isEmpty()) {
+                    Order poll = sellOrderPriorityQueue.poll();
+                    // 全能买
+                    if (peekBuy.amount >= poll.amount) {
+                        peekBuy.amount -= poll.amount;
+                        poll.amount = 0;
+                    } else {
+                        // 买的少 peekBuy.amount < poll.amount;
+                        poll.amount -= peekBuy.amount;
+                        peekBuy.amount = 0;
+                        break;
+                    }
+                }
+                // 如果当前 peek 还有的话 break
+                if (peekBuy.amount == 0) {
+                    buyOrderPriorityQueue.poll();
+                }
+                // 如果没有了
+                if (sellOrderPriorityQueue.isEmpty()) {
+                    break;
+                }
+                // sell 还有 但是买不起了
+                if (peekBuy.price < sellOrderPriorityQueue.peek().price) {
+                    break;
+                }
+            }
+
+        }
+        return buyOrderPriorityQueue.size() + sellOrderPriorityQueue.size();
+    }
+
+    class Order {
+        // orders[i] = [pricei, amounti, orderTypei]
+        public int price;
+        public int amount;
+        // 订单类型 orderTypei 可以分为两种：0 表示这是一批采购订单 buy 1 表示这是一批销售订单 sell
+        public int orderType;
     }
 
 }
