@@ -57,9 +57,9 @@ public class Solution {
             countMap.put(key, countMap.getOrDefault(key, 0) + 1);
         }
         // 遍历 countMap 找到只有一个出现的字符串
-        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
-            if (entry.getValue() == 1) {
-                return entry.getKey();
+        for (String word : words) {
+            if (countMap.get(getKey(word)) == 1) {
+                return word;
             }
         }
         return "";
