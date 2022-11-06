@@ -76,8 +76,9 @@ public class Solution {
             graph.get(from).add(to);
         }
         boolean[] visit = new boolean[n];
+        Set<Integer> sourceSet = new HashSet<>();
         // 从 source 开始 往每个临界点 dfs
-        return dfs(graph, source, destination, visit);
+        return dfs(graph, source, destination, visit, sourceSet);
     }
 
     /**
@@ -87,7 +88,13 @@ public class Solution {
      * @param destination
      * @return
      */
-    private boolean dfs(List<List<Integer>> graph, int index, int destination, boolean[] visit) {
+    private boolean dfs(List<List<Integer>> graph, int index, int destination, boolean[] visit,
+                        Set<Integer> sourceSet) {
+
+        if (sourceSet.contains(index)) {
+            return true;
+        }
+
         // 这个点标记
         visit[index] = true;
         // dfs 过程中 如果 连接点如果遇到了已经用过的点 返回false 有一个 false 就是 false
@@ -107,11 +114,12 @@ public class Solution {
                 return false;
             }
             // dfs
-            if (!dfs(graph, next, destination, visit)) {
+            if (!dfs(graph, next, destination, visit, sourceSet)) {
                 return false;
             }
         }
         visit[index] = false;
+        sourceSet.add(index);
         return true;
     }
 
