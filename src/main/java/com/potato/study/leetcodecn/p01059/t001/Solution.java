@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p01059.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.*;
 
 /**
@@ -56,6 +59,9 @@ public class Solution {
 
     public boolean leadsToDestination(int n, int[][] edges, int source, int destination) {
         if (n == 1) {
+            if (destination == source) {
+                return edges.length == 0;
+            }
             return true;
         }
         // 将 edges 转换成 list list int 记录每个店的连接点
@@ -82,23 +88,69 @@ public class Solution {
      * @return
      */
     private boolean dfs(List<List<Integer>> graph, int index, int destination, boolean[] visit) {
+        // 这个点标记
+        visit[index] = true;
         // dfs 过程中 如果 连接点如果遇到了已经用过的点 返回false 有一个 false 就是 false
         List<Integer> nextList = graph.get(index);
         // 当前点已经到了终点 判断下 终点是否还有临街点
         if (index == destination) {
             return nextList.size() == 0;
         }
-        // 中间遇到了 访问过的点 肯定到不了终点了
-        if (visit[index]) {
+        // 如果当前点没有 next 且不是 destination false
+        if (nextList.size() == 0) {
             return false;
         }
-        // 这个点标记
-        visit[index] = true;
         // 往临街点访问
+        for (int next : nextList) {
+            // 中间遇到了 访问过的点 肯定到不了终点了
+            if (visit[next] && next != destination) {
+                return false;
+            }
+            // dfs
+            if (!dfs(graph, next, destination, visit)) {
+                return false;
+            }
+        }
+        visit[index] = false;
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 4;
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,1],[0,2],[1,3],[2,3]]");
+        int source = 0;
+        int destination = 3;
+        boolean b = solution.leadsToDestination(n, edges, source, destination);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
 
 
-        // dfs
-        return false;
+        n = 3;
+        edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,1],[0,2]]");
+        source = 0;
+        destination = 2;
+        b = solution.leadsToDestination(n, edges, source, destination);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        n = 5;
+        edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,1],[0,2],[0,3],[0,3],[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]");
+        source = 0;
+        destination = 4;
+        b = solution.leadsToDestination(n, edges, source, destination);
+        System.out.println(b);
+        Assert.assertEquals(true, b);
+
+
+        n = 1;
+        edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,0]]");
+        source = 0;
+        destination = 0;
+        b = solution.leadsToDestination(n, edges, source, destination);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
     }
 
 
