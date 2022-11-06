@@ -51,10 +51,47 @@ package com.potato.study.leetcodecn.p01898.t001;
 public class Solution {
 
     public int maximumRemovals(String s, String p, int[] removable) {
-        //
-        return -1;
+        // 二分法 查询 最大的坐标
+        int left = 0;
+        int right = removable.length - 1;
+        int res = -1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            // 如果当前mid都删除了 可以满足 子序列 看看还能不能接着山 否则
+            boolean canRemove = isSubsequenceAfterRemove(s, p, removable, mid);
+            if (canRemove) {
+                res = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return res + 1;
     }
 
+    private boolean isSubsequenceAfterRemove(String s, String p, int[] removable, int mid) {
+        // 前 mid 个 包括 全部 remove
+        boolean[] removed = new boolean[s.length()];
+        for (int i = 0; i <= mid; i++) {
+            removed[removable[i]] = true;
+        }
+        int sIndex = 0;
+        int pIndex = 0;
+
+        while (sIndex < s.length() && pIndex < p.length()) {
+            if (removed[sIndex]) {
+                sIndex++;
+                continue;
+            }
+            if (s.charAt(sIndex) == p.charAt(pIndex)) {
+                sIndex++;
+                pIndex++;
+            } else {
+                sIndex++;
+            }
+        }
+        return pIndex == p.length();
+    }
 
 
 }
