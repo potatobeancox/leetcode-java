@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.p02456.t001;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 2456. 最流行的视频创作者
@@ -53,7 +55,51 @@ public class Solution {
 
 
     public List<List<String>> mostPopularCreator(String[] creators, String[] ids, int[] views) {
+        // 1.遍历 creators 统计 String CreatorInfoMap
+        Map<String, CreatorInfo> map = new HashMap<>();
+        int n = creators.length;
+        for (int i = 0; i < n; i++) {
+            String creator = creators[i];
+            String id = ids[i];
+            int view = views[i];
+            if (map.containsKey(creator)) {
+                // 获取对象 累计结果
+                CreatorInfo creatorInfo = map.get(creator);
+                // 先累计次数
+                creatorInfo.viewCount += view;
+                // 比较 id
+                Long mostView = creatorInfo.idViewMap.get(creatorInfo.mostViewId);
+                if (view > mostView || (view == mostView && id.compareTo(creatorInfo.mostViewId) < 0)) {
+                    creatorInfo.mostViewId = id;
+                }
+                creatorInfo.idViewMap.put(id, (long)view);
+            } else {
+                // 创建对象
+                CreatorInfo creatorInfo = new CreatorInfo(creator);
+                // 先累计次数
+                creatorInfo.viewCount += view;
+                creatorInfo.mostViewId = id;
+                creatorInfo.idViewMap.put(id, (long)view);
+            }
+        }
+        // 2.遍历1 生成的 map 放到堆里边，维护顺序 大根堆
+
+        // 3.获取堆中的结果
+
+
         return new ArrayList<>();
+    }
+
+    class CreatorInfo {
+        public String creator;
+        public long viewCount;
+        public String mostViewId;
+        public Map<String, Long> idViewMap;
+
+        public CreatorInfo(String creator) {
+            this.creator = creator;
+            this.idViewMap = new HashMap<>();
+        }
     }
 
 }
