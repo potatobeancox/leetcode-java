@@ -1,9 +1,6 @@
 package com.potato.study.leetcodecn.p02456.t001;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 2456. 最流行的视频创作者
@@ -80,14 +77,30 @@ public class Solution {
                 creatorInfo.viewCount += view;
                 creatorInfo.mostViewId = id;
                 creatorInfo.idViewMap.put(id, (long)view);
+
+                map.put(creator, creatorInfo);
             }
         }
         // 2.遍历1 生成的 map 放到堆里边，维护顺序 大根堆
-
+        PriorityQueue<CreatorInfo> priorityQueue = new PriorityQueue<>((creator1, creator2) -> {
+            return Long.compare(creator2.viewCount, creator1.viewCount);
+        });
+        for (CreatorInfo creatorInfo : map.values()) {
+            priorityQueue.add(creatorInfo);
+        }
         // 3.获取堆中的结果
+        List<List<String>> res = new ArrayList<>();
+        while (!priorityQueue.isEmpty()) {
+            CreatorInfo poll = priorityQueue.poll();
+            List<String> list = new ArrayList<>();
+            list.add(poll.creator);
+            list.add(poll.mostViewId);
+
+            res.add(list);
+        }
 
 
-        return new ArrayList<>();
+        return res;
     }
 
     class CreatorInfo {
