@@ -90,13 +90,21 @@ public class Solution {
         }
         // 3.获取堆中的结果
         List<List<String>> res = new ArrayList<>();
+        long lastView = -1;
         while (!priorityQueue.isEmpty()) {
             CreatorInfo poll = priorityQueue.poll();
-            List<String> list = new ArrayList<>();
-            list.add(poll.creator);
-            list.add(poll.mostViewId);
 
-            res.add(list);
+            if (res.size() == 0 || lastView == poll.viewCount) {
+                List<String> list = new ArrayList<>();
+                list.add(poll.creator);
+                list.add(poll.mostViewId);
+                lastView = poll.viewCount;
+
+                res.add(list);
+            } else {
+                break;
+            }
+
         }
 
 
