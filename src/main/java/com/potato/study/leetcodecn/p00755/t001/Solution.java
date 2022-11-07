@@ -1,5 +1,10 @@
 package com.potato.study.leetcodecn.p00755.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.Arrays;
+
 /**
  * 755. 倒水
  *
@@ -133,31 +138,57 @@ public class Solution {
     public int[] pourWater(int[] heights, int volume, int k) {
         // 遍历 volume 次 依次从 k往左找和 k往右找
         for (int i = 0; i < volume; i++) {
-            int centerHeight = heights[k];
-            int leftIndex = k - 1;
+            int leftIndex = k;
             // 先往左 找到 局部最小值
-            if (leftIndex >= 0 && centerHeight >= heights[leftIndex]) {
-                while (leftIndex-1 >= 0 && heights[leftIndex-1] <= heights[leftIndex]) {
-                    leftIndex--;
-                }
-                // 找到判断是否可以放置
-                if (leftIndex >= 0) {
-                    heights[leftIndex]++;
-                    continue;
-                }
+            while (leftIndex-1 >= 0 && heights[leftIndex-1] <= heights[leftIndex]) {
+                leftIndex--;
             }
-            // 再往右 找到局部最小值
+            // 找下右边的index
             int rightIndex = k;
-            // 先往左 找到 局部最小值
             while (rightIndex+1 < heights.length && heights[rightIndex+1] <= heights[rightIndex]) {
                 rightIndex++;
             }
-            // 找到判断是否可以放置
-            if (rightIndex < heights.length) {
-                heights[rightIndex]++;
+            // 判断一下哪个小
+            if (leftIndex == rightIndex) {
+                // 都在中间
+                heights[k]++;
                 continue;
+            }
+            // 如果都一样
+            if (heights[leftIndex] == heights[rightIndex] && heights[rightIndex] == heights[k]) {
+                // 都在中间
+                heights[k]++;
+                continue;
+            }
+
+            // 两边哪个小
+            if (heights[leftIndex] <= heights[rightIndex]) {
+                heights[leftIndex]++;
+            } else {
+                heights[rightIndex]++;
             }
         }
         return heights;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] heights = LeetcodeInputUtils.inputString2IntArray("[2,1,1,2,1,2,2]");
+        int volume = 4;
+        int k = 3;
+        int[] ints = solution.pourWater(heights, volume, k);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[]{
+                2,2,2,3,2,2,2
+        }, ints);
+
+        heights = LeetcodeInputUtils.inputString2IntArray("[1,2,3,4]");
+        volume = 2;
+        k = 2;
+        ints = solution.pourWater(heights, volume, k);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[]{
+                2,3,3,4
+        }, ints);
     }
 }
