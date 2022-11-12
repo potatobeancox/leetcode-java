@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.other.swordoffer.p0037.p1.t001.t001;
+package com.potato.study.leetcodecn.other.swordoffer.p0037.p1.t001;
 
 
 import java.util.ArrayList;
