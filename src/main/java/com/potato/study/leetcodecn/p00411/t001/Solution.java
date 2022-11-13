@@ -1,6 +1,11 @@
 package com.potato.study.leetcodecn.p00411.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.*;
+
 /**
  * 411. 最短独占单词缩写
  *
@@ -54,7 +59,145 @@ package com.potato.study.leetcodecn.p00411.t001;
  */
 public class Solution {
 
+    /**
+     * 可以用位运算的背景
+     *  1 <= m <= 21
+     * @param target
+     * @param dictionary
+     * @return
+     */
     public String minAbbreviation(String target, String[] dictionary) {
-        return null;
+        // 1. 将 dictionary 中长度和 target长度不同的处理掉，因为不可能匹配上 返回list
+        List<String> realDictionary = new ArrayList<>();
+        for (String dic : dictionary) {
+            if (dic.length() == target.length()) {
+                realDictionary.add(dic);
+            }
+        }
+        // 2. 生成 代表 target 缩写 的int数字，并且 返回长度 dfs 生成 字符保留为1 字符隐藏为0 ，长度要看有多少个保留字符 和多少段隐藏数字 组成
+        List<Abbreviation> abbrList = new ArrayList<>();
+        int abbrLen = 0;
+        dfsGetBitList(abbrList, target, 0, abbrLen, false, 0);
+        // 3. 将2 结果list 排序 按照 长度升序排列
+        Collections.sort(abbrList, Comparator.comparingInt(o -> o.len));
+        // 4. 处理 1的list 生成 数字 其中bit = 1表示 字母与target一直，否则不一致
+        List<Integer> dicTargetDiffBitList = new ArrayList<>();
+        for (String word : realDictionary) {
+            // 与 target 比较生成
+            int temp = 0;
+            for (int i = 0; i < target.length(); i++) {
+                if (target.charAt(i) == word.charAt(i)) {
+                    temp |= (1 << i);
+                }
+            }
+            dicTargetDiffBitList.add(temp);
+        }
+        // 5.对于 3的结果 与 4list 进行位运算匹配 & 结果还是 之前的缩写， 说明这个缩写 跟这个 dictionary的某个缩写一致 都不一致再返回
+        for (Abbreviation abbreviation : abbrList) {
+            // 遍历 dicTargetDiffBitList 如果都不是 才是要找到
+            boolean isAllMis = true;
+            for (Integer dicTargetDiff : dicTargetDiffBitList) {
+                if ((abbreviation.bitNum & dicTargetDiff) == abbreviation.bitNum) {
+                    isAllMis = false;
+                    break;
+                }
+            }
+            if (isAllMis) {
+                return buildAbbreviationWord(target, abbreviation);
+            }
+
+        }
+        return "";
+    }
+
+    /**
+     * 根据省略的bit 生成字符串
+     * @param target
+     * @param abbreviation
+     * @return
+     */
+    private String buildAbbreviationWord(String target, Abbreviation abbreviation) {
+        int bitNum = abbreviation.bitNum;
+        String s = Integer.toBinaryString(bitNum);
+        StringBuilder builder = new StringBuilder();
+        // 从后往前遍历 s 相当于 从前往后找 target 中单词需要 省略还是咋的
+        int omitCount = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == '1') {
+                // 先处理下之前 的 omitCount
+                if (omitCount > 0) {
+                    builder.append(omitCount);
+                    omitCount = 0;
+                }
+                builder.append(target.charAt(s.length() - 1 - i));
+            } else {
+                // 0 省略
+                omitCount++;
+            }
+        }
+        // 看看之前还有多少个字母
+        omitCount += (target.length() - s.length());
+        if (omitCount > 0) {
+            builder.append(omitCount);
+        }
+        return builder.toString();
+    }
+
+    /**
+     *
+     * @param abbrList
+     * @param target
+     * @param index 当前处理到的位置
+     * @param abbrLen
+     * @param isInOmit 之前是否已经在省略了
+     * @param currentBitNum 当前之前生成的数字
+     */
+    private void dfsGetBitList(List<Abbreviation> abbrList, String target, int index, int abbrLen, boolean isInOmit,
+                               int currentBitNum) {
+        // 如果当前已经处理到了 末尾 生成 Abbreviation 并返回
+        if (index == target.length()) {
+            Abbreviation abbreviation = new Abbreviation();
+            abbreviation.word = target;
+            abbreviation.bitNum = currentBitNum;
+            abbreviation.len = abbrLen;
+
+            abbrList.add(abbreviation);
+            return;
+        }
+        // 如果不是 末尾，就有两种选择 1中是保留当前字符，2将其省略 需要看下之前是不是已经省略了
+        // 保留当前 字符
+        dfsGetBitList(abbrList, target, index + 1, abbrLen + 1, false, currentBitNum | (1 << index));
+        // 将当前字符生路 需要判断长度生成
+        int nextAbbrLen = abbrLen;
+        if (!isInOmit) {
+            // 之前就是在省略，本次不用增加长度
+            nextAbbrLen++;
+        }
+
+        int nextOmitCount = 1;
+        if (isInOmit) {
+            nextOmitCount++;
+        }
+        dfsGetBitList(abbrList, target, index + 1, nextAbbrLen, true, currentBitNum);
+
+    }
+
+
+    // 记录 生成的数字和 原来的字符串 和长度
+    class Abbreviation {
+        public String word;
+        // 字符保留为1 字符隐藏为0
+        public int bitNum;
+        // 变成缩写之后的缩写字符串长度
+        public int len;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String target = "apple";
+        String[] dic = LeetcodeInputUtils.inputString2StringArray("[\"blade\"]");
+        String s = solution.minAbbreviation(target, dic);
+        System.out.println(s);
+        Assert.assertEquals("a4", s);
     }
 }
