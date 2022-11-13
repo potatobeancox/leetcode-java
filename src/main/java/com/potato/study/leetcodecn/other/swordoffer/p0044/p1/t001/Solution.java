@@ -34,6 +34,10 @@ import java.util.PriorityQueue;
 public class Solution {
 
     public int findNthDigit(int n) {
+        // 先定位 n 对应区间
+
+
+
 
         return -1;
     }
