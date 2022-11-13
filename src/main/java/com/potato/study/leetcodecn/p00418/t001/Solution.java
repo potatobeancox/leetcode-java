@@ -77,7 +77,13 @@ import java.util.List;
 public class Solution {
 
 
-
+    /**
+     * https://leetcode.cn/problems/sentence-screen-fitting/solution/ping-mu-ke-xian-shi-ju-zi-de-shu-liang-by-61707667/
+     * @param sentence
+     * @param rows
+     * @param cols
+     * @return
+     */
     public int wordsTyping(String[] sentence, int rows, int cols) {
         // 拼接成 一个整体
         StringBuilder builder = new StringBuilder();
@@ -85,37 +91,26 @@ public class Solution {
             builder.append(word);
             builder.append(" ");
         }
-        if (builder.charAt(builder.length() - 1) == ' ') {
-            builder.deleteCharAt(builder.length() - 1);
-        }
-        // 从开始第一行往后找 一直找到句子的末尾，再重头开始找
-        int times = 0;
-        // 从第一行开始计数
-        int builderIndex = 0;
+        int index = 0;
+        int length = builder.length();
+        // 1. 枚举 每个 rows 计算当前行停留在index的位置
         for (int i = 0; i < rows; i++) {
-            // 每次往后找 col 看一下现在停在哪里
-            builderIndex += cols;
-            // 如果已经到了最后
-            if (builderIndex >= builder.length()) {
-                times += (builderIndex / builder.length());
-                builderIndex %= builder.length();
-            }
-            // 如果当前不是 空格就需要往前移动 builderIndex 至空格
-            // 不是空格需要往前移动到空格
-            while (builderIndex > 0
-                    && builder.charAt(builderIndex) != ' ') {
-                builderIndex--;
-            }
-            if (builder.charAt(builderIndex) == ' ') {
-                builderIndex++;
+            // 当前index 停留的位置
+            index += cols;
+            // 当前index 对应在len中的位置
+            int lengthIndex = index % length;
+            // 2. 如果发现 停留在 空格 还是可以 往前找一找
+            if (builder.charAt(lengthIndex) == ' ') {
+                // 刚好遇到 空格 之后从 index + 1 开始
+                index++;
+            } else {
+                // 往回找到上一个空格
+                while (index > 0 && builder.charAt((index-1) % length) != ' ') {
+                    index--;
+                }
             }
         }
-
-        if (builderIndex >= builder.length()) {
-            times++;
-        }
-
-        return times;
+        return index / builder.length();
     }
 
     public static void main(String[] args) {
