@@ -45,5 +45,14 @@
 --
 -- 所以返回的结果是第一个投保人和最后一个投保人的 TIV_2016 之和，结果是 45 。
 
+select
+    round(sum(TIV_2016), 2) as TIV_2016
+from (
+    -- 先开窗求出 每个 pid 对应的 TIV_2016 和  TIV_2015相同 count 和 LAT | LON相同
+    select TIV_2016,
+        count(*) over(partition by TIV_2015) as count_TIV_2015,
+        count(*) over(partition by LAT,LON) as count_LAT_LON
+    from insurance
+) t where t.count_TIV_2015 > 1 and count_LAT_LON = 1
 
 
