@@ -97,6 +97,23 @@ package com.potato.study.leetcodecn.p01757.t001;
 --
 
 
+-- 每个用户的注册日期
+select
+    Users.user_id as buyer_id,
+    Users.join_date,
+    ifnull(t.buy_count_2019, 0) as orders_in_2019
+from Users
+left join (
+    -- 每个用户在 2019年作为买家订单总数
+    select
+        buyer_id,
+        count(order_id) as buy_count_2019
+    from Orders
+    where order_date between '2019-01-01' and '2019-12-31'
+    group by buyer_id
+) t
+on t.buyer_id = Users.user_id
+
 
 
 
