@@ -44,9 +44,30 @@ import java.util.Arrays;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/3sum-with-multiplicity/solution/java-923-san-shu-zhi-he-de-duo-chong-ke-zg7wv/
+     * @param arr
+     * @param target
+     * @return
+     */
     public int threeSumMulti(int[] arr, int target) {
-
-        return -1;
+        // 用一个 数组计数 之前的数字，每次开始遍历 23位置的元素
+        int[] count = new int[101];
+        count[arr[0]]++;
+        int totalCount = 0;
+        int mod = 1_000_000_000 + 7;
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = i+1; j < arr.length; j++) {
+                int diff = target - arr[i] - arr[j];
+                if (diff < 0 || diff > 100) {
+                    continue;
+                }
+                totalCount += count[diff];
+                totalCount %= mod;
+            }
+            count[arr[i]]++;
+        }
+        return totalCount % mod;
     }
 
 
