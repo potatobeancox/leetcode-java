@@ -1,7 +1,10 @@
 package com.potato.study.leetcodecn.p01182.t001;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 1182. 与目标颜色间的最短距离
@@ -44,12 +47,70 @@ import java.util.List;
  链接：https://leetcode.cn/problems/shortest-distance-to-target-color
  著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
+ *
  */
 public class Solution {
 
     public List<Integer> shortestDistanceColor(int[] colors, int[][] queries) {
+        // 遍历一遍 统计每个颜色 对应index列表
+        Map<Integer, List<Integer>> colorIndexListMap = new HashMap<>();
+        for (int i = 0; i < colors.length; i++) {
+            List<Integer> orDefault = colorIndexListMap.getOrDefault(colors[i], new ArrayList<>());
+            orDefault.add(i);
 
-        return null;
+            colorIndexListMap.put(colors[i], orDefault);
+        }
+        // 遍历 queries 对每个颜色 找到距离最短的 index 坐标
+        List<Integer> list = new ArrayList<>();
+        for (int[] query : queries) {
+            int i = query[0];
+            int color = query[1];
+            list.add(getMinDis(i, colorIndexListMap.get(color)));
+        }
+        return list;
+    }
+
+    /**
+     *
+     * @param i 找的位置
+     * @param indexList
+     * @return
+     */
+    private int getMinDis(int i, List<Integer> indexList) {
+        // 如果是
+        if (null == indexList || indexList.size() == 0) {
+            return -1;
+        }
+        if (i < indexList.get(0)) {
+            return Math.abs(indexList.get(0) - i);
+        }
+        if (i > indexList.get(indexList.size() - 1)) {
+            return Math.abs(indexList.get(indexList.size() - 1) - i);
+        }
+        // 找到小于 等于 i的 下标
+        int left = 0;
+        int right = indexList.size() - 1;
+        // 找到小于等于 i 最近的数字
+        int res = -1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (indexList.get(mid) == i) {
+                // 完全找到嘞
+                return 0;
+            } else if (indexList.get(mid) > i) {
+                // 大于 说明找大了 还需要往左找
+                right = mid - 1;
+            } else {
+                // 小了
+                res = mid;
+                left = mid + 1;
+            }
+        }
+        // mid 和 mid + 1比一下
+        if (res + 1 >= indexList.size()) {
+            return indexList.get(res);
+        }
+        return Math.min(Math.abs(indexList.get(res) - i), Math.abs(indexList.get(res + 1) - i));
     }
 
 
