@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.p01152.t001;
 
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 1152. 用户网站访问行为分析
@@ -58,7 +58,65 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/analyze-user-website-visit-pattern/solution/java-by-squallever-abog/
+     * @param username
+     * @param timestamp
+     * @param website
+     * @return
+     */
     public List<String> mostVisitedPattern(String[] username, int[] timestamp, String[] website) {
-        return null;
+        // 封装一个对象，将 相同 username 放在同一个map中 value 是一个 有序的list 或者之后排序， 按照时间戳排序
+        int len = username.length;
+        Map<String, List<Visit>> nameVisitMap = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            Visit visit = new Visit();
+            visit.username = username[i];
+            visit.timestamp = timestamp[i];
+            visit.website = website[i];
+
+            List<Visit> list = nameVisitMap.getOrDefault(username[i], new ArrayList<>());
+            list.add(visit);
+            nameVisitMap.put(username[i], list);
+        }
+        Map<String, Set<String>> countMap = new HashMap<>();
+        // 遍历 map 中的每个集合 3重便利，生成对应的key 并计数
+        for (Map.Entry<String, List<Visit>> entry : nameVisitMap.entrySet()) {
+            List<Visit> list = entry.getValue();
+            //  sort
+            Collections.sort(list, Comparator.comparingInt(o -> o.timestamp));
+            // 三重遍历
+            if (list.size() < 3) {
+                continue;
+            }
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = i+1; j < list.size(); j++) {
+                    for (int k = j+1; k < list.size(); k++) {
+                        String key = list.get(i).website + "-" + list.get(j).website + "-" + list.get(k).website;
+                        Set<String> nameList = countMap.getOrDefault(key, new HashSet<>());
+                        nameList.add(entry.getKey());
+                        countMap.put(key, nameList);
+                    }
+                }
+            }
+        }
+        // 获取 key 数量最多的 解析出来
+        String maxKey = null;
+        for (Map.Entry<String, Set<String>> entry : countMap.entrySet()) {
+            if (maxKey == null || entry.getValue().size() > countMap.get(maxKey).size()
+                    || (entry.getValue().size() == countMap.getOrDefault(maxKey, new HashSet<>()).size() && maxKey.compareTo(entry.getKey()) > 0)) {
+                maxKey = entry.getKey();
+            }
+        }
+        String[] split = maxKey.split("-");
+        List<String> list = Arrays.asList(split);
+        return list;
+    }
+
+
+    class Visit {
+        public String username;
+        public int timestamp;
+        public String website;
     }
 }
