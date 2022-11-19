@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p01257.t001;
 
 
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
 
 import java.util.*;
 
@@ -54,10 +55,50 @@ public class Solution {
      * @return
      */
     public String findSmallestRegion(List<List<String>> regions, String region1, String region2) {
-        // 转换成 图 key 是parent value 是对应的child list
+        // 构建每个节点对应父亲的map
+        Map<String, String> parentMap = new HashMap<>();
+        String totalParent = null;
+        for (List<String> region : regions) {
+            if (region.size() == 0) {
+                continue;
+            }
+            String parent = region.get(0);
+            for (int i = 1; i < region.size(); i++) {
+                parentMap.put(region.get(i), parent);
+            }
+            if (!parentMap.containsKey(parent)) {
+                totalParent = parent;
+            }
+        }
+        // 从 region1 region2 依次找父亲的list
+        List<String> parentList1 = getParentList(region1, parentMap);
+        List<String> parentList2 = getParentList(region2, parentMap);
+        // 遍历 上面2个父亲list 找到第一个相同的位置
+        for (int i = 0; i < parentList1.size(); i++) {
+            for (int j = 0; j < parentList2.size(); j++) {
+                if (parentList1.get(i).equals(parentList2.get(j))) {
+                    return parentList1.get(i);
+                }
+            }
+        }
+        return totalParent;
+    }
 
-        // dfs 从最开始的点开始找
+    private List<String> getParentList(String region, Map<String, String> parentMap) {
+        String temp = region;
+        List<String> list = new ArrayList<>();
+        list.add(temp);
+        while (parentMap.containsKey(temp) && !parentMap.get(temp).equals(temp)) {
+            temp = parentMap.get(temp);
+            list.add(temp);
+        }
+        return list;
+    }
 
-        return null;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+//        String smallestRegion = solution.findSmallestRegion();
+//        System.out.println(smallestRegion);
+//        Assert.assertEquals("Canada", smallestRegion);
     }
 }
