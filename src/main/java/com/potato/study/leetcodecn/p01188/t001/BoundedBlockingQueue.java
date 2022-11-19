@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01188.t001;
 
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * 1188. 设计有限阻塞队列
  *
@@ -89,20 +92,40 @@ package com.potato.study.leetcodecn.p01188.t001;
  */
 public class BoundedBlockingQueue {
 
-    public BoundedBlockingQueue(int capacity) {
 
+    private Deque<Integer> deque;
+    private int limit;
+
+    public BoundedBlockingQueue(int capacity) {
+        this.deque = new LinkedList<>();
+        this.limit =- capacity;
     }
 
     public void enqueue(int element) throws InterruptedException {
-
+        synchronized (deque) {
+            // 到了就等着
+            while (deque.size() == limit) {
+                deque.wait();
+            }
+            deque.addLast(element);
+            deque.notifyAll();
+        }
     }
 
     public int dequeue() throws InterruptedException {
-
-        return -1;
+        int target = -1;
+        synchronized (deque) {
+            // 到了就等着
+            while (deque.size() == 0) {
+                deque.wait();
+            }
+            target = deque.pollFirst();
+            deque.notifyAll();
+        }
+        return target;
     }
 
     public int size() {
-        return -1;
+        return deque.size();
     }
 }
