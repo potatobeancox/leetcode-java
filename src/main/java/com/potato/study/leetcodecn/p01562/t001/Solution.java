@@ -1,8 +1,5 @@
 package com.potato.study.leetcodecn.p01562.t001;
 
-import org.junit.Assert;
-
-import java.util.Arrays;
 
 /**
  * 1562. 查找大小为 M 的最新分组
