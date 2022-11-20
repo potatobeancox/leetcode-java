@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p01562.t001;
 
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * 1562. 查找大小为 M 的最新分组
  *
@@ -61,8 +64,35 @@ package com.potato.study.leetcodecn.p01562.t001;
  */
 public class Solution {
 
+    /**
+     * arr 数组中 每个数字都不相同
+     * @param arr
+     * @param m
+     * @return
+     */
     public int findLatestStep(int[] arr, int m) {
-
+        // 最开始
+        if (m == arr.length) {
+            return m;
+        }
+        // 使用 map 记录当前 反过来处理 最开始就都是 1
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+        // 最开始的0 和最后的位置 len
+        treeMap.put(0, arr.length + 1);
+        for (int i = arr.length - 1; i >= 0; i--) {
+            int index = arr[i];
+            // 比 index 小的元素 左边
+            Map.Entry<Integer, Integer> floorEntry = treeMap.floorEntry(index);
+            int left = floorEntry.getKey();
+            int right = floorEntry.getValue();
+            // 查看左边区间和右边区间的大小
+            if (m == index - left - 1 || m == right - index - 1) {
+                return i;
+            }
+            // 左右都是开区间
+            treeMap.put(left, index);
+            treeMap.put(index, right);
+        }
         return -1;
     }
 }
