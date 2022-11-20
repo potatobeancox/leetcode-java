@@ -56,7 +56,6 @@ import com.potato.study.leetcode.domain.TreeNode;
  */
 public class Solution {
 
-    private int deleteCount;
 
     public int deleteTreeNodes(int nodes, int[] parent, int[] value) {
         // 将 parent 转换成 list list 存当前作为 list。get i 节点的孩子们 index
@@ -76,12 +75,11 @@ public class Solution {
             childList.get(p).add(child);
         }
         // dfs
-        this.deleteCount = 0;
-        if (startIndex < 0) {
-            return -1;
+        long[] dfs = dfs(childList, value, startIndex);
+        if (dfs[0] == 0) {
+            return 0;
         }
-        dfs(childList, value, startIndex);
-        return nodes - this.deleteCount;
+        return (int) dfs[1];
     }
 
 
@@ -100,6 +98,9 @@ public class Solution {
         // 统计孩子们的值
         for (int childIndex : children) {
             long[] childInfo = dfs(childList, value, childIndex);
+            if (childInfo[0] == 0) {
+                continue;
+            }
             sum += childInfo[0];
             count += childInfo[1];
         }
