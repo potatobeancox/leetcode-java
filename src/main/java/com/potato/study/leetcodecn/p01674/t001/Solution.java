@@ -53,8 +53,41 @@ import java.util.Stack;
 public class Solution {
 
     public int minMoves(int[] nums, int limit) {
+        // 查分数组 2 * limit + 2
+        int[] diff = new int[2 * limit + 2];
+        // 遍历nums 求 最大值 和最小值 针对 2 最小值-1 该2个
+        for (int i = 0; i < nums.length / 2; i++) {
+            int num1 = nums[i];
+            int num2 = nums[nums.length - 1- i];
 
+            int min = Math.min(num1, num2);
+            int max = Math.max(num1, num2);
 
-        return -1;
+            // [2, min] 都是 2 [max, 2 * limit]
+            diff[2] += 2;
+            diff[min + 1] -= 1;
+            diff[num1 + num2 - 1] -= 1;
+            diff[num2 + num2 + 1] += 1;
+            // [min + 1, max - 1] 都是1 num1 + num2 = 0
+            diff[max] += 1;
+        }
+        int min = Integer.MAX_VALUE;
+        int status = 0;
+        for (int i = 2; i <= 2 * limit; i++) {
+            status += diff[i];
+            min = Math.min(min, status);
+        }
+        return min;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                1,2,4,3
+        };
+        int limit = 4;
+        int i = solution.minMoves(nums, limit);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
 }
