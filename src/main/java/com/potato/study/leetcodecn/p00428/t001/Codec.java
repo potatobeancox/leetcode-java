@@ -3,6 +3,10 @@ package com.potato.study.leetcodecn.p00428.t001;
 import com.potato.study.leetcode.domain.node.val.children.Node;
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 /**
  * 428. 序列化和反序列化 N 叉树
  *
@@ -60,13 +64,61 @@ import com.potato.study.leetcode.util.LeetcodeInputUtils;
 public class Codec {
     // Encodes a tree to a single string.
     public String serialize(Node root) {
-
-        return null;
+        if (root == null) {
+            return "";
+        }
+        // dfs 使用括号作为子树
+        StringBuilder builder = new StringBuilder();
+        builder.append(root.val);
+        List<Node> children = root.children;
+        if (children.isEmpty()) {
+            return builder.toString();
+        }
+        builder.append(" ");
+        builder.append("[");
+        // 递归弄孩子
+        for (Node child : children) {
+            builder.append(" ");
+            builder.append(serialize(child));
+        }
+        builder.append(" ");
+        builder.append("]");
+        return builder.toString();
     }
 
     // Decodes your encoded data to tree.
     public Node deserialize(String data) {
-        return null;
+        if (data.length() == 0 || data.isEmpty()) {
+            return null;
+        }
+        String[] split = data.split(" ");
+        int val = Integer.parseInt(split[0]);
+        Node root = new Node(val, new ArrayList<>());
+        // deque 存父亲
+        Stack<Node> stack = new Stack<>();
+        stack.push(root);
+        for (int i = 1; i < split.length; i++) {
+            String target = split[i];
+            if ("[".equals(target)) {
+                continue;
+            } else if ("]".equals(target)) {
+                // 当前stack 孩子结束了
+                stack.pop();
+            } else {
+                // 数字
+                int targetVal = Integer.parseInt(target);
+                Node node = new Node(targetVal, new ArrayList<>());
+                // 如果之前不是 （ 说明 stack 当前peek已经没有孩子了
+                if (!"[".equals(split[i-1])) {
+                    stack.pop();
+                }
+                Node peek = stack.peek();
+                peek.children.add(node);
+
+                stack.push(node);
+            }
+        }
+        return root;
     }
 }
 
