@@ -70,7 +70,6 @@ public class Solution {
     private void dfs(Trie trie, int length, List<String> list, List<List<String>> resultList) {
         // dfs 找到当前单词是不是到了最后
         if (length == list.size()) {
-            resultList.add(list);
             resultList.add(new ArrayList<>(list));
             return;
         }
@@ -113,10 +112,10 @@ public class Solution {
                 int index = ch - 'a';
                 if (node.child[index] == null) {
                     node.child[index] = new TrieNode();
-                    // 放前缀单词
-                    node.samePrefixList.add(word);
-                    node = node.child[index];
                 }
+                // 放前缀单词
+                node.child[index].samePrefixList.add(word);
+                node = node.child[index];
             }
         }
 
@@ -153,8 +152,13 @@ public class Solution {
 
 
     public static void main(String[] args) {
+        String[] words = new String[] {
+                "area","lead","wall","lady","ball"
+        };
         Solution solution = new Solution();
-
+        // ["wall","area","lead","lady"]]
+        List<List<String>> lists = solution.wordSquares(words);
+        System.out.println(lists);
     }
 }
 
