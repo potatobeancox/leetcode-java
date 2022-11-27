@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p00425.t001;
 
 import org.junit.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +47,64 @@ import java.util.List;
  */
 public class Solution {
 
+
+    /**
+     * https://leetcode.cn/problems/word-squares/solution/dfs-trie-xiang-xi-si-lu-by-jerry_nju/
+     * @param words
+     * @return
+     */
     public List<List<String>> wordSquares(String[] words) {
+        // 遍历 words 将每个单词放入 trie中
+
+
+        // 遍历 words 每个单词都作为开始 dfs 遍历
+
+
         return null;
     }
+
+
+
+    // dfs 找到当前单词是不是到了最后
+
+    // 不是最后 找一下 目前单对应的已有单词的列 组合成前缀 使用trie 找到下一个 要找的单词 递归
+
+
+
+    class Trie{
+
+
+        public TrieNode root;
+
+        public Trie(String[] words) {
+            this.root = new TrieNode();
+            for (String word : words) {
+                this.insert(word);
+            }
+        }
+
+        // 往里边插入
+        public void insert(String word) {
+            TrieNode node = root;
+            for (char ch : word.toCharArray()) {
+                
+            }
+        }
+    }
+
+    class TrieNode {
+        // 数组
+        public TrieNode[] child;
+        public List<String> samePrefixList;
+
+        // list 所有以当前作为prefix的 list
+        public TrieNode() {
+            this.child = new TrieNode[26];
+            this.samePrefixList = new ArrayList<>();
+        }
+
+    }
 }
+
+
+
