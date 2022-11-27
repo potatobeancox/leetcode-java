@@ -55,23 +55,46 @@ public class Solution {
      */
     public List<List<String>> wordSquares(String[] words) {
         // 遍历 words 将每个单词放入 trie中
-
-
+        Trie trie = new Trie(words);
         // 遍历 words 每个单词都作为开始 dfs 遍历
+        int length = words[0].length();
+        List<List<String>> resultList = new ArrayList<>();
+        for (String word : words) {
+            List<String> list = new ArrayList<>();
+            list.add(word);
+            dfs(trie, length, list, resultList);
+        }
+        return resultList;
+    }
 
-
-        return null;
+    private void dfs(Trie trie, int length, List<String> list, List<List<String>> resultList) {
+        // dfs 找到当前单词是不是到了最后
+        if (length == list.size()) {
+            resultList.add(list);
+            resultList.add(new ArrayList<>(list));
+            return;
+        }
+        // 找到目前已经确定的要找单词的index
+        int index = list.size();
+        StringBuilder builder = new StringBuilder();
+        for (String confirmedWord: list) {
+            builder.append(confirmedWord.charAt(index));
+        }
+        String prefixString = builder.toString();
+        List<String> prefixList = trie.getPrefixList(prefixString);
+        if (prefixList.size() == 0) {
+            return;
+        }
+        for (String next : prefixList) {
+            list.add(next);
+            // 不是最后 找一下 目前单对应的已有单词的列 组合成前缀 使用trie 找到下一个 要找的单词 递归
+            dfs(trie, length, list, resultList);
+            list.remove(list.size() - 1);
+        }
     }
 
 
-
-    // dfs 找到当前单词是不是到了最后
-
-    // 不是最后 找一下 目前单对应的已有单词的列 组合成前缀 使用trie 找到下一个 要找的单词 递归
-
-
-
-    class Trie{
+    class Trie {
 
 
         public TrieNode root;
@@ -87,8 +110,31 @@ public class Solution {
         public void insert(String word) {
             TrieNode node = root;
             for (char ch : word.toCharArray()) {
-                
+                int index = ch - 'a';
+                if (node.child[index] == null) {
+                    node.child[index] = new TrieNode();
+                    // 放前缀单词
+                    node.samePrefixList.add(word);
+                    node = node.child[index];
+                }
             }
+        }
+
+        /**
+         * 查找
+         * @return
+         */
+        public List<String> getPrefixList(String word) {
+            TrieNode node = root;
+            for (char ch : word.toCharArray()) {
+                int index = ch - 'a';
+                if (node.child[index] == null) {
+                    return new ArrayList<>();
+                }
+                // 返回
+                node = node.child[index];
+            }
+            return node.samePrefixList;
         }
     }
 
@@ -102,6 +148,12 @@ public class Solution {
             this.child = new TrieNode[26];
             this.samePrefixList = new ArrayList<>();
         }
+
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
 
     }
 }
