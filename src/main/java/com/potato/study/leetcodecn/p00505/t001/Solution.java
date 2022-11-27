@@ -65,30 +65,28 @@ import java.util.Arrays;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/the-maze-ii/solution/mi-gong-ii-by-leetcode/
+     * @param maze
+     * @param start
+     * @param destination
+     * @return
+     */
     public int shortestDistance(int[][] maze, int[] start, int[] destination) {
         int[][] dp = new int[maze.length][maze[0].length];
         for (int i = 0; i < maze.length; i++) {
             Arrays.fill(dp[i], Integer.MAX_VALUE);
         }
-        boolean[][] visit = new boolean[maze.length][maze[0].length];
-        dfs(maze, start[0], start[1], destination, dp, visit);
+        dp[start[0]][start[1]] = 0;
+        dfs(maze, start[0], start[1], dp);
         if (Integer.MAX_VALUE == dp[destination[0]][destination[1]]) {
             return -1;
         }
         return dp[destination[0]][destination[1]];
     }
 
-    private void dfs(int[][] maze, int i, int j, int[] destination, int[][] dp,  boolean[][] visit) {
-        // 终止条件 已经到了最后一个点
-        if (i == dp.length - 1 && j == dp[0].length - 1) {
-            return;
-        }
-        if (visit[i][j]) {
-            return;
-        }
-        if (i == destination[0] && j == destination[1]) {
-            return;
-        }
+    private void dfs(int[][] maze, int i, int j, int[][] dp) {
+        // 直接往几个方向找 每个方向都往前走走到不能再走
         // 找到一个方向 往前走到 边界或者遇到 1 转向
         int[][] dir = new int[][] {
                 {-1, 0},
@@ -96,20 +94,27 @@ public class Solution {
                 {0, -1},
                 {0, 1}
         };
-        visit[i][j] = true;
         for (int k = 0; k < 4; k++) {
-            int di = i + dir[k][0];
-            int dj = j + dir[k][1];
-
-            // 一直走到头
-            while (di >= 0 && di < maze.length && dj >= 0 && dj < maze[0].length
-                    && !visit[di][dj] && maze[di][dj] == 0) {
+            // 往每个方向走到头，找到最后走的数量
+            int stepCount = 0;
+            int di = i;
+            int dj = j;
+            // 1表示墙壁，0表示空地
+            while (di + dir[k][0] >= 0 && di + dir[k][0] < maze.length
+                    && dj + dir[k][1] >= 0 && dj + dir[k][1] < maze[0].length
+                    && maze[di + dir[k][0]][dj + dir[k][1]] == 0) {
                 di += dir[k][0];
                 dj += dir[k][1];
+
+                stepCount++;
             }
-            dfs(maze, di - dir[k][0], dj - dir[k][1], destination, dp, visit);
+            // 利用 stepCount 更新之前的 dp的花费 如果小的话 在位置接着走 大的话就不用走了
+            if (dp[di][dj] > dp[i][j] + stepCount) {
+                dp[di][dj] = dp[i][j] + stepCount;
+                dfs(maze, di, dj, dp);
+            }
+
         }
-        visit[i][j] = false;
     }
 
 }
