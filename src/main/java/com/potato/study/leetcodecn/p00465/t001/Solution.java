@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.p00465.t001;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.*;
 
 /**
  * 465. 最优账单平衡
@@ -54,8 +56,72 @@ import java.util.Map;
  */
 public class Solution {
 
-    public int minTransfers(int[][] transactions) {
 
-        return 1;
+    private int min;
+
+    public int minTransfers(int[][] transactions) {
+        // 遍历 transactions map记录每个 人最终的金额
+        Map<Integer, Integer> balanceMap = new HashMap<>();
+        for (int[] tran : transactions) {
+            int from = tran[0];
+            int to = tran[1];
+            int amount = tran[2];
+
+            int fromBalance = balanceMap.getOrDefault(from, 0);
+            fromBalance -= amount;
+            balanceMap.put(from, fromBalance);
+
+            int toBalance = balanceMap.getOrDefault(to, 0);
+            toBalance += amount;
+            balanceMap.put(to, toBalance);
+        }
+        // 遍历 map 找到金额不为0的 金额列表
+        List<Integer> balanceList = new ArrayList<>();
+        for (int balance : balanceMap.values()) {
+            if (balance != 0) {
+                balanceList.add(balance);
+            }
+        }
+
+        this.min = Integer.MAX_VALUE;
+        // dfs 计数 每次 找到 目前没有为0的位置
+        int index = 0;
+        int count = 0;
+        dfs(balanceList, index, count);
+        return this.min;
+    }
+
+    private void dfs(List<Integer> balanceList, int index, int count) {
+        // dfs 计数 每次 找到 目前没有为0的位置
+        while (index < balanceList.size() && balanceList.get(index) == 0) {
+            index++;
+        }
+        // 剪枝
+        if (count >= min) {
+            return;
+        }
+        // 如果目前所有的位置都是 0 那么直接 结算最小的位置
+        if (index == balanceList.size()) {
+            this.min = Math.min(min, count);
+            return;
+        }
+        // 从非0的位置开始 往后找任意一个位置进行设置，并进行递归计数
+        int current = balanceList.get(index);
+        for (int i = index + 1; i < balanceList.size(); i++) {
+            // i 就是 index 把钱都给他
+            balanceList.set(i, balanceList.get(i) + current);
+            // dfs
+            dfs(balanceList, index + 1, count + 1);
+            balanceList.set(i, balanceList.get(i) - current);
+        }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[2,4,6],[0,10,5],[3,7,7],[7,11,5],[2,1,2],[6,5,5],[8,9,1],[7,5,5]]";
+        int[][] transactions = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.minTransfers(transactions);
+        System.out.println(i);
+        Assert.assertEquals(10, i);
     }
 }
