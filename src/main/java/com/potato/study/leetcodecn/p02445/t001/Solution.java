@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02445.t001;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * 2445. Number of Nodes With Value One
  *
@@ -55,8 +58,36 @@ public class Solution {
      * @return
      */
     public int numberOfNodes(int n, int[] queries) {
+        // 先对 query去重
+        Set<Integer> set = new HashSet<>();
+        for (int query : queries) {
+            if (set.contains(query)) {
+                set.remove(query);
+            } else {
+                set.add(query);
+            }
+        }
+        int[] count = new int[n+1];
+        for (int query : set) {
+            dfs(query, count);
+        }
+        // 遍历 count 找到奇数的个数
+        int oneCount = 0;
+        for (int i = 1; i <= n; i++) {
+            if (count[i] % 2 == 1) {
+                oneCount++;
+            }
+        }
+        return oneCount;
+    }
 
-        return -1;
+    private void dfs(int query, int[] count) {
+        if (query >= count.length) {
+            return;
+        }
+        count[query]++;
+        dfs(2 * query, count);
+        dfs(2 * query + 1, count);
     }
 
 }
