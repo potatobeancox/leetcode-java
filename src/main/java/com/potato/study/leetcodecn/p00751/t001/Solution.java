@@ -61,6 +61,10 @@ public class Solution {
 
     public List<String> ipToCIDR(String ip, int n) {
         List<String> list = new ArrayList<>();
+
+
         return list;
     }
+
+    // ip -> 数字
 }
