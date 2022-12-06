@@ -50,8 +50,13 @@ public class Solution {
 
 
     public int countDistinctStrings(String s, int k) {
-
-        return -1;
+        int mod = 1_000_000_000 + 7;
+        long res = 1;
+        for (int i = 0; i < s.length() - k + 1; i++) {
+            res *= 2;
+            res %= mod;
+        }
+        return (int) res;
     }
 
 }
