@@ -54,8 +54,28 @@
 -- 我们返回的是(1, 7).，而不是(7, 1).
 -- 注意，我们没有关于用户3，4，5的任何关注者信息，我们认为他们有0个关注者。
 
-SELECT *
-FROM Relations as t1
-INNER JOIN Relations as t2
-WHERE t1.follower_id = t2.follower_id
-ORDER BY count()
+
+
+-- 找到第一名
+select
+    user1_id,
+    user2_id
+from (
+    -- 对每个记录进行排名
+    select
+        user1_id,
+        user2_id,
+        rank() over(order by cnt desc) as rk
+    from (
+        -- 计数
+        SELECT
+            t1.user_id as user1_id,
+            t2.user_id as user2_id,
+            count(*) as cnt
+        FROM Relations as t1
+        INNER JOIN Relations as t2
+        on t1.user_id < t2.user_id and t1.follower_id = t2.follower_id
+        group by t1.user_id, t2.user_id
+    ) as tt
+) ttt
+where ttt.rk = 1
