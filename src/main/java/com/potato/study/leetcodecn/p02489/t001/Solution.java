@@ -3,7 +3,9 @@ package com.potato.study.leetcodecn.p02489.t001;
 import com.potato.study.leetcode.domain.ListNode;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * 2489. Number of Substrings With Fixed Ratio
@@ -51,8 +53,43 @@ import java.util.LinkedList;
  */
 public class Solution {
 
-    public long fixedRatio(String s, int num1, int num2) {
 
-        return -1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public long fixedRatio(String s, int num1, int num2) {
+        // 遍历 s 记录 每个位置 之前 ones 个数 和 zero个数 并且计算 zero * num2 - one * num1 值 个数 找到之前的个数求和
+        long oneCount = 0;
+        long zeroCount = 0;
+        long totalCount = 0;
+        Map<Long, Long> appearCountMap = new HashMap<>();
+        appearCountMap.put(0L, 1L);
+        for (char ch : s.toCharArray()) {
+            if (ch == '1') {
+                oneCount++;
+            } else {
+                zeroCount++;
+            }
+            long target = zeroCount * num2 - oneCount * num1;
+            long count = appearCountMap.getOrDefault(target, 0L);
+            totalCount += count;
+            // 计算当前个数
+            appearCountMap.put(target, count + 1);
+        }
+        return totalCount;
     }
 }
