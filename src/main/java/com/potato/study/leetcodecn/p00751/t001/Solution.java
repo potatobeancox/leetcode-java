@@ -68,6 +68,23 @@ public class Solution {
     public List<String> ipToCIDR(String ip, int n) {
         // 寻找 ip 对应 最右边的1 ，如果最右边的1 能表示n个数字 添加结果 返回
         long start = ipToNum(ip);
+        List<String> res = new ArrayList<>();
+        if (start == 0) {
+            int k = 0;
+            while ((1 << (k+1)) <= n) {
+                k++;
+            }
+            long count = (1 << k);
+            if (count == n) {
+                res.add(numToIp(start) + "/" + (32 - k));
+                return res;
+            } else {
+                res.add(numToIp(start) + "/" + (32 - k));
+                res.addAll(ipToCIDR(numToIp(start + count), (int)(n - count)));
+                return res;
+            }
+
+        }
         int k = 0;
         while ((start & (1 << k)) == 0) {
             k++;
@@ -75,7 +92,6 @@ public class Solution {
         // 当前k位置能表示多少个数字
         long numCount = (1 <<k);
         // 如果恰好能包含就 直接找到答案并返回
-        List<String> res = new ArrayList<>();
         if (n == numCount) {
             res.add(numToIp(start) + "/" + (32 - k));
             return res;
