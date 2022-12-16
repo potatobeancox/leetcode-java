@@ -39,8 +39,15 @@ import java.util.PriorityQueue;
 public class Solution {
 
     public long subsequenceSumOr(int[] nums) {
-        // 正常 找到所有 子序列，求和 再求 or的值
-        return -1;
+        // 所有数据和 所有前缀和的or
+        long res = 0;
+        long prefixSum = 0;
+        for (int num : nums) {
+            prefixSum += num;
+            res |= num;
+            res |= prefixSum;
+        }
+        return res;
     }
 
 }
