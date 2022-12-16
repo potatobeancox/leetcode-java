@@ -59,12 +59,78 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/ip-to-cidr/solution/ipdao-cidr-by-617076674/
+     * @param ip
+     * @param n
+     * @return
+     */
     public List<String> ipToCIDR(String ip, int n) {
-        List<String> list = new ArrayList<>();
-
-
-        return list;
+        // 寻找 ip 对应 最右边的1 ，如果最右边的1 能表示n个数字 添加结果 返回
+        long start = ipToNum(ip);
+        int k = 0;
+        while ((start & (1 << k)) == 0) {
+            k++;
+        }
+        // 当前k位置能表示多少个数字
+        long numCount = (1 <<k);
+        // 如果恰好能包含就 直接找到答案并返回
+        List<String> res = new ArrayList<>();
+        if (n == numCount) {
+            res.add(numToIp(start) + "/" + (32 - k));
+            return res;
+        } else if (n > numCount) {
+            // 如果不够包含 就需要用ip + 到还没有包含的 和 对应 tmep n 递归找了
+            res.add(numToIp(start) + "/" + (32 - k));
+            res.addAll(ipToCIDR(numToIp(start + numCount), (int)(n - numCount)));
+            return res;
+        } else {
+            // 如果 n 小于 count 说明啥
+            while ((1 << k) > n) {
+                k--;
+            }
+            res.add(numToIp(start) + "/" + (32 - k));
+            // 还剩多少
+            int remain = n - (1 << k);
+            if (remain > 0) {
+                res.addAll(ipToCIDR(numToIp(start + (1<<k)), remain));
+            }
+            return res;
+        }
     }
 
     // ip -> 数字
+    private long ipToNum(String ip) {
+        String[] split = ip.split("\\.");
+        long temp = 0;
+        for (String num : split) {
+            temp *= 256;
+            temp += Long.parseLong(num);
+        }
+        return temp;
+    }
+
+    private String numToIp(long num) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+            long l = num % 256;
+            builder.insert(0, l);
+            num /= 256;
+            if (i != 3) {
+                builder.insert(0, '.');
+            }
+        }
+        return builder.toString();
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        List<String> strings = solution.ipToCIDR("255.0.0.7", 10);
+        System.out.println(strings);
+
+
+        strings = solution.ipToCIDR("0.0.0.0", 1);
+        System.out.println(strings);
+    }
 }
