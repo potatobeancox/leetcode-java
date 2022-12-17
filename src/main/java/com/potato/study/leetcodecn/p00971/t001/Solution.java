@@ -68,42 +68,38 @@ public class Solution {
     public List<Integer> flipMatchVoyage(TreeNode root, int[] voyage) {
         // 从 root 开始 dfs 记录 index
         this.list = new ArrayList<>();
-        if (root.val != voyage[0]) {
-            list.add(-1);
-            return list;
-        }
-        this.index = 0;
-        dfs(root, voyage);
-        if (list.size() == 0) {
-            list.add(-1);
+        boolean isValid = dfs(root, voyage);
+        if (!isValid) {
+            List<Integer> objects = new ArrayList<>();
+            objects.add(-1);
+            return objects;
         }
         return list;
     }
 
-    private void dfs(TreeNode root, int[] voyage) {
-        if (index >= voyage.length) {
-            return;
-        }
+    private boolean dfs(TreeNode root, int[] voyage) {
+        // 先判断当前 root 是不是跟index位置 能重合 不能重合直接结束
         if (root == null) {
-            return;
+            return true;
         }
-        // index + 1是left
         if (root.val != voyage[index]) {
-            return;
+            return false;
         }
-        int thisIndex = index;
         index++;
-        if (index >= voyage.length) {
-            return;
+        int restore = index;
+        // 能重合 先正常判断左边和右边鱼 index 是否都ok
+        if (dfs(root.left, voyage) && dfs(root.right, voyage)) {
+            return true;
         }
-        if (root.left != null && voyage[index] != root.left.val) {
+        // 不是的话 重置 index 右 左判断一下
+        index = restore;
+        boolean res1 = dfs(root.right, voyage);
+        boolean res2 = dfs(root.left, voyage);
+        if (res1 && res2) {
             list.add(root.val);
-            dfs(root.right, voyage);
-            dfs(root.left, voyage);
-        } else {
-            dfs(root.left, voyage);
-            dfs(root.right, voyage);
+            return true;
         }
+        return false;
     }
 
 
