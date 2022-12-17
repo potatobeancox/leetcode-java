@@ -63,31 +63,13 @@ public class Solution {
         int index = 0;
         char[] chars = s.toCharArray();
         while (index < s.length()) {
-            char ch = chars[index];
+            char ch = chars[index++];
             if (Character.isAlphabetic(ch)) {
                 builder.append(ch);
-                index++;
                 continue;
             }
             // 解析出来数字
-            int numIndexEnd = index;
-            while (Character.isDigit(ch) && numIndexEnd < s.length()) {
-                numIndexEnd++;
-                if (numIndexEnd == s.length()) {
-                    break;
-                }
-                ch = chars[numIndexEnd];
-            }
-            // 数字
-            String numStr = s.substring(index, numIndexEnd);
-            long times = 0;
-            for (int i = 0; i < numStr.length(); i++) {
-                if (times * builder.length() >= k) {
-                    break;
-                }
-                times *= 10;
-                times += (numStr.charAt(i) - '0');
-            }
+            int times = ch - '0';
             // 找到了重复的次数
             if (times * builder.length() >= k) {
                 int idx = (k-1) % builder.length();
@@ -98,7 +80,9 @@ public class Solution {
                 builder.append(string);
             }
             // 如果当前 超过了 k 那么就这个了
-            index = numIndexEnd;
+            if (builder.length() >= k) {
+                break;
+            }
         }
         return String.valueOf(builder.charAt(k-1));
     }
