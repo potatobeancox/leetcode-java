@@ -59,32 +59,29 @@ public class Solution {
      * @return
      */
     public String decodeAtIndex(String s, int k) {
-        StringBuilder builder = new StringBuilder();
-        int index = 0;
+        long len = 0;
         char[] chars = s.toCharArray();
-        while (index < s.length()) {
-            char ch = chars[index++];
-            if (Character.isAlphabetic(ch)) {
-                builder.append(ch);
-                continue;
-            }
-            // 解析出来数字
-            int times = ch - '0';
-            // 找到了重复的次数
-            if (times * builder.length() >= k) {
-                int idx = (k-1) % builder.length();
-                return String.valueOf(builder.charAt(idx));
-            }
-            String string = builder.toString();
-            for (int i = 0; i < times - 1; i++) {
-                builder.append(string);
-            }
-            // 如果当前 超过了 k 那么就这个了
-            if (builder.length() >= k) {
-                break;
+        for (int i = 0; i < chars.length; i++) {
+            char ch = chars[i];
+            if (!Character.isDigit(ch)) {
+                len++;
+                if (len == k) {
+                    return String.valueOf(ch);
+                }
+            } else {
+                // 数字
+                int count = ch - '0';
+                // 要对 字符串加倍 先看看加倍后长度是不是没有超过 k
+                if (count * len <= k - 1) {
+                    len *= count;
+                } else {
+                    // 就在当前字符串内部
+                    int target = (int) ((k - 1) % len + 1);
+                    return decodeAtIndex(s, target);
+                }
             }
         }
-        return String.valueOf(builder.charAt(k-1));
+        return "";
     }
 
 
@@ -116,5 +113,11 @@ public class Solution {
         res = solution.decodeAtIndex(s, k);
         System.out.println(res);
         Assert.assertEquals("z", res);
+
+        s = "ajx37nyx97niysdrzice4petvcvmcgqn282zicpbx6okybw93vhk782unctdbgmcjmbqn25rorktmu5ig2qn2y4xagtru2nehmsp";
+        k = 976159153;
+        res = solution.decodeAtIndex(s, k);
+        System.out.println(res);
+        Assert.assertEquals("a", res);
     }
 }
