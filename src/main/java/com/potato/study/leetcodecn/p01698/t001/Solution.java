@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p01698.t001;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 1698. 字符串的不同子字符串个数
@@ -35,9 +37,18 @@ import java.util.Arrays;
  */
 public class Solution {
 
+    // 1698
     public int countDistinct(String s) {
-
-        return -1;
+        // 枚举 开始位置和 结束为止
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < s.length(); i++) {
+            // 结束为止
+            for (int j = i + 1; j <= s.length(); j++) {
+                String substring = s.substring(i, j);
+                set.add(substring);
+            }
+        }
+        return set.size();
     }
 
 

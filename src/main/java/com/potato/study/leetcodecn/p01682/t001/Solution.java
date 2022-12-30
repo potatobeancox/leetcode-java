@@ -39,9 +39,67 @@ package com.potato.study.leetcodecn.p01682.t001;
  */
 public class Solution {
 
+    // 1682
     public int longestPalindromeSubseq(String s) {
+        // dp ij k=1-26 已 ij作为 子串的两个端点 端点为 k字母最长 序列长度
+        int len = s.length();
+        int[][][] dp = new int[len][len][26];
+        // 初始化 dp ij k 为 -1
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
+                for (int k = 0; k < 26; k++) {
+                    dp[i][j][k] = -1;
+                }
+            }
+        }
+        // 对于每个字母 从 0 找到 n-1 维护其中最大值
+        int max = -1;
+        for (int i = 0; i < 26; i++) {
+            int current = getLongestPalindromeSubseq(0, len-1, i, s, dp);
+            max = Math.max(max, current);
+        }
+        return max;
+    }
 
-        return -1;
+
+    /**
+     *
+     * @param left
+     * @param right
+     * @param charIndex
+     * @param s
+     * @param dp
+     * @return
+     */
+    private int getLongestPalindromeSubseq(int left, int right, int charIndex, String s, int[][][] dp) {
+        // 如果当前ij 已经有了 对应的结果 直接返回
+        if (dp[left][right][charIndex] != -1) {
+            return dp[left][right][charIndex];
+        }
+        if (left >= right) {
+            dp[left][right][charIndex] = 0;
+            return 0;
+        }
+
+        // 如果当前左边点不是 charindex 往右边找
+        if (s.charAt(left) - 'a' != charIndex) {
+            dp[left+1][right][charIndex] = getLongestPalindromeSubseq(left+1, right, charIndex, s, dp);
+            return dp[left+1][right][charIndex];
+        }
+
+        // 如果 当前右边点 不是 charIndex 往左边找
+        if (s.charAt(right) - 'a' != charIndex) {
+            dp[left][right-1][charIndex] = getLongestPalindromeSubseq(left, right-1, charIndex, s, dp);
+            return dp[left][right-1][charIndex];
+        }
+        // 如果这种情况是 左右 都是 charindex 找到内部 递归获取到的最大值 + 2
+        int maxLen = -1;
+        for (int i = 0; i < 26; i++) {
+            // i是内部的 char
+            maxLen = Math.max(maxLen, 2 + getLongestPalindromeSubseq(left+1, right-1, i, s, dp));
+        }
+        dp[left][right][charIndex] = maxLen;
+        return maxLen;
     }
 
 
