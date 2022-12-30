@@ -33,13 +33,28 @@ import java.util.PriorityQueue;
  */
 public class Solution {
 
+    // 剑指 offer 44
     public int findNthDigit(int n) {
-        // 先定位 n 对应区间
+        // 记录当前 是几位数
+        int bitCount = 1;
+        // 当前 bitcount 有多少个数字
+        int bitCountNum = 9;
+        // 判断当前 n在 多少个 bitCount里边
+        while (n > bitCount * bitCountNum) {
+            n -= (bitCount * bitCountNum);
 
-
-
-
-        return -1;
+            bitCount++;
+            bitCountNum *= 10;
+        }
+        // 定位这个n在第几个数字里边
+        int index = n-1;
+        // 当前bit 位数字的开始数字
+        int startNum = (int) Math.pow(10, bitCount - 1);
+        // 当前数字
+        int currentNum = startNum + index / bitCount;
+        int digitIndex = index % bitCount;
+        String s = String.valueOf(currentNum);
+        return s.charAt(digitIndex) - '0';
     }
 
 }
