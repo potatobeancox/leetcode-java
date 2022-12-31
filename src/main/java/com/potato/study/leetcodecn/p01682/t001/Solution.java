@@ -83,18 +83,22 @@ public class Solution {
 
         // 如果当前左边点不是 charindex 往右边找
         if (s.charAt(left) - 'a' != charIndex) {
-            dp[left+1][right][charIndex] = getLongestPalindromeSubseq(left+1, right, charIndex, s, dp);
-            return dp[left+1][right][charIndex];
+            dp[left][right][charIndex] = getLongestPalindromeSubseq(left+1, right, charIndex, s, dp);
+            return dp[left][right][charIndex];
         }
 
         // 如果 当前右边点 不是 charIndex 往左边找
         if (s.charAt(right) - 'a' != charIndex) {
-            dp[left][right-1][charIndex] = getLongestPalindromeSubseq(left, right-1, charIndex, s, dp);
-            return dp[left][right-1][charIndex];
+            dp[left][right][charIndex] = getLongestPalindromeSubseq(left, right-1, charIndex, s, dp);
+            return dp[left][right][charIndex];
         }
         // 如果这种情况是 左右 都是 charindex 找到内部 递归获取到的最大值 + 2
         int maxLen = -1;
         for (int i = 0; i < 26; i++) {
+            // 中间的两个字符外，其余任意两个连续字符不相等
+            if (charIndex == i) {
+                continue;
+            }
             // i是内部的 char
             maxLen = Math.max(maxLen, 2 + getLongestPalindromeSubseq(left+1, right-1, i, s, dp));
         }
