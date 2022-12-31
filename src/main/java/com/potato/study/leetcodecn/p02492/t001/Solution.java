@@ -59,52 +59,45 @@ import java.util.Set;
 public class Solution {
 
     private int minScore;
+    private List<int[]>[] graph;
+    private boolean[] visit;
 
     public int minScore(int n, int[][] roads) {
         this.minScore = Integer.MAX_VALUE;
         // 从 1号位置开始遍历
-        List<int[]>[] graph = new List[n];
-        for (int i = 0; i < n; i++) {
+        graph = new List[n+1];
+        for (int i = 0; i < n + 1; i++) {
             graph[i] = new ArrayList<>();
         }
         // 将roads 转化成 graph
         for (int[] road : roads) {
-            int from = road[0] - 1;
-            int to = road[1] - 1;
+            int from = road[0];
+            int to = road[1];
             int cost = road[2];
 
             graph[from].add(new int[] {to, cost});
             graph[to].add(new int[] {from, cost});
         }
-        for (int i = 0; i < n; i++) {
-            Set<Integer> visitedSet = new HashSet<>();
-            visitedSet.add(i);
-            dfs(graph, visitedSet, i, Integer.MAX_VALUE);
-        }
+        visit = new boolean[n+1];
+        dfs(1);
         return minScore;
     }
 
-    private void dfs(List<int[]>[] graph, Set<Integer> visitedSet, int index, int currentMin) {
-        // 当前已经都访问了
-        if (visitedSet.size() == graph.length) {
-            this.minScore = Math.min(minScore, currentMin);
-            return;
-        }
+    private void dfs(int currentIndex) {
+        // 访问
+        visit[currentIndex] = true;
         // 还没访问完 找邻接点继续
-        List<int[]> nextList = graph[index];
+        List<int[]> nextList = graph[currentIndex];
         for (int[] nextInfo : nextList) {
             int next = nextInfo[0];
             int cost = nextInfo[1];
-            if (visitedSet.contains(next)) {
+            this.minScore = Math.min(minScore, cost);
+            if (visit[next]) {
                 continue;
             }
-            // 没有遍历过
-            visitedSet.add(next);
-            dfs(graph, visitedSet, next, Math.min(currentMin, cost));
-            visitedSet.remove(next);
+            dfs(next);
+
         }
-        // 这个点都访问完了 删除吧
-        visitedSet.remove(index);
     }
 
 }
