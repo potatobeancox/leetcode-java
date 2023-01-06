@@ -45,24 +45,22 @@ package com.potato.study.leetcodecn.p02486.t001;
 public class Solution {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // 2486
     public int appendCharacters(String s, String t) {
-
-        return -1;
+        // 遍历 s 依次比对t 找到最终 t 还有多少个没有匹配上
+        int index = 0;
+        for (char ch : s.toCharArray()) {
+            if (index >= t.length()) {
+                break;
+            }
+            if (ch == t.charAt(index)) {
+                index++;
+            }
+        }
+        // 剩余多少没有比较
+        int remindCount = t.length() - index;
+        return remindCount;
     }
+
+
 }
