@@ -47,7 +47,26 @@ public class Solution {
 
     public int goodBinaryStrings(int minLength, int maxLength, int oneGroup,
                                  int zeroGroup) {
-        return -1;
+        // dp i 到达 i 位置的种类数
+        int[] dp = new int[maxLength + 1];
+        dp[0] = 1;
+        int mod = 1_000_000_000 + 7;
+        for (int i = 0; i < maxLength + 1; i++) {
+            if (i >= oneGroup) {
+                dp[i] += dp[i-oneGroup];
+            }
+            if (i >= zeroGroup) {
+                dp[i] += dp[i-zeroGroup];
+            }
+            dp[i] %= mod;
+        }
+        //  统计 最大到最小
+        int total = 0;
+        for (int i = minLength; i <= maxLength; i++) {
+            total += dp[i];
+            total %= mod;
+        }
+        return total;
     }
 
 
