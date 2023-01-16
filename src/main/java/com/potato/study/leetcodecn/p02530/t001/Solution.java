@@ -3,8 +3,10 @@ package com.potato.study.leetcodecn.p02530.t001;
 
 import org.junit.Assert;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * 2530. 执行 K 次操作后的最大分数
@@ -51,8 +53,25 @@ import java.util.Map;
 public class Solution {
 
     public long maxKelements(int[] nums, int k) {
-
-        return -1;
+        // 大根堆
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int num : nums) {
+            priorityQueue.add(num);
+        }
+        long total = 0;
+        if (k == 0) {
+            return total;
+        }
+        if (priorityQueue.isEmpty()) {
+            return -1;
+        }
+        for (int i = 0; i < k; i++) {
+            Integer poll = priorityQueue.poll();
+            total += poll;
+            // 重新放进去
+            priorityQueue.add((int) Math.ceil((double) poll / 3));
+        }
+        return total;
     }
 
 
