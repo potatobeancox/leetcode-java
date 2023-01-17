@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02513.t001;
 
+import org.junit.Assert;
+
 /**
  * 2513. 最小化两个数组中的最大值
  *
@@ -52,25 +54,58 @@ public class Solution {
 
 
     public int minimizeSet(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2) {
+        // 二分法 判断 给定数字是否满足
+        long left = 1;
+        long right = 1_000_000_000_0L;
+        int res = -1;
+        while (left <= right) {
+            long mid = (left + right) / 2;
+            // 是否足够
+            boolean isEnough = check(divisor1, divisor2, uniqueCnt1, uniqueCnt2, mid);
+            if (isEnough) {
+                res = (int) mid;
+                right = mid - 1;
+            } else {
+                // 往大了走
+                left = mid + 1;
+            }
+        }
+        return res;
+
+
+
+
+
+    }
+
+    private boolean check(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2, long target) {
         // 从1 开始  不能被 divisor1 整除需要到的个数
-        int max1 = uniqueCnt1 + (uniqueCnt1 / divisor1);
-        // 从1 开始  不能被 divisor2 整除需要到的个数
-
-        // 求最大值 中不能被 最小公倍数 个数 往上加
-        return -1;
-
+        int gcd = gcd(divisor1, divisor2);
+        // target 去掉能被 divisor1 2整除的数字
+        target = target - (target / gcd);
+        // 肯定都用不了
+        target = target - (target / divisor1) - (target / divisor2) + (target / gcd);
+        return target >= uniqueCnt1 + uniqueCnt2;
     }
 
-
-    private int lcm(int a, int b) {
-        return a * b / gcd(a,b);
-    }
 
     private int gcd(int a, int b) {
         if (a % b == 0) {
             return b;
         }
         return gcd(b, a % b);
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int divisor1 = 2;
+        int divisor2 = 7;
+        int uniqueCnt1 = 1;
+        int uniqueCnt2 = 3;
+        int i = solution.minimizeSet(divisor1, divisor2, uniqueCnt1, uniqueCnt2);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 
 }
