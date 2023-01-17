@@ -56,18 +56,18 @@ public class Solution {
             int row2i = query[2];
             int col2i = query[3];
 
-            diff[row1i][col1i] = 1;
+            diff[row1i][col1i] += 1;
             // 右上角
             if (col2i + 1 < n) {
-                diff[row1i][col2i] = -1;
+                diff[row1i][col2i+1] -= 1;
             }
             // 左下角落
             if (row2i + 1 < n) {
-                diff[row2i][col1i] = -1;
+                diff[row2i+1][col1i] -= 1;
             }
             // 右下角
             if (col2i + 1 < n && row2i + 1 < n) {
-                diff[row2i][col2i] = -1;
+                diff[row2i+1][col2i+1] += 1;
             }
         }
         // 重新遍历 生成前缀
