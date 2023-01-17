@@ -59,6 +59,7 @@ public class Solution {
 
 
     public int validSubarraySplit(int[] nums) {
+        // dp ij 以两端为始终的 分割 情况
         return -1;
     }
 }
