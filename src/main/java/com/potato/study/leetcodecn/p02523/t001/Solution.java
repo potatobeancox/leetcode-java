@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02523.t001;
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -50,9 +52,6 @@ public class Solution {
         // 从 left 到 right 进行遍历
         List<Integer> primeList = new ArrayList<>();
         primeList.add(2);
-        int min = Integer.MAX_VALUE;
-        int[] res = new int[] {-1, -1};
-        Integer prePrime = null;
         for (int i = 2; i <= right; i++) {
             // 判断i 是不是素数
             boolean isPrime = checkPrime(i, primeList);
@@ -60,22 +59,26 @@ public class Solution {
                 continue;
             }
             primeList.add(i);
-            // 跟之前求出距离
-            if (i < left || i > right) {
+        }
+        // 遍历 primeList 找到两个都在 left和 right 里边 并计算min
+        int min = Integer.MAX_VALUE;
+        int[] res = new int[] {
+                -1, -1
+        };
+        for (int i = 1; i < primeList.size(); i++) {
+            int pre = primeList.get(i-1);
+            int current = primeList.get(i);
+            if (pre < left || current > right) {
                 continue;
             }
-            if (prePrime != null) {
-                int dis = i - prePrime;
-                if (min < dis) {
-                    res[0] = prePrime;
-                    res[1] = i;
-                }
-                min = Math.min(min, dis);
+            if (current - pre < min) {
+                min = current - pre;
+                res[0] = pre;
+                res[1] = current;
             }
-            prePrime = i;
+
 
         }
-        // 每个数字 判断其是否是素数 如果是的话 比较下最小值 跟之前的 素数做差 比较最小值记录下来
         return res;
     }
 
@@ -86,6 +89,16 @@ public class Solution {
             }
         }
         return true;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] ints = solution.closestPrimes(10, 19);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+                11,13
+        }, ints);
     }
 
 
