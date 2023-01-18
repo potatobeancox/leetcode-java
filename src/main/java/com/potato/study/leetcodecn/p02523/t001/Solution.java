@@ -50,41 +50,37 @@ public class Solution {
     // 2523
     public int[] closestPrimes(int left, int right) {
         // 从 left 到 right 进行遍历
-        List<Integer> primeList = new ArrayList<>();
-        primeList.add(2);
-        for (int i = 2; i <= right; i++) {
-            // 判断i 是不是素数
-            boolean isPrime = checkPrime(i, primeList);
-            if (!isPrime) {
-                continue;
-            }
-            primeList.add(i);
-        }
-        // 遍历 primeList 找到两个都在 left和 right 里边 并计算min
+        int lastPrime = -1;
         int min = Integer.MAX_VALUE;
         int[] res = new int[] {
                 -1, -1
         };
-        for (int i = 1; i < primeList.size(); i++) {
-            int pre = primeList.get(i-1);
-            int current = primeList.get(i);
-            if (pre < left || current > right) {
+        for (int i = Math.max(2, left); i <= right; i++) {
+            // 判断i 是不是素数
+            boolean isPrime = checkPrime(i);
+            if (!isPrime) {
                 continue;
             }
-            if (current - pre < min) {
-                min = current - pre;
-                res[0] = pre;
-                res[1] = current;
+            if (lastPrime == -1) {
+                lastPrime = i;
+                continue;
             }
-
-
+            // 之前有一个了
+            if (min == Integer.MAX_VALUE || i - lastPrime < min) {
+                min = i - lastPrime;
+                res[0] = lastPrime;
+                res[1] = i;
+            }
+            lastPrime = i;
         }
         return res;
     }
 
-    private boolean checkPrime(int num, List<Integer> primeList) {
-        for (int prime : primeList) {
-            if (num % prime == 0) {
+
+
+    private boolean checkPrime(int num) {
+        for (int i = 2; i * i <= num; i++) {
+            if (num % i == 0) {
                 return false;
             }
         }
@@ -99,6 +95,16 @@ public class Solution {
         Assert.assertArrayEquals(new int[] {
                 11,13
         }, ints);
+
+
+//        147106
+//        213773
+
+        ints = solution.closestPrimes(147106, 213773);
+        System.out.println(Arrays.toString(ints));
+//        Assert.assertArrayEquals(new int[] {
+//                147106,213773
+//        }, ints);
     }
 
 
