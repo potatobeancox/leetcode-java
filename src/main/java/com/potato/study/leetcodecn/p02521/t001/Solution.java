@@ -47,44 +47,26 @@ public class Solution {
 
     // 2521
     public int distinctPrimeFactors(int[] nums) {
-        // 找到nums 中最大的数 max
-        Arrays.sort(nums);
-        int max = nums[nums.length-1] - 1;
-        List<Integer> primeList = new ArrayList<>();
-        primeList.add(2);
-        // 求小于等于 max 的质数的 list ，
-        for (int i = 3; i <= max; i++) {
-            if (isPrime(i, primeList)) {
-                primeList.add(i);
-            }
-        }
-        // 依次对 nums 元素进行遍历，用set 记录已经使用过的 素数
-        Set<Integer> usedPrimeSet = new HashSet<>();
+        // 用一个 set存储目前已经出现的 质因数 对nums 如果在的话 直接下一个 否则 从2开始找这个数字的质因数 放入set中
+        Set<Integer> set = new HashSet<>();
         for (int num : nums) {
-            int index = 0;
-            while (num >= primeList.get(index)) {
-                Integer prime = primeList.get(index);
-                while (num % prime == 0) {
-                    num /= prime;
-                    usedPrimeSet.add(prime);
-                }
-                index++;
-                if (index >= primeList.size()) {
+            if (set.contains(num)) {
+                continue;
+            }
+            int temp = num;
+            for (int i = 2; i <= num; i++) {
+                if (temp <= 1) {
                     break;
                 }
+                while (temp % i == 0) {
+                    temp /= i;
+                    set.add(i);
+                }
             }
         }
-        return usedPrimeSet.size();
+        return set.size();
     }
 
-    private boolean isPrime(int i, List<Integer> primeList) {
-        for (int prime : primeList) {
-            if (i % prime == 0) {
-                return false;
-            }
-        }
-        return false;
-    }
 
 
 
