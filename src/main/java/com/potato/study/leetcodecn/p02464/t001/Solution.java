@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02464.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +61,77 @@ public class Solution {
 
 
     public int validSubarraySplit(int[] nums) {
-        // dp ij 以两端为始终的 分割 情况
-        return -1;
+        // dp ij 以两端为始终的 分割 情况 最小分割情况 如果可以分割的话
+        int n = nums.length;
+        int[][] memo = new int[n][n];
+        return dfs(0, n - 1, memo, nums);
+    }
+
+    /**
+     * 返回总 left 到 right 的最小可以分割的数量
+     * @param left
+     * @param right
+     * @param memo
+     * @return
+     */
+    private int dfs(int left, int right, int[][] memo, int[] nums) {
+        // 如果已经搞过了 直接返回
+        if (memo[left][right] != 0) {
+            return memo[left][right];
+        }
+        // 如果没有搞过 判断 两边 如果有一边已经时 1 那无如何都分割不了了 那么这种分割是不可行的
+        if (nums[left] == 1 || nums[right] == 1) {
+            memo[left][right] = -1;
+            return -1;
+        }
+        // 如果当前不用分割直接返回
+        int gcd = gcd(nums[left], nums[right]);
+        if (gcd != 1) {
+            memo[left][right] = 1;
+            return 1;
+        }
+        // 从内部的left 到 right-1 依次分割计算  维护一个历史最小的分割情况
+        int min = Integer.MAX_VALUE;
+        for (int i = left; i < right; i++) {
+            // 如果右边已经不能分割了 这种分割就是不行的
+            if (nums[i] == 1 || nums[i+1] == 1) {
+                continue;
+            }
+            int gcd2 = gcd(nums[i+1], nums[right]);
+            if (gcd2 == 1) {
+                continue;
+            }
+            int current = dfs(left, i, memo, nums);
+            if (current == -1) {
+                continue;
+            }
+            min = Math.min(min, current + 1);
+        }
+        // 全都没法分
+        if (min == Integer.MAX_VALUE) {
+            memo[left][right] = -1;
+            return -1;
+        }
+        memo[left][right] = min;
+        return min;
+    }
+
+
+    // 求最大公约数
+    private int gcd(int a, int b) {
+        if (a % b == 0) {
+            return b;
+        }
+        return gcd(b, a%b);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[]{
+                3,5
+        };
+        int i = solution.validSubarraySplit(nums);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 }
