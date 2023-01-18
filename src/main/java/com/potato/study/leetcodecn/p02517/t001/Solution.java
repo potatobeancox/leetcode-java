@@ -80,8 +80,10 @@ public class Solution {
         int count = 1;
         int pre = price[0];
         for (int i = 1; i < price.length; i++) {
+            // 小于就不选了
             if (price[i] >= pre + mid) {
                 count++;
+                pre = price[i];
             }
             if (count >= k) {
                 return true;
