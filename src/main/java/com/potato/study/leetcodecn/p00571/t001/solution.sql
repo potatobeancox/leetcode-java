@@ -42,3 +42,15 @@
 -- 解释：
 -- 如果解压这个 Numbers 表，可以得到 [0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3] ，所以中位数是 (0 + 0) / 2 = 0 。
 
+
+select
+    round(avg(num), 1) as median
+from (
+    select
+        Numbers.*,
+        sum(frequency) over(order by num asc) as rank1,
+        sum(frequency) over(order by num desc) as rank2,
+        sum(frequency) over() as rr
+    from Numbers
+) as tab
+where tab.rank1 >= tab.rr/2 and tab.rank2 >= tab.rr/2
