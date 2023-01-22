@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02375.t001;
 
+import org.junit.Assert;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,37 +52,53 @@ public class Solution {
 
 
     public String smallestNumber(String pattern) {
-        // 遍历 pattern 每次找到 I开头 D结尾的组
+        // 先遍历 i 后遍历 d 每次选择最小的进行使用
+        int cur = 1;
+        int length = pattern.length();
         int index = 0;
         StringBuilder builder = new StringBuilder();
-        int startNum = 1;
-        while (index < pattern.length()) {
-            int iCount = 0;
-            while (index < pattern.length() && pattern.charAt(index) == 'I') {
-                iCount++;
+        while (index < length) {
+            // 找i最终能有多少个
+            int count1 = 0;
+            while (index < length && pattern.charAt(index) == 'I') {
+                count1++;
                 index++;
             }
-            int dCount = 0;
-            while (index < pattern.length() && pattern.charAt(index) == 'D') {
-                dCount++;
+            // 找了了 i
+            if (count1 > 0) {
+                int limit = count1 - 1;
+                if (builder.length() == 0) {
+                    limit++;
+                }
+                // 计算当前能用到多少
+                for (int i = 0; i < limit; i++) {
+                    builder.append(cur);
+                    cur++;
+                }
+            }
+            // 找d
+            int count2 = 0;
+            while (index < length && pattern.charAt(index) == 'D') {
                 index++;
+                count2++;
             }
-            // 将最小的数字给到i个 对于 d+1 个按照从大到小给出
-            for (int i = 0; i < iCount; i++) {
-                builder.append(startNum);
-                startNum++;
+            // 找了了 i
+            if (count2 >= 0) {
+                for (int i = 0; i <= count2; i++) {
+                    builder.append(cur + count2 - i);
+                }
+                cur += (count2 + 1);
             }
-            for (int i = 0; i < dCount + 1; i++) {
-                builder.append(startNum + dCount - i);
-            }
-            startNum += (dCount + 2);
         }
         return builder.toString();
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-//        solution.smallestNumber();
+        String s = solution.smallestNumber("IIIDIDDD");
+        System.out.println(s);
+        Assert.assertEquals("123549876", s);
+
     }
 
 
