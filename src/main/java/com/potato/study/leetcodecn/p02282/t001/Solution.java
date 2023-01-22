@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02282.t001;
 
+import java.util.Stack;
+
 /**
  * 2282. 在一个网格中可以看到的人数
  *
@@ -60,17 +62,31 @@ public class Solution {
         int[][] res = new int[m][n];
         // 对于 每行每列分别 固定 行和列 从尾部开始往前找 用一个栈 记录 当前有多少 可以看到的 单调递减栈
         for (int i = 0; i < m; i++) {
-            fill(res, i, i+1, n-1, -1, 1, -1);
+            fill(res, i, i+1, n-1, -1, 1, -1, heights);
         }
         for (int j = 0; j < n; j++) {
-            fill(res, m-1, -1, j, j+1, -1, 1);
+            fill(res, m-1, -1, j, j+1, -1, 1, heights);
         }
         return res;
     }
 
-    private void fill(int[][] res, int startI, int endI, int startJ, int endJ, int di, int dj) {
+    private void fill(int[][] res, int startI, int endI, int startJ, int endJ, int di, int dj, int[][] heights) {
         // 从 startI 到 endI（不包括），每次移动 di
-
+        Stack<Integer> stack = new Stack<>();
         // 同理 dj 过程中用一个 stack 递减栈 栈顶最小 依次找到 栈内比 当前值小的值 这些值都是 ij点可以看见的
+        for (int i = startI; i != endI; i+=di) {
+            for (int j = startJ; j != endJ; j+=dj) {
+                while (!stack.isEmpty() && stack.peek() < heights[i][j]) {
+                    res[i][j]++;
+                    stack.pop();
+                }
+                if (!stack.isEmpty()) {
+                    res[i][j]++;
+                }
+                if (stack.isEmpty() || stack.peek() != heights[i][j]) {
+                    stack.push(heights[i][j]);
+                }
+            }
+        }
     }
 }
