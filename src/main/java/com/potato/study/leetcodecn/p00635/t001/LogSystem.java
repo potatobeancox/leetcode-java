@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.p00635.t001;
 
 
-import org.junit.Assert;
-
 import java.util.*;
 
 /**
@@ -56,15 +54,24 @@ import java.util.*;
  */
 public class LogSystem {
 
-    private TreeMap<Long, Long> treeMap;
+    private Map<String, Integer> contentMap;
+    private Map<String, Integer> typeMap;
 
     public LogSystem() {
-        this.treeMap = new TreeMap<>();
+        this.contentMap = new HashMap<>();
+        this.typeMap = new HashMap<>();
+        // init key 是 哪些 granularity 是这些值 ["Year", "Month", "Day", "Hour", "Minute", "Second"] value 是要截取的字符串个数
+        typeMap.put("Year", 4);
+        // 2017:01:01:23:59:59
+        typeMap.put("Month", 7);
+        typeMap.put("Day", 10);
+        typeMap.put("Hour", 13);
+        typeMap.put("Minute", 16);
+        typeMap.put("Second", 19);
     }
 
     public void put(int id, String timestamp) {
-        long key = getTimestampNum(timestamp);
-        treeMap.put(key, Long.valueOf(id));
+        contentMap.put(timestamp, id);
     }
 
     /**
@@ -78,74 +85,39 @@ public class LogSystem {
         long startTime = getTimestampNum(start, granularity);
         long endTime = getTimestampNum(end, granularity);
         // 找到开始结束之间
-        Long from = treeMap.ceilingKey(startTime);
-        Long to = treeMap.floorKey(endTime);
-        if (from == null || to == null) {
-            return new ArrayList<>();
-        }
-        List<Integer> objects = new ArrayList<>();
-        for (Map.Entry<Long, Long> entry : treeMap.entrySet()) {
-            Long key = entry.getKey();
-            if (from <= key && key <= to) {
-                objects.add(entry.getValue().intValue());
+        List<Integer> list = new ArrayList<>();
+        for (String key : contentMap.keySet()) {
+            long current = getTimestampNum(key, granularity);
+            if (startTime <= current && current <= endTime) {
+                list.add(contentMap.get(key));
             }
         }
-        return objects;
+        return list;
     }
 
     private long getTimestampNum(String timestamp, String granularity) {
+        Integer validLen = typeMap.get(granularity);
+        String substring = timestamp.substring(0, validLen);
         // 2017:01:01:23:59:59
-        String[] split = timestamp.split(":");
+        String[] split = substring.split(":");
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < split.length; i++) {
             builder.append(split[i]);
-            if ("Year".equals(split[i]) && i == 0) {
-                builder.append("00");
-                builder.append("00");
-                builder.append("00");
-                builder.append("00");
-                builder.append("00");
-                break;
-            } else if ("Month".equals(split[i]) && i == 1) {
-                builder.append("00");
-                builder.append("00");
-                builder.append("00");
-                builder.append("00");
-                break;
-            } else if ("Day".equals(split[i]) && i == 2) {
-                builder.append("00");
-                builder.append("00");
-                builder.append("00");
-                break;
-            } else if ("Hour".equals(split[i]) && i == 3) {
-                builder.append("00");
-                builder.append("00");
-                break;
-            } else if ("Minute".equals(split[i]) && i == 4) {
-                builder.append("00");
-                break;
-            } else if ("Second".equals(split[i]) && i == 5) {
-                continue;
-            }
         }
         String numStr = builder.toString();
         long l = Long.parseLong(numStr);
         return l;
     }
 
+    public static void main(String[] args) {
+        LogSystem logSystem = new LogSystem();
+        logSystem.put(1,"2017:01:01:23:59:59");
+        logSystem.put(2,"2017:01:01:22:59:59");
+        logSystem.put(3,"2016:01:01:00:00:00");
 
-
-
-    private long getTimestampNum(String timestamp) {
-        // 2017:01:01:23:59:59
-        String[] split = timestamp.split(":");
-        StringBuilder builder = new StringBuilder();
-        for (String numPart : split) {
-            builder.append(numPart);
-        }
-        String numStr = builder.toString();
-        long l = Long.parseLong(numStr);
-        return l;
+        System.out.println(logSystem.retrieve("2016:01:01:01:01:01","2017:01:01:23:00:00","Year"));
+        System.out.println(logSystem.retrieve("2016:01:01:01:01:01","2017:01:01:23:00:00","Hour"));
     }
+
 
 }
