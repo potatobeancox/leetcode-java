@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02162.t001;
 
+import org.junit.Assert;
+
 /**
  * 2162. 设置时间的最少代价
  *
@@ -65,7 +67,50 @@ public class Solution {
 
 
     public int minCostSetTime(int startAt, int moveCost, int pushCost, int targetSeconds) {
+        // 先将 targetSeconds 转换成正常 的几分几秒 计算正常情况的cost
+        int hour = targetSeconds / 60;
+        int minute = targetSeconds % 60;
+        int cost = Integer.MAX_VALUE;
+        if (hour <= 99) {
+            cost = getCost(startAt, moveCost, pushCost, hour, minute);
+            // 减去1分钟 增加60秒 计算cost
+            if (hour == 0 || minute + 60 > 99) {
+                return cost;
+            }
+        }
+        hour--;
+        minute += 60;
+        int newCost = getCost(startAt, moveCost, pushCost, hour, minute);
+        return Math.min(cost, newCost);
+    }
 
-        return -1;
+    private int getCost(int startAt, int moveCost, int pushCost, int hour, int minute) {
+        // 小时和分钟处理成 字符串
+        int num = hour * 100 + minute;
+        // 这样可以去掉前缀0
+        String s = String.valueOf(num);
+        // 第一个数字
+        int cost = 0;
+        int lastPos = startAt;
+        for (int i = 0; i < s.length(); i++) {
+            int targetPos = s.charAt(i) - '0';
+            if (targetPos != lastPos) {
+                cost += moveCost;
+                lastPos = targetPos;
+            }
+            cost += pushCost;
+        }
+        return cost;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int startAt = 1;
+        int moveCost = 9403;
+        int pushCost = 9402;
+        int targetSeconds = 6008;
+        int i = solution.minCostSetTime(startAt, moveCost, pushCost, targetSeconds);
+        System.out.println(i);
+        Assert.assertEquals(65817, i);
     }
 }
