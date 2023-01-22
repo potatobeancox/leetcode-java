@@ -54,16 +54,31 @@ import com.potato.study.leetcode.domain.node.val.left.right.ch.Node;
 public class Solution {
 
     public boolean checkEquivalence(Node root1, Node root2) {
-        if (root1 == null && root2 == null) {
-            return true;
-        } else if (root1 == null || root2 == null) {
-            return false;
+        // 两个数组 记录 存在 的个数 dfs 先找到 叶子 再往深处找
+        int[] count1 = new int[26];
+        int[] count2 = new int[26];
+
+        dfs(root1, count1);
+        dfs(root2, count2);
+
+        for (int i = 0; i < 26; i++) {
+            if (count1[i] != count2[i]) {
+                return false;
+            }
         }
-        if (root1.val != root2.val) {
-            return false;
+        return true;
+    }
+
+    private void dfs(Node root, int[] count) {
+        if (null == root) {
+            return;
         }
-        // 左右孩子
-        return (checkEquivalence(root1.left, root2.left) && checkEquivalence(root1.right, root2.right))
-                || (checkEquivalence(root1.left, root2.right) && checkEquivalence(root1.right, root2.left));
+        char val = root.val;
+        if ('+' == val) {
+            dfs(root.left, count);
+            dfs(root.right, count);
+        } else {
+            count[val - 'a']++;
+        }
     }
 }
