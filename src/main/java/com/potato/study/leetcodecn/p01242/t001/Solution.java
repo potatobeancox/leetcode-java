@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p01242.t001;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 1242. 多线程网页爬虫
@@ -95,8 +97,95 @@ import java.util.List;
  */
 public class Solution {
 
+    // 一个map 存放已经遍历过的 链接
+    private Map<String, Boolean> map;
+    private HtmlParser htmlParser;
+    // 存开始的域名 之后 用于过滤
+    private List<String> visitList;
+    private String startUrlDomain;
+
+
+
     public List<String> crawl(String startUrl, HtmlParser htmlParser) {
-        return null;
+        this.map = new ConcurrentHashMap<>();
+        this.htmlParser = htmlParser;
+        this.startUrlDomain = getDomain(startUrl);
+        // 开启一个线程 线程 任务 分别获取 下一个链接 对于链接进行遍历 任意一个链接开一个子任务，直到所有的任务都执行完成
+        map.put(startUrl, true);
+        visitList = new ArrayList<>();
+        visitList.add(startUrl);
+
+        Task mainTask = new Task(startUrl);
+
+        mainTask.start();
+        try {
+            mainTask.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // 不好的地方就是会级联等待 线程系哦啊红越来越多 需要使用队列 进行优化
+        return visitList;
+    }
+
+
+    /**
+     * 获取 url对应的 主域名
+     * @param url
+     * @return
+     */
+    private String getDomain(String url) {
+        // http:// 7个字符
+        int i = url.indexOf('/', 7);
+        if (i == -1) {
+            i = url.length();
+        }
+        String domain = url.substring(0, i);
+        return domain;
+    }
+
+    /**
+     * // 开启一个线程 线程 任务 分别获取 下一个链接 对于链接进行遍历 任意一个链接开一个子任务，直到所有的任务都执行完成
+     */
+    class Task extends Thread {
+
+        private String url;
+
+        public Task(String url) {
+            this.url = url;
+        }
+
+        @Override
+        public void run() {
+            List<String> urls = htmlParser.getUrls(this.url);
+            List<Task> subTaskList = new ArrayList<>();
+            for (String nextUrl : urls) {
+                // 是不是相同域名的
+                String nextDomain = getDomain(nextUrl);
+                if (!startUrlDomain.equals(nextDomain)) {
+                    continue;
+                }
+                // 是不是已经访问过了
+                if (map.containsKey(nextUrl)) {
+                    continue;
+                }
+                // 没有访问 访问 也就是 开任务继续执行
+                map.put(nextUrl, true);
+                visitList.add(nextUrl);
+                // 创建任务执行
+                Task childTask = new Task(nextUrl);
+                subTaskList.add(childTask);
+                childTask.start();
+            }
+
+            // 收集
+            for (Task task : subTaskList) {
+                try {
+                    task.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }
