@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p01801.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.PriorityQueue;
 
 /**
@@ -65,13 +68,13 @@ import java.util.PriorityQueue;
 public class Solution {
 
     public int getNumberOfBacklogOrders(int[][] orders) {
-        // 没卖掉的 小根堆
+        // 没卖掉的 小根堆 价格越低越先卖掉
         PriorityQueue<Order> sellOrderPriorityQueue = new PriorityQueue<>((o1, o2) -> {
-            return Integer.compare(o1.price, o2.price);
+            return Long.compare(o1.price, o2.price);
         });
-        // 卖掉嘞的 大根堆
+        // 卖掉嘞的 大根堆 价格越高 越先买
         PriorityQueue<Order> buyOrderPriorityQueue = new PriorityQueue<>((o1, o2) -> {
-            return Integer.compare(o2.price, o1.price);
+            return Long.compare(o2.price, o1.price);
         });
         // 一个队列 解决积压的卖 一个解决积压的买 买的价格高的往前放 卖的价格低的往往前防止
         for (int i = 0; i < orders.length; i++) {
@@ -79,66 +82,94 @@ public class Solution {
             int type = currentOrder[2];
             Order order = new Order();
             order.amount = currentOrder[1];
+            // * 0 表示这是一批采购订单 buy  1 表示这是一批销售订单 sell
             order.orderType = type;
             order.price = currentOrder[0];
-
+            // 先处理 当前订单的购买或者卖出
+            PriorityQueue<Order> targetPriorityQueue;
+            PriorityQueue<Order> otherPriorityQueue;
             if (type == 1) {
                 // sell 订单
-                sellOrderPriorityQueue.add(order);
+                targetPriorityQueue = buyOrderPriorityQueue;
+                otherPriorityQueue = sellOrderPriorityQueue;
             } else {
                 // buy 订单
-                buyOrderPriorityQueue.add(order);
+                targetPriorityQueue = sellOrderPriorityQueue;
+                otherPriorityQueue = buyOrderPriorityQueue;
             }
-            // 遍历 看看 买家还能不能买了
-            while (!buyOrderPriorityQueue.isEmpty()) {
-                // 当前有限的购买者
-                Order peekBuy = buyOrderPriorityQueue.peek();
-                if (sellOrderPriorityQueue.isEmpty()) {
-                    break;
-                }
-                Order peekSell = sellOrderPriorityQueue.peek();
-                // 如果已经买不起了 直接break
-                if (peekBuy.price < peekSell.price) {
-                    break;
-                }
-                // 还是可以买的起的 循环买
-                while (peekBuy.amount >= 0 && !sellOrderPriorityQueue.isEmpty()) {
-                    Order poll = sellOrderPriorityQueue.poll();
-                    // 全能买
-                    if (peekBuy.amount >= poll.amount) {
-                        peekBuy.amount -= poll.amount;
-                        poll.amount = 0;
-                    } else {
-                        // 买的少 peekBuy.amount < poll.amount;
-                        poll.amount -= peekBuy.amount;
-                        peekBuy.amount = 0;
+            // 只要还有能操作的订单就一直操作下去
+            boolean needAdd = true;
+            while (!targetPriorityQueue.isEmpty() && order.amount > 0) {
+                // 先判断能不能买得起
+                Order peek = targetPriorityQueue.peek();
+                if (type == 1) {
+                    // sell 订单 购买订单 最高价都买不起
+                    if (peek.price < order.price) {
+                        needAdd = false;
+                        otherPriorityQueue.add(order);
+                        break;
+                    }
+                } else {
+                    // buy 订单 卖出的最低价格都贵 这个订单暂时无法完成
+                    if (peek.price > order.price) {
+                        needAdd = false;
+                        otherPriorityQueue.add(order);
                         break;
                     }
                 }
-                // 如果当前 peek 还有的话 break
-                if (peekBuy.amount == 0) {
-                    buyOrderPriorityQueue.poll();
+                Order poll = targetPriorityQueue.poll();
+                // 消耗订单
+                if (order.amount >= poll.amount) {
+                    order.amount -= poll.amount;
+                    poll.amount = 0;
+                } else {
+                    poll.amount -= order.amount;
+                    order.amount = 0;
                 }
-                // 如果没有了
-                if (sellOrderPriorityQueue.isEmpty()) {
-                    break;
-                }
-                // sell 还有 但是买不起了
-                if (peekBuy.price < sellOrderPriorityQueue.peek().price) {
-                    break;
+
+                if (poll.amount > 0) {
+                    targetPriorityQueue.add(poll);
                 }
             }
-
+            // 判断order订单
+            if (needAdd && order.amount > 0) {
+                otherPriorityQueue.add(order);
+            }
         }
-        return buyOrderPriorityQueue.size() + sellOrderPriorityQueue.size();
+        // 累计amount
+        long remindAmount = 0;
+        int mod = 1_000_000_000 + 7;
+        while (!buyOrderPriorityQueue.isEmpty()) {
+            remindAmount += buyOrderPriorityQueue.poll().amount;
+            remindAmount %= mod;
+        }
+        while (!sellOrderPriorityQueue.isEmpty()) {
+            remindAmount += sellOrderPriorityQueue.poll().amount;
+            remindAmount %= mod;
+        }
+        return (int) remindAmount;
     }
 
     class Order {
         // orders[i] = [pricei, amounti, orderTypei]
-        public int price;
-        public int amount;
+        public long price;
+        public long amount;
         // 订单类型 orderTypei 可以分为两种：0 表示这是一批采购订单 buy 1 表示这是一批销售订单 sell
         public int orderType;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] orders = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[10,5,0],[15,2,1],[25,1,1],[30,4,0]]");
+        int numberOfBacklogOrders = solution.getNumberOfBacklogOrders(orders);
+        System.out.println(numberOfBacklogOrders);
+        Assert.assertEquals(6, numberOfBacklogOrders);
+
+
+        orders = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[7,1000000000,1],[15,3,0],[5,999999995,0],[5,1,1]]");
+        numberOfBacklogOrders = solution.getNumberOfBacklogOrders(orders);
+        System.out.println(numberOfBacklogOrders);
+        Assert.assertEquals(999999984, numberOfBacklogOrders);
     }
 
 }
