@@ -1,9 +1,15 @@
 package com.potato.study.leetcodecn.p02378.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * 2378. 选择边来最大化树的得分
@@ -64,24 +70,62 @@ public class Solution {
     public long maxScore(int[][] edges) {
         // edges[i] = [pari, weighti] 转换成临界矩阵模式
         List<Map<Integer, Integer>> graph = new ArrayList<>();
+        // n == edges.length
+        int n = edges.length;
+        for (int i = 0; i < n; i++) {
+            graph.add(new HashMap<>());
+        }
+
         // 其中的每个map key 是 临界的边对应的点 value 是临界的消耗
         for (int i = 0; i < edges.length; i++) {
-            int parent = i;
-            int child = edges[i][0];
+            int child = i;
+            int parent = edges[i][0];
             int value = edges[i][1];
-
-            if (child == -1) {
+            if (parent == -1) {
                 continue;
             }
-
             // 插入graph中
-            if (!graph.contains(parent)) {
-            }
-
+            graph.get(parent).put(child, value);
         }
         // 从根开始0 往下找
-//        return getMaxScore(0)[1];
-        return -1;
+        return getMaxScore(0, graph)[1];
+    }
+
+    /**
+     * 返回值 0表示用了这个点能获得的最大值， 1是不用这个点能获得的最大值 ，这个点作为终点
+     * @param node  从哪个节点开始找
+     * @return
+     */
+    private long[] getMaxScore(int node, List<Map<Integer, Integer>> graph) {
+        // 从 node 开始 遍历每个 child 找到其得分 记录2个得分 1选择node 作为 终点的得分 不选择的得分 '
+        long choose = 0;
+        long ignore = 0;
+        Map<Integer, Integer> childrenMap = graph.get(node);
+
+        PriorityQueue<Long> priorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int next : childrenMap.keySet()) {
+            // 不选当前node 那么孩子都能选
+            long[] nextMaxScore = getMaxScore(next, graph);
+            // 选择了 后续都跳过 ，不选择，后续要选一个最大的
+            choose += nextMaxScore[1];
+            // 不选这个的话 其他next的都不能选临街的，选不临街的 ，同时这个点需要选择一下
+            ignore += nextMaxScore[1];
+            // 如果选择 node -》 next 点 那么 得选一个最大的
+            priorityQueue.add(graph.get(node).get(next) + nextMaxScore[0] - nextMaxScore[1]);
+        }
+        if (!priorityQueue.isEmpty()) {
+            // 如果已经是小雨0的 那就不选了
+            ignore += Math.max(0, priorityQueue.peek());
+        }
+        return new long[] {choose, ignore};
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[-1,-1],[0,5],[0,10],[2,6],[2,4]]");
+        long l = solution.maxScore(edges);
+        System.out.println(l);
+        Assert.assertEquals(11, l);
     }
 
 }
