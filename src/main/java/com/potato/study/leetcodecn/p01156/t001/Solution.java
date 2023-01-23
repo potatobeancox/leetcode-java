@@ -61,35 +61,83 @@ public class Solution {
         }
         // 遍历 text 使用数组 windowCount 记录窗口内部的出现次数
         int[] windowCount = new int[26];
-        // window 中最多的元素个数
-        int maxCount = 0;
-        int maxCharIndex = 0;
-        // window 中 加上一次交换之后的个数
-        int maxWin = 0;
-        // 如果当前记录长度已经大于 最大长度了，说明当前出现次数就是 最大长度 修改最大长度 最大长度 + 1等
-        int startIndex = 0;
+        // 当前包含的左边界
+        int leftIndex = 0;
+        // 当前内部包含的字母的种类数，每次移动窗口的时候 要更新
+        int windowCharKind = 0;
+        int res = 0;
         for (int i = 0; i < text.length(); i++) {
             char ch = chars[i];
             int charIndex = ch - 'a';
+            // 判断种类数量是否需要改变
+            if (windowCount[charIndex] == 0) {
+                windowCharKind++;
+            }
             // 窗口内 计数
             windowCount[charIndex]++;
-            // 如果当前窗口长度 比最大窗口 + 1还要大 说明 需要移动遍 一次
-            if (windowCount[charIndex] > maxCount) {
-                // 当前计数超过窗口最大大小，需要扩大窗口
-                maxCount = windowCount[charIndex];
-                maxWin = maxCount + 1;
-                maxCharIndex = charIndex;
+            // 判断一下当前窗口是否需要移动左边 种类是小于等于2中
+            while (windowCharKind > 2 && leftIndex <= i) {
+                // 因为种类数需要移动left
+                int removeCharIndex = chars[leftIndex] - 'a';
+                windowCount[removeCharIndex]--;
+                if (windowCount[removeCharIndex] == 0) {
+                    windowCharKind--;
+                }
+                leftIndex++;
+            }
+            // 第二个判断 当前最多的字母有多少个
+            int mostCharIndex = getMostCharIndex(windowCount);
+            // 中间有大于2个的空缺
+            while (windowCount[mostCharIndex] < i - leftIndex + 1 - 1) {
+                int removeCharIndex = chars[leftIndex] - 'a';
+                windowCount[removeCharIndex]--;
+                leftIndex++;
+                // 种类数也要修改
+                if (windowCount[removeCharIndex] == 0) {
+                    windowCharKind--;
+                }
+                mostCharIndex = getMostCharIndex(windowCount);
+            }
+            // 只有2中字符 且其中一种大于等于 窗口长度-1
+            if (windowCharKind == 1) {
+                // 只有一种字母
+                res = Math.max(res, i - leftIndex + 1);
             } else {
-                // 窗口是否需要缩小 中间有没啥用的字符
-                if (i - startIndex + 1 > maxWin) {
-                    windowCount[chars[startIndex] - 'a']--;
-                    startIndex++;
+                // 2种类字母
+                if (windowCount[mostCharIndex] < totalCount[mostCharIndex]) {
+                    res = Math.max(res, i - leftIndex + 1);
+                } else {
+                    // 看看有没有可能还有一个
+                    if (windowCount[mostCharIndex] * 2 == i - leftIndex + 1) {
+                        // 找到另外一个
+                        for (int j = 0; j < 26; j++) {
+                            if (windowCount[j] == windowCount[mostCharIndex] && mostCharIndex != j) {
+                                if (windowCount[j] < totalCount[j]) {
+                                    res = Math.max(res, i - leftIndex + 1);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    res = Math.max(res, i - leftIndex + 1 - 1);
                 }
             }
         }
         // 返回最大字符出现次数 和 maxCount + 1 的最小值 解决全是aaa的问题
-        return Math.min(maxWin, totalCount[maxCharIndex]);
+        return res;
     }
+
+    private int getMostCharIndex(int[] windowCount) {
+        int maxIndex = 0;
+        for (int i = 0; i < 26; i++) {
+            if (windowCount[i] > windowCount[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
+
+
 
 
     public static void main(String[] args) {
@@ -113,6 +161,12 @@ public class Solution {
         i = solution.maxRepOpt1(text);
         System.out.println(i);
         Assert.assertEquals(4, i);
+
+
+        text = "cabc";
+        i = solution.maxRepOpt1(text);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 
 }
