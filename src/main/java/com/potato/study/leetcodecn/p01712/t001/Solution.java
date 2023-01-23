@@ -51,7 +51,50 @@ import org.junit.Assert;
 public class Solution {
 
     public int waysToSplit(int[] nums) {
+        // 先求一个前缀和 带0的那种
+        int n = nums.length;
+        int[] prefix = new int[n+1];
+        for (int i = 1; i <= n; i++) {
+            prefix[i] = prefix[i-1] + nums[i-1];
+        }
+        // 确定 i位置 第一段截止为止 再求 jk 中间结尾最小位置 和最大位置
+        int j = 2;
+        int k = 1;
+        long res = 0;
+        int mod = 1_000_000_000 + 7;
+        for (int i = 1; i <= n && i < n- 1 && prefix[i] * 3 <= prefix[n]; i++) {
+            // mid 开始位置 和 mid 结束位置 i包括 都在left
+            long left = prefix[i];
+            j = Math.max(i+1, j);
+            while (j+1 < n && prefix[j] - prefix[i] < left) {
+                j++;
+            }
+            while (k+1 < n && prefix[k+1] - prefix[i] <= prefix[n] - prefix[k+1]) {
+                k++;
+            }
+            // mid 结束为止 从最早是j 最晚是 k 中间有多少 两边都得包括
+            long count = (long)k - j + 1;
+            res += count;
+            res %= mod;
+        }
+        return (int)(res % mod);
+    }
 
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                1,1,1
+        };
+        int i = solution.waysToSplit(nums);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+        nums = new int[] {
+                1,2,2,2,5,0
+        };
+        i = solution.waysToSplit(nums);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 }
