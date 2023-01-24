@@ -55,6 +55,43 @@ import com.potato.study.leetcode.util.TreeNodeUtil;
  */
 public class Solution {
 
+    // 预处理一堆数据
+    static final int mod = 1_000_000_000 + 7;
+    // 1 <= pressedKeys.length <= 105
+    static final int size = 1_000_00 + 1;
+    // 除了79 之前的可能
+    static final long[] f = new long[size];
+    // 79 的可能
+    static final long[] g = new long[size];
+
+    // 初始化数据
+    static {
+        f[0] = 1;
+        g[0] = 1;
+
+        f[1] = 1;
+        g[1] = 1;
+
+
+        f[2] = 2;
+        g[2] = 2;
+
+
+        f[3] = 4;
+        g[3] = 4;
+
+
+        for (int i = 4; i < size; i++) {
+            f[i] = f[i-1] + f[i-2] + f[i-3];
+            f[i] %= mod;
+            g[i] = g[i-1] + g[i-2] + g[i-3] + g[i-4];
+            g[i] %= mod;
+        }
+
+    }
+
+
+
 
     /**
      * https://leetcode.cn/problems/count-number-of-texts/solution/dao-ge-shua-ti-by-lcfgrn-z2cp/
@@ -62,35 +99,22 @@ public class Solution {
      * @return
      */
     public int countTexts(String pressedKeys) {
-        // dp i 以第i 个字符为结尾的可能数量
-        int n = pressedKeys.length();
-        int[] dp = new int[n];
-        dp[0] = 1;
-        char[] chars = pressedKeys.toCharArray();
-        int mod = 1_000_000_000 + 7;
-        for (int i = 1; i < pressedKeys.length(); i++) {
-            if (chars[i] != chars[i-1]) {
-                dp[i] = dp[i-1];
-                continue;
-            }
-            // i-1 == i
-            if (i == 1) {
-                dp[i] = dp[i-1] + 1;
-                dp[i] %= mod;
-                continue;
-            }
-            if (i == 2) {
-                if (chars[i-2] != chars[i]) {
-                    dp[i] = dp[i-1] + dp[i-2];
+        // 目前已经连续的个数
+        int count = 0;
+        long ans = 1;
+        for (int i = 0; i < pressedKeys.length(); i++) {
+            char ch = pressedKeys.charAt(i);
+            count++;
+            if (i == pressedKeys.length() - 1 || ch != pressedKeys.charAt(i+1)) {
+                if (ch == '7' || ch == '9') {
+                    ans *= g[count];
                 } else {
-                    // 都相同
+                    ans *= f[count];
                 }
+                ans %= mod;
+                count = 0;
             }
-
-
         }
-        // 如果是 非 79 dpi = dp i-1 + dpi-2 + dpi-3
-        // 如果是 79 dpi = dp i-1 + dpi-2 + dpi-3 + dp i-4
-        return dp[n-1];
+        return (int)(ans % mod);
     }
 }
