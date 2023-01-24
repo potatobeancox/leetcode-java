@@ -66,7 +66,7 @@ public class Solution {
         int firstNot9Index = -1;
         int firstNot1Index = -1;
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] != '1' && firstNot1Index == -1) {
+            if (chars[i] != '1' && firstNot1Index == -1 && chars[i] != '0') {
                 firstNot1Index = i;
             }
 
@@ -112,5 +112,10 @@ public class Solution {
         i= solution.maxDiff(123456);
         System.out.println(i);
         Assert.assertEquals(820000, i);
+
+
+        i= solution.maxDiff(1101057);
+        System.out.println(i);
+        Assert.assertEquals(8808050, i);
     }
 }
