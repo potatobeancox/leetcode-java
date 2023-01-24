@@ -1,5 +1,13 @@
 package com.potato.study.leetcodecn.p02343.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * 2343. 裁剪数字后查询第 K 小的数字
  *
@@ -58,7 +66,39 @@ public class Solution {
 
 
     public int[] smallestTrimmedNumbers(String[] nums, int[][] queries) {
-        return null;
+        int n = queries.length;
+        // 存的是下标我擦
+        int[] res = new int[n];
+        for (int i = 0; i < queries.length; i++) {
+            // queries[i] = [ki, trimi]
+            int[] query = queries[i];
+            int k = query[0];
+            int trim = query[1];
+            String[] sub = new String[nums.length];
+            List<Integer> indexes = new ArrayList<>();
+            for (int j = 0; j < nums.length; j++) {
+                indexes.add(j);
+            }
+            for (int j = 0; j < nums.length; j++) {
+                sub[j] = nums[j].substring(nums[0].length() - trim);
+            }
+            // 排序 按照字母升序就行
+            Collections.sort(indexes, (o1, o2) -> {
+                return sub[o1].compareTo(sub[o2]);
+            });
+            res[i] = indexes.get(k-1);
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] nums = new String[] {
+                "102","473","251","814"
+        };
+        int[][] queries = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,1],[2,3],[4,2],[1,2]]");
+        int[] ints = solution.smallestTrimmedNumbers(nums, queries);
+        System.out.println(Arrays.toString(ints));
     }
 
 
