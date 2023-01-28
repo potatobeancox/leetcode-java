@@ -1,7 +1,11 @@
 package com.potato.study.leetcodecn.p01348.t001;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 1348. 推文计数
@@ -60,16 +64,28 @@ import java.util.List;
  */
 public class TweetCounts {
 
-    public TweetCounts() {
+    private Map<String, TreeMap<Integer, Integer>> nameCountMap;
 
+    public TweetCounts() {
+        this.nameCountMap = new HashMap<>();
     }
 
+    /**
+     *
+     * @param tweetName
+     * @param time
+     */
     public void recordTweet(String tweetName, int time) {
-
+        nameCountMap.putIfAbsent(tweetName, new TreeMap<>());
+        Map<Integer, Integer> countMap = nameCountMap.get(tweetName);
+        countMap.put(time, countMap.getOrDefault(time, 0) + 1);
     }
 
     public List<Integer> getTweetCountsPerFrequency(String freq, String tweetName, int startTime, int endTime) {
+        // 1. 获取 tweetName 对应的 map
 
+
+        // 2. 将 startTime endTime 转换成 freq 时间小段 的分割段
         return null;
     }
 }
