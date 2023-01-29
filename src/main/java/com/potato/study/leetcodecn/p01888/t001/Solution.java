@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01888.t001;
 
+import org.junit.Assert;
+
 /**
  * 1888. 使二进制字符串字符交替的最少反转次数
  *
@@ -45,8 +47,76 @@ package com.potato.study.leetcodecn.p01888.t001;
 public class Solution {
 
     public int minFlips(String s) {
+        // 01010 101010 两种字符串构造
+        int n = s.length();
+        // 0 开头
+        StringBuilder builder1 = new StringBuilder();
+        // 1 开头
+        StringBuilder builder2 = new StringBuilder();
+        // 用数组 分别记录并统计 每个位置 的差
+        for (int i = 0; i < n; i++) {
+            if (i % 2 == 0) {
+                builder1.append('0');
+                builder2.append('1');
+            } else {
+                builder1.append('1');
+                builder2.append('0');
+            }
+        }
+        // 偶数 直接和翻转一次的 + 1 比 奇数 的话 按照每个位置翻转 + 之前位置的个数进行比较计算最小值
+        int[] misCount1 = new int[n];
+        int[] misCount2 = new int[n];
+        for (int i = 0; i < n; i++) {
+            if (i > 0) {
+                misCount1[i] += misCount1[i-1];
+                misCount2[i] += misCount2[i-1];
+            }
+            if (s.charAt(i) != builder1.charAt(i)) {
+                misCount1[i]++;
+            }
+            if (s.charAt(i) != builder2.charAt(i)) {
+                misCount2[i]++;
+            }
+        }
+        int min = Math.min(misCount1[n-1], misCount2[n-1]);
+        if (n % 2 == 0) {
+            return min;
+        }
+        // 奇数还需要选择 旋转点旋转 类型2的次数
+        for (int i = 0; i < n; i++) {
+            int current = misCount1[i] + misCount2[n-1] - misCount2[i];
+            min = Math.min(min, current);
 
-        return -1;
+            current = misCount2[i] + misCount1[n-1] - misCount1[i];
+            min = Math.min(min, current);
+        }
+        return min;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "01001001101";
+        int i = solution.minFlips(s);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        s = "111000";
+        i = solution.minFlips(s);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
+
+
+        s = "010";
+        i = solution.minFlips(s);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
+
+
+        s = "1110";
+        i = solution.minFlips(s);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
 
 
