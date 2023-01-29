@@ -1,10 +1,7 @@
 package com.potato.study.leetcodecn.p01348.t001;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -82,10 +79,55 @@ public class TweetCounts {
     }
 
     public List<Integer> getTweetCountsPerFrequency(String freq, String tweetName, int startTime, int endTime) {
+        //  、 “hour” 或 “day”
+        int interval = 0;
+        if ("minute".equals(freq)) {
+            interval = 60;
+        } else if ("hour".equals(freq)) {
+            interval = 3600;
+        } else {
+            interval = 24 * 3600;
+        }
+        // 针对每个开始结束时间生成 对应的list int[]
+        List<int[]> timeList = new ArrayList<>();
+        int start = startTime;
+        while (start <= endTime) {
+            int end = Math.min(start + interval - 1, endTime);
+            timeList.add(new int[] {start, end});
+            start = end + 1;
+        }
         // 1. 获取 tweetName 对应的 map
+        TreeMap<Integer, Integer> treeMap = nameCountMap.get(tweetName);
+        List<Integer> res = new ArrayList<>();
+        for (int[] timeInterval: timeList) {
+            int s = timeInterval[0];
+            int e = timeInterval[1];
+            Map.Entry<Integer, Integer> entry = treeMap.ceilingEntry(s);
+            int count = 0;
+            while (entry != null) {
+                Integer time = entry.getKey();
+                Integer eachCount = entry.getValue();
 
-
+                if (time <= e) {
+                    count += eachCount;
+                    entry = treeMap.higherEntry(time);
+                } else {
+                    break;
+                }
+            }
+            res.add(count);
+        }
         // 2. 将 startTime endTime 转换成 freq 时间小段 的分割段
-        return null;
+        return res;
+    }
+
+    public static void main(String[] args) {
+        TweetCounts tweetCounts = new TweetCounts();
+
+        tweetCounts.recordTweet("tweet3",0);
+        tweetCounts.recordTweet("tweet3",60);
+        tweetCounts.recordTweet("tweet3",10);
+
+        tweetCounts.getTweetCountsPerFrequency("minute","tweet3",0,60);
     }
 }
