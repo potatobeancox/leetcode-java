@@ -1,6 +1,8 @@
 package com.potato.study.leetcodecn.p01234.t001;
 
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,51 +82,64 @@ public class Solution {
             }
         }
         int limit = s.length() / 4;
-        int[] miss = new int[4];
-        for (int i = 0; i < 4; i++) {
-            if (count[i] > limit) {
-                miss[i] = count[i] - limit;
-            }
-        }
-        // 滑动窗口记录最小值
-        if (checkMiss(miss)) {
+        // 统计一下 qwer 跟平均分 差多少个
+        int q = Math.max(count[0] - limit, 0);
+        int w = Math.max(count[1] - limit, 0);
+        int e = Math.max(count[2] - limit, 0);
+        int r = Math.max(count[3] - limit, 0);
+
+        if (q == 0 && w == 0 && e == 0 && r == 0) {
             return 0;
         }
-        int minLen = s.length();
+
+        // 统计窗口里
+        int wq = 0;
+        int ww = 0;
+        int we = 0;
+        int wr = 0;
         int left = 0;
+        int min = s.length();
         for (int right = 0; right < s.length(); right++) {
             char ch = chars[right];
             if (ch == 'Q') {
-                miss[0]--;
+                wq++;
             } else if (ch == 'W') {
-                miss[1]--;
+                ww++;
             } else if (ch == 'E') {
-                miss[2]--;
+                we++;
             } else if (ch == 'R') {
-                miss[3]--;
+                wr++;
             }
-            if (checkMiss(miss)) {
-                minLen = Math.min(minLen, right - left + 1);
-                ch = chars[left];
-                if (ch == 'Q') {
-                    miss[0]++;
-                } else if (ch == 'W') {
-                    miss[1]++;
-                } else if (ch == 'E') {
-                    miss[2]++;
-                } else if (ch == 'R') {
-                    miss[3]++;
+            while (left <= right
+                    && wq >= q && ww >= w && we >= e && wr >= r) {
+                min = Math.min(min, right - left + 1);
+
+                char cc = chars[left];
+                if (cc == 'Q') {
+                    wq--;
+                } else if (cc == 'W') {
+                    ww--;
+                } else if (cc == 'E') {
+                    we--;
+                } else if (cc == 'R') {
+                    wr--;
                 }
                 left++;
             }
+
         }
-        return minLen;
+        return min;
     }
 
-    private boolean checkMiss(int[] miss) {
-        return miss[0] == 0 && miss[1] == 0
-                && miss[2] == 0 && miss[3] == 0;
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "QQWE";
+        int i = solution.balancedString(s);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
+
 
 
 }
