@@ -52,10 +52,94 @@ package com.potato.study.leetcodecn.p01538.t001;
  */
 public class Solution {
 
+    /**
+     * https://leetcode.cn/problems/guess-the-majority-in-a-hidden-array/solution/cpython3java-1bian-li-on-by-hanxin_hanxi-o3as/
+     * @param reader
+     * @return
+     */
     public int guessMajority(ArrayReader reader) {
+        // 0123 获取多少判断
+        int res3 = reader.query(0, 1, 2, 3);
+        // 从 4开始到 n 看看 有多少个根3 一致的数字
+        int n = reader.length();
+        // 根3 一样的个数
+        int count3 = 1;
+        int otherCount = 0;
+        int otherNum = 0;
+        boolean is3Diff4 =  false;
+        for (int i = 4; i < n; i++) {
+            int res = reader.query(0, 1, 2, i);
+            if (res == res3) {
+                count3++;
+            } else {
+                // 如果不一样怎么办 计数么
+                otherCount++;
+                otherNum = i;
+                if (i == 4) {
+                    is3Diff4 = true;
+                }
+            }
+        }
+        // 统计 0123  0和4一样 处理0
+        if (reader.query( 1, 2, 3, 4) == res3) {
+            // 3 和4 不同 0和3不一样
+            if (is3Diff4) {
+                otherCount++;
+            } else {
+                // 34 一样
+                count3++;
+            }
+        } else {
+            if (is3Diff4) {
+                count3++;
+            } else {
+                otherCount++;
+            }
+        }
+        // 处理 1 0123   1和4 一样
+        if (reader.query(0,  2, 3, 4) == res3) {
+            // 3 和4 不同 1和3不一样
+            if (is3Diff4) {
+                otherCount++;
+            } else {
+                // 34 一样
+                count3++;
+            }
+        } else {
+            if (is3Diff4) {
+                count3++;
+            } else {
+                otherCount++;
+            }
+        }
+        // 处理 2
+        if (reader.query(0, 1,  3, 4) == res3) {
+            if (is3Diff4) {
+                otherCount++;
+            } else {
+                // 34 一样
+                count3++;
+            }
+        } else {
+            if (is3Diff4) {
+                count3++;
+            } else {
+                otherCount++;
+            }
+        }
 
-        return -1;
+        if (count3 > n/2) {
+            return 3;
+        } else {
+            // 另一个根3不一样 那么不是 0就是 1
+            if (otherCount > n / 2) {
+                return otherNum;
+            } else {
+                return -1;
+            }
+        }
     }
+
 }
 
 interface ArrayReader {
