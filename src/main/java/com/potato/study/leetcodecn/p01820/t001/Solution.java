@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01820.t001;
 
+import java.util.Arrays;
+
 /**
  * 1820. 最多邀请的个数
  *
@@ -54,11 +56,45 @@ public class Solution {
         int boyCount = grid.length;
         int girlCount = grid[0].length;
         // 记录当前男孩子的女伴 -1为还没有找到
-        int[] match = new int[boyCount];
+        int[] girlMatched = new int[girlCount];
+        Arrays.fill(girlMatched, -1);
+        int inviteCount = 0;
         for (int i = 0; i < boyCount; i++) {
-            // 第i个男孩 找舞伴
+            boolean[] used = new boolean[girlCount];
+            // 第i个男孩 找舞伴 假设女生都没有舞伴
+            int boy = i;
+            boolean canInvite = invite(grid, i, used, girlMatched);
+            if (canInvite) {
+                inviteCount++;
+            }
         }
+        return inviteCount;
+    }
 
-        return -1;
+    private boolean invite(int[][] grid, int boyIndex, boolean[] used, int[] girlMatched) {
+        // 都能邀请谁
+        int[] girls = grid[boyIndex];
+        for (int i = 0; i < girls.length; i++) {
+            // 这个boy 不能邀请
+            if (girls[i] == 0) {
+                continue;
+            }
+            if (used[i]) {
+                continue;
+            }
+            used[i] = true;
+            // 这个女孩还没被邀请过 就用这个了
+            if (girlMatched[i] == -1) {
+                girlMatched[i] = boyIndex;
+                return true;
+            }
+            // 这个女孩被邀请了 让邀请的那个换个女孩
+            boolean canInvite = invite(grid, girlMatched[i], used, girlMatched);
+            if (canInvite) {
+                girlMatched[i] = boyIndex;
+                return true;
+            }
+        }
+        return false;
     }
 }
