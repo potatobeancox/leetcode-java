@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p02471.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
+import org.junit.Assert;
 
 import java.util.*;
 
@@ -74,6 +75,13 @@ public class Solution {
             for (int i = 0; i < layerSize; i++) {
                 TreeNode poll = queue.poll();
                 numArr[i] = poll.val;
+                // 孩子
+                if (poll.left != null) {
+                    queue.add(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.add(poll.right);
+                }
             }
             operationCount += getCount(numArr);
         }
@@ -113,6 +121,12 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution solution = new Solution();
-//        solution.minimumOperations();
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(3);
+        root.right = new TreeNode(2);
+
+        int i = solution.minimumOperations(root);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
     }
 }
