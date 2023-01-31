@@ -3,6 +3,11 @@ package com.potato.study.leetcodecn.other.Interview.p0004.p0001;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * 面试题 04.01. 节点间通路
  *
@@ -33,44 +38,39 @@ public class Solution {
 
     public boolean findWhetherExistsPath(int n, int[][] graph, int start, int target) {
         // 面试题04.01
-        UnionFind unionFind = new UnionFind(n);
-        for (int i = 0; i < graph.length; i++) {
-            int from = graph[i][0];
-            int to = graph[i][1];
-
-            unionFind.union(from, to);
+        List<Integer>[] grid = new List[n];
+        for (int i = 0; i < n; i++) {
+            grid[i] = new ArrayList<>();
         }
-
-        int p1 = unionFind.find(start);
-        int p2 = unionFind.find(target);
-        return p1 == p2;
+        // 遍历 graph 生成每个点的临接点
+        for (int[] g : graph) {
+            int from = g[0];
+            int to = g[1];
+            Set<Integer> set = new HashSet<>(grid[from]);
+            if (set.contains(to)) {
+                continue;
+            }
+            grid[from].add(to);
+        }
+        boolean[] visit = new boolean[n];
+        return dfs(grid, start, target, visit);
     }
 
-    class UnionFind {
-        private int[] parent;
-
-        public UnionFind(int n) {
-            this.parent = new int[n];
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
+    private boolean dfs(List<Integer>[] grid, int start, int target, boolean[] visit) {
+        if (start == target) {
+            return true;
+        }
+        List<Integer> nextList = grid[start];
+        for (int next : nextList) {
+            if (visit[next]) {
+                continue;
+            }
+            visit[next] = true;
+            boolean dfs = dfs(grid, next, target, visit);
+            if (dfs) {
+                return true;
             }
         }
-
-        public void union(int target1, int target2) {
-            int p1 = find(target1);
-            int p2 = find(target2);
-            if (p1 == p2) {
-                return;
-            }
-            parent[p1] = p2;
-        }
-
-        public int find(int target) {
-            while (parent[target] != target) {
-                target = parent[target];
-            }
-            return target;
-        }
-
+        return false;
     }
 }
