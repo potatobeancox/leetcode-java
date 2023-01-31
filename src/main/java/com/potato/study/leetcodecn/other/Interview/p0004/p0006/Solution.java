@@ -44,7 +44,7 @@ public class Solution {
     private TreeNode prev;
     /**
      * 中序 遍历 找到下一个节点
-     *
+     * 从 root 这个树中找到下一个节点
      * @param root
      * @param p
      * @return
@@ -53,18 +53,17 @@ public class Solution {
         if (root == null) {
             return null;
         }
-        this.prev = null;
-        if (root == p) {
-            return prev;
+        TreeNode leftResult = inorderSuccessor(root.left, p);
+        if (leftResult != null) {
+            return leftResult;
         }
-        if (root.left != null) {
-            inorderSuccessor(root.left, p);
+        // visit 修改 prev 修改之前判断一下
+        if (prev == p) {
+            return root;
         }
-        prev = root;
-        if (root.right != null) {
-            inorderSuccessor(root.right, p);
-        }
-        return null;
+        this.prev = root;
+        // 往有孩子找一找
+        return inorderSuccessor(root.right, p);
     }
 
 
