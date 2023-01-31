@@ -50,23 +50,34 @@ public class Solution {
 
 
     public boolean differByOne(String[] dict) {
-        // 放入 Set 中
-        Set<String> set = new HashSet<>();
-        // 遍历 每个 dict 对于每个单词 遍历每个字母 使用 a-z 替换 看看 在不在set里边
-        for (String word : dict) {
-            for (int i = 0; i < word.length(); i++) {
-                StringBuilder builder = new StringBuilder(word);
-                builder.setCharAt(i, '*');
-                // 每个位置单词替换
-                String target = builder.toString();
-                if (set.contains(target)) {
+        int n = dict.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i+1; j < n; j++) {
+                if (diffOne(dict[i], dict[j])) {
                     return true;
                 }
-                set.add(target);
             }
         }
         return false;
     }
+
+    private boolean diffOne(String s1, String s2) {
+        if (s1.length() != s2.length()) {
+            return false;
+        }
+        int diffCount = 0;
+        int n = s1.length();
+        for (int i = 0; i < n; i++) {
+            if (s1.charAt(i) != s2.charAt(i)) {
+                diffCount++;
+            }
+            if (diffCount >= 2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public static void main(String[] args) {
         Solution solution = new Solution();
