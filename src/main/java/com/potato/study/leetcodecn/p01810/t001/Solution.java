@@ -1,7 +1,6 @@
 package com.potato.study.leetcodecn.p01810.t001;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.Assert;
 
@@ -85,73 +84,94 @@ import org.junit.Assert;
  */
 public class Solution {
 
+
+    private int[][] grid;
+    private int endX;
+    private int endY;
+
+
+    /**
+     *
+     * @param master
+     * @return
+     */
     public int findShortestPath(GridMaster master) {
-        Set<String> visitStr = new HashSet<>();
-        visitStr.add(0 + "#" + 0);
-        int shortestPath = findShortestPath(master, 0, 0, 0, visitStr);
-        return shortestPath;
-    }
-
-
-    private int findShortestPath(GridMaster master, int currentCost, int i, int j, Set<String> visitStr) {
-        // 终止条件 如果已经到了 终点 直接返回 会出现环怎么处理
-        if (master.isTarget()) {
-            return currentCost;
+        // 先使用一个矩阵记录 200 * 200 的每个位置的消耗
+        this.grid = new int[201][201];
+        for (int i = 0; i < grid.length; i++) {
+            Arrays.fill(grid[i], -1);
         }
-        // 没有到终点 往各个方向尝试 都不行返回 -1
-        char[] dir = new char[]{
-                'U','D','L','R'
+
+        char[] dir = new char[] {
+                'U','L', 'D', 'R'
         };
-        int[][] posDir = new int[][] {
+        int[][] direction = new int[][] {
+                {0, 1},
                 {-1, 0},
-                {1, 0},
                 {0, -1},
-                {0, 1}
+                {1, 0}
         };
-        int minCost = -1;
-        for (int k = 0; k < dir.length; k++) {
-            // 计算最小值
-            int di = i + posDir[k][0];
-            int dj = j + posDir[k][1];
-            String key = di + "#" + dj;
-            if (visitStr.contains(key)) {
-                continue;
-            }
-            if (!master.canMove(dir[k])) {
-                continue;
-            }
-            visitStr.add(key);
-            int thisCost = -1;
-            int moveCost = master.move(dir[k]);
-            if (moveCost != -1) {
-                int shortestPath = findShortestPath(master, currentCost + moveCost, di, dj, visitStr);
-                if (shortestPath != -1) {
-                    thisCost = currentCost + moveCost + shortestPath;
-                }
-                if (thisCost != -1) {
-                    if (minCost == -1) {
-                        minCost = thisCost;
-                    } else {
-                        minCost = Math.min(thisCost, minCost);
-                    }
-                }
-                // 移动回去
-                if (dir[k] == 'U') {
-                    master.move('D');
-                } else if (dir[k] == 'D') {
-                    master.move('U');
-                } else if (dir[k] == 'L') {
-                    master.move('R');
-                } else {
-                    // dir[k] == 'R'
-                    master.move('L');
-                }
-            }
-            visitStr.remove(key);
+        // 生成矩阵
+        dfs(100, 100, dir, direction, master);
+        // 再从开始位置 bfs 优先找消耗最少的点进行bfs [2]记录消耗
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o[2]));
+        priorityQueue.add(new int[]{100, 100, 0});
 
+        while (!priorityQueue.isEmpty()) {
+            int[] poll = priorityQueue.poll();
+            int cost = poll[2];
+            int x = poll[0];
+            int y = poll[1];
+
+            // 四个方向找
+            for (int i = 0; i < 4; i++) {
+                int dx = x + direction[i][0];
+                int dy = y + direction[i][1];
+
+                if (dx < 0 || dx >= 200 || dy < 0 || dy >= 200 || grid[dx][dy] <= 0) {
+                    continue;
+                }
+                int currentCost = cost + grid[dx][dy];
+                if (dx == endX && dy == endY) {
+                    return currentCost;
+                }
+                grid[dx][dy] = -1;
+                priorityQueue.add(new int[] {dx, dy, currentCost});
+            }
         }
-        return minCost;
+        return -1;
     }
+
+    private void dfs(int x, int y, char[] dir, int[][] direction, GridMaster master) {
+        // 往四个方向找
+        for (int i = 0; i < 4; i++) {
+            boolean canMove = master.canMove(dir[i]);
+            if (!canMove) {
+                continue;
+            }
+            int dx = x + direction[i][0];
+            int dy = y + direction[i][1];
+            if (dx < 0 || dx >= 200 || dy < 0 || dy >= 200 || grid[dx][dy] != -1) {
+                continue;
+            }
+            // 移动
+            int move = master.move(dir[i]);
+            // 记录移动到这个点需要话费多少
+            grid[dx][dy] = move;
+
+            // 是否已经到终点了
+            if (master.isTarget()) {
+                this.endX = dx;
+                this.endY = dy;
+            }
+
+            dfs(dx, dy, dir, direction, master);
+            // 移动回来
+            master.move(dir[(i + 2) % 4]);
+        }
+    }
+
+
 }
 
 class GridMaster {
