@@ -101,14 +101,16 @@
 -- 计算每个队伍的总分数变化
 
 
-select
+SELECT
+  tt.team_id,
+  tt.name,
+  cast(tt.rank_before as SIGNED) - cast(tt.rank_after as SIGNED) as rank_diff
+FROM (
+  SELECT
     TeamPoints.team_id,
     TeamPoints.name,
-    TeamPoints.points + t.sum_points_change as points
---     ROW_NUMBER() as rank
- from TeamPoints left join (
-    select team_id, sum(points_change) as sum_points_change
-        from PointsChange
-        group by team_id
-) as t using(team_id)
-order by points desc
+    row_number() over(order by TeamPoints.points DESC , TeamPoints.name asc) as rank_before,
+    row_number() over(order by TeamPoints.points + PointsChange.points_change DESC , TeamPoints.name asc) as rank_after
+  FROM TeamPoints LEFT JOIN PointsChange using(team_id)
+) as tt
+
