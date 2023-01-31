@@ -67,7 +67,7 @@ public class Solution {
         for (int i = 1; i < piles.length; i++) {
             res ^= piles[i];
         }
-        return res == 0;
+        return res != 0;
     }
 
 }
