@@ -44,44 +44,29 @@ public class Solution {
 
     public int minFlipsMonoIncr(String s) {
         // 第一个1 之后 0的个数 和 1的个数 （包括第一个1）
-        int index = 0;
         char[] chars = s.toCharArray();
-        int[] oneCounts = new int[s.length()];
-        for (int i = 0; i < s.length(); i++) {
-            if (chars[i] == '1') {
-                if (i == 0) {
-                    oneCounts[i] = 1;
-                } else {
-                    oneCounts[i] = oneCounts[i-1] + 1;
-                }
+        // 将1反转成0的个数 i位置就反转
+        int n = s.length();
+        int[] oneCounts = new int[n+1];
+        for (int i = 1; i <= n; i++) {
+            // 如果 i-1是 1 进行反转
+            if (chars[i-1] == '1') {
+                oneCounts[i] = oneCounts[i-1] + 1;
             } else {
-                if (i == 0) {
-                    oneCounts[i] = 0;
-                } else {
-                    oneCounts[i] = oneCounts[i-1];
-                }
+                oneCounts[i] = oneCounts[i-1];
             }
         }
         // 第一个1之后 0的个数 和1的个数
-        int[] zeroCounts = new int[s.length()];
-        for (int i = s.length() - 1; i >= 0; i--) {
+        int[] zeroCounts = new int[n+1];
+        for (int i = n-1; i >= 0; i--) {
             if (chars[i] == '0') {
-                if (i == s.length() - 1) {
-                    zeroCounts[i] = 1;
-                } else {
-                    zeroCounts[i] = zeroCounts[i+1] + 1;
-                }
-
+                zeroCounts[i] = zeroCounts[i+1] + 1;
             } else {
-                if (i == s.length() - 1) {
-                    zeroCounts[i] = 0;
-                } else {
-                    zeroCounts[i] = zeroCounts[i+1];
-                }
+                zeroCounts[i] = zeroCounts[i+1];
             }
         }
         int min = Integer.MAX_VALUE;
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i <= n; i++) {
             min = Math.min(min, zeroCounts[i] + oneCounts[i]);
         }
         return min;
