@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01902.t001;
 
+import java.util.TreeMap;
+
 /**
  * 1902. 给定二叉搜索树的插入顺序求深度
  *
@@ -54,8 +56,23 @@ package com.potato.study.leetcodecn.p01902.t001;
  */
 public class Solution {
 
+    // 1902
     public int maxDepthBST(int[] order) {
-        return -1;
+        // TreeMap key 是 节点的值 value 是深度
+        TreeMap<Integer, Integer> depthMap = new TreeMap<>();
+        depthMap.put(0, 0);
+        depthMap.put(Integer.MAX_VALUE, 0);
+        int maxDepth = 0;
+        for (int i = 0; i < order.length; i++) {
+            int node = order[i];
+            Integer higherKey = depthMap.higherKey(node);
+            Integer lowerKey = depthMap.lowerKey(node);
+            // 分别找到 左右
+            int dep = Math.max(depthMap.get(higherKey), depthMap.get(lowerKey));
+            depthMap.put(node, dep + 1);
+            maxDepth = Math.max(maxDepth, dep + 1);
+        }
+        return maxDepth;
     }
 
 }
