@@ -42,7 +42,54 @@ import java.util.Map;
  */
 public class Solution {
 
+    // 1073
     public int[] addNegabinary(int[] arr1, int[] arr2) {
-        return null;
+        // 多申请 4个位置  从后往前计算每个位置
+        int len1 = arr1.length;
+        int len2 = arr2.length;
+
+        int len = 4 + Math.max(len1, len2);
+        int[] arr = new int[len];
+        int index1 = len1 - 1;
+        int index2 = len2 - 1;
+        int index = len - 1;
+
+        while (index1 >= 0 || index2 >= 0) {
+            int num1 = 0;
+            if (index1 >= 0) {
+                num1 = arr1[index1];
+                index1--;
+            }
+            int num2 = 0;
+            if (index2 >= 0) {
+                num2 = arr2[index2];
+                index2--;
+            }
+            arr[index] = num1 + num2 + arr[index];
+            // 有了 num 看看 是否需要进位 第一种 num -1 可以减去1 且 当前num等于 2 使用第一种方式
+            if (arr[index] > 1 && arr[index-1] > 0) {
+                arr[index] = 0;
+                arr[index-1]--;
+            }
+            // 第二种方式
+            if (arr[index] > 1) {
+                arr[index] = 0;
+                arr[index-1]++;
+                arr[index-2]++;
+            }
+            // 如果还是需要 进位 使用第二种方式
+            index--;
+        }
+        // 判断下第一个不为0的位置
+        int notZeroIndex = 0;
+        while (notZeroIndex < arr.length && arr[notZeroIndex] == 0) {
+            notZeroIndex++;
+        }
+        int[] res = new int[arr.length - notZeroIndex];
+        System.arraycopy(arr, notZeroIndex, res, 0, res.length);
+        if (res.length == 0) {
+            return new int[]{0};
+        }
+        return res;
     }
 }
