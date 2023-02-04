@@ -82,3 +82,23 @@
 --  - 没有任何工作段。
 --  - 员工 3 没有工作足够的时长，将被开除。
 
+
+-- 每个员工时间差 MySQL CEIL() 函数返回大于或等于指定数字的最小整数值。CEIL() 函数等同于 CEILING() 函数。
+--  ceil() https://www.cnblogs.com/andy0816/p/17013356.html
+-- 时间差函数---timestampdiff
+-- https://blog.csdn.net/qq_16470351/article/details/103686956
+
+
+select
+    employee_id
+from (
+    select
+        Employees.employee_id,
+        Employees.needed_hours,
+        sum(ceil(timestampdiff(second, Logs.in_time,Logs.out_time)/60)) as work_min
+    from Employees left join Logs
+    on Employees.employee_id = Logs.employee_id
+    group by Employees.employee_id
+) tt where needed_hours * 60 > work_min or work_min is null
+
+-- https://leetcode.cn/problems/employees-with-deductions/solution/xiao-bai-zuo-lian-jie-yi-ci-chu-jie-guo-8p3qv/
