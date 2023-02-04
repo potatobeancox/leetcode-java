@@ -1,11 +1,9 @@
 package com.potato.study.leetcodecn.p01778.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 1778. 未知网格中的最短路径
@@ -82,25 +80,172 @@ import java.util.Queue;
  */
 public class Solution {
 
+    private Set<String> forbidSet;
+    private Set<String> visitSet;
+    private int[] target;
+    private char[] directions;
+    private int[][] dir;
+
+
     public int findShortestPath(GridMaster master) {
-        // 先 dfs 生成 矩阵
-
-
-        // bfs 记录每个位置是否被访问过
-
-
+        // 先 dfs 生成 记录不能通行的点和 终点坐标
+        this.forbidSet = new HashSet<>();
+        this.directions = new char[]{'U','L','D','R'};
+        this.dir = new int[][] {
+                {-1, 0},
+                {0, -1},
+                {1, 0},
+                {0, 1}
+        };
+        // 记录当前已经 visit的
+        this.visitSet = new HashSet<>();
+        visitSet.add(0 + "_" + 0);
+        dfs(master, 0, 0);
+        if (target == null) {
+            return -1;
+        }
+        // bdf 从 00 开始，往4哥方向找 直到找到终点 中间记录已经找过的点
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{0, 0});
+        visitSet.clear();
+        visitSet.add(0 + "_" + 0);
+        int step = 1;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] poll = queue.poll();
+                // 找4个方向那个可以走
+                for (int j = 0; j < 4; j++) {
+                    int[] direc = this.dir[j];
+                    int di = poll[0] + direc[0];
+                    int dj = poll[1] + direc[1];
+                    // 已经访问过
+                    String nextKey = di + "_" + dj;
+                    if (visitSet.contains(nextKey)) {
+                        continue;
+                    }
+                    // 不能访问
+                    if (forbidSet.contains(nextKey)) {
+                        continue;
+                    }
+                    // 终点返回
+                    visitSet.add(nextKey);
+                    if (di == target[0] && dj == target[1]) {
+                        return step;
+                    }
+                    // 不是终点 放入 下一波
+                    queue.add(new int[] {di, dj});
+                }
+            }
+            step++;
+        }
         // 队列中的集合
         return -1;
+    }
+
+    private void dfs(GridMaster master, int i, int j) {
+        // 分别往四个方向找
+        for (int k = 0; k < 4; k++) {
+            char direction = directions[k];
+            int[] dir = this.dir[k];
+
+            int di = i + dir[0];
+            int dj = j + dir[1];
+            // 目的地方向有没有走过
+            String targetKey = di + "_" + dj;
+            if (visitSet.contains(targetKey)) {
+                continue;
+            }
+            if (forbidSet.contains(targetKey)) {
+                continue;
+            }
+            // 往这个方向走 看看 能不能走
+            if (!master.canMove(direction)) {
+                forbidSet.add(targetKey);
+                continue;
+            }
+            // 能走
+            master.move(direction);
+            if (master.isTarget()) {
+                this.target = new int[] {di, dj};
+            }
+            // 往内部dfs
+            visitSet.add(targetKey);
+            dfs(master, di, dj);
+            // 往回走
+            master.move(directions[(k+2) %4]);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,2],[-1,0]]");
+        GridMaster master = new GridMaster(grid, 1, 0);
+        int shortestPath = solution.findShortestPath(master);
+        System.out.println(2);
+        Assert.assertEquals(2, shortestPath);
     }
 }
 
 
 class GridMaster {
-    public boolean canMove(char direction){
-        return false;
+
+    private int[][] grid;
+    private int i;
+    private int j;
+
+
+    public GridMaster(int[][] grid, int i, int j) {
+        this.grid = grid;
+        this.i = i;
+        this.j = j;
     }
-    public void move(char direction) {}
+
+    public boolean canMove(char direction){
+        int di = i;
+        int dj = j;
+        if (direction == 'U') {
+            di--;
+        } else if (direction == 'D') {
+            di++;
+        } else if (direction == 'L') {
+            dj--;
+        } else {
+            dj++;
+        }
+
+        if (di < 0 || di >= grid.length || dj < 0 || dj >= grid[0].length) {
+            return false;
+        }
+        if (grid[di][dj] == 0) {
+            return false;
+        }
+        return true;
+    }
+    public void move(char direction) {
+        int di = i;
+        int dj = j;
+        if (direction == 'U') {
+            di--;
+        } else if (direction == 'D') {
+            di++;
+        } else if (direction == 'L') {
+            dj--;
+        } else {
+            dj++;
+        }
+
+        if (di < 0 || di >= grid.length || dj < 0 || dj >= grid[0].length) {
+            return;
+        }
+        if (grid[di][dj] == 0) {
+            return;
+        }
+        this.i = di;
+        this.j = dj;
+    }
     public boolean isTarget() {
-        return false;
+        return grid[i][j] == 2;
     }
 }
