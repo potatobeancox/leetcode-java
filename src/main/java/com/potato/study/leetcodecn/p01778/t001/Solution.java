@@ -83,11 +83,12 @@ import java.util.Queue;
 public class Solution {
 
     public int findShortestPath(GridMaster master) {
+        // 先 dfs 生成 矩阵
+
+
         // bfs 记录每个位置是否被访问过
-        int x = 0;
-        int y = 0;
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{x, y});
+
+
         // 队列中的集合
         return -1;
     }
