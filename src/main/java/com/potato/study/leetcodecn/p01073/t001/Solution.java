@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p01073.t001;
 
+import org.junit.Assert;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,14 +71,16 @@ public class Solution {
             arr[index] = num1 + num2 + arr[index];
             // 有了 num 看看 是否需要进位 第一种 num -1 可以减去1 且 当前num等于 2 使用第一种方式
             if (arr[index] > 1 && arr[index-1] > 0) {
-                arr[index] = 0;
-                arr[index-1]--;
+                int carry = arr[index] / 2;
+                arr[index] -= carry * 2;
+                arr[index-1] -= carry;
             }
             // 第二种方式
             if (arr[index] > 1) {
-                arr[index] = 0;
-                arr[index-1]++;
-                arr[index-2]++;
+                int carry = arr[index] / 2;
+                arr[index] -= carry * 2;
+                arr[index-1]+=carry;
+                arr[index-2]+=carry;
             }
             // 如果还是需要 进位 使用第二种方式
             index--;
@@ -91,5 +96,18 @@ public class Solution {
             return new int[]{0};
         }
         return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] ints = solution.addNegabinary(new int[] {
+                1,1
+        }, new int[] {
+                1,1
+        });
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+            1,0
+        }, ints);
     }
 }
