@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01950.t001;
 
+import java.util.Stack;
+
 /**
  * 1950. 所有子数组最小值中的最大值
  *
@@ -64,8 +66,38 @@ package com.potato.study.leetcodecn.p01950.t001;
 public class Solution {
 
     public int[] findMaximums(int[] nums) {
-        // 一个单调递增栈
-        return null;
+        // 一个单调递增栈 站内 单调递增 存index 如果栈顶 小于 cur 说明 栈顶才是最小值
+        Stack<Integer> indexStack = new Stack<>();
+        // 如果当前值 小于等于 栈顶 说明 从 栈顶+1 到 curIndex 这个长度的子数组 curIndex 是最小值
+        int[] res = new int[nums.length];
+        for (int i = 0; i <= nums.length; i++) {
+            int currentVal;
+            if (i == nums.length) {
+                currentVal = 0;
+            } else {
+                currentVal = nums[i];
+            }
+            // 当前值是不是最小值
+            while (!indexStack.isEmpty() && nums[indexStack.peek()] >= currentVal) {
+                // indexStack.peek() 在哪个子数组可以作为最小值
+                int targetIndex = indexStack.pop();
+                int left;
+                if (indexStack.isEmpty()) {
+                    left = 0;
+                } else {
+                    left = indexStack.peek() + 1;
+                }
+                int right = i - 1;
+                int len = right - left + 1;
+                res[len-1] = Math.max(res[len - 1], nums[targetIndex]);
+            }
+            indexStack.push(i);
+        }
+        // 从 最长开始找
+        for (int i = nums.length-1; i > 0; i--) {
+            res[i-1] = Math.max(res[i-1], res[i]);
+        }
+        return res;
     }
 
 }
