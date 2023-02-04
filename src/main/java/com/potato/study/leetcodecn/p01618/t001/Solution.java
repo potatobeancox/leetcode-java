@@ -64,9 +64,6 @@ package com.potato.study.leetcodecn.p01618.t001;
  */
 public class Solution {
 
-    public int maxFont(String text, int w, int h, int[] fonts, FontInfo fontInfo) {
-        return -1;
-    }
 
     interface FontInfo {
         // Return the width of char ch when fontSize is used.
@@ -74,4 +71,32 @@ public class Solution {
         // Return Height of any char when fontSize is used.
         public int getHeight(int fontSize);
     }
+
+
+    // 1618
+    public int maxFont(String text, int w, int h, int[] fonts, FontInfo fontInfo) {
+        // fonts 是递增的
+        int left = 0;
+        int right = fonts.length - 1;
+
+        int res = -1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int font = fonts[mid];
+            int eachHeight = fontInfo.getHeight(font);
+            int totalWidth = 0;
+            for (char ch : text.toCharArray()) {
+                totalWidth += fontInfo.getWidth(font, ch);
+            }
+            // 字体大一些试试
+            if (w >= totalWidth && h >= eachHeight) {
+                res = font;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return res;
+    }
+
 }
