@@ -75,3 +75,19 @@
 -- - 14 号乘客在时间 7 到达。
 -- - 3 号车在时间 7 到达，搭载 12、13、14 号乘客。
 
+-- https://leetcode.cn/problems/the-number-of-passengers-in-each-bus-i/solution/xian-qiu-chu-mei-liang-che-ji-qi-qian-ch-w3lq/
+select
+    t.bus_id,
+    t.passenger_count - ifnull(lag(passenger_count) over(order by arrival_time asc), 0) as passengers_cnt
+from (
+    -- 每个班车时刻能有多少人
+    select
+        Buses.bus_id as bus_id,
+        Buses.arrival_time,
+        ifnull(count(distinct Passengers.passenger_id), 0) as passenger_count
+    from Buses left join Passengers
+    on Buses.arrival_time >= Passengers.arrival_time
+    group by bus_id
+    order by Buses.arrival_time
+) t
+order by t.bus_id
