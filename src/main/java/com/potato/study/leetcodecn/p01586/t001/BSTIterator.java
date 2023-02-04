@@ -3,6 +3,10 @@ package com.potato.study.leetcodecn.p01586.t001;
 import com.potato.study.leetcode.domain.TreeNode;
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 /**
  * 1586. 二叉搜索树迭代器 II
  *
@@ -61,23 +65,57 @@ import org.junit.Assert;
  */
 public class BSTIterator {
 
-    public BSTIterator(TreeNode root) {
+    private Stack<TreeNode> notVisitNodeStack;
+    private List<TreeNode> visitList;
+    private int cur;
 
+    /**
+     * 栈用来存当前还没遍历的节点
+     * list 之前中序遍历过得节点
+     * https://leetcode.cn/problems/binary-search-tree-iterator-ii/solution/by-cheungq-6-chv9/
+     * @param root
+     */
+    public BSTIterator(TreeNode root) {
+        this.notVisitNodeStack = new Stack<>();
+        // peek 是要访问的节点
+        TreeNode node = root;
+        addToStack(node);
+        this.visitList = new ArrayList<>();
+        this.cur = 0;
+    }
+
+    private void addToStack(TreeNode node) {
+        if (node == null) {
+            return;
+        }
+        while (node != null) {
+            notVisitNodeStack.add(node);
+            node = node.left;
+        }
     }
 
     public boolean hasNext() {
-        return false;
+        return cur < visitList.size() || !notVisitNodeStack.isEmpty();
     }
 
     public int next() {
-        return -1;
+        if (cur < visitList.size()) {
+            return visitList.get(cur++).val;
+        }
+        TreeNode pop = notVisitNodeStack.pop();
+        int res = pop.val;
+        addToStack(pop.right);
+        visitList.add(pop);
+        cur++;
+        return res;
     }
 
     public boolean hasPrev() {
-        return false;
+        return cur > 1;
     }
 
     public int prev() {
-        return -1;
+        cur--;
+        return visitList.get(cur-1).val;
     }
 }
