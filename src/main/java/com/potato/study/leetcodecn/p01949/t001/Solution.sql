@@ -60,3 +60,25 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 用户 1 和 3 有 3 个共同的朋友（2，6，和 7）。
 -- 我们没有包括用户 2 和 3 的友谊，因为他们只有两个共同的朋友（1 和 6）。
 
+with tt as (
+  SELECT
+    user1_id as user_id,
+    user2_id as friend_id
+  FROM Friendship
+  UNION
+  SELECT
+    user2_id,
+    user1_id
+  FROM Friendship
+)
+
+SELECT
+  t1.user_id as user1_id,
+  t2.user_id as user2_id,
+  COUNT(t1.user_id) as common_friend
+FROM tt as t1
+CROSS JOIN tt as t2
+ON t1.user_id < t2.user_id and t1.friend_id = t2.friend_id
+WHERE (t1.user_id, t2.user_id) in (SELECT * FROM tt)
+GROUP BY t1.user_id, t2.user_id
+HAVING common_friend > 2
