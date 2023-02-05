@@ -79,3 +79,10 @@ package com.potato.study.leetcodecn.p01757.t001;
 
 -- 找到所有 Exam 表中 人数比 Schools 大的
 
+-- https://leetcode.cn/problems/find-cutoff-score-for-each-school/solution/sql-zi-cha-xun-by-jamartin-xxa0/
+SELECT
+  Schools.school_id as school_id,
+  ifnull(min(Exam.score), -1) as score
+FROM Schools LEFT JOIN Exam
+ON Schools.capacity >= Exam.student_count
+GROUP BY Schools.school_id
