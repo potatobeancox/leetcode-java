@@ -43,11 +43,34 @@ package com.potato.study.leetcodecn.p02550.t001;
  */
 public class Solution {
 
+    /**
+     * 全不碰撞只有2中 全顺时针或者全逆时针
+     * @param n
+     * @return
+     */
     public int monkeyMove(int n) {
-
-        return -1;
+        // 2 ^ n - 2
+        int mod = 1_000_000_000 + 7;
+        return (int) ((pow(n, mod) - 2L + mod) % mod);
     }
 
+    private int pow(int n, int mod) {
+        long target = 1;
+        if (n % 2 == 1) {
+            target *= 2;
+            target %= mod;
+            n--;
+        }
+        if (n == 0) {
+            return (int) target;
+        }
+        int pow = pow(n / 2, mod);
+        target *= pow;
+        target %= mod;
+        target *= pow;
+        target %= mod;
+        return (int) target;
+    }
 
 
 }
