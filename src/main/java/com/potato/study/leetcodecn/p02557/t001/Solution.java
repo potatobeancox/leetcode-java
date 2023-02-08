@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02557.t001;
 
+import java.util.Arrays;
+
 /**
  * 2557. 从一个范围内选择最多整数 II
  *
@@ -42,11 +44,70 @@ public class Solution {
 
     // 2557
     public int maxCount(int[] banned, int n, long maxSum) {
-        // 如果 n个数 总和 小于等于 maxSum 那么就是 n - banned 小于等于 n的数量
+        // 二分法 最多选择 mid 个数字，最小sum是多少 按照是否小于 maxSum计算
+        int left = 1;
+        // 统计有多少个 banned 小于等于n
+        int belowCount = 0;
+        for (int ban : banned) {
+            if (ban <= n) {
+                belowCount++;
+            }
+        }
+        Arrays.sort(banned);
+        int right = n - belowCount;
+        int res = -1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int sum = getSumOfCount(banned, mid, n);
+            if (sum <= maxSum) {
+                res = mid;
+                left = mid + 1;
+            } else {
+                // 小一点
+                right = mid - 1;
+            }
+        }
+        return res;
+    }
 
-
-        // maxSum 求最高到几 （1+n）* n <= maxSum * 2
-        return -1;
+    /**
+     * banned 已经排序，在n以内找到count 看看 和是多少
+     * [1-n]
+     * 题目能够保证 count 一定能找完
+     * @param banned
+     * @param count
+     * @param n
+     * @return
+     */
+    private int getSumOfCount(int[] banned, int count, int n) {
+        int prevBan = 0;
+        int banIndex = 0;
+        int selectCount = 0;
+        long sum = 0;
+        while (banIndex <= banned.length && selectCount < count) {
+            int ban;
+            if (banIndex != banned.length) {
+                ban = banned[banIndex];
+            } else {
+                ban = n+1;
+            }
+            banIndex++;
+            // 可以使用的数字
+            int left = prevBan + 1;
+            int right = ban - 1;
+            if (left > right) {
+                break;
+            }
+            int len = right - left + 1;
+            if (selectCount + len > count) {
+                len = count - selectCount;
+                right = left + len - 1;
+            }
+            selectCount += len;
+            sum += (left + right) * (len) / 2;
+            prevBan = ban;
+        }
+        return (int) sum;
     }
 
 
