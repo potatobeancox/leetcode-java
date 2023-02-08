@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02557.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -58,7 +60,7 @@ public class Solution {
         int res = -1;
         while (left <= right) {
             int mid = (left + right) / 2;
-            int sum = getSumOfCount(banned, mid, n);
+            long sum = getSumOfCount(banned, mid, n);
             if (sum <= maxSum) {
                 res = mid;
                 left = mid + 1;
@@ -79,7 +81,7 @@ public class Solution {
      * @param n
      * @return
      */
-    private int getSumOfCount(int[] banned, int count, int n) {
+    private long getSumOfCount(int[] banned, int count, int n) {
         int prevBan = 0;
         int banIndex = 0;
         int selectCount = 0;
@@ -93,12 +95,13 @@ public class Solution {
             }
             banIndex++;
             // 可以使用的数字
-            int left = prevBan + 1;
-            int right = ban - 1;
+            long left = prevBan + 1;
+            long right = ban - 1;
             if (left > right) {
-                break;
+                prevBan = ban;
+                continue;
             }
-            int len = right - left + 1;
+            long len = 1L + right - left;
             if (selectCount + len > count) {
                 len = count - selectCount;
                 right = left + len - 1;
@@ -107,7 +110,20 @@ public class Solution {
             sum += (left + right) * (len) / 2;
             prevBan = ban;
         }
-        return (int) sum;
+        return  sum;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] banned = new int[] {
+                1,4,6
+        };
+        int n = 6;
+        long maxSum = 4;
+        int sumOfCount = solution.maxCount(banned, n, maxSum);
+        System.out.println(sumOfCount);
+        Assert.assertEquals(1, sumOfCount);
     }
 
 
