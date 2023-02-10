@@ -3,7 +3,6 @@ package com.potato.study.leetcodecn.p01969.t001;
 /**
  * 1969. 数组元素的最小非零乘积
  *
- * 1969. 数组元素的最小非零乘积
  给你一个正整数 p 。你有一个下标从 1 开始的数组 nums ，这个数组包含范围 [1, 2p - 1] 内所有整数的二进制形式（两端都 包含）。你可以进行以下操作 任意 次：
 
  从 nums 中选择两个元素 x 和 y  。
@@ -48,9 +47,31 @@ package com.potato.study.leetcodecn.p01969.t001;
  */
 public class Solution {
 
+    // 1969
     public int minNonZeroProduct(int p) {
+        // max 就是  2^P - 1
+        int mod = 1_000_000_000 + 7;
+        long max = (long) Math.pow(2, p-1) % mod;
+        return (int) (quickPow(max-1, max/2) * max % mod);
+    }
 
-        return -1;
+    /**
+     * 快速幂
+     * @param di
+     * @param x 指数
+     * @return
+     */
+    private long quickPow(long di, long x) {
+        if (x == 0) {
+            return 1;
+        }
+        int mod = 1_000_000_000 + 7;
+        long small = quickPow(di, x / 2);
+        long res = small * small % mod;
+        if (x % 2 == 1) {
+            return res * di % mod;
+        }
+        return res;
     }
 
 }
