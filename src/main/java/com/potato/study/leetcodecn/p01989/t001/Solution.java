@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01989.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -59,7 +61,7 @@ public class Solution {
         int prevOneIndex = -1;
         for (int i = 0; i < n; i++) {
             if (team[i] == 0) {
-                team[i] = prevOneIndex;
+                left[i] = prevOneIndex;
             } else {
                 prevOneIndex = i;
             }
@@ -69,7 +71,7 @@ public class Solution {
         prevOneIndex = -1;
         for (int i = n-1; i >= 0; i--) {
             if (team[i] == 0) {
-                team[i] = prevOneIndex;
+                right[i] = prevOneIndex;
             } else {
                 prevOneIndex = i;
             }
@@ -93,6 +95,17 @@ public class Solution {
             }
         }
         return catchCount;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] team = new int[] {
+                0
+        };
+        int dist = 1;
+        int i = solution.catchMaximumAmountofPeople(team, dist);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
     }
 
 
