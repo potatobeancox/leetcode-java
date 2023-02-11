@@ -82,27 +82,28 @@
 -- https://blog.csdn.net/weixin_44487203/article/details/124793889
 
 SELECT
-  t.team_id as team_id,
+  Teams.team_id as team_id,
   Teams.team_name as team_name,
-  sum(t.num_points) as num_points
+  ifnull(sum(t.num_points), 0) as num_points
 FROM (
   SELECT
     host_team as team_id,
-    CASE WHEN host_goals > guest_goals THEN 3
-    CASE WHEN host_goals = guest_goals THEN 1
+    CASE
+      WHEN host_goals > guest_goals THEN 3
+      WHEN host_goals = guest_goals THEN 1
     ELSE 0
     END as num_points
   FROM Matches
-  UNION
+  UNION ALL
   SELECT
     guest_team as team_id,
-    CASE WHEN guest_goals > host_goals THEN 3
-    CASE WHEN host_goals = guest_goals THEN 1
+    CASE
+      WHEN guest_goals > host_goals THEN 3
+      WHEN host_goals = guest_goals THEN 1
     ELSE 0
     END as num_points
   FROM Matches
-
-) as t INNER JOIN Teams
+) as t RIGHT JOIN Teams
 ON t.team_id = Teams.team_id
-GROUP BY t.team_id
+GROUP BY Teams.team_id
 ORDER BY num_points DESC,team_id
