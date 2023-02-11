@@ -89,4 +89,25 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 你能写出来最近 n 笔订单的通用解决方案吗?
 
 
+-- https://leetcode.cn/problems/the-most-recent-three-orders/solution/by-jam007-u8na/
+-- 返回的结果按照 customer_name 升序排列。如果排名有相同，则继续按照 customer_id 升序排列。如果排名还有相同，则继续按照 order_date 降序排列。
+
+SELECT
+  Customers.name as customer_name,
+  tt.customer_id as customer_id,
+  tt.order_id as order_id,
+  tt.order_date as order_date
+FROM (
+  SELECT
+    customer_id,
+    order_id,
+    order_date,
+    row_number() over(partition by customer_id order by order_date DESC) as rr
+  FROM Orders
+) tt
+left join Customers
+ON tt.customer_id = Customers.customer_id
+WHERE rr <=3
+ORDER BY customer_name ASC , customer_id ASC , order_date DESC
+
 
