@@ -53,8 +53,8 @@ public class Solution {
     public int minNonZeroProduct(int p) {
         // max 就是  2^P - 1
         int mod = 1_000_000_000 + 7;
-        long max = (long) Math.pow(2, p-1) % mod;
-        return (int) (quickPow(max-1, max/2) * max % mod);
+        long max = (long) (Math.pow(2, p)) - 1;
+        return (int) ((quickPow(max-1, max/2) * (max % mod)) % mod);
     }
 
     /**
@@ -68,10 +68,10 @@ public class Solution {
             return 1;
         }
         int mod = 1_000_000_000 + 7;
-        long small = quickPow(di, x / 2);
-        long res = small * small % mod;
+        long small = quickPow(di, x / 2) % mod;
+        long res = (small * small) % mod;
         if (x % 2 == 1) {
-            return res * di % mod;
+            return (res * (di % mod)) % mod;
         }
         return res;
     }
@@ -89,6 +89,18 @@ public class Solution {
         i = solution.minNonZeroProduct(p);
         System.out.println(i);
         Assert.assertEquals(6, i);
+
+
+        p = 30;
+        i = solution.minNonZeroProduct(p);
+        System.out.println(i);
+        Assert.assertEquals(945196305, i);
+
+
+        p = 34;
+        i = solution.minNonZeroProduct(p);
+        System.out.println(i);
+        Assert.assertEquals(640964173, i);
     }
 
 }
