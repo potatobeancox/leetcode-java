@@ -69,8 +69,34 @@
 -- | 2019-09 | US      | 0              | 0               | 1                | 5000              |
 -- +---------+---------+----------------+-----------------+------------------+-------------------+
 
+-- https://leetcode.cn/problems/monthly-transactions-ii/solution/xin-shou-kan-cong-ti-yi-li-jie-dao-mysql-ji-chu-zh/
 
-SELECT * FROM Transactions LEFT JOIN Chargebacks
-ON Transactions.id = Chargebacks.trans_id
 
-// 按照月和 按照国家统计
+
+
+SELECT
+  tt.month as month,
+  tt.country,
+  COUNT(if(tt.tag=1, 1, NULL)) as approved_count,
+  SUM(if(tt.tag=1, tt.amount, 0)) as approved_amount,
+  COUNT(if(tt.tag=2, 1, NULL)) as chargeback_count,
+  SUM(if(tt.tag=2, tt.amount, 0)) as chargeback_amount
+FROM (
+  -- 已经批准的信息
+    SELECT
+      country,
+      date_format(trans_date, '%Y-%m') as month,
+      amount,
+      1 as tag
+    FROM Transactions
+    WHERE state = 'approved'
+    UNION ALL
+    SELECT
+      country,
+      date_format(Chargebacks.trans_date, '%Y-%m') as month,
+      amount,
+      2 as tag
+    FROM Transactions RIGHT JOIN Chargebacks
+    ON Transactions.id = Chargebacks.trans_id
+) tt
+GROUP BY tt.country, month
