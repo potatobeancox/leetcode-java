@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01969.t001;
 
+import org.junit.Assert;
+
 /**
  * 1969. 数组元素的最小非零乘积
  *
@@ -72,6 +74,21 @@ public class Solution {
             return res * di % mod;
         }
         return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int p = 1;
+        int i = solution.minNonZeroProduct(p);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+
+        p = 2;
+        i = solution.minNonZeroProduct(p);
+        System.out.println(i);
+        Assert.assertEquals(6, i);
     }
 
 }
