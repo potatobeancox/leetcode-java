@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02559.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -54,11 +57,11 @@ public class Solution {
         int length = words.length;
         int[] prefixCount = new int[length];
         for (int i = 0; i < words.length; i++) {
-            String word = words[i];
-            char ch = word.charAt(i);
             if (i > 0) {
                 prefixCount[i] = prefixCount[i-1];
             }
+            String word = words[i];
+            char ch = word.charAt(0);
             if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
                 prefixCount[i]++;
             }
@@ -69,11 +72,24 @@ public class Solution {
         for (int i = 0; i < n; i++) {
             int prev = 0;
             if (queries[i][0] != 0) {
-                prev = prefixCount[queries[i][0]] - 1;
+                prev = prefixCount[queries[i][0] - 1];
             }
             res[i] = prefixCount[queries[i][1]] - prev;
         }
-        return prefixCount;
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] words = new String[] {
+                "aba","bcb","ece","aa","e"
+        };
+        int[][] queries = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,2],[1,4],[1,1]]");
+        int[] ints = solution.vowelStrings(words, queries);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+            2,3,0
+        },  ints);
     }
 
 }
