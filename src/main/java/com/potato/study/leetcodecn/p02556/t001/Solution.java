@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02556.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -52,7 +55,7 @@ public class Solution {
         boolean[][] visit = new boolean[grid.length][grid[0].length];
         boolean res = dfs(0, 0, grid, visit);
         if (!res) {
-            return false;
+            return true;
         }
         // 是否能到终点 不能到终点说明 删除就不联通了 返回true
         res = dfs(0, 0, grid, visit);
@@ -74,10 +77,12 @@ public class Solution {
         if (visit[i][j]) {
             return false;
         }
-        if (i != 0 || j != 0 && grid[i][j] == 0) {
+        if ((i != 0 || j != 0) && grid[i][j] == 0) {
             return false;
         }
-        visit[i][j] = true;
+        if (i != 0 || j != 0) {
+            visit[i][j] = true;
+        }
         // 往下一个点记性dfs
         if (i+1 < grid.length && grid[i+1][j] == 1) {
             boolean canReach = dfs(i+1, j, grid, visit);
@@ -85,13 +90,41 @@ public class Solution {
                 return true;
             }
         }
-        if (i < grid.length && grid[i][j+1] == 1) {
+        if (j+1 < grid[0].length && grid[i][j+1] == 1) {
             boolean canReach = dfs(i, j+1, grid, visit);
             if (canReach) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        // [[1,1,1],[1,0,0],[1,1,1]]
+        int[][] grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,1,1],[1,0,0],[1,1,1]]");
+        boolean possibleToCutPath = solution.isPossibleToCutPath(grid);
+        System.out.println(possibleToCutPath);
+        Assert.assertEquals(true, possibleToCutPath);
+
+
+        grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,1,1],[1,0,1],[1,1,1]]");
+        possibleToCutPath = solution.isPossibleToCutPath(grid);
+        System.out.println(possibleToCutPath);
+        Assert.assertEquals(false, possibleToCutPath);
+
+
+        grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,1,1]]");
+        possibleToCutPath = solution.isPossibleToCutPath(grid);
+        System.out.println(possibleToCutPath);
+        Assert.assertEquals(true, possibleToCutPath);
+
+
+
+        grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[1,1,1],[0,0,0],[1,1,1]]");
+        possibleToCutPath = solution.isPossibleToCutPath(grid);
+        System.out.println(possibleToCutPath);
+        Assert.assertEquals(true, possibleToCutPath);
     }
 
 
