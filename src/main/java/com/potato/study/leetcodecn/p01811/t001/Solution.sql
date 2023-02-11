@@ -88,4 +88,24 @@ package com.potato.study.leetcodecn.p01757.t001;
 -- 如果第一个条件变成“该用户在连续 n 场及比赛中赢得任意奖牌。”呢？你如何更改你的解法，来选出面试候选人？可以把 n 想象成存储过程中的参数。
 -- 有的用户可能没有参加每一场竞赛，但是在参加的每一场竞赛中都表现得不错。你如何更改你的解法，以达到只考虑那些 用户参与了的 比赛？可假设另一张表给出了每场比赛的注册用户信息。
 
-
+SELECT name,mail FROM (
+  SELECT
+    name,
+    mail,
+    contest_id - row_number() over(partition by user_id order by contest_id) as ref
+  FROM Contests
+  INNER JOIN Users
+  ON Users.user_id in (Contests.gold_medal, silver_medal, bronze_medal)
+) t
+GROUP BY name,mail,ref
+HAVING COUNT(*) >= 3
+union
+-- 该用户在 三场及更多不同的 比赛中赢得 金牌（这些比赛可以不是连续的）
+SELECT
+  name,
+  mail
+FROM Contests
+INNER JOIN Users
+ON Contests.gold_medal = Users.user_id
+GROUP BY Contests.gold_medal
+HAVING COUNT(contest_id) >= 3
