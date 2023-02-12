@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p01921.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -65,18 +68,38 @@ public class Solution {
         int[] time = new int[n];
         for (int i = 0; i < n; i++) {
             time[i] = dist[i] / speed[i];
+            if (dist[i] % speed[i] != 0) {
+                time[i]++;
+            }
         }
         Arrays.sort(time);
         // 遍历 找到第一个 不相同的数字
         int count = 1;
         for (int i = 1; i < n; i++) {
             // 一样的 直接 返回
-            if (time[i] == time[i-1]) {
+            if (time[i] < i + 1) {
                 break;
             }
             count++;
         }
         return count;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        int[] dist = LeetcodeInputUtils.inputString2IntArray("[1,1,2,3]");
+        int[] speed = LeetcodeInputUtils.inputString2IntArray("[1,1,1,1]");
+        int i = solution.eliminateMaximum(dist, speed);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+        dist = LeetcodeInputUtils.inputString2IntArray("[3,5,7,4,5]");
+        speed = LeetcodeInputUtils.inputString2IntArray("[2,3,6,3,2]");
+        i = solution.eliminateMaximum(dist, speed);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 
 }
