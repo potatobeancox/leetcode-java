@@ -58,8 +58,21 @@ public class Solution {
 
 
     public int numberOfArrays(int[] differences, int lower, int upper) {
-
-        return -1;
+        // 找到 differences 中的max和 min 看看 中间需要多少个 用upper - lower 礼拜呢有多少个
+        long min = 0;
+        long max = 0;
+        long current = 0;
+        for (int diff : differences) {
+            current += diff;
+            min = Math.min(min, current);
+            max = Math.max(max, current);
+        }
+        long dis = max - min;
+        long len = upper - lower;
+        if (dis > len) {
+            return 0;
+        }
+        return (int) (len - dis + 1);
     }
 }
 
