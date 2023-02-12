@@ -61,8 +61,11 @@ public class Solution {
                 prefixCount[i] = prefixCount[i-1];
             }
             String word = words[i];
+            // 以元音开头和结尾的字符串的数目
             char ch = word.charAt(0);
-            if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
+            char endCh = word.charAt(word.length() - 1);
+            if ((ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u')
+                    && (endCh == 'a' || endCh == 'e' || endCh == 'i' || endCh == 'o' || endCh == 'u')) {
                 prefixCount[i]++;
             }
         }
@@ -89,6 +92,19 @@ public class Solution {
         System.out.println(Arrays.toString(ints));
         Assert.assertArrayEquals(new int[] {
             2,3,0
+        },  ints);
+
+
+
+        solution = new Solution();
+        words = new String[] {
+                "bzmxvzjxfddcuznspdcbwiojiqf","mwguoaskvramwgiweogzulcinycosovozppl","uigevazgbrddbcsvrvnngfrvkhmqszjicpieahs","uivcdsboxnraqpokjzaayedf","yalc","bbhlbmpskgxmxosft","vigplemkoni","krdrlctodtmprpxwditvcps","gqjwokkskrb","bslxxpabivbvzkozzvdaykaatzrpe","qwhzcwkchluwdnqjwhabroyyxbtsrsxqjnfpadi","siqbezhkohmgbenbkikcxmvz","ddmaireeouzcvffkcohxus","kjzguljbwsxlrd","gqzuqcljvcpmoqlnrxvzqwoyas","vadguvpsubcwbfbaviedr","nxnorutztxfnpvmukpwuraen","imgvujjeygsiymdxp","rdzkpk","cuap","qcojjumwp","pyqzshwykhtyzdwzakjejqyxbganow","cvxuskhcloxykcu","ul","axzscbjajazvbxffrydajapweci"
+        };
+        queries = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[4, 4],[6, 17],[10, 17],[9, 18],[17, 22],[5, 23],[2, 5],[17, 21],[5, 17],[4, 8],[7, 17],[16, 19],[7, 12],[9, 20],[13, 23],[1, 5],[19, 19]]");
+        ints = solution.vowelStrings(words, queries);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[] {
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         },  ints);
     }
 
