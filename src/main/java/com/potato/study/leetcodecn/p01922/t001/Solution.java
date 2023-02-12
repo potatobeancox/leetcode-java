@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01922.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -42,27 +44,63 @@ public class Solution {
 
     // 1922
     public int countGoodNumbers(long n) {
-        if (n == 0) {
-            return 0;
+        // n 个位置 有多少个奇数 多少个偶数位置 1
+        if (n == 1) {
+            return 5;
         }
-        // 看着就是 求 4 和5 的个数
+        // 最开始的位置 都只有 4中可能 看看 除了第一个位置外 有几个偶数位置几个奇数位置
+        long evenCount = (n + 1)/2;
+        long oddCount = n/2;
+        // 奇数下标为质数 9以内的质数 2，,3，,5，,7
+        long totoalOddCount = pow(4, oddCount);
+        long totoalEvenCount = pow(5, evenCount);
+        // 偶数下标为偶数 0，2,4,6,8
         int mod = 1_000_000_000 + 7;
-        long count = 1;
-        for (int i = 0; i < n; i++) {
-            if (i % 2 == 0) {
-                count *= 5;
-            } else {
-                count *= 4;
-            }
-            count %= mod;
-        }
-        return (int) count;
+        return (int) ((totoalOddCount * totoalEvenCount) % mod);
     }
 
 
-
+    /**
+     * 快速求 pow
+     * @param base
+     * @param index
+     * @return
+     */
     private long pow(long base, long index) {
-        return -1;
+        if (base == 1) {
+            return 1;
+        }
+        if (index == 0) {
+            return 1;
+        }
+        int mod = 1_000_000_000 + 7;
+        long element = pow(base, index/2);
+        if (index % 2 == 1) {
+            return (((element * element) % mod) * base) % mod;
+        }
+        return (element * element) % mod;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int i = solution.countGoodNumbers(1);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
+
+        i = solution.countGoodNumbers(4);
+        System.out.println(i);
+        Assert.assertEquals(400, i);
+
+
+        i = solution.countGoodNumbers(50);
+        System.out.println(i);
+        Assert.assertEquals(564908303, i);
+
+
+
+        i = solution.countGoodNumbers(3);
+        System.out.println(i);
+        Assert.assertEquals(100, i);
     }
 
 
