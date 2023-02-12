@@ -72,24 +72,38 @@ public class Solution {
         }
         return res;
 
-
-
-
-
     }
 
     private boolean check(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2, long target) {
         // 从1 开始  不能被 divisor1 整除需要到的个数
-        int gcd = gcd(divisor1, divisor2);
-        // target 去掉能被 divisor1 2整除的数字
-        target = target - (target / gcd);
-        // 肯定都用不了
-        target = target - (target / divisor1) - (target / divisor2) + (target / gcd);
-        return target >= uniqueCnt1 + uniqueCnt2;
+        long lcm = (long)divisor1 * divisor2 / gcd(divisor1, divisor2);
+        // lcm 的个数是一定要去掉的
+        long lcmCount;
+        if (lcm == 1) {
+            lcmCount = 0;
+        } else {
+            lcmCount = target / lcm;
+        }
+        // divisor1 divisor2 倍数的个数中 去掉 公约数个数 多出来的要取出 正好的话 两边可以换着用
+        long remind1 = target / divisor1 - lcmCount;
+        long need2 = uniqueCnt2 - remind1;
+        if (need2 < 0) {
+            need2 = 0;
+        }
+        long remind2 = target / divisor2 - lcmCount;
+        long need1 = uniqueCnt1 - remind2;
+        if (need1 < 0) {
+            need1 = 0;
+        }
+        // 剩下的还能不能满足没有被匹配的
+        if (need1 + need2 <= target - target / divisor1 - target / divisor2 + lcmCount) {
+            return true;
+        }
+        return false;
     }
 
 
-    private int gcd(int a, int b) {
+    private long gcd(long a, long b) {
         if (a % b == 0) {
             return b;
         }
@@ -106,6 +120,26 @@ public class Solution {
         int i = solution.minimizeSet(divisor1, divisor2, uniqueCnt1, uniqueCnt2);
         System.out.println(i);
         Assert.assertEquals(4, i);
+
+        divisor1 = 3;
+        divisor2 = 5;
+        uniqueCnt1 = 2;
+        uniqueCnt2 = 1;
+        i = solution.minimizeSet(divisor1, divisor2, uniqueCnt1, uniqueCnt2);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        divisor1 = 2;
+        divisor2 = 4;
+        uniqueCnt1 = 8;
+        uniqueCnt2 = 2;
+        i = solution.minimizeSet(divisor1, divisor2, uniqueCnt1, uniqueCnt2);
+        System.out.println(i);
+        Assert.assertEquals(15, i);
     }
+
+
+
 
 }
