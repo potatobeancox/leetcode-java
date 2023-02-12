@@ -39,11 +39,48 @@ public class Solution {
 
 
     public int closestFair(int n) {
-        // 如果 n有奇数个位置的话 那么直接生成 1开头 中间 0 末尾为1
-
+        String s = String.valueOf(n);
+        int length = s.length();
+        if (length % 2 == 1) {
+            return getClosestFairEven(length+1);
+        }
         // 如果 n有偶数个位置的话
+        for (int i = n; i < Math.pow(10, length); i++) {
+            if (isFair(i)) {
+                return i;
+            }
+        }
+        return getClosestFairEven(length+2);
+    }
 
-        return -1;
+    private int getClosestFairEven(int i) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(1);
+        for (int j = 0; j < i / 2; j++) {
+            builder.append(0);
+        }
+        for (int j = 0; j < i / 2 - 1; j++) {
+            builder.append(1);
+        }
+        return Integer.parseInt(builder.toString());
+    }
+
+    private boolean isFair(int num) {
+        if (num == 0) {
+            return false;
+        }
+        int odd = 0;
+        int even = 0;
+        while (num > 0) {
+            int n = num % 10;
+            if (n % 2 == 1) {
+                odd++;
+            } else {
+                even++;
+            }
+            num /= 10;
+        }
+        return odd == even;
     }
 
 }
