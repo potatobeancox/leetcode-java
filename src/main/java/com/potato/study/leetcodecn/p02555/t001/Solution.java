@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02555.t001;
 
+import org.junit.Assert;
+
 /**
  * 2555. 两个线段获得的最多奖品
  *
@@ -41,13 +43,44 @@ public class Solution {
     // 2555
     public int maximizeWin(int[] prizePositions, int k) {
         // 滑动窗口 记录当前位置作为 right 同时 记录 right+1 左边的最大值 用于计算全局2个最大
-
-
+        int n = prizePositions.length;
+        // 不包含当前index
+        int[] max = new int[n];
         // 遍历 prizePositions 对于每个位置 right 看一下是否最后一个节点 或者是否与后面的不一样，如果不一样
+        int leftIndex = 0;
+        int totalMax = 0;
+        for (int rightIndex = 0; rightIndex < n; rightIndex++) {
+            if (rightIndex > 0) {
+                max[rightIndex] = Math.max(max[rightIndex-1], max[rightIndex]);
+            }
+            if (rightIndex != n-1 && prizePositions[rightIndex] == prizePositions[rightIndex+1]) {
+                continue;
+            }
+            // 当前需要进行结算 左边
+            while (leftIndex <= rightIndex && prizePositions[leftIndex] < prizePositions[rightIndex] - k) {
+                leftIndex++;
+            }
+            // 当前的win 长度
+            // 不满足上面条件 window 继续滑动即 right ++ 左边还是left  线段长度是 right - left
+            int winLen = rightIndex - leftIndex + 1;
+            totalMax = Math.max(totalMax, winLen + max[leftIndex]);
+            // 之前的算一下
+            if (rightIndex != n - 1) {
+                max[rightIndex+1] = Math.max(winLen, max[rightIndex]);
+            }
+        }
+        return totalMax;
+    }
 
-        // 不满足上面条件 window 继续滑动即 right ++ 左边还是left  线段长度是 right - left
-
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] prizePositions = new int[] {
+                1,1,2,2,3,3,5
+        };
+        int k = 2;
+        int i = solution.maximizeWin(prizePositions, k);
+        System.out.println(i);
+        Assert.assertEquals(7, i);
     }
 
 
