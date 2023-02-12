@@ -44,8 +44,33 @@ import java.util.Arrays;
  */
 public class Solution {
 
-    public Node flipBinaryTree(Node root, Node leaf) {
+    private Node root;
 
-        return null;
+    public Node flipBinaryTree(Node root, Node leaf) {
+        this.root = root;
+        flipBinaryTreeHelper(leaf);
+        leaf.parent = null;
+        return leaf;
+    }
+
+    private void flipBinaryTreeHelper(Node current) {
+        if (this.root == current) {
+            return;
+        }
+        Node left = current.left;
+        Node parent = current.parent;
+        // 记录各种节点
+        if (left != null) {
+            current.right = left;
+        }
+        current.left = parent;
+        if (parent.left == current) {
+            parent.left = null;
+        }
+        if (parent.right == current) {
+            parent.right = null;
+        }
+        flipBinaryTreeHelper(parent);
+        parent.parent = current;
     }
 }
