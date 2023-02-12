@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p01989.t001;
 import org.junit.Assert;
 
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * 1989. 捉迷藏中可捕获的最大人数
@@ -52,46 +54,33 @@ import java.util.Arrays;
  */
 public class Solution {
 
-    // 1989
+    /**
+     * https://leetcode.cn/problems/maximum-number-of-people-that-can-be-caught-in-tag/solution/java-tan-xin-shuang-duan-dui-lie-by-qing-kex1/
+     * @param team
+     * @param dist
+     * @return
+     */
     public int catchMaximumAmountofPeople(int[] team, int dist) {
-        // 求1的人与它左右两边 0的位置 最近的距离是否小于等于 dist
-        int n = team.length;
-        // 记录位置i 左边的第一个1，的index 0 (表示 不是 “鬼” 的人) 和 1 (表示是 “鬼” 的人)
-        int[] left = new int[n];
-        int prevOneIndex = -1;
-        for (int i = 0; i < n; i++) {
+        // 遍历 往队列中 后面添加 人的index
+        Deque<Integer> indexDeque = new LinkedList<>();
+        for (int i = 0; i < team.length; i++) {
             if (team[i] == 0) {
-                left[i] = prevOneIndex;
-            } else {
-                prevOneIndex = i;
+                indexDeque.addLast(i);
             }
         }
-        // i 右边第一个i的index
-        int[] right = new int[n];
-        prevOneIndex = -1;
-        for (int i = n-1; i >= 0; i--) {
-            if (team[i] == 0) {
-                right[i] = prevOneIndex;
-            } else {
-                prevOneIndex = i;
-            }
-        }
-        // 遍历到每个位置 如果他是人的话看看两边距离
         int catchCount = 0;
-        for (int i = 0; i < n; i++) {
-            // 自己就是鬼
-            if (team[i] == 1) {
+        for (int i = 0; i < team.length; i++) {
+            // 遍历每个位置 如果当前 双端队列中 前面的位置 已经距离 当前位置 i 大于 dist 那么循环pop
+            while (!indexDeque.isEmpty() && indexDeque.peekFirst() < i - dist) {
+                indexDeque.pollFirst();
+            }
+            // i 找到 当前第一个位置 肯定是厚点 左边的 然后右边的 有的话 po 计数
+            if (team[i] == 0) {
                 continue;
             }
-            int leftIndex = left[i];
-            if (leftIndex != -1 && i - leftIndex <= dist) {
+            if (!indexDeque.isEmpty() && indexDeque.peekFirst() <= i + dist) {
+                indexDeque.pollFirst();
                 catchCount++;
-                continue;
-            }
-            int rightIndex = right[i];
-            if (rightIndex != -1 && rightIndex - i <= dist) {
-                catchCount++;
-                continue;
             }
         }
         return catchCount;
