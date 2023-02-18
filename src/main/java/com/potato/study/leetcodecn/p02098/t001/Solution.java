@@ -3,11 +3,7 @@ package com.potato.study.leetcodecn.p02098.t001;
 import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 2098. 长度为 K 的最大偶数和子序列
@@ -53,47 +49,56 @@ public class Solution {
 
     // 2098
     public long largestEvenSum(int[] nums, int k) {
-        // 排序 如果 nums 最大是偶数直接返回返回如果是找到 最小的奇数 替换成 偶数
-        Arrays.sort(nums);
-        // 最后 k个 求sum 并且记录 最小的odd 的index
-        int smallestOddIndex = -1;
-        int smallestEvenIndex = -1;
-        long sum = 0;
-        for (int i = 0; i < k; i++) {
-            int index = nums.length - 1 - i;
-            sum += nums[index];
-            if (nums[index] % 2 == 1) {
-                smallestOddIndex = index;
+        // 两个大根堆
+        PriorityQueue<Long> oddPriorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        PriorityQueue<Long> evenPriorityQueue = new PriorityQueue<>(Comparator.reverseOrder());
+        for (long n : nums) {
+            if (n % 2 == 1) {
+                oddPriorityQueue.add(n);
             } else {
-                smallestEvenIndex = index;
+                evenPriorityQueue.add(n);
             }
         }
-        if (sum % 2 == 0) {
-            return sum;
+        // 将大根队 转换成 奇偶数字 前缀和
+        long[] prefix1 = new long[oddPriorityQueue.size()];
+        buildPrefixSum(oddPriorityQueue, 0, prefix1);
+        long[] prefix2 = new long[evenPriorityQueue.size()];
+        buildPrefixSum(evenPriorityQueue, 0, prefix2);
+        // 分别 枚举 从 奇数堆中获取的个数 再从偶数中补充 看看 最大
+        long max = -1;
+        for (int i = 0; i <= k; i+=2) {
+            // 1 已经获取到最大
+            if (i > prefix1.length) {
+                break;
+            }
+            long current;
+            if (i == 0) {
+                current = 0;
+            } else {
+                current = prefix1[i-1];
+            }
+            // even 中获取个数
+            int num = k - i;
+            // 偶数 如果不够了 还可以试试 用奇数
+            if (num > prefix2.length) {
+                continue;
+            }
+            if (num != 0) {
+                current += prefix2[num-1];
+            }
+            max = Math.max(max, current);
         }
-        // 往前找 到 第一个偶数
-        long sum1 = -1;
-        long sum2 = -1;
-        for (int i = nums.length - 1 - k; i >= 0; i--) {
-            if (sum1 != -1 && sum2 != -1) {
-                return Math.min(sum1, sum2);
+        return max;
+    }
+
+    private void buildPrefixSum(PriorityQueue<Long> evenPriorityQueue, int index, long[] prefix) {
+        while (!evenPriorityQueue.isEmpty()) {
+            long cur = evenPriorityQueue.poll();
+            if (index > 0) {
+                cur += prefix[index-1];
             }
-            if (sum1 == -1 && nums[i] % 2 == 1 && smallestEvenIndex != -1) {
-                sum1 = sum - nums[smallestEvenIndex] + nums[i];
-            }
-            if (sum2 == -1 && nums[i] % 2 == 0 && smallestOddIndex != -1) {
-                sum2 = sum - nums[smallestOddIndex] + nums[i];
-            }
-        }
-        // 都找到了 返回小的哪个 否则找到哪个就用哪个
-        if (sum1 == -1 && sum2 == -1) {
-            return -1;
-        } else if (sum1 == -1) {
-            return sum2;
-        } else if (sum2 == -1) {
-            return sum1;
-        } else {
-            return Math.min(sum1, sum2);
+            prefix[index] = cur;
+            index++;
         }
     }
 
