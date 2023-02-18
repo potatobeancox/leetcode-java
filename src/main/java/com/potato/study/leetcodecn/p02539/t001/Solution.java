@@ -42,10 +42,77 @@ package com.potato.study.leetcodecn.p02539.t001;
  */
 public class Solution {
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public int countGoodSubsequences(String s) {
+        if (s.length() == 0) {
+            return 0;
+        }
+        // 统计26个字符 每个字符穿线的次数 过程中 记录最大出现次数
+        int[] count = new int[26];
+        int max = 1;
+        for (char ch : s.toCharArray()) {
+            count[ch - 'a']++;
+            max = Math.max(max, count[ch - 'a']);
+        }
+        // 从 1到 max 出现次数 遍历 每个出现次数，表示每个字母 如果选择的话 要选择的个数
+        for (int i = 1; i <= max; i++) {
+            // 每个字母的个数
+            int eachCharCount = i;
+            for (int j = 0; j < 26; j++) {
+                // 枚举每个字母
+                if (count[i] < eachCharCount) {
+                    continue;
+                }
+
+            }
+        }
+        // 内部 遍历 1-26 每个字母 按照出现个数 算一个组合数字 组合也要加上 不选择的种类数 跟之前的 做乘法
+
+        // 减去所有都不选择的个数
 
         return -1;
     }
+
+
+    /**
+     * 从 base 获取 target个 组合数量
+     * @param base
+     * @param target
+     * @return
+     */
+    private long combination(int base, int target) {
+        long res = 1;
+        if (target == 0) {
+            return res;
+        }
+        int mod = 1_000_000_000 + 7;
+        for (int i = 1; i <= target; i++) {
+            res *= i;
+            res %= mod;
+            
+        }
+        return res;
+    }
+    
+    // 首先还要 计算阶乘 
+
 
 
 }
