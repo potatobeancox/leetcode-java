@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p02563.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 import java.util.Arrays;
@@ -51,7 +52,9 @@ public class Solution {
             // 再 i 之前找 找位置 定位两端的位置 计算 总的个数
             int leftIndex = getLeftEndpoint(lower - nums[right], right, nums);
             int rightIndex = getRightEndpoint(upper - nums[right], right, nums);
-
+            if (leftIndex == -1 || rightIndex == -1) {
+                continue;
+            }
             if (rightIndex >= leftIndex) {
                 count += (rightIndex - leftIndex + 1);
             }
@@ -108,6 +111,16 @@ public class Solution {
             }
         }
         return resIndex;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = LeetcodeInputUtils.inputString2IntArray("[0,1,7,4,4,5]");
+        int lower = 3;
+        int upper = 6;
+        long l = solution.countFairPairs(nums, lower, upper);
+        System.out.println(l);
+        Assert.assertEquals(6, l);
     }
 
 
