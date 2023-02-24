@@ -3,6 +3,7 @@ package com.potato.study.leetcodecn.p02245.t001;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 /**
@@ -62,47 +63,125 @@ public class Solution {
 
 
     public int maxTrailingZeros(int[][] grid) {
-        // 统计每个 grid 的 2和 5 数量
-        int[][][] gridCount = new int[grid.length][grid[0].length][2];
+        // count ijkl  以ij作为中心 k=0  2的个数 k=1 5的个数， l 四个方向 北西南东
+        int n = grid[0].length;
+        int[][][][] count = new int[grid.length][n][2][4];
+        // 遍历一遍 生成 北和西
         for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                int tmp = grid[i][j];
+            for (int j = 0; j < n; j++) {
                 int count2 = 0;
-                while (tmp > 1 && tmp % 2 == 0) {
+                int count5 = 0;
+
+                int value = grid[i][j];
+
+                while (value > 0 && value % 2 == 0) {
+                    value /= 2;
                     count2++;
                 }
-                int count5 = 0;
-                while (tmp > 1 && tmp % 5 == 0) {
+
+                while (value > 0 && value % 5 == 0) {
+                    value /= 5;
                     count5++;
                 }
-                gridCount[i][j][0] = count2;
-                gridCount[i][j][1] = count5;
+                count[i][j][0][0] = count2;
+                count[i][j][1][0] = count5;
+                if (i > 0) {
+                    count[i][j][0][0] += count[i-1][j][0][0];
+                    count[i][j][1][0] += count[i-1][j][1][0];
+                }
+                count[i][j][0][1] = count2;
+                count[i][j][1][1] = count5;
+                if (j > 0) {
+                    count[i][j][0][1] += count[i][j-1][0][1];
+                    count[i][j][1][1] += count[i][j-1][1][1];
+                }
             }
         }
-        // 前缀和 4个方向 统计 25 的数量
-        int[][][][] prefix = new int[grid.length][grid[0].length][2][4];
-        // 0上1左2下3右
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                for (int k = 0; k < 4; k++) {
-                    if (i == 0 && j == 0) {
-                        prefix[i][j][0][k] = gridCount[i][j][0];
-                        prefix[i][j][1][k] = gridCount[i][j][1];
-                        continue;
-                    }
-                    if (i == 0) {
+        // 遍历一遍 生成 西南
+        for (int i = grid.length-1; i >= 0; i--) {
+            for (int j = n-1; j >= 0; j--) {
+                int count2 = 0;
+                int count5 = 0;
 
-                    }
-                    if (j == 0) {
+                int value = grid[i][j];
 
-                    }
+                while (value > 0 && value % 2 == 0) {
+                    value /= 2;
+                    count2++;
                 }
 
+                while (value > 0 && value % 5 == 0) {
+                    value /= 5;
+                    count5++;
+                }
+                count[i][j][0][2] = count2;
+                count[i][j][1][2] = count5;
+                if (i < grid.length-1) {
+                    count[i][j][0][2] += count[i+1][j][0][2];
+                    count[i][j][1][2] += count[i+1][j][1][2];
+                }
+
+                count[i][j][0][3] = count2;
+                count[i][j][1][3] = count5;
+                if (j < n-1) {
+                    count[i][j][0][3] += count[i][j+1][0][3];
+                    count[i][j][1][3] += count[i][j+1][1][3];
+                }
             }
         }
+        // 最后遍历一遍 找到以这个点作为拐点 25 个数和的最小值 找 南北 最大 找 找东西最大 找加和最大
+        int maxCount = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < n; j++) {
+                int count2 = 0;
+                int count5 = 0;
+
+                int value = grid[i][j];
+
+                while (value > 0 && value % 2 == 0) {
+                    value /= 2;
+                    count2++;
+                }
+
+                while (value > 0 && value % 5 == 0) {
+                    value /= 5;
+                    count5++;
+                }
+                // l 四个方向 北西南东
+                // 东3北0
+                int count2en = count[i][j][0][0] + count[i][j][0][3] - count2;
+                int count5en = count[i][j][1][0] + count[i][j][1][3] - count5;
+                int max1 = Math.min(count2en, count5en);
+                // 西1北0
+                int count2wn = count[i][j][0][0] + count[i][j][0][1] - count2;
+                int count5wn = count[i][j][1][0] + count[i][j][1][1] - count5;
+                int max2 = Math.min(count2wn, count5wn);
+                // 东3南2
+                int count2es = count[i][j][0][2] + count[i][j][0][3] - count2;
+                int count5es = count[i][j][1][2] + count[i][j][1][3] - count5;
+                int max3 = Math.min(count2es, count5es);
+
+                // 西1南2
+                int count2ws = count[i][j][0][2] + count[i][j][0][1] - count2;
+                int count5ws = count[i][j][1][2] + count[i][j][1][1] - count5;
+                int max4 = Math.min(count2ws, count5ws);
+
+                int current = Math.max(max1, max2);
+                current = Math.max(current, max3);
+                current = Math.max(current, max4);
+                maxCount = Math.max(maxCount, current);
+            }
+        }
+        return maxCount;
+    }
 
 
-        // 枚举 每个点作为 拐点  统计做多的 25
-        return -1;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String input = "[[23,17,15,3,20],[8,1,20,27,11],[9,4,6,2,21],[40,9,1,10,6],[22,7,4,5,3]]";
+        int[][] grid = LeetcodeInputUtils.inputString2IntArrayTwoDimensional(input);
+        int i = solution.maxTrailingZeros(grid);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 }
