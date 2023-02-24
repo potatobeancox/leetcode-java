@@ -52,10 +52,29 @@ import java.util.Arrays;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/
+     * @param nums
+     * @return
+     */
     public int[] smallestSubarrays(int[] nums) {
-        int len = nums.length;
-        int[] res = new int[len];
-        // 从后往前遍历 nums 维护一个 | 的当前最大值
+        // 遍历nums 每个位置 i
+        int[] res = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            // 从这个位置开始往前遍历，看看 |上i 之后是不是变大了，是的话更改 新的j的num和 结果个数
+            // 至少有一个数字
+            res[i] = 1;
+            for (int j = i-1; j >= 0; j--) {
+                // 说明 num j 要跟i联合 一下得到的才是最大
+                if ((nums[i] | nums[j]) != nums[j]) {
+                    nums[j] |= nums[i];
+                    res[j] = i - j + 1;
+                } else {
+                    // 当前j已经达到最大了可以不从j开始算了
+                    break;
+                }
+            }
+        }
         return res;
     }
 
