@@ -138,34 +138,37 @@ public class Solution {
     public int[] pourWater(int[] heights, int volume, int k) {
         // 遍历 volume 次 依次从 k往左找和 k往右找
         for (int i = 0; i < volume; i++) {
+            boolean hasLowest = false;
             int leftIndex = k;
             // 先往左 找到 局部最小值
+            int lowestIndex = -1;
             while (leftIndex-1 >= 0 && heights[leftIndex-1] <= heights[leftIndex]) {
+                if (heights[leftIndex-1] < heights[leftIndex]) {
+                    hasLowest = true;
+                    lowestIndex = leftIndex - 1;
+                }
                 leftIndex--;
             }
-            // 找下右边的index
-            int rightIndex = k;
-            while (rightIndex+1 < heights.length && heights[rightIndex+1] <= heights[rightIndex]) {
-                rightIndex++;
-            }
-            // 判断一下哪个小
-            if (leftIndex == rightIndex) {
-                // 都在中间
-                heights[k]++;
-                continue;
-            }
-            // 如果都一样
-            if (heights[leftIndex] == heights[rightIndex] && heights[rightIndex] == heights[k]) {
-                // 都在中间
-                heights[k]++;
+            // 再往右找如果左边没有找到
+            if (hasLowest) {
+                heights[lowestIndex]++;
                 continue;
             }
 
-            // 两边哪个小
-            if (heights[leftIndex] <= heights[rightIndex]) {
-                heights[leftIndex]++;
+            // 找下右边的index
+            int rightIndex = k;
+            while (rightIndex+1 < heights.length && heights[rightIndex+1] <= heights[rightIndex]) {
+                if (heights[rightIndex+1] < heights[rightIndex]) {
+                    hasLowest = true;
+                    lowestIndex = rightIndex + 1;
+                }
+                rightIndex++;
+            }
+            // 左右都没有好的位置 放置在k
+            if (!hasLowest) {
+                heights[k]++;
             } else {
-                heights[rightIndex]++;
+                heights[lowestIndex]++;
             }
         }
         return heights;
