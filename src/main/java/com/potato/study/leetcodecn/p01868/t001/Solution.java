@@ -62,54 +62,50 @@ public class Solution {
         int index1 = 0;
         int index2 = 0;
         // 依次滑动 直到 都到最后了 [vali, freqi]
-        int[] remind1 = new int[] {
-                encoded1[0][0],
-                encoded1[0][1]
-        };
-        int[] remind2 = new int[] {
-                encoded2[0][0],
-                encoded2[0][1]
-        };
-        while (index1 < encoded1.length && index2 < encoded2.length) {
-            // 当前还有多少 剩余 如果没有 往后滑动
-            if (remind1 == null || remind1[1] == 0) {
-                index1++;
-                if (index1 < encoded1.length) {
-                    remind1[0] = encoded1[index1][0];
-                    remind1[1] = encoded1[index1][1];
-                }
-            }
-            if (remind2 == null || remind2[1] == 0) {
-                index2++;
-                if (index2 < encoded2.length) {
-                    remind2[0] = encoded2[index1][0];
-                    remind2[1] = encoded2[index1][1];
-                }
-            }
-            // 找到长度
+        int[] remind1 = encoded1[0];
+        int[] remind2 = encoded2[0];
+        // 开始 往后推
+        while (remind1 != null && remind2 != null) {
+            // 计算 当前的值
+            int target = remind1[0] * remind2[0];
+            // 当前乘积区间长度
             int len = Math.min(remind1[1], remind2[1]);
-            int targetVal = remind1[0] * remind2[0];
-            // 更改老数组
+            // 放置乘积之后的数字
+            if (result.size() == 0
+                    || result.get(result.size() - 1).get(0) != target) {
+                // 结果集里没有元素或者元素值已经变化 直接插入
+                List<Integer> newPart = new ArrayList<>();
+                newPart.add(target);
+                newPart.add(len);
+
+                result.add(newPart);
+            } else {
+                // 之前有元素且一致，加在上面
+                List<Integer> lastPart = result.get(result.size() - 1);
+                int totalLen = lastPart.get(1) + len;
+
+                lastPart.remove(1);
+                lastPart.add(totalLen);
+            }
+
+            // 更新之前的 remind1和 remind2
             remind1[1] -= len;
             remind2[1] -= len;
-            // 判断下跟上面一个是否可以合并
-            if (result.size() > 0 && result.get(result.size() - 1).get(0) == targetVal) {
-                List<Integer> removeInterval = result.remove(result.size() - 1);
-                List<Integer> newInterval = new ArrayList<>();
-                newInterval.add(targetVal);
-                newInterval.add(len + removeInterval.get(1));
-
-                result.add(newInterval);
-            } else {
-                // 按照
-                List<Integer> newInterval = new ArrayList<>();
-                newInterval.add(targetVal);
-                newInterval.add(len);
-
-                result.add(newInterval);
+            if (remind1[1] == 0) {
+                if (index1 >= encoded1.length - 1) {
+                    break;
+                }
+                index1++;
+                remind1 = encoded1[index1];
+            }
+            if (remind2[1] == 0) {
+                if (index2 >= encoded2.length - 1) {
+                    break;
+                }
+                index2++;
+                remind2 = encoded2[index2];
             }
         }
-
         return result;
     }
 
