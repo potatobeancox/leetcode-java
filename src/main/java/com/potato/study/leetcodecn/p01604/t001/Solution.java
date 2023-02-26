@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01604.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,36 +71,44 @@ public class Solution {
      * @return
      */
     public List<String> alertNames(String[] keyName, String[] keyTime) {
-        // 遍历 使用 map 存 名字 + 小时 value 次数
-        Map<String, Integer> map = new HashMap<>();
+        // 遍历 使用 map 存 名字 当前名字和对应打卡 分钟数量
+        Map<String, List<Integer>> map = new HashMap<>();
         int n = keyName.length;
         for (int i = 0; i < n; i++) {
+            String name = keyName[i];
             String[] split = keyTime[i].split(":");
             int hour = Integer.parseInt(split[0]);
-            String key = keyName[i] + "_" + hour;
-            map.put(key, map.getOrDefault(key, 0) + 1);
             int minute = Integer.parseInt(split[1]);
-            if (minute == 0) {
-                if (hour == 0) {
-                    hour = 23;
-                } else {
-                    hour--;
-                }
-                key = keyName[i] + "_" + hour;
-                map.put(key, map.getOrDefault(key, 0) + 1);
-            }
-        }
-        Set<String> set = new HashSet<>();
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            if (entry.getValue() >= 3) {
-                String key = entry.getKey();
-                String name = key.split("_")[0];
 
-                set.add(name);
+            int value = hour * 60 + minute;
+            List<Integer> records = map.getOrDefault(name, new ArrayList<>());
+            records.add(value);
+            map.put(name, records);
+        }
+        // 遍历每个人 堆打卡时间排序，从 index 2开始找 一旦找到打卡直接break 掉就行
+        Set<String> set = new HashSet<>();
+        for (String name : map.keySet()) {
+            List<Integer> records = map.get(name);
+            Collections.sort(records);
+            // 从index 2 开始找
+            for (int i = 2; i < records.size(); i++) {
+                if (records.get(i) - records.get(i-2) <= 60) {
+                    set.add(name);
+                    break;
+                }
             }
         }
         List<String> list = new ArrayList<>(set);
         Collections.sort(list);
         return list;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        String[] keyName = LeetcodeInputUtils.inputString2StringArray("[\"leslie\",\"leslie\",\"leslie\",\"clare\",\"clare\",\"clare\",\"clare\"]");
+        String[] keyTime = LeetcodeInputUtils.inputString2StringArray("[\"13:00\",\"13:20\",\"14:00\",\"18:00\",\"18:51\",\"19:30\",\"19:49\"]");
+        List<String> strings = solution.alertNames(keyName, keyTime);
+        System.out.println(strings);
     }
 }
