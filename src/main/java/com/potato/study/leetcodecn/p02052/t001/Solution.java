@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.p02052.t001;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,8 +65,72 @@ import java.util.Map.Entry;
 public class Solution {
 
     public int minimumCost(String sentence, int k) {
+        // 有多少个单词
+        String[] split = sentence.split(" ");
+        int n = split.length;
+        // dp i 将第i个单词作为最后一个单词 最小花费
+        int[] dp = new int[n];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        for (int i = 0; i < n; i++) {
+            // 最后一行只有一个单词
+            int lastLen = split[i].length();
+            if (i == 0) {
+                dp[0] = (k - lastLen) * (k - lastLen);
+                continue;
+            }
+            lastLen = 0;
+            // 往前看看 有多少个可以作为一行
+            for (int j = i; j >= 0; j--) {
+                // 看看当前 总共累计了多少
+                lastLen += split[j].length();
+                if (j != i) {
+                    lastLen += 1;
+                }
+                // 超过了每行k的限制
+                if (lastLen > k) {
+                    break;
+                }
+                // 没超过 最后一行花费
+                int cost = (k - lastLen) * (k - lastLen);
+                if (j > 0) {
+                    dp[i] = Math.min(dp[i], dp[j-1] + cost);
+                } else {
+                    dp[i] = Math.min(dp[i], cost);
+                }
+            }
+        }
 
-        return -1;
+        // 枚举 split 从后往前 让尽量多的单词作为最后 一行不计算
+        int lastLine = 0;
+        int cost = dp[split.length - 1];
+        for (int i = split.length-1; i >= 0; i--) {
+            if (lastLine + split[i].length() <= k) {
+                lastLine += split[i].length();
+                lastLine += 1;
+                cost = Math.min(cost, dp[i]);
+            } else {
+                return Math.min(cost, dp[i]);
+            }
+        }
+        return 0;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String sentence = "i love leetcode";
+        int k = 12;
+        int i = solution.minimumCost(sentence, k);
+        System.out.println(i);
+        Assert.assertEquals(36, i);
+
+
+
+        sentence = "ke lskd ks";
+        k = 6;
+        i = solution.minimumCost(sentence, k);
+        System.out.println(i);
+        Assert.assertEquals(20, i);
     }
 
 
