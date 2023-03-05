@@ -33,20 +33,106 @@ package com.potato.study.leetcodecn.other.swordoffer2.p0067.t001;
  */
 public class Solution {
 
-    // ii 067
-    public int findMaximumXOR(int[] nums) {
-        int n = nums.length;
-        int max = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) {
-            for (int j = i+1; j < n; j++) {
-                max = Math.max(max, nums[i]^nums[j]);
-            }
+    /**
+     * 字典数 节点内部结构
+     */
+    class BinaryDicNode {
+        public BinaryDicNode[] child;
+
+        /**
+         * 只有 01
+         */
+        public BinaryDicNode() {
+            this.child = new BinaryDicNode[2];
         }
-        if (max == Integer.MIN_VALUE) {
-            return 0;
+    }
+
+
+    private BinaryDicNode root;
+
+    /**
+     * 字典数
+     * @param nums
+     * @return
+     */
+    public int findMaximumXOR(int[] nums) {
+        // 遍历 nums 将每个节点 都放入字典里边
+        this.root = new BinaryDicNode();
+        for (int num : nums) {
+            add(num);
+        }
+        // 遍历 nums 从 字典里边拿出 可能最大的值 并进行异或记录
+        int max = Integer.MIN_VALUE;
+        for (int num : nums) {
+            int other = getMax(num);
+            max = Math.max(max, (other ^ num));
         }
         return max;
     }
 
+    /**
+     * 找到最大的 如果存在不一样就找不一样 否则找一样
+     * @param num
+     * @return
+     */
+    private int getMax(int num) {
+        BinaryDicNode current = this.root;
+        int result = 0;
+        for (int i = 30; i >= 0; i--) {
+            int bit = 1 << i;
+            int temp = num & bit;
+            int targetIndex;
+            result *= 2;
+            if (temp == 0) {
+                // 当前bit 是0 找1
+                targetIndex = 1;
+            } else {
+                // 当前bit 是1 找0
+                targetIndex = 0;
+            }
+            if (current == null) {
+                continue;
+            }
+            // 当前 是空的 看看 是不是 能继续找 找到了
+            if (current.child[targetIndex] != null) {
+                current = current.child[targetIndex];
+                result += targetIndex;
+                continue;
+            }
+            // 当前是空的 看看 能不能找下
+            if (current.child[1-targetIndex] != null) {
+                current = current.child[1-targetIndex];
+                result += (1-targetIndex);
+                continue;
+            }
+            // 当前是空的，孩子也是空的
+            current = null;
+        }
+        return result;
+    }
 
+    /**
+     * 将num 放进树中
+     * @param num
+     */
+    private void add(int num) {
+        BinaryDicNode current = this.root;
+        for (int i = 30; i >= 0; i--) {
+            int bit = 1 << i;
+            int temp = num & bit;
+            int index;
+            if (temp == 0) {
+                // 当前bit 是0
+                index = 0;
+            } else {
+                // 当前bit 是1
+                index = 1;
+            }
+            // 创建节点
+            if (current.child[index] == null) {
+                current.child[index] = new BinaryDicNode();
+            }
+            current = current.child[index];
+        }
+    }
 }
