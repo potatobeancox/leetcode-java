@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.potato.study.leetcode.domain.Interval;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 
 /**
  * 759. 员工空闲时间
@@ -68,7 +69,7 @@ public class Solution {
                 countMap.put(start, startStatus);
 
                 int endStatus = countMap.getOrDefault(end, 0);
-                endStatus += 1;
+                endStatus -= 1;
                 countMap.put(end, endStatus);
             }
         }
@@ -85,6 +86,34 @@ public class Solution {
             status += entry.getValue();
         }
         return freeTimeList;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+
+        List<List<Interval>> schedule = new ArrayList<>();
+
+        List<Interval> list1 = new ArrayList<>();
+        // [[[1,2],[5,6]],[[1,3]],[[4,10]]]
+        list1.add(new Interval(1,2));
+        list1.add(new Interval(5,6));
+        schedule.add(list1);
+
+        List<Interval> list2 = new ArrayList<>();
+        // [[[1,2],[5,6]],[[1,3]],[[4,10]]]
+        list2.add(new Interval(1,3));
+        schedule.add(list2);
+
+
+        List<Interval> list3 = new ArrayList<>();
+        // [[[1,2],[5,6]],[[1,3]],[[4,10]]]
+        list3.add(new Interval(4,10));
+        schedule.add(list3);
+
+
+        List<Interval> intervals = solution.employeeFreeTime(schedule);
+        System.out.println(intervals);
     }
 }
 
