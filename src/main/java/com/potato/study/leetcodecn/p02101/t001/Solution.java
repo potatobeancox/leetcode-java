@@ -62,69 +62,59 @@ import org.junit.Assert;
  */
 public class Solution {
 
+
     /**
-     * 注意计算叠加 并查集
+     * dfs
+     * https://leetcode.cn/problems/detonate-the-maximum-bombs/solution/java-dfsti-jie-dai-zhu-shi-ban-by-58888-6tcw/
      * @param bombs
      * @return
      */
     public int maximumDetonation(int[][] bombs) {
-        // 直接统计以每个炸弹为中心 能引爆的次数 找到最大
+        // 直接 dfs
         int max = 0;
-        UnionFind unionFind = new UnionFind(bombs.length);
         for (int i = 0; i < bombs.length; i++) {
-            // 枚举中心
-            for (int j = i + 1; j < bombs.length; j++) {
-                long dis = (0L + bombs[i][0] - bombs[j][0]) * (bombs[i][0] - bombs[j][0])
-                        + (bombs[i][1] - bombs[j][1]) * (bombs[i][1] - bombs[j][1]);
-                if (dis <= 1L * bombs[i][2] * bombs[i][2]) {
-                    unionFind.union(i, j);
-                }
-            }
+            boolean[] bombed = new boolean[bombs.length];
+            int count = dfs(bombs, i, bombed);
+            max = Math.max(max, count);
         }
-        // 遍历 parent 找到 相同的 数量
-        int[] count = new int[bombs.length];
-
-
-
-
-
-
         return max;
     }
 
-    class UnionFind {
+    /**
+     *
+     * @param bombs
+     * @param i
+     * @param bombed
+     * @return
+     */
+    private int dfs(int[][] bombs, int i, boolean[] bombed) {
+        // 遍历 除了 i意外的所有 看看 没爆的 这次能不能爆
+        int count = 1;
+        bombed[i] = true;
+        long x = bombs[i][0];
+        long y = bombs[i][1];
+        long r = bombs[i][2];
 
-        private int[] parent;
-
-        public UnionFind(int n) {
-            this.parent = new int[n];
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
+        for (int j = 0; j < bombed.length; j++) {
+            if (j == i) {
+                continue;
             }
-        }
-
-        public int find (int target) {
-            while (parent[target] != target) {
-                target = parent[target];
+            // 已经被引爆了
+            if (bombed[j]) {
+                continue;
             }
-            return target;
-        }
-
-        public void union (int target1, int target2) {
-            int p1 = find(target1);
-            int p2 = find(target2);
-
-            if (p1 != p2) {
-                parent[p1] = p2;
+            // 看看能不能引爆
+            long dis = (0L + x - bombs[j][0]) * (x - bombs[j][0])
+                    + (y - bombs[j][1]) * (y - bombs[j][1]);
+            // 当前爆炸范围之外
+            if (dis > 1L * r * r) {
+                continue;
             }
+            int dfs = dfs(bombs, j, bombed);
+            count += dfs;
         }
-
-
-        public int[] getParent() {
-            return parent;
-        }
+        return count;
     }
-
 
 
     public static void main(String[] args) {
