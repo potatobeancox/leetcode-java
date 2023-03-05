@@ -62,14 +62,16 @@ public class Solution {
 
             int min = Math.min(num1, num2);
             int max = Math.max(num1, num2);
-
-            // [2, min] 都是 2 [max, 2 * limit]
+            // 如果最终两个数字 在 【2， min】 之内说明 2个数字都需要改变
             diff[2] += 2;
-            diff[min + 1] -= 1;
-            diff[num1 + num2 - 1] -= 1;
-            diff[num2 + num2 + 1] += 1;
-            // [min + 1, max - 1] 都是1 num1 + num2 = 0
-            diff[max] += 1;
+            // 【min+1， max + limit + 1】用一个就行
+            diff[min+1] -= 1;
+            // 不用了
+            diff[min + max] -= 1;
+            // 【max+min + 1， max * 2】 也是用一个
+            diff[min + max + 1] += 1;
+            // 【max*2 + 1， limit * 2】 也是用2个
+            diff[max * 2 + 1] += 1;
         }
         int min = Integer.MAX_VALUE;
         int status = 0;
