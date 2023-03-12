@@ -53,31 +53,52 @@ import java.util.Map;
  */
 public class Solution {
 
+
+    /**
+     * https://leetcode.cn/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/solution/java-shuang-zhi-zhen-by-rookiewantajob-d3fv/
+     * @param nums
+     * @param target
+     * @return
+     */
     public int numSubseq(int[] nums, int target) {
         // 对 nums 进行排序
         Arrays.sort(nums);
         // 确定某一个 最小值 位置 看一下 最大值位置 是否已经超过 target 不超过计数
-        long totalCount = 0;
         int mod = 1_000_000_000 + 7;
-        for (int i = 0; i < nums.length; i++) {
-            // 控制最小值
-            for (int j = i; j < nums.length; j++) {
-                if (nums[i] + nums[j] > target) {
-                    // j 不能再大了
-                    break;
-                }
-                // i作为开始 j作为结尾 中间有多少个数字
-                int middleCount = j - i;
-                if (middleCount <= 1) {
-                    totalCount++;
-                } else {
-                    // 2 的 middleCount 次幂
-                    totalCount += Math.pow(2L, middleCount - 1);
-                }
-                totalCount %= mod;
+        // 双指针 确定当前两边作为左右子序列的中间点 有多少种序列可能
+        int left = 0;
+        int right = nums.length - 1;
+        long total = 0;
+        while (left <= right) {
+            // 如果当前
+            if (nums[left] + nums[right] > target) {
+                right--;
+            } else {
+                // 满足条件
+                total = (total + fastPow(2, right - left)) % mod;
+                left++;
             }
         }
-        return (int) totalCount;
+        return (int) total;
+    }
+
+    /**
+     *
+     * @param base 底
+     * @param num  指数
+     * @return
+     */
+    private long fastPow(int base, int num) {
+        if (num == 0) {
+            return 1;
+        }
+        long l = fastPow(base, num / 2);
+        int mod = 1_000_000_000 + 7;
+        l = (l * l) % mod;
+        if (num % 2 == 1) {
+            return (base * l) % mod;
+        }
+        return l;
     }
 
     public static void main(String[] args) {
