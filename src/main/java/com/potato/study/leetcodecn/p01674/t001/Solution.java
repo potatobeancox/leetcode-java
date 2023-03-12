@@ -53,30 +53,44 @@ import java.util.Stack;
 public class Solution {
 
     public int minMoves(int[] nums, int limit) {
+        int sumLimit = limit * 2;
         // 查分数组 2 * limit + 2
-        int[] diff = new int[2 * limit + 2];
+        int[] diff = new int[sumLimit + 1];
         // 遍历nums 求 最大值 和最小值 针对 2 最小值-1 该2个
-        for (int i = 0; i < nums.length / 2; i++) {
+        int i = 0;
+        int j = nums.length - 1;
+        while (i < j) {
+
             int num1 = nums[i];
             int num2 = nums[nums.length - 1- i];
 
-            int min = Math.min(num1, num2);
-            int max = Math.max(num1, num2);
+            int sum = num1 + num2;
+            // 两个数替换之后的最小值 将最大的替换成1 留下 最小的
+            int min = Math.min(num1, num2) + 1;
+            // 两个数字替换的最大值 留下最大值，将最小值替换成limit
+            int max = Math.max(num1, num2) + limit;
+            // 如果最终 替换后的值在 【2，min】 说明替换了一个
+
+
             // 如果最终两个数字 在 【2， min】 之内说明 2个数字都需要改变
-            diff[2] += 2;
+            diff[min]--;
+            diff[sum]--;
             // 【min+1， max + limit + 1】用一个就行
-            diff[min+1] -= 1;
-            // 不用了
-            diff[min + max] -= 1;
-            // 【max+min + 1， max * 2】 也是用一个
-            diff[min + max + 1] += 1;
-            // 【max*2 + 1， limit * 2】 也是用2个
-            diff[max * 2 + 1] += 1;
+            if (sum < sumLimit) {
+                diff[sum + 1]++;
+            }
+            if (max < sumLimit) {
+                diff[max + 1]++;
+            }
+
+            i++;
+            j--;
         }
-        int min = Integer.MAX_VALUE;
-        int status = 0;
-        for (int i = 2; i <= 2 * limit; i++) {
-            status += diff[i];
+        int min = nums.length;
+        // 先移动n次
+        int status = nums.length;
+        for (int k = 1; k <= 2 * limit; k++) {
+            status += diff[k];
             min = Math.min(min, status);
         }
         return min;
