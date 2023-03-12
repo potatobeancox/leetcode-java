@@ -50,28 +50,35 @@ import java.util.Arrays;
 public class Solution {
 
 
-    /**
-     * https://leetcode-cn.com/problems/total-appeal-of-a-string/solution/by-endlesscheng-g405/
-     * @param s
-     * @return
-     */
-    public long appealSum(String s) {
-        // 一次遍历 记录 s中每个字符出现的最后一个位置 每次更新
-        int[] lastAppear = new int[26];
-        Arrays.fill(lastAppear, -1);
-        // 使用 一个 遍历 记录 以当前i作为最后一个 字符的字串 的引力数的和 current = current + (i - pre[这个字母出现最后位置]);
-        long result = 0;
-        long currentSum = 0;
-        char[] chars = s.toCharArray();
-        for (int i = 0; i < s.length(); i++) {
-            int charIndex = chars[i] - 'a';
-            currentSum += (i-lastAppear[charIndex]);
-            // 计算结果值
-            result += currentSum;
-            // 记录最后一次出现的位置
-            lastAppear[charIndex] = i;
+    // 2263
+    public int convertArray(int[] nums) {
+        // dp ij 遍历到 i 最终结果是 j 最少花费
+        int n = nums.length;
+        long[][] dp = new long[n][1001];
+
+        // 处理 0
+        for (int i = 0; i < 1001; i++) {
+            dp[0][i] = Math.abs(nums[0] - i);
         }
-        return result;
+        long res = Long.MAX_VALUE;
+        for (int i = 1; i < n; i++) {
+            long min = dp[i-1][0];
+            for (int j = 0; j < 1001; j++) {
+                // 维护一个小于等于 j的最小值
+                min = Math.min(min, dp[i-1][j]);
+                // 可以直接从 小于 j的变成j
+                dp[i][j] = min + Math.abs(nums[i] - j);
+                if (i == n-1) {
+                    res = Math.min(res, dp[i][j]);
+                }
+            }
+        }
+        return (int) res;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
     }
 
 }
