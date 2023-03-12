@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02582.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -45,17 +47,26 @@ public class Solution {
     // 2582
     public int passThePillow(int n, int time) {
         // 计算当前 time /n 对应应该到了第几个循环
-        int t = time / n;
-        if (time % n != 0) {
-            t++;
-        }
+        int t = time / (n-1);
         // 如果是偶数就是 正向 如果是奇数就是逆向
-        int remind = time % n;
-        if (t % 2 == 0) {
-            return remind + 1;
-        } else {
+        int remind = time % (n-1);
+        if (t % 2 == 1) {
             return n - remind;
+        } else {
+            return remind + 1;
         }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int i = solution.passThePillow(3, 2);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        i = solution.passThePillow(4, 5);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 
 
