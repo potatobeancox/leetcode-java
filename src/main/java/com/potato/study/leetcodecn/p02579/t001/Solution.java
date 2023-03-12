@@ -42,7 +42,12 @@ public class Solution {
 
     // 2579
     public long coloredCells(int n) {
-        return 1L + 4 * (n-1);
+        //  1
+        // 1 + 4 * 1
+        // 1+ 4* 1 + 4 * 2
+
+        // 1 + 4 * (0 + n-1) * n / 2
+        return 1L + 4L * (n-1L) * n / 2;
     }
 
 
