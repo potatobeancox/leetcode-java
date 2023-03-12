@@ -55,23 +55,15 @@ public class Solution {
     public int[][] substringXorQueries(String s, int[][] queries) {
         // 使用一个 Map 记录 每个数字 对应left最小的那个
         Map<Integer, int[]> substringMap = new HashMap<>();
-        // 预处理 s
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '0') {
-                continue;
-            }
-            for (int j = i; j < s.length(); j++) {
-                String substring = s.substring(i, j + 1);
-                if (substring.length() == 0) {
-                    continue;
-                }
+        // 预处理 s 靠先圈定大小 先用长的 起点 大的占位 一旦有小的 直接覆盖的策略
+        for (int i = 30; i > 0; i--) {
+            for (int j = s.length() - i; j >= 0; j--) {
+                String substring = s.substring(j, j + i);
                 int num = Integer.parseInt(substring, 2);
-                if (!substringMap.containsKey(num)) {
-                    substringMap.put(num, new int[] {
-                            i, j
-                    });
-                }
+                substringMap.put(num, new int[] {
+                        j, j+i-1
+                });
+
             }
         }
         // val ^ firsti == secondi 也就是 val == secondi ^ firsti
@@ -85,6 +77,11 @@ public class Solution {
             }
         }
         return res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(1 ^ 2);
     }
 
 }
