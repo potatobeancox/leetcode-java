@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p02263.t001;
 
-import java.util.Arrays;
+import org.junit.Assert;
+
 
 /**
  * 2263. 数组变为有序的最小操作次数
@@ -52,10 +53,38 @@ public class Solution {
 
     // 2263
     public int convertArray(int[] nums) {
-        // dp ij 遍历到 i 最终结果是 j 最少花费
+        // dp ij 遍历到 i 最终结果是 j
+        int ascResult = getAscResult(nums);
+        int descResult = getDescResult(nums);
+        return Math.min(ascResult, descResult);
+    }
+
+    private int getDescResult(int[] nums) {
         int n = nums.length;
         long[][] dp = new long[n][1001];
+        // 处理 0
+        for (int i = 1000; i >= 0; i--) {
+            dp[0][i] = Math.abs(nums[0] - i);
+        }
+        long res = Long.MAX_VALUE;
+        for (int i = 1; i < n; i++) {
+            long min = dp[i-1][0];
+            for (int j = 1000; j >= 0; j--) {
+                // 维护一个小于等于 j的最小值
+                min = Math.min(min, dp[i-1][j]);
+                // 可以直接从 小于 j的变成j
+                dp[i][j] = min + Math.abs(nums[i] - j);
+                if (i == n-1) {
+                    res = Math.min(res, dp[i][j]);
+                }
+            }
+        }
+        return (int) res;
+    }
 
+    private int getAscResult(int[] nums) {
+        int n = nums.length;
+        long[][] dp = new long[n][1001];
         // 处理 0
         for (int i = 0; i < 1001; i++) {
             dp[0][i] = Math.abs(nums[0] - i);
@@ -79,6 +108,12 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution solution = new Solution();
+        int[] nums = new int[] {
+                3,2,4,5,0
+        };
+        int i = solution.convertArray(nums);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
     }
 
 }

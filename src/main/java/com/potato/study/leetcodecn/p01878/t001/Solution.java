@@ -65,6 +65,7 @@ public class Solution {
     public int[] getBiggestThree(int[][] grid) {
         // 0 计算 每个位置 ij 开始 想右上和 右下两个对角线的和
         int[][] upSum = new int[grid.length][grid[0].length];
+        // 往
         int[][] downSum = new int[grid.length][grid[0].length];
         // 上边界和 右边界 是他自身
         for (int i = 0; i < grid.length; i++) {
@@ -76,7 +77,7 @@ public class Solution {
                 }
             }
         }
-        // 下边界和 做边界 等于自身
+        // 下边界和 左边界 等于自身
         for (int i = grid.length-1; i >= 0; i--) {
             for (int j = grid[0].length - 1; j >= 0; j--) {
                 if (i == grid.length-1 || j == grid[0].length - 1) {
