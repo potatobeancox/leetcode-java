@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02332.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,48 +69,67 @@ public class Solution {
         }
         int passengerIndex = 0;
         // 遍历 bus 时间点 找到 之前 的 pass
+        boolean isLastFull = false;
+        int lastPassIndex = -1;
         for (int i = 0; i < buses.length; i++) {
             int departureTime = buses[i];
             int passNum = 0;
-            int lastPassIndex = -1;
             while (passengerIndex < passengers.length
-                    && passNum < capacity && passengers[passengerIndex] <= departureTime) {
+                    && passNum < capacity
+                    && passengers[passengerIndex] <= departureTime) {
                 passNum++;
                 // 最后一个乘客
                 lastPassIndex = passengerIndex;
                 passengerIndex++;
             }
-            // 最后一辆车 没人和 有人的不同情况
-            if (buses.length - 1 == i) {
-                if (lastPassIndex == -1) {
-                    // 没人情况
-                    int latestTime = departureTime;
-                    while (passengerTimeSet.contains(latestTime)) {
-                        latestTime--;
-                    }
-                    return latestTime;
-                } else {
-                    // 有人情况 填满了 or没装满
-                    if (passNum == capacity) {
-                        // 满了 比最后一个人早
-                        int latestTime = passengers[passengerIndex];
-                        while (passengerTimeSet.contains(latestTime)) {
-                            latestTime--;
-                        }
-                        return latestTime;
-                    } else {
-                        // 没满
-                        // 没人情况
-                        int latestTime = departureTime;
-                        while (passengerTimeSet.contains(latestTime)) {
-                            latestTime--;
-                        }
-                        return latestTime;
-                    }
-                }
+            if (i == buses.length - 1 && passNum == capacity) {
+                isLastFull = true;
+            }
+        }
+        // 最后一趟车还有座位 且最后到的那个人在发车之前到了
+        if (!isLastFull && (lastPassIndex == -1 || passengers[lastPassIndex] < buses[buses.length-1])) {
+            return buses[buses.length-1];
+        }
+        // 最后一趟没有座位了 只能顶一个人 最后的人的时间 往前找一个
+        int time = passengers[lastPassIndex];
+        // 从time开始枚举 找到嗲一个没有的时间
+        for (int i = time; i >= 0; i--) {
+            boolean isSame = false;
+            while (lastPassIndex >= 0 && i == passengers[lastPassIndex]) {
+                lastPassIndex--;
+                isSame = true;
+            }
+            if (!isSame) {
+                return i;
             }
         }
         return -1;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] buses = new int[] {
+                20,30,10
+        };
+        int[] passengers = new int[] {
+                19,13,26,4,25,11,21
+        };
+        int capacity = 2;
+        int i = solution.latestTimeCatchTheBus(buses, passengers, capacity);
+        System.out.println(i);
+        Assert.assertEquals(20, i);
+
+
+        buses = new int[] {
+                3
+        };
+        passengers = new int[] {
+                4
+        };
+        capacity = 1;
+        i = solution.latestTimeCatchTheBus(buses, passengers, capacity);
+        System.out.println(i);
+//        Assert.assertEquals(20, i);
     }
 
 }
