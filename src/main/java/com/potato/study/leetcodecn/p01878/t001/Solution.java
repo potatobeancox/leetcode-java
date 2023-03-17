@@ -62,6 +62,12 @@ import com.potato.study.leetcode.util.LeetcodeInputUtils;
  */
 public class Solution {
 
+
+    /**
+     *
+     * @param grid
+     * @return
+     */
     public int[] getBiggestThree(int[][] grid) {
         // 0 计算 每个位置 ij 开始 想右上和 右下两个对角线的和
         int[][] upSum = new int[grid.length][grid[0].length];
