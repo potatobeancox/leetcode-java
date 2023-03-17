@@ -2,12 +2,7 @@ package com.potato.study.leetcodecn.p02587.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 2587. 重排数组以得到最大前缀分数
@@ -52,11 +47,15 @@ public class Solution {
         int score = 0;
         long sum = 0;
         // 记录 负数 将负数按照 从小达到排序 用sum计算 和
+        Arrays.sort(nums);
         List<Integer> negativeList = new ArrayList<>();
-        for (int num : nums) {
+        for (int i = nums.length - 1; i >= 0; i--) {
+            int num = nums[i];
             if (num >= 0) {
                 sum += num;
-                score++;
+                if (sum > 0) {
+                    score++;
+                }
             } else {
                 negativeList.add(num);
             }
@@ -66,7 +65,8 @@ public class Solution {
             return 0;
         }
         Collections.sort(negativeList);
-        for (int neg : negativeList) {
+        for (int i = negativeList.size() - 1; i >= 0; i--) {
+            int neg = negativeList.get(i);
             sum += neg;
             if (sum > 0) {
                 score++;
