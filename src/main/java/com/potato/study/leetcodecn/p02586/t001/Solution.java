@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02586.t001;
 
+import org.junit.Assert;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,18 +56,35 @@ public class Solution {
     // 2586
     public int vowelStrings(String[] words, int left, int right) {
         int count = 0;
-        for (int i = left; i < right; i++) {
+        for (int i = left; i <= right; i++) {
             String word = words[i];
             if (null == word || word.length() < 1) {
                 continue;
             }
             char c = word.charAt(0);
-            if (c == 'a' || c == 'e' || c == 'i'
-                    || c == 'o' || c == 'u') {
+            char last = word.charAt(word.length() - 1);
+            if (isVowel(c) && isVowel(last)) {
                 count++;
             }
         }
         return count;
+    }
+
+    private boolean isVowel(char c) {
+        return c == 'a' || c == 'e' || c == 'i'
+                || c == 'o' || c == 'u';
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] words = new String[] {
+                "hey","aeo","mu","ooo","artro"
+        };
+        int left = 1;
+        int right = 4;
+        int i = solution.vowelStrings(words, left, right);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 
 
