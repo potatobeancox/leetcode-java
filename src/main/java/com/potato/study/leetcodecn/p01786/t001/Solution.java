@@ -1,11 +1,6 @@
 package com.potato.study.leetcodecn.p01786.t001;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 1786. 从第一个节点出发到最后一个节点的受限路径数
@@ -76,32 +71,36 @@ public class Solution {
         // 求每个点到点n的最端路径 dijstra 数组 dist i 从 i到n的最小花费
         int[] dist = new int[n+1];
         Arrays.fill(dist, Integer.MAX_VALUE);
-        // 数组中 第一个是当前需要
-        Queue<int[]> queue = new LinkedList<>();
+        // 数组中 第一个是当前需要 按照距离排序 升序
+        Queue<int[]> queue = new PriorityQueue<>((o1, o2) -> Integer.compare(o1[1], o2[1]));
         // n->n 没有花费
         dist[n] = 0;
         // 从 n开始 找
         queue.add(new int[] {n, 0});
         // 状态位 记录 某个点是否已经被访问过，使用 queue最开始从n开始访问
         boolean[] used = new boolean[n+1];
-        used[n] = true;
         while (!queue.isEmpty()) {
             int[] poll = queue.poll();
             int nodeIndex = poll[0];
             int currentCost = poll[1];
+
+            // 看看 是不是访问过
+            if (used[nodeIndex]) {
+                continue;
+            }
+            used[nodeIndex] = true;
+
             // 找到临界
             Map<Integer, Integer> adjacentMap = graph.get(nodeIndex);
             if (null == adjacentMap) {
                 continue;
             }
             for (int nextNodeIndex : adjacentMap.keySet()) {
-                // 看看 是不是访问过
-                if (used[nextNodeIndex]) {
-                    continue;
-                }
-                used[nextNodeIndex] = true;
                 // 每次找到没有访问过的 记录路程过程中的 目前的点和花费
-                dist[nextNodeIndex] = Math.min(dist[nextNodeIndex], currentCost + adjacentMap.get(nextNodeIndex));
+                dist[nextNodeIndex] = Math.min(dist[nextNodeIndex],
+                        currentCost + adjacentMap.get(nextNodeIndex));
+
+                queue.add(new int[] {nextNodeIndex, dist[nextNodeIndex]});
             }
         }
         // 对 dist 生成一个index cost 顺序的情况 注意要吧0 去掉
