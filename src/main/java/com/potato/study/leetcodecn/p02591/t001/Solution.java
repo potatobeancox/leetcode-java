@@ -60,6 +60,9 @@ public class Solution {
         }
         // 否则 先按照每个人1块钱 分 剩余 money 计算一下
         int maxEightCount = remind / 7;
+        if (maxEightCount == 0) {
+            return 0;
+        }
         if (maxEightCount > children) {
             return children - 1;
         }
@@ -75,7 +78,7 @@ public class Solution {
             return maxEightCount;
         }
         // 还有人 不是 8
-        if (notUseMoney == 3) {
+        if (notUseMoney == 3 && children - maxEightCount == 1) {
             return maxEightCount - 1;
         }
         return maxEightCount;
@@ -88,7 +91,19 @@ public class Solution {
         int i = solution.distMoney(money, children);
         System.out.println(i);
         Assert.assertEquals(0, i);
+
+
+        money = 13;
+        children = 3;
+        i = solution.distMoney(money, children);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+
     }
+
+
 
 
 }
