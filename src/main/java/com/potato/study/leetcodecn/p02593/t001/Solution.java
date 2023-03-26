@@ -54,7 +54,13 @@ public class Solution {
     public long findScore(int[] nums) {
         boolean[] used = new boolean[nums.length];
         // 0：值， 1：index
-        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((o1, o2) -> Integer.compare(o1[0], o2[0]));
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((o1, o2) -> {
+            int compare = Integer.compare(o1[0], o2[0]);
+            if (compare == 0) {
+                return Integer.compare(o1[1], o2[1]);
+            }
+            return compare;
+        });
         for (int i = 0; i < nums.length; i++) {
             priorityQueue.add(new int[] {nums[i], i});
         }
