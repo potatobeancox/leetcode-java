@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02598.t001;
 
+import org.junit.Assert;
+
 /**
  * 2598. 执行操作后的最大 MEX
  * 给你一个下标从 0 开始的整数数组 nums 和一个整数 value 。
@@ -70,8 +72,22 @@ public class Solution {
         if (modCounts[minIndex] == 0) {
             return minIndex;
         }
-        int times = minIndex;
-        return value * times + minIndex;
+        int times = modCounts[minIndex];
+
+        int res = value * times + minIndex;
+        if (res > nums.length) {
+            return nums.length;
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {3,0,3,2,4,2,1,1,0,4};
+        int value = 5;
+        int smallestInteger = solution.findSmallestInteger(nums, value);
+        System.out.println(smallestInteger);
+        Assert.assertEquals(10, smallestInteger);
     }
 
 }
