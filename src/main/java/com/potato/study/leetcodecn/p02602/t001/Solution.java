@@ -78,9 +78,9 @@ public class Solution {
                 result.add(1L * n * q - prefix[n-1]);
             } else if (index == 0){
                 // 所有的都 大于 q
-                result.add(1L * prefix[n-1] - n * q);
+                result.add(1L * prefix[n-1] - 1L * n * q);
             } else {
-                result.add(1L * index * q - prefix[index-1] + prefix[n-1] - prefix[index-1] - (n - index) * q);
+                result.add((2L * index - n) * q - 2L * prefix[index-1] + prefix[n-1]);
             }
         }
         return result;
