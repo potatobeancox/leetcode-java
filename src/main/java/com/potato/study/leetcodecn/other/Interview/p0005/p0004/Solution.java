@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.other.Interview.p0005.p0004;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
+
 /**
  * 面试题 05.04. 下一个数
  *
@@ -31,14 +33,18 @@ public class Solution {
     // mainshiti 05.04
     public int[] findClosedNumbers(int num) {
         // 将num 转成2进制 大的最近的数字 从右往左 找到第一个 01 -》 10 然后将 这个右边的1 都放在最右边
-        int small = getSmall(num);
+        long small = getSmall(num);
         // 将num 转成2进制 small的最近的数字 从右往左 找到第一个 10 -》 01 然后将 这个右边的1 都放在最左边边
-        int big = getBig(num);
-        return new int[] {big, small};
+        long big = getBig(num);
+        if (big > Integer.MAX_VALUE) {
+            big = -1;
+        }
+        return new int[] {(int) big, (int) small};
     }
 
-    private int getBig(int num) {
-        char[] chars = Integer.toBinaryString(num).toCharArray();
+    private long getBig(int num) {
+        String s = '0' + Integer.toBinaryString(num);
+        char[] chars = s.toCharArray();
         int index = -1;
         for (int i = chars.length - 1; i > 0; i--) {
             if (chars[i-1] == '0' && chars[i] == '1') {
@@ -74,10 +80,10 @@ public class Solution {
             }
         }
         String numStr = new String(chars);
-        return Integer.parseInt(numStr);
+        return Long.parseLong(numStr, 2);
     }
 
-    private int getSmall(int num) {
+    private long getSmall(int num) {
         char[] chars = Integer.toBinaryString(num).toCharArray();
         int index = -1;
         for (int i = chars.length - 1; i > 0; i--) {
@@ -114,6 +120,15 @@ public class Solution {
             }
         }
         String numStr = new String(chars);
-        return Integer.parseInt(numStr);
+        return Long.parseLong(numStr, 2);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] closedNumbers = solution.findClosedNumbers(2);
+        System.out.println(Arrays.toString(closedNumbers));
+        Assert.assertArrayEquals(closedNumbers, new int[] {
+                4, 1
+        });
     }
 }
