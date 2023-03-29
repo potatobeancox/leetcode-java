@@ -76,7 +76,21 @@ public class Solution {
             target = root;
             return;
         }
+        prev = root;
         doInorderSuccessorFind(root.right, p);
+    }
+
+    public static void main(String[] args) {
+
+        TreeNode root = new TreeNode(2);
+        TreeNode p = new TreeNode(1);
+        root.left = p;
+        root.right = new TreeNode(3);
+
+        Solution solution = new Solution();
+        TreeNode treeNode = solution.inorderSuccessor(root, p);
+        System.out.println(treeNode);
+
     }
 
 
