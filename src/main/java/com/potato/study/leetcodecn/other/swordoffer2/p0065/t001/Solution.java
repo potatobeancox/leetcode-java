@@ -1,7 +1,9 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0065.t001;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 剑指 Offer II 065. 最短的单词编码
@@ -49,9 +51,30 @@ import java.util.List;
 public class Solution {
 
 
+    // 065 不想写字典树了
     public int minimumLengthEncoding(String[] words) {
-
-        return -1;
+        Set<String> dictionarySet = new HashSet<>();
+        for (String word : words) {
+            // 找到后缀 并从 dic 中删除
+            if (dictionarySet.isEmpty()) {
+                dictionarySet.add(word);
+                continue;
+            }
+            for (int i = 0; i < word.length(); i++) {
+                String sub = word.substring(i);
+                if (dictionarySet.contains(sub)) {
+                    dictionarySet.remove(sub);
+                }
+            }
+            dictionarySet.add(word);
+        }
+        // 找到 set 中的单词长度的和
+        int totalLength = 0;
+        for (String dic : dictionarySet) {
+            totalLength += dic.length();
+            totalLength += 1;
+        }
+        return totalLength;
     }
 
 }
