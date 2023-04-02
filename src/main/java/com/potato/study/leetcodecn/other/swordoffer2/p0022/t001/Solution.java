@@ -77,6 +77,11 @@ public class Solution {
                 break;
             }
         }
+        // 没有相遇
+        if (fast != slow) {
+            return null;
+        }
+
         // 从 fast 和 head开始走 走到相遇
         ListNode p = head;
         ListNode q = fast;
