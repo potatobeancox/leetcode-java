@@ -68,8 +68,10 @@ public class Solution {
         }
         int[] in = new int[numCourses];
         for (int[] prerequisite : prerequisites) {
-            int from = prerequisite[0];
-            int to = prerequisite[1];
+            // bi
+            int from = prerequisite[1];
+            // ai
+            int to = prerequisite[0];
 
             grid[from].add(to);
             in[to]++;
@@ -106,6 +108,9 @@ public class Solution {
                     result.add(next);
                 }
             }
+        }
+        if (result.size() < numCourses) {
+            return new int[]{};
         }
         int[] ints = new int[numCourses];
         for (int i = 0; i < numCourses; i++) {
