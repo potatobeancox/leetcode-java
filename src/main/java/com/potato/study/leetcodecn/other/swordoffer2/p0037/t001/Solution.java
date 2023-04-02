@@ -72,7 +72,12 @@ public class Solution {
                 boolean isCollision = false;
                 while (!rightTowards.isEmpty()) {
                     int rightTowardsOne = rightTowards.pollLast();
-                    if (rightTowardsOne > asteroid) {
+                    int coll = rightTowardsOne + asteroid;
+                    if (coll == 0) {
+                        // 左右都爆炸了
+                        isCollision = true;
+                        break;
+                    } else if (coll > 0) {
                         // asteroid 小 爆炸
                         rightTowards.addLast(rightTowardsOne);
                         isCollision = true;
@@ -94,5 +99,14 @@ public class Solution {
             }
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] asteroids = new int[] {
+                8,-8
+        };
+        int[] ints = solution.asteroidCollision(asteroids);
+        System.out.println(Arrays.toString(ints));
     }
 }
