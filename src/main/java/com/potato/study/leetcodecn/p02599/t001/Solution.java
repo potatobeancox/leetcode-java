@@ -2,6 +2,8 @@ package com.potato.study.leetcodecn.p02599.t001;
 
 import org.junit.Assert;
 
+import java.util.PriorityQueue;
+
 /**
  *
  * 2599. Make the Prefix Sum Non-negative
@@ -46,51 +48,32 @@ public class Solution {
     public int makePrefSumNonNegative(int[] nums) {
         // 每次操作 可以交换一个 负数 到最后 如果当前加上 小于等于 指定值
         int count = 0;
-        int index = 0;
         long sum = 0;
-        // 找到末尾第一个正数
-        int lastPosIndex = -1;
-        for (int i = nums.length - 1; i >= 0; i--) {
-            if (nums[i] >= 0) {
-                lastPosIndex = i;
-                break;
+        // 记录负数sum
+        long negSum = 0;
+        PriorityQueue<Integer> neg = new PriorityQueue<>();
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            // sum 非负数
+            if (nums[i] < 0) {
+                neg.add(nums[i]);
             }
-        }
-        while (index < nums.length) {
-            // 找到了 最后一个 index 大于等于 正数了 可以直接返回了
-            if (lastPosIndex != -1 && index >= lastPosIndex) {
-                return count;
-            }
-            // 当前数组加上这个数字是不是负数 如果是负数的话 要在末尾找到一个正数交换
-            boolean isSumNeg = (sum + nums[index] < 0);
-            // 不可能达成
-            if (lastPosIndex == -1) {
-                return -1;
-            }
-            // 交换index 和 last 计算 sum 修改 count 和last
-            int tmp = nums[lastPosIndex];
-            nums[lastPosIndex] = nums[index];
-            nums[index] = tmp;
-
-            sum += nums[index];
-            count++;
-
-            boolean hasFound = false;
-            for (int i = lastPosIndex - 1; i > index; i--) {
-                if (nums[i] >= 0) {
-                    lastPosIndex = i;
-                    hasFound = true;
-                    break;
+            if (sum < 0) {
+                if (neg.isEmpty()) {
+                    return -1;
                 }
+                count++;
+                Integer poll = neg.poll();
+                negSum += poll;
+                sum -= poll;
             }
-
-            if (!hasFound) {
-                lastPosIndex = -1;
-            }
-
-            index++;
         }
-        return count;
+        // 结算
+        sum += negSum;
+        if (sum >= 0) {
+            return count;
+        }
+        return -1;
     }
 
 }
