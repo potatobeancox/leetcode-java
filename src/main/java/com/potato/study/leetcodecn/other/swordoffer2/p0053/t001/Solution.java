@@ -72,7 +72,8 @@ public class Solution {
         // do left child
         doInorderSuccessorFind(root.left, p);
         // 处理如果prev 就是p 那么当前节点就是 后继
-        if (p == prev) {
+        // 剪枝
+        if (target == null && p != null && prev != null && p.val == prev.val) {
             target = root;
             return;
         }
@@ -89,6 +90,19 @@ public class Solution {
 
         Solution solution = new Solution();
         TreeNode treeNode = solution.inorderSuccessor(root, p);
+        System.out.println(treeNode);
+
+
+        root = new TreeNode(5);
+        root.right = new TreeNode(6);
+        root.left = new TreeNode(3);
+        root.left.left = new TreeNode(2);
+        root.left.right = new TreeNode(4);
+        p = new TreeNode(1);
+        root.left.left.left = p;
+
+        treeNode = solution.inorderSuccessor(root, p);
+        // 2
         System.out.println(treeNode);
 
     }
