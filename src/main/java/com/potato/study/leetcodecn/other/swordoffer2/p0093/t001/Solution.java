@@ -66,11 +66,39 @@ public class Solution {
                     dp[i][j] = 2;
                 } else {
                     int beforeIndex = valueIndexMap.get(before);
-                    dp[i][j] = Math.max(dp[i][j], dp[beforeIndex][i] + 1);
+                    // before 有 但是已经被使用了
+                    if (beforeIndex < i) {
+                        dp[i][j] = Math.max(dp[i][j], dp[beforeIndex][i] + 1);
+                    } else {
+                        dp[i][j] = 2;
+                    }
                 }
                 max = Math.max(max, dp[i][j]);
             }
         }
+        if (max == 2) {
+            return 0;
+        }
         return max;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] arr = new int[] {
+                1,2,3,4,5,6,7,8
+        };
+        // 1 2 3 5 8
+        int i = solution.lenLongestFibSubseq(arr);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
+
+
+        arr = new int[] {
+                2,4,7,8,9,10,14,15,18,23,32,50
+        };
+        // 4 14 18 32 50
+        i = solution.lenLongestFibSubseq(arr);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
     }
 }
