@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0103.t001;
 
+import org.junit.Assert;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -56,6 +58,9 @@ public class Solution {
 
     // ii 103
     public int coinChange(int[] coins, int amount) {
+        if (amount == 0) {
+            return 0;
+        }
         Queue<Integer> queue = new LinkedList<>();
         queue.add(amount);
         int time = 1;
@@ -71,16 +76,29 @@ public class Solution {
                     int remind = poll - coin;
                     if (remind == 0) {
                         return time;
+                    } else if (remind < 0) {
+                        continue;
                     }
                     if (seen.contains(remind)) {
                         continue;
                     }
                     queue.add(remind);
+                    seen.add(remind);
                 }
             }
             // time 个数量
             time++;
         }
-        return time;
+        return -1;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] coins = new int[] {2};
+        int amount = 3;
+        int i = solution.coinChange(coins, amount);
+        System.out.println(i);
+        Assert.assertEquals(-1, i);
     }
 }
