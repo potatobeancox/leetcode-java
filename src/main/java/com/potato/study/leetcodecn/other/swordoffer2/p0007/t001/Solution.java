@@ -1,6 +1,5 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0007.t001;
 
-import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +61,11 @@ public class Solution {
         Arrays.sort(nums);
         List<List<Integer>> result = new ArrayList<>();
         for (int i = 0; i < nums.length - 2; i++) {
+            // 去重复
+            if (i > 0 && nums[i] == nums[i-1]) {
+                continue;
+            }
+
             int target = 0 - nums[i];
             // 滑动窗口找到jk
             int left = i + 1;
@@ -72,22 +76,40 @@ public class Solution {
                 if (value == target) {
                     // 记录结果 移动left
                     List<Integer> list = new ArrayList<>();
-                    list.add(i);
-                    list.add(left);
-                    list.add(right);
+                    list.add(nums[i]);
+                    list.add(nums[left]);
+                    list.add(nums[right]);
                     result.add(list);
 
                     left++;
-                } else if (value > target) {
-                    // 大了 移动右边
+                    while (left < right && nums[left] == nums[left-1]) {
+                        left++;
+                    }
                     right--;
+                    while (left < right && nums[right] == nums[right+1]) {
+                        right--;
+                    }
+                } else if (value > target) {
+                    right--;
+                    // 大了 移动右边
+                    while (left < right && nums[right] == nums[right+1]) {
+                        right--;
+                    }
                 } else {
                     left++;
+                    while (left < right && nums[left] == nums[left-1]) {
+                        left++;
+                    }
                 }
             }
         }
         // 然后用时间窗口 计算是否等于 0 等于0 记得滑动
         return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+//        solution.threeSum()
     }
 
 
