@@ -1,9 +1,8 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0065.t001;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.junit.Assert;
+
+import java.util.*;
 
 /**
  * 剑指 Offer II 065. 最短的单词编码
@@ -53,6 +52,7 @@ public class Solution {
 
     // 065 不想写字典树了
     public int minimumLengthEncoding(String[] words) {
+        Arrays.sort(words, (o1, o2) -> Integer.compare(o1.length(), o2.length()));
         Set<String> dictionarySet = new HashSet<>();
         for (String word : words) {
             // 找到后缀 并从 dic 中删除
@@ -75,6 +75,16 @@ public class Solution {
             totalLength += 1;
         }
         return totalLength;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] words = new String[] {
+                "time","me","bell"
+        };
+        int i = solution.minimumLengthEncoding(words);
+        System.out.println(i);
+        Assert.assertEquals(10, i);
     }
 
 }
