@@ -133,7 +133,7 @@ public class Solution {
                 // 前后都有
                 chars[i]++;
                 result.add(new String(chars));
-                chars[i]--;
+                chars[i]-=2;
                 result.add(new String(chars));
             }
         }
