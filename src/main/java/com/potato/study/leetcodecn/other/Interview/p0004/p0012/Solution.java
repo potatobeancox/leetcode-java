@@ -2,6 +2,7 @@ package com.potato.study.leetcodecn.other.Interview.p0004.p0012;
 
 
 import com.potato.study.leetcode.domain.TreeNode;
+import org.junit.Assert;
 
 /**
  * 面试题 04.12. 求和路径
@@ -35,34 +36,70 @@ public class Solution {
 
 
     // 04 12 求路径 一直向下
-    private int pathCount;
     public int pathSum(TreeNode root, int sum) {
-        this.pathCount = 0;
-        dfs(root, sum, 0);
-        return pathCount;
-    }
-
-    private void dfs(TreeNode root, int sum, int current) {
         if (root == null) {
             // 到了终点 不需要统计
-            return;
+            return 0;
+        }
+        // 从这个节点开始 找路径 保证这个节点是起点
+        int path = rootPathSum(root, sum, 0);
+
+        // 从孩子节点找
+        if (root.left != null) {
+            path += pathSum(root.left, sum);
+        }
+        if (root.right != null) {
+            path += pathSum(root.right, sum);
+        }
+
+        return path;
+    }
+
+    /**
+     * 返回从这个节点 到某个孩子 路径值为 sum 的条数
+     * @param root
+     * @param sum
+     * @param current   走到当前节点已经有了多少积累
+     * @return
+     */
+    private int rootPathSum(TreeNode root, int sum, int current) {
+        if (root == null) {
+            // 到了终点 不需要统计
+            return 0;
         }
         // 如果走到这个节点 current 已经等于 sum
         current += root.val;
+        int pathCount = 0;
         // 当前这个路径已经找到了 计数
         if (sum == current) {
-            this.pathCount++;
+            pathCount++;
         }
-        // 当前节点作为起点且为终点
-        if (root.val == sum) {
-            this.pathCount++;
+        // 沿着之前的路往前走 有正数也有负数
+        if (root.left != null) {
+            pathCount += rootPathSum(root.left, sum, current);
         }
-        // 沿着之前的路往前走
-        dfs(root.left, sum, current);
-        dfs(root.right, sum, current);
+        if (root.right != null) {
+            pathCount += rootPathSum(root.right, sum, current);
+        }
+        return pathCount;
+    }
 
-        // 从孩子开始走
-        dfs(root.left, sum, 0);
-        dfs(root.right, sum, 0);
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        TreeNode root = new TreeNode(1);
+        int i = solution.pathSum(root, 1);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+        root = new TreeNode(1);
+        root.right = new TreeNode(2);
+        root.right.right = new TreeNode(3);
+        root.right.right.right = new TreeNode(4);
+        root.right.right.right.right = new TreeNode(5);
+
+        i = solution.pathSum(root, 3);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 }
