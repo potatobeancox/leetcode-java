@@ -80,6 +80,9 @@ public class Solution {
             result.add(buildIpadress(list));
             return;
         }
+        if (list.size() > 4) {
+            return;
+        }
         for (int i = index; i < s.length(); i++) {
             // 当前字符检测 不是数字 直接 return吧
             if (!Character.isDigit(s.charAt(i))) {
@@ -91,6 +94,11 @@ public class Solution {
                 // 这个循环没有必要继续下去了
                 return;
             }
+            // 是否有前缀0 影响结果
+            if (String.valueOf(partNum).length() != substring.length()) {
+                return;
+            }
+
             // 往内部递归
             list.add(partNum);
             dfs(result, s, i+1, list);
@@ -106,6 +114,13 @@ public class Solution {
         }
         builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = "1";
+        List<String> strings = solution.restoreIpAddresses(s);
+        System.out.println(strings);
     }
 
 }
