@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.other.swordoffer.p0044.p1.t001;
 
+import org.junit.Assert;
+
 import java.util.PriorityQueue;
 
 /**
@@ -35,26 +37,50 @@ public class Solution {
 
     // 剑指 offer 44
     public int findNthDigit(int n) {
-        // 记录当前 是几位数
-        int bitCount = 1;
-        // 当前 bitcount 有多少个数字
-        int bitCountNum = 9;
-        // 判断当前 n在 多少个 bitCount里边
-        while (n > bitCount * bitCountNum) {
-            n -= (bitCount * bitCountNum);
-
-            bitCount++;
-            bitCountNum *= 10;
+        if (n < 10) {
+            return n;
         }
-        // 定位这个n在第几个数字里边
-        int index = n-1;
-        // 当前bit 位数字的开始数字
-        int startNum = (int) Math.pow(10, bitCount - 1);
-        // 当前数字
-        int currentNum = startNum + index / bitCount;
-        int digitIndex = index % bitCount;
-        String s = String.valueOf(currentNum);
-        return s.charAt(digitIndex) - '0';
+        long temp = n - 9;
+        // 记录当前 是几位数
+        long bitCount = 2;
+        long startNum = 10;
+        long endNum = 99;
+
+        while (temp > (endNum - startNum + 1) * bitCount) {
+
+            temp -= ((endNum - startNum + 1) * bitCount);
+            // 更新 位数
+            bitCount++;
+            startNum *= 10;
+            endNum *= 10;
+            endNum += 9;
+
+            // 找到了位置
+        }
+        // 看一下在哪个数字里边
+        long bitNumIndex = (temp-1) / bitCount;
+        long targetNum = startNum + bitNumIndex;
+        String s = String.valueOf(targetNum);
+        long targetIndex = (temp - 1) % bitCount;
+        return s.charAt((int)targetIndex) - '0';
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int nthDigit = solution.findNthDigit(11);
+        System.out.println(nthDigit);
+        Assert.assertEquals(0, nthDigit);
+
+
+        nthDigit = solution.findNthDigit(1000);
+        System.out.println(nthDigit);
+        Assert.assertEquals(3, nthDigit);
+
+
+        nthDigit = solution.findNthDigit(1000000000);
+        System.out.println(nthDigit);
+        Assert.assertEquals(1, nthDigit);
+
     }
 
 }
