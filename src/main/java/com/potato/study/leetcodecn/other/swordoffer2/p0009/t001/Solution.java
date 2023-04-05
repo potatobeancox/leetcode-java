@@ -36,53 +36,38 @@ import org.junit.Assert;
  *
  */
 public class Solution {
-    // 009
+    // 009 滑动窗口 固定右边 滑动左边
     public int numSubarrayProductLessThanK(int[] nums, int k) {
-        // nums 正整数 乘积小于 k 子数组个数
-        // prefix1 / prefix2 < k  ==》 prefix1 / k < prefix2 找到第一个大于 prefix1 / k的 index
-        // 前缀* 一定是递增的 treeSet 中找到
-        int n = nums.length;
-        long[] product = new long[n+1];
-        product[0] = 1;
-        int totalCount = 0;
-        for (int i = 0; i < nums.length; i++) {
-            product[i+1] = product[i] * nums[i];
-            long target = product[i+1] / k;
-            int biggerIndex = findBiggerIndex(product, target, 0, i);
-            // 没找到
-            if (biggerIndex == -1) {
-                continue;
-            }
-            totalCount += (i+1 - biggerIndex);
+        if (k == 0) {
+            return 0;
         }
-        return totalCount;
+        int left = 0;
+        long window = 1;
+        int num = 0;
+        for (int right = 0; right < nums.length; right++) {
+            window *= nums[right];
+            // 保证 窗口内部小于 k
+            while (window >= k && left <= right) {
+                window /= nums[left];
+                left++;
+            }
+            int len = right - left + 1;
+            if (len > 0) {
+                num += len;
+            }
+        }
+        return num;
     }
 
-    /**
-     * 在 product 中 index 位于 【from, to】 位置找到大于 target的 index
-     * @param product
-     * @param target
-     * @param from from的坐标
-     * @param to to坐标
-     * @return
-     */
-    private int findBiggerIndex(long[] product, long target, int from, int to) {
-        int left = from;
-        int right = to;
 
-        int res = -1;
-        while (left <= right) {
-            int mid = (left + right) / 2;
 
-            if (product[mid] > target) {
-                res = mid;
-                right = mid - 1;
-            } else {
-                // mid 值小了
-                left = mid + 1;
-            }
-        }
-        return res;
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+//        [7,6,8,4,9,3,2,10,7,9,9,6,3]
+//        236
+//        int i = solution.numSubarrayProductLessThanK();
+//        System.out.println(i);
+//        Assert.assertEquals(, i);
     }
 
 
