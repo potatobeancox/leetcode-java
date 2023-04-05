@@ -40,19 +40,28 @@ public class Solution {
 
     // 2605
     public int minNumber(int[] nums1, int[] nums2) {
-        TreeSet<Integer> set1 = new TreeSet<>();
+        // 1-9
+        int[] count1 = new int[9];
         for (int n1 : nums1) {
-            set1.add(n1);
+            count1[n1-1]++;
         }
-        int first1 = set1.first();
-        TreeSet<Integer> set2 = new TreeSet<>();
+        int[] count2 = new int[9];
         for (int n2 : nums2) {
-            set2.add(n2);
+            count2[n2-1]++;
         }
-        int first2 = set2.first();
-        // 如果 最小的一致就直接返回
-        if (first1 == first2) {
-            return first1;
+        // 1-9 遍历奇数器 找到最小的值
+        int first1 = -1;
+        int first2 = -1;
+        for (int i = 0; i < 9; i++) {
+            if (count1[i] != 0 && count2[i] != 0) {
+                return i+1;
+            }
+            if (first1 == -1 && count1[i] != 0) {
+                first1 = i+1;
+            }
+            if (first2 == -1 && count2[i] != 0) {
+                first2 = i+1;
+            }
         }
         // 否则小的 * 10 + 大的
         int min = Math.min(first1, first2);
