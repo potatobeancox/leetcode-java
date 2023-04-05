@@ -54,7 +54,7 @@ public class SortedStack {
             return;
         }
         // 如果当前val 不是最小的 pop到stack2 中 再倒回来
-        while (!stack1.isEmpty() && stack1.peek() > val) {
+        while (!stack1.isEmpty() && stack1.peek() < val) {
             Integer pop = stack1.pop();
             stack2.add(pop);
         }
@@ -69,15 +69,33 @@ public class SortedStack {
 
     public void pop() {
         // 直接从stack1 中pop
+        if (stack1.isEmpty()) {
+            return;
+        }
         stack1.pop();
         return;
     }
 
     public int peek() {
+        if (stack1.isEmpty()) {
+            return -1;
+        }
         return stack1.peek();
     }
 
     public boolean isEmpty() {
         return stack1.isEmpty();
+    }
+
+    public static void main(String[] args) {
+        SortedStack sortedStack = new SortedStack();
+        sortedStack.push(1);
+        sortedStack.push(2);
+        // 1
+        System.out.println(sortedStack.peek());
+        sortedStack.pop();
+        // 2
+        System.out.println(sortedStack.peek());
+
     }
 }
