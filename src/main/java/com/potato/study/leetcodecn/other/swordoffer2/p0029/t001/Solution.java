@@ -53,66 +53,70 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     * 只有一个 next 节点
+     * @param head
+     * @param insertVal
+     * @return
+     */
     public Node insert(Node head, int insertVal) {
+        // 1 这个圈里边没有节点 直接插入 并构造圈
+        Node insertNode = new Node(insertVal);
         if (head == null) {
-            Node node = new Node(insertVal);
-            node.next = node;
-            head = node;
+            insertNode.next = insertNode;
+            head = insertNode;
             return head;
         }
-        // 每次获取当前位置的下一个位置
-        Node p = head;
-        Node next = p.next;
-        // 如果当前只有一个节点
-        if (p == next) {
-            Node insert = new Node(insertVal);
-            int cur = head.val;
-            if (insertVal < cur) {
-                insert.next = p;
-                p.next = insert;
-                return insert;
-            } else {
-                head.next = insert;
-                insert.next = head;
-                return head;
-            }
-        }
-        // 找到最小的点
-        while (next.val >= p.val) {
-            next = next.next;
-            p = p.next;
-        }
-        // 重置head
-        p = next;
-        next = p.next;
-
-        // 多个点
-        while (next != head) {
-            //
-            if (p.val <= insertVal && insertVal <= next.val) {
-                Node insert = new Node(insertVal);
-                p.next = insert;
-                insert.next = next;
-                return head;
-            }
-
-            p = p.next;
-            next = next.next;
-        }
-        // next == head 最后一个节点
-        if (insertVal < head.val) {
-            // insertVal 最小
-            Node insert = new Node(insertVal);
-            insert.next = head;
-            next.next = insert;
-            return insert;
-        } else if (insertVal > p.val) {
-            // insertVal 最大
-            Node insert = new Node(insertVal);
-            insert.next = head;
-            next.next = insert;
+        // 2 当前这个圈只有一个节点 直接插入到 head后面
+        if (head == head.next) {
+            head.next = insertNode;
+            insertNode.next = head;
             return head;
         }
+        // 3 有2个节点以上 找到开始节点（最小）和结束节点 （最大）
+        Node current = head;
+        Node next = current.next;
+        // next 小于current时或者 走到 head时
+        while (current.val <= next.val && next != head) {
+            current = next;
+            next = next.next;
+        }
+        // 当前next 一定是开始节点 current 是最后一个
+        Node start = next;
+        Node end = current;
+        // 3.1 比较下是不是 小于开始节点或者 大于最后节点
+        if (insertVal <= start.val) {
+            // 小于等于 最小值 放在最前面
+            insertNode.next = start;
+            end.next = insertNode;
+            return head;
+        }
+        if (insertVal >= end.val) {
+            // 大于等于 最大值 放在最后面
+            end.next = insertNode;
+            insertNode.next = start;
+            return head;
+        }
+        // 3.2 肯定在中间，要找下问题，先判定 整个圈是否一致 一致的话 直接插入最小的后面
+        if (start.val == end.val) {
+            // 整个元素都一致
+            // 小于等于 最小值 放在最前面
+            insertNode.next = start;
+            end.next = insertNode;
+            return head;
+        }
+        // 3.3 不一致 找到要插入的位置 p是小于等于 val的 且 q是大于等于 val的 插入pq中间
+        Node p = start;
+        Node q = start.next;
+
+        while (p.val > insertVal || q.val < insertVal) {
+            p = q;
+            q = q.next;
+        }
+
+        // pq 之间就是位置
+        p.next = insertNode;
+        insertNode.next = q;
         return head;
     }
 
