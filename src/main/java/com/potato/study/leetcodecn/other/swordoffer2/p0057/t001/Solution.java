@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0057.t001;
 
 import com.potato.study.leetcode.domain.TreeNode;
+import org.junit.Assert;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,28 +53,58 @@ public class Solution {
     // 057
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
         // 遍历 nums 每个元素i 使用tree map 记录 窗口中的元素数量 abs(i - j) <= k 左右都k个
-        TreeMap<Integer, Integer> countMap = new TreeMap<>();
+        TreeMap<Long, Integer> countMap = new TreeMap<>();
         // 其实只查一面就行
         for (int i = 0; i < nums.length; i++) {
-            int count = countMap.getOrDefault(nums[i], 0);
-            count++;
-            countMap.put(nums[i], count);
             if (i > k) {
                 // 需要删掉 i-k
-                count = countMap.getOrDefault(nums[i-k-1], 0);
+                int count = countMap.getOrDefault((long)nums[i-k-1], 0);
                 count--;
-                countMap.put(nums[i-k-1], count);
+                countMap.put((long)nums[i-k-1], count);
+                if (count == 0) {
+                    countMap.remove((long)nums[i-k-1]);
+                }
             }
             // 窗口内部是不是有 满足的t
             // treemap 找到 小于等于 xi+t 或者大于等于 xi-t 的数字  存在就可以返回
-            int target = nums[i] - t;
-            Integer bigger = countMap.ceilingKey(target);
-            if (bigger == null) {
-                continue;
-            } else {
+            long target = nums[i];
+            Long bigger = countMap.ceilingKey(target);
+            if (bigger != null && Math.abs(bigger - nums[i]) <= t) {
                 return true;
             }
+            Long small = countMap.floorKey(target);
+            if (small != null && Math.abs(small - nums[i]) <= t) {
+                return true;
+            }
+
+            // 处理当前
+            int count = countMap.getOrDefault((long)nums[i], 0);
+            count++;
+            countMap.put((long)nums[i], count);
+
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                1,5,9,1,5,9
+        };
+        int k = 2;
+        int t = 3;
+        boolean b = solution.containsNearbyAlmostDuplicate(nums, k, t);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
+
+
+        nums = new int[] {
+                -2147483648,2147483647
+        };
+        k = 1;
+        t = 1;
+        b = solution.containsNearbyAlmostDuplicate(nums, k, t);
+        System.out.println(b);
+        Assert.assertEquals(false, b);
     }
 }
