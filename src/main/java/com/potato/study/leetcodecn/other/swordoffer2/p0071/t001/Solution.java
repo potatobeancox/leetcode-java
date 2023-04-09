@@ -93,7 +93,7 @@ public class Solution {
         int resIndex = -1;
         while (left <= right) {
             int mid = (left + right) / 2;
-            if (prefix[mid] >= target) {
+            if (prefix[mid] > target) {
                 resIndex = mid;
                 right = mid - 1;
             } else {
