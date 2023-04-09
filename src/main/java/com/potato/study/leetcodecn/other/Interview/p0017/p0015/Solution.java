@@ -31,7 +31,11 @@ import java.util.Set;
 public class Solution {
 
 
-    // 17.15
+    /**
+     * https://leetcode.cn/problems/longest-word-lcci/solution/zui-chang-dan-ci-by-hao-hou-de-yun/
+     * @param words
+     * @return
+     */
     public String longestWord(String[] words) {
         Set<String> set = new HashSet<>(Arrays.asList(words));
         // 先找最长的 再找 字典序最小的
@@ -44,19 +48,29 @@ public class Solution {
             return o1.compareTo(o2);
         });
         for (String word : words) {
-            // 每个位置 substring
-            for (int i = 0; i < word.length(); i++) {
-                String part1 = word.substring(0, i+1);;
-                String part2 = word.substring(i+1);
+            // 将 word 提出
+            set.remove(word);
 
-                if ((set.contains(part1) && set.contains(part2))
-                        || (set.contains(part1) && "".equals(part2))
-                        || (set.contains(part2) && "".equals(part1))) {
-                    return word;
-                }
+            if (find(set, word)) {
+                return word;
             }
+
         }
         return "";
+    }
+
+    private boolean find(Set<String> set, String word) {
+        if (word.length() == 0) {
+            return true;
+        }
+        for (int i = 0; i < word.length(); i++) {
+            String part1 = word.substring(0, i+1);
+
+            if ((set.contains(part1) && find(set, word.substring(i+1)))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
