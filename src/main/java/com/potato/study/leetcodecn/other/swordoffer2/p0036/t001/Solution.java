@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.other.swordoffer2.p0036.t001;
 
+import org.junit.Assert;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -143,7 +145,7 @@ public class Solution {
      * @param op2
      * @return
      */
-    public int getPriority(String op1, String op2) {
+    private int getPriority(String op1, String op2) {
         Map<String, Integer> priorityMap = new HashMap<>();
         priorityMap.put("+", 1);
         priorityMap.put("-", 1);
@@ -151,5 +153,15 @@ public class Solution {
         priorityMap.put("/", 2);
 
         return Integer.compare(priorityMap.getOrDefault(op1, 0), priorityMap.getOrDefault(op2, 0));
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] tokens = new String[] {
+                "2","1","+","3","*"
+        };
+        int i = solution.evalRPN(tokens);
+        System.out.println(i);
+        Assert.assertEquals(9, i);
     }
 }
