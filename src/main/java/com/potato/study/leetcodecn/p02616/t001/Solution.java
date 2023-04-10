@@ -71,17 +71,21 @@ public class Solution {
      */
     private boolean check(int[] nums, int target, int p) {
         int count = 0;
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i+1; j < nums.length; j++) {
-                if (nums[j] - nums[i] <= target) {
-                    count++;
-                } else {
-                    break;
-                }
+        // 不能选同样的下标
+        int i = 0;
+        while (i < nums.length) {
+            // 到了最后
+            if (i + 1 >= nums.length) {
+                break;
             }
-            if (count >= p) {
-                return true;
+            // 超过了
+            if (nums[i+1] - nums[i] > target) {
+                i++;
+                continue;
             }
+            // 没超过
+            count++;
+            i += 2;
         }
         return count >= p;
     }
