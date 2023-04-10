@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02615.t001;
 
+import org.junit.Assert;
+
 import java.util.*;
 
 /**
@@ -52,7 +54,41 @@ public class Solution {
 
             appearMap.put(nums[i], indexList);
         }
-        return null;
+        // 遍历 每个 map 的每个value 计算每个list的前缀和 对于当前 i 就可以得到结果了
+        long[] result = new long[nums.length];
+        for (List<Integer> sameIndexList : appearMap.values()) {
+            // 对于每个位置
+            int size = sameIndexList.size();
+            if (size <= 1) {
+                continue;
+            }
+            long allSum = 0;
+            for (int i : sameIndexList) {
+                allSum += i;
+            }
+
+            long prefixSum = 0;
+            for (int i = 0; i < sameIndexList.size(); i++) {
+                int index = sameIndexList.get(i);
+                result[index] = (long)i * index - prefixSum +
+                        (allSum - prefixSum - index) - ((long)size - i - 1) * index;
+
+                prefixSum += index;
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                1,3,1,1,2
+        };
+        long[] distance = solution.distance(nums);
+        System.out.println(Arrays.toString(distance));
+        Assert.assertArrayEquals(new long[] {
+                5,0,3,4,0
+        }, distance);
     }
 
 
