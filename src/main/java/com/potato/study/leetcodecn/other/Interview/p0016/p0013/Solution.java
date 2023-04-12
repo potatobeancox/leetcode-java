@@ -49,8 +49,6 @@ public class Solution {
         // 判断是不是 垂直于 x轴的 也就是 x坐标一致
         if (Math.abs(cx1 - cx2) < 10e-9) {
             return new double[] {
-
-
             };
         }
 
