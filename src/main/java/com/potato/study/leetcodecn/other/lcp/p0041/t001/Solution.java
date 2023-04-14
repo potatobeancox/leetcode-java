@@ -1,6 +1,5 @@
 package com.potato.study.leetcodecn.other.lcp.p0041.t001;
 
-import java.util.Arrays;
 
 /**
  * LCP 41. 黑白翻转棋
@@ -56,9 +55,34 @@ import java.util.Arrays;
  */
 public class Solution {
 
+    // lcp 41
     public int flipChess(String[] chessboard) {
+        // 黑棋记作字母 `"X"`, 白棋记作字母 `"O"`，空余位置记作 `"."
+        // 执行一步 判断最多能有多少个 白棋 置换
+        // 遍历每个空余位置 对这个位置开始进行替换 比较多少 每个空位都作为开始点 看看 8个方向的变换
+        int n = chessboard.length;
+        int m = chessboard[0].length();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                char ch = chessboard[i].charAt(j);
+                if (ch != '.') {
+                    continue;
+                }
+                // 落子
+            }
+        }
 
         return -1;
+    }
+
+
+    private String[] copyChessboard(String[] chessboard) {
+        String[] chess = new String[chessboard.length];
+
+        for (int i = 0; i < chessboard.length; i++) {
+            chess[i] = new String(chessboard[i]);
+        }
+        return chess;
     }
 
 
