@@ -1,6 +1,11 @@
 package com.potato.study.leetcodecn.other.lcp.p0041.t001;
 
 
+import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * LCP 41. 黑白翻转棋
  *
@@ -58,31 +63,129 @@ public class Solution {
     // lcp 41
     public int flipChess(String[] chessboard) {
         // 黑棋记作字母 `"X"`, 白棋记作字母 `"O"`，空余位置记作 `"."
+        // 将chessboard 换成数组
+        char[][] chessOrigin = new char[chessboard.length][];
+        for (int i = 0; i < chessboard.length; i++) {
+            chessOrigin[i] = chessboard[i].toCharArray();
+        }
         // 执行一步 判断最多能有多少个 白棋 置换
         // 遍历每个空余位置 对这个位置开始进行替换 比较多少 每个空位都作为开始点 看看 8个方向的变换
         int n = chessboard.length;
         int m = chessboard[0].length();
+        int max = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 char ch = chessboard[i].charAt(j);
                 if (ch != '.') {
                     continue;
                 }
-                // 落子
+                char[][] chess = copyChessboard(chessOrigin);
+                // 落子 判读有多少个 白替换
+                chess[i][j] = 'X';
+                int current = getWhiteChangeCount(chess, i, j);
+                max = Math.max(max, current);
             }
         }
+        return max;
+    }
 
-        return -1;
+    /**
+     *
+     * @param chess
+     * @param i
+     * @param j
+     * @return
+     */
+    private int getWhiteChangeCount(char[][] chess, int i, int j) {
+        // 定义 8个方向
+        int[][] dir = new int[][] {
+                {1, 0},
+                {-1, 0},
+                {0, 1},
+                {0, -1},
+                {1, 1},
+                {1, -1},
+                {-1, 1},
+                {-1, -1}
+        };
+        // 分别往某个方向找直到找到黑点 将中间的所有点都改成黑的 然后 递归的 计算最大值
+        List<int[]> totalChangePoint = new ArrayList<>();
+        for (int k = 0; k < 8; k++) {
+            int[] thisDirection = dir[k];
+            List<int[]> changePoint = new ArrayList<>();
+            int di = i + thisDirection[0];
+            int dj = j + thisDirection[1];
+            while (di >= 0 && di < chess.length
+                    && dj >= 0 && dj < chess[0].length
+                    && chess[di][dj] == 'O') {
+                changePoint.add(new int[] {di, dj});
+                chess[di][dj] = 'X';
+
+                di += thisDirection[0];
+                dj += thisDirection[1];
+            }
+            if (di >= 0 && di < chess.length
+                    && dj >= 0 && dj < chess[0].length
+                    && chess[di][dj] == 'X') {
+                totalChangePoint.addAll(changePoint);
+            } else {
+                // 重新改回来
+                for (int[] pos : changePoint) {
+                    chess[pos[0]][pos[1]] = 'O';
+                }
+            }
+        }
+        // 遍历 totalChangePoint dfs
+        if (totalChangePoint.size() == 0) {
+            // 当前位置改了 没有
+            return 0;
+        }
+        int total = totalChangePoint.size();
+        for (int[] pos : totalChangePoint) {
+            total += getWhiteChangeCount(chess, pos[0], pos[1]);
+        }
+        return total;
     }
 
 
-    private String[] copyChessboard(String[] chessboard) {
-        String[] chess = new String[chessboard.length];
-
+    private char[][] copyChessboard(char[][] chessboard) {
+        char[][] chess = new char[chessboard.length][chessboard[0].length];
         for (int i = 0; i < chessboard.length; i++) {
-            chess[i] = new String(chessboard[i]);
+            for (int j = 0; j < chessboard[0].length; j++) {
+                chess[i][j] = chessboard[i][j];
+            }
         }
         return chess;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        String[] chessboard = new String[]{
+                "....X.",
+                "....X.",
+                "XOOO..",
+                "......",
+                "......"};
+
+        int i = solution.flipChess(chessboard);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+
+
+        chessboard = new String[]{
+                ".......",
+                ".......",
+                ".......",
+                "X......",
+                ".O.....",
+                "..O....",
+                "....OOX"};
+
+        i = solution.flipChess(chessboard);
+        System.out.println(i);
+        Assert.assertEquals(4, i);
+
     }
 
 
