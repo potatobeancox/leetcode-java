@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02136.t001;
 
+import java.util.Arrays;
+
 /**
  * 2136. 全部开花的最早一天
  *
@@ -60,13 +62,15 @@ public class Solution {
 
     // 2136
     public int earliestFullBloom(int[] plantTime, int[] growTime) {
-        // 按照 growTime 由大到小排序 遍历 plant 累加 计算最晚结束的时间
+        // 遍历 plant 累加 计算最晚结束的时间
         int maxTime = 0;
         int n = plantTime.length;
-        int[] indexes = new int[n];
+        Integer[] indexes = new Integer[n];
         for (int i = 0; i < n; i++) {
             indexes[i] = i;
         }
+        // 排序 按照 growTime 由大到小排序
+        Arrays.sort(indexes, (i1, i2) -> Integer.compare(growTime[i2], growTime[i1]));
         // 遍历 计算最大值
         int current = 0;
         for (int index : indexes) {
