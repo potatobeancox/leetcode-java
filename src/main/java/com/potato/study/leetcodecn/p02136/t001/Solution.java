@@ -58,7 +58,21 @@ package com.potato.study.leetcodecn.p02136.t001;
 public class Solution {
 
 
+    // 2136
     public int earliestFullBloom(int[] plantTime, int[] growTime) {
-        return -1;
+        // 按照 growTime 由大到小排序 遍历 plant 累加 计算最晚结束的时间
+        int maxTime = 0;
+        int n = plantTime.length;
+        int[] indexes = new int[n];
+        for (int i = 0; i < n; i++) {
+            indexes[i] = i;
+        }
+        // 遍历 计算最大值
+        int current = 0;
+        for (int index : indexes) {
+            current += plantTime[index];
+            maxTime = Math.max(maxTime, current + growTime[index]);
+        }
+        return maxTime;
     }
 }
