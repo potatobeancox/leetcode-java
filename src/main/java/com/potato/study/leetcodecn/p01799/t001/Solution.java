@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p01799.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -72,7 +74,7 @@ public class Solution {
         int[] dp = new int[limit];
         // 状态从 0开始
         dp[0] = 0;
-        for (int i = 1; i < limit; i++) {
+        for (int i = 0; i < limit; i++) {
             // 获取当前状态有多少个1
             int bitCount = Integer.bitCount(i);
             if (bitCount % 2 == 1) {
@@ -80,12 +82,12 @@ public class Solution {
                 continue;
             }
             // 用了偶数个 数字 遍历 内部的没2个1的位置
-            for (int j = 0; j < limit; j++) {
+            for (int j = 0; j < n; j++) {
                 // j 位置必须为1
                 if (((1<<j) & i) == 0) {
                     continue;
                 }
-                for (int k = 0; k < limit; k++) {
+                for (int k = 0; k < n; k++) {
                     // jk 不能相同
                     if (j == k) {
                         continue;
@@ -96,7 +98,7 @@ public class Solution {
                     }
                     // 计算下 没用这两个位置之前的state
                     int state = i ^ (1<<j) ^ (1<<k);
-                    int num = Integer.bitCount(state) / 2;
+                    int num = Integer.bitCount(i) / 2 ;
                     dp[i] = Math.max(dp[state] + num * gcd[j][k], dp[i]);
                 }
             }
@@ -109,5 +111,24 @@ public class Solution {
             return b;
         }
         return gcd(b, a % b);
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {
+                1, 2
+        };
+        int i = solution.maxScore(nums);
+        System.out.println(i);
+        Assert.assertEquals(1, i);
+
+
+        nums = new int[] {
+                1,2,3,4,5,6
+        };
+        i = solution.maxScore(nums);
+        System.out.println(i);
+//        Assert.assertEquals(1, i);
     }
 }
