@@ -58,31 +58,34 @@ public class Solution {
     // 2606
     public int maximumCostSubstring(String s, String chars, int[] vals) {
         // 如果 s中字符出现在 chars 中 index为 i 那么开销就是 val i 否则就是 字母表的位置
-        Map<Character, Integer> charsValueMap = new HashMap<>();
+        Map<Character, Long> charsValueMap = new HashMap<>();
         for (int i = 0; i < chars.length(); i++) {
-            charsValueMap.put(chars.charAt(i), vals[i]);
+            charsValueMap.put(chars.charAt(i), (long) vals[i]);
         }
         // 因为 val i 可能小于 0
-        int[] charsValues = new int[26];
+        long[] charsValues = new long[26];
         for (int i = 0; i < 26; i++) {
             char ch = (char) ('a' + i);
             if (charsValueMap.containsKey(ch)) {
                 charsValues[i] = charsValueMap.get(ch);
             } else {
-                charsValues[i] = i + 1;
+                charsValues[i] = i + 1L;
             }
         }
+        // 直接用于一个变量 记录最小值 当前值 减去最小值就是 最大的花费
+        long beforeMinValue = 0;
+        long currentSum = 0;
+
+        long max = 0;
         // 遍历 s 求前缀和的 valSum 过程中记录之前的最小值 小跟堆 过程中减去最小值 记录max
-        PriorityQueue<Integer> smallHeap = new PriorityQueue<>();
-        smallHeap.add(0);
-        int currentSum = 0;
-        int max = Integer.MIN_VALUE;
+
         for (char current : s.toCharArray()) {
             currentSum += charsValues[current - 'a'];
-            int smallest = smallHeap.peek();
-            max = Math.max(max, currentSum - smallest);
+            max = Math.max(max, currentSum - beforeMinValue);
+            // 算上当前的 给下次用
+            beforeMinValue = Math.min(beforeMinValue, currentSum);
         }
-        return max;
+        return (int) max;
     }
 
 
