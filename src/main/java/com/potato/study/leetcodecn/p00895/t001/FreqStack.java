@@ -81,7 +81,7 @@ public class FreqStack {
         }
         // 放入指定位置
         Deque<Integer> orDefault = countStackMap.getOrDefault(count, new LinkedList<>());
-        orDefault.add(val);
+        orDefault.addLast(val);
         countStackMap.put(count, orDefault);
     }
 
@@ -93,7 +93,7 @@ public class FreqStack {
             // 出错了
             return -1;
         }
-        int target = integerDeque.pop();
+        int target = integerDeque.pollLast();
         // 判断是否修改max
         if (integerDeque.isEmpty()) {
             this.maxCount--;
@@ -102,6 +102,21 @@ public class FreqStack {
         int count = countMap.get(target);
         countMap.put(target, count-1);
         return target;
+    }
+
+    public static void main(String[] args) {
+        FreqStack freqStack = new FreqStack();
+        freqStack.push(5);
+        freqStack.push(7);
+        freqStack.push(5);
+        freqStack.push(7);
+        freqStack.push(4);
+        freqStack.push(5);
+
+        System.out.println(freqStack.pop()); // 5
+        System.out.println(freqStack.pop()); // 7
+        System.out.println(freqStack.pop()); // 5
+        System.out.println(freqStack.pop()); // 4
     }
 }
 
