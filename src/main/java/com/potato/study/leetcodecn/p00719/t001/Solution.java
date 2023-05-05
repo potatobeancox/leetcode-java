@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p00719.t001;
 
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -57,7 +59,7 @@ public class Solution {
             int mid = (left + right) / 2;
             int distanceBelowCount = getDistanceBelowCount(nums, mid);
             if (distanceBelowCount >= k) {
-                res = distanceBelowCount;
+                res = mid;
                 right = mid - 1;
             } else {
                 left = mid + 1;
@@ -87,5 +89,14 @@ public class Solution {
             count += (right - 1 - i);
         }
         return count;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {1,3,1};
+        int k = 1;
+        int i = solution.smallestDistancePair(nums, k);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
     }
 }
