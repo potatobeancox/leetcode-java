@@ -95,11 +95,44 @@ public class Solution {
                 stack.add(ch);
                 continue;
             }
+            if (ch == '(') {
+                stack.add(ch);
+                continue;
+            }
+            if (ch == '+' || ch == '-') {
+                while (!stack.isEmpty() && stack.peek() != '(') {
+                    builder.append(stack.pop());
+                }
+                stack.add(ch);
+                continue;
+            }
+            if (ch == '*' || ch == '/') {
+                while (!stack.isEmpty() && stack.peek() != '('
+                        && stack.peek() != '+' && stack.peek() != '-') {
+                    builder.append(stack.pop());
+                }
+                stack.add(ch);
+                continue;
+            }
+            if (ch == ')') {
+                while (!stack.isEmpty() && stack.peek() != '(') {
+                    builder.append(stack.pop());
+                }
+                // 将 （ pop掉
+                stack.pop();
+            }
+        }
 
-
+        while (!stack.isEmpty()) {
+            builder.append(stack.pop());
         }
 
         return builder.toString();
+    }
 
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        Node node = solution.expTree("3*4-2*5");
+        System.out.println(node);
     }
 }
