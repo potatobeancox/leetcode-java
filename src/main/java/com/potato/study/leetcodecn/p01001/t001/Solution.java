@@ -1,11 +1,9 @@
 package com.potato.study.leetcodecn.p01001.t001;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.*;
 
 /**
  * 1001. 网格照明
@@ -72,13 +70,18 @@ public class Solution {
             int i = lamp[0];
             int j = lamp[1];
 
+            String key = i + "_" + j;
+            if (lampSet.contains(key)) {
+                continue;
+            }
+            lampSet.add(key);
+
             // 四个方向增加
             lineCountMap.put(i, lineCountMap.getOrDefault(i, 0) + 1);
             columnCountMap.put(j, columnCountMap.getOrDefault(j, 0) + 1);
             diagonalCountMap.put(i+j, diagonalCountMap.getOrDefault(i+j, 0) + 1);
             negativeDiagonalCountMap.put(i-j, negativeDiagonalCountMap.getOrDefault(i-j, 0) + 1);
 
-            lampSet.add(i + "_" + j);
         }
         // 返回一个整数数组 ans 作为答案， ans[j] 应等于第 j 次查询 queries[j] 的结果，1 表示照亮，0 表示未照亮。
         int[] res = new int[queries.length];
@@ -105,7 +108,7 @@ public class Solution {
             // 关灯
             for (int j = 0; j < 9; j++) {
                 int di = x + dir[j][0];
-                int dj = y + dir[j][0];
+                int dj = y + dir[j][1];
 
                 if (di < 0 || di >= n || dj < 0 || dj >= n) {
                     continue;
@@ -113,11 +116,11 @@ public class Solution {
                 String key = di + "_" + dj;
                 if (lampSet.contains(key)) {
                     lampSet.remove(key);
+                    removeIfZero(lineCountMap, di);
+                    removeIfZero(columnCountMap, dj);
+                    removeIfZero(diagonalCountMap, di + dj);
+                    removeIfZero(negativeDiagonalCountMap, di - dj);
                 }
-                removeIfZero(lineCountMap, di);
-                removeIfZero(columnCountMap, dj);
-                removeIfZero(diagonalCountMap, di + dj);
-                removeIfZero(negativeDiagonalCountMap, di - dj);
             }
         }
         return res;
@@ -135,6 +138,39 @@ public class Solution {
         } else {
             map.put(num, lineCount - 1);
         }
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 5;
+        int[][] lamps = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,0],[4,4]]");
+        int[][] queries = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[1,1],[1,0]]");
+        int[] ints = solution.gridIllumination(n, lamps, queries);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[]{
+                1, 0
+        }, ints);
+
+
+        n = 5;
+        lamps = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,0],[4,4]]");
+        queries = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[1,1],[1,0]]");
+        ints = solution.gridIllumination(n, lamps, queries);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[]{
+                1, 0
+        }, ints);
+
+
+        n = 6;
+        lamps = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[2,5],[4,2],[0,3],[0,5],[1,4],[4,2],[3,3],[1,0]]");
+        queries = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[4,3],[3,1],[5,3],[0,5],[4,4],[3,3]]");
+        ints = solution.gridIllumination(n, lamps, queries);
+        System.out.println(Arrays.toString(ints));
+        Assert.assertArrayEquals(new int[]{
+                1,0,1,1,0,1
+        }, ints);
     }
 
 

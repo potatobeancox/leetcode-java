@@ -2,6 +2,10 @@ package com.potato.study.leetcodecn.p00564.t001;
 
 
 import com.potato.study.leetcode.domain.TreeNode;
+import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 564. 寻找最近的回文数
@@ -33,41 +37,79 @@ public class Solution {
      */
     public String nearestPalindromic(String n) {
         // 对n 进行判定
-        return null;
-    }
+        long target = Long.parseLong(n);
+        List<Long> list = getPalindromicList(n);
+        long nearest = -1;
+        for (long num : list) {
+
+            if (num == target) {
+                continue;
+            }
+
+            if (nearest == -1) {
+                nearest = num;
+                continue;
+            }
 
 
-    public int[] getNearest3Num(String n) {
-        // 奇数和偶数
-        if (n.length() % 2 == 1) {
-            // 奇数
-            String prefix = n.substring(0, n.length() / 2 + 1);
-            int currentPrefixNum = Integer.parseInt(prefix);
-            int plus = currentPrefixNum + 1;
-            int minus = currentPrefixNum - 1;
-
-            return null;
-        } else {
-            // 偶数
-            String prefix = n.substring(0, n.length() / 2);
-            int currentPrefixNum = Integer.parseInt(prefix);
-            int plus = currentPrefixNum + 1;
-            int minus = currentPrefixNum - 1;
-            return new int[] {getPalindromicEven(currentPrefixNum), getPalindromicEven(plus), getPalindromicEven(minus)};
+            if (Math.abs(target - num) < Math.abs(target - nearest)
+                    || (Math.abs(target - num) == Math.abs(target - nearest) && num < nearest)) {
+                nearest = num;
+            }
         }
+        return String.valueOf(nearest);
+    }
+
+    private List<Long> getPalindromicList(String n) {
+        // 之前数位
+        int size = n.length();
+        // 977 -> 1001   100-> 99
+        List<Long> res = new ArrayList<>();
+        long num = (long) Math.pow(10, size) + 1;
+        res.add(num);
+
+        num = (long) Math.pow(10, size - 1) - 1;
+        res.add(num);
+
+        // 找到substring
+        String substring = n.substring(0, (n.length() + 1) / 2);
+        long l = Long.parseLong(substring);
+        long big = l + 1;
+        long small = l - 1;
+
+        res.add(getPalindromicLength(l, size));
+        if (String.valueOf(big).length() == substring.length()) {
+            res.add(getPalindromicLength(big, size));
+        }
+        if (String.valueOf(small).length() == substring.length()) {
+            res.add(getPalindromicLength(small, size));
+        }
+
+        return res;
+    }
+
+    private Long getPalindromicLength(long target, int size) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(target);
+
+        String substring = builder.substring(0, size - builder.length());
+
+        StringBuilder sub = new StringBuilder(substring);
+        builder.append(sub.reverse().toString());
+
+        return Long.parseLong(builder.toString());
     }
 
 
-    private int getPalindromicEven(int num) {
-        StringBuilder builder = new StringBuilder(num);
-        builder.append(builder.reverse().toString());
-        return Integer.parseInt(builder.toString());
-    }
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String s = solution.nearestPalindromic("123");
+        System.out.println(s);
+        Assert.assertEquals("121", s);
 
-    private int getPalindromicOdd(int num) {
-        StringBuilder builder = new StringBuilder(num);
-        builder.append(builder.reverse().toString().substring(1));
-        return Integer.parseInt(builder.toString());
+        s = solution.nearestPalindromic("1");
+        System.out.println(s);
+        Assert.assertEquals("0", s);
     }
 
 }
