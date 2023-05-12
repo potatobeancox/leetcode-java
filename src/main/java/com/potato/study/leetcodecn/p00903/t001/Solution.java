@@ -54,6 +54,8 @@ public class Solution {
 
     /**
      * https://leetcode.cn/problems/valid-permutations-for-di-sequence/solution/di-xu-lie-de-you-xiao-pai-lie-by-leetcode/
+     * 解释
+     * https://leetcode.cn/problems/valid-permutations-for-di-sequence/solution/-by-yu-niang-niang-veeq/
      * @param s
      * @return
      */
