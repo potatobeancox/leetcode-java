@@ -58,42 +58,44 @@ public class Solution {
 
 
     // 471
-    public String encode(String s) {
+    public String encode(String source) {
         // dp ij 从i位置到j位置 最短的简化表示是什么字符
-        int n = s.length();
+        int n = source.length();
         String[][] dp = new String[n][n];
         // 外部循环遍历 len 表示字串的长度
         for (int len = 0; len < n; len++) {
             // 内部循环 枚举开始位置 根据 len计算结束位置
             for (int i = 0; i + len < n; i++) {
                 // 右边节点位置 如果 len 小于等于 4 那么还维持原来样子
-                int j = i + len - 1;
-                if (j < i) {
-                    continue;
-                }
-                String current = s.substring(i, j + 1);
-                if (current.length() >= 4) {
+                int j = i + len;
+                String current = source.substring(i, j + 1);
+                int subStringLen = current.length();
+                if (subStringLen > 4) {
                     // 得到开始和结束位置 找到循环节 根据循环节就能估计出来能被 省略多少 并且看看分割的话 能有多少
                     String tmp = current + current;
                     int index = tmp.indexOf(current, 1);
                     // 说明找到了
-                    if (index <= current.length()) {
+                    if (index < subStringLen) {
                         int size = index;
                         int count = current.length() / size;
-                        current = count + "[" + current.substring(0, index) + "]";
+                        if (dp[0][index-1] != null) {
+                            current = count + "[" + dp[i][i+index-1] + "]";
+                        } else {
+                            current = count + "[" + current.substring(0, index) + "]";
+                        }
                     }
 
                 }
                 // 从中间的某一个点断开看看行不行
-                for (int k = i+1; k +1 < j; k++) {
-                    if (current.length() > dp[i][k].length() + dp[k+1][j].length()) {
-                        current = dp[i][k] + dp[k+1][j];
+                for (int partLen = 1; partLen < subStringLen; partLen++) {
+                    if (current.length() > dp[i][i+partLen-1].length() + dp[i+partLen][j].length()) {
+                        current = dp[i][i+partLen-1] + dp[i+partLen][j];
                     }
                 }
                 dp[i][j] = current;
             }
         }
-        return dp[0][s.length()-1];
+        return dp[0][source.length()-1];
     }
 
     public static void main(String[] args) {
@@ -101,6 +103,29 @@ public class Solution {
         String encode = solution.encode("aabcaabcd");
         System.out.println(encode);
         Assert.assertEquals("2[aabc]d", encode);
+
+
+        encode = solution.encode("aaaaaaaaaac");
+        System.out.println(encode);
+        Assert.assertEquals("a9[a]c", encode);
+
+
+        encode = solution.encode("abbbabbbcabbbabbbc");
+        System.out.println(encode);
+        Assert.assertEquals("2[2[abbb]c]", encode);
+
+
+
+        encode = solution.encode("aabcabca");
+        System.out.println(encode);
+        Assert.assertEquals("aabcabca", encode);
+
+
+        encode = solution.encode("aabcccccddd");
+        System.out.println(encode);
+        Assert.assertEquals("aab5[c]ddd", encode);
+
+
     }
 
 }
