@@ -47,6 +47,10 @@
 /**
  * @param {number[]} nums
  * https://leetcode.cn/problems/array-wrapper/solution/javascript-de-yin-shi-lei-xing-zhuan-hua-2wm8/
+ * =>
+ * https://blog.csdn.net/mikewanzi002/article/details/125379524
+ * reduce 方法
+ * https://blog.csdn.net/qq_38970408/article/details/121018660
  */
 var ArrayWrapper = function(nums) {
     this.values = nums;
