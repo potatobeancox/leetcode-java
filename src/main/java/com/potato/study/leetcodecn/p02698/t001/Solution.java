@@ -1,5 +1,7 @@
 package com.potato.study.leetcodecn.p02698.t001;
 
+import org.junit.Assert;
+
 /**
  *
  * 2698. 求一个整数的惩罚数
@@ -62,6 +64,9 @@ public class Solution {
 
     private boolean isPunishmentNumber(long target) {
         long temp = target * target;
+        if (temp == target) {
+            return true;
+        }
         String s = String.valueOf(temp);
         // 按照每个位置分割
         for (int i = 1; i < s.length(); i++) {
@@ -72,6 +77,18 @@ public class Solution {
             }
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int i = solution.punishmentNumber(10);
+        System.out.println(i);
+        Assert.assertEquals(182, i);
+
+
+        i = solution.punishmentNumber(37);
+        System.out.println(i);
+        Assert.assertEquals(182, i);
     }
 
 }
