@@ -75,6 +75,11 @@ public class Solution {
             return root.val;
         }
         // 非叶子
+        if (root.left == null) {
+            return buildTotalString(root.right);
+        } else if (root.right == null) {
+            return buildTotalString(root.left);
+        }
         return buildTotalString(root.left) + buildTotalString(root.right);
     }
 }
