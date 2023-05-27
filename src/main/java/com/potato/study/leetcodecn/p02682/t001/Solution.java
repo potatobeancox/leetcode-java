@@ -1,9 +1,8 @@
 package com.potato.study.leetcodecn.p02682.t001;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.junit.Assert;
+
+import java.util.*;
 
 /**
  *
@@ -63,11 +62,18 @@ public class Solution {
         // 用一个 set 尝试记录 访问过的数字 如果第二次遇到 那么就从 1开始没有找到的字符串
         Set<Integer> visit = new HashSet<>();
         int val = 1;
-        int i = 0;
+        int i = 1;
         while (!visit.contains(val)) {
             visit.add(val);
             val += i * k;
+            val %= n;
+            if (val == 0) {
+                val = n;
+            }
             i++;
+        }
+        if (visit.size() >= n) {
+            return new int[]{};
         }
         int[] res = new int[n - visit.size()];
         int index = 0;
@@ -78,5 +84,16 @@ public class Solution {
             }
         }
         return res;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 3;
+        int k = 2;
+        int[] ints = solution.circularGameLosers(n, k);
+        System.out.println(Arrays.toString(ints));
+//        Assert.assertArrayEquals(new int[]{
+//
+//        }, ints);
     }
 }
