@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02711.t001;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * 2711. 对角线上不同值的数量差
@@ -62,16 +65,37 @@ public class Solution {
         int n = grid[0].length;
 
         int[][] res = new int[m][n];
-        int[][] topLeft = new int[m][n];
-        int[][] bottomRight = new int[m][n];
-
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                // 往左上找
+                // 往左上找 用 set 记录出现个数
+                Set<Integer> leftSet = new HashSet<>();
+                int di = i - 1;
+                int dj = j - 1;
+                while (di >= 0 && dj >= 0) {
+                    leftSet.add(grid[di][dj]);
+
+                    di--;
+                    dj--;
+                }
+                // 往右下找 同样用set记录
+                Set<Integer> rightSet = new HashSet<>();
+                di = i + 1;
+                dj = j + 1;
+                while (di < m && dj < n) {
+                    rightSet.add(grid[di][dj]);
+
+                    di++;
+                    dj++;
+                }
+                // 计算差值的绝对值
+                res[i][j] = Math.abs(leftSet.size() - rightSet.size());
             }
         }
+        return res;
+    }
 
-        return null;
+    public static void main(String[] args) {
+
     }
 
 }
