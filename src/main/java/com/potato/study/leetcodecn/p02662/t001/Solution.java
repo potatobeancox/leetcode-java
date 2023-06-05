@@ -1,7 +1,5 @@
 package com.potato.study.leetcodecn.p02662.t001;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -53,8 +51,21 @@ import java.util.Map;
  */
 public class Solution {
 
-    public int minimumCost(int[] start, int[] target, int[][] specialRoads) {
 
+
+
+
+
+
+
+
+    public int minimumCost(int[] start, int[] target, int[][] specialRoads) {
+        // start 开始位置
+
+
+        // 正常距离 为 从位置 (x1, y1) 到空间中任一其他位置 (x2, y2) 的代价是 |x2 - x1| + |y2 - y1| 。
+
+        // specialRoads 小路 可能 会近距离一些
         return -1;
     }
 
