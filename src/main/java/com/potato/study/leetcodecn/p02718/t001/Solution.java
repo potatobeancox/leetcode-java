@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02718.t001;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * 2718. 查询后矩阵的和
@@ -50,8 +53,27 @@ public class Solution {
 
 
     public long matrixSumQueries(int n, int[][] queries) {
-
-        return -1;
+        // 从后往前遍历 记录哪些列已经改了的就不计算了
+        Set<Integer> lineSet = new HashSet<>();
+        Set<Integer> columnSet = new HashSet<>();
+        // 如果 typei == 0 ，将第 indexi 行的元素全部修改为 vali ，覆盖任何之前的值。
+        // 如果 typei == 1 ，将第 indexi 列的元素全部修改为 vali ，覆盖任何之前的值。
+        long res = 0;
+        for (int i = queries.length - 1; i >= 0; i--) {
+            // queries[i] = [typei, indexi, vali]
+            int type = queries[i][0];
+            int index = queries[i][1];
+            int val = queries[i][2];
+            if (type == 0 && !lineSet.contains(index)) {
+                // 行 且行没有被覆盖过
+                res += val * (n - columnSet.size());
+                lineSet.add(index);
+            } else if (type == 1 && !columnSet.contains(index)) {
+                res += val * (n - lineSet.size());
+                columnSet.add(index);
+            }
+        }
+        return res;
     }
 
 }
