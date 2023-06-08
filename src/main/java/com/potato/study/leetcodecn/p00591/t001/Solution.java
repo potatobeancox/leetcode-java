@@ -147,6 +147,9 @@ public class Solution {
                 if (j == i+1) {
                     return false;
                 }
+                if (j - i < 1 || j -i > 9) {
+                    return false;
+                }
                 // 找到了 一个 <a> or </a>
                 String tag = code.substring(i, j + 1);
                 if (code.charAt(i+1) != '/') {
