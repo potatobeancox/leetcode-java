@@ -1,8 +1,6 @@
 package com.potato.study.leetcodecn.p02672.t001;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  *
@@ -57,21 +55,42 @@ public class Solution {
     // 2672
     public int[] colorTheArray(int n, int[][] queries) {
         // 遍历 query 用一个 treemap 覆盖的方式记录颜色
-        TreeMap<Integer, Integer> indexColorMap = new TreeMap<>();
+        Map<Integer, Integer> indexColorMap = new HashMap<>();
         int length = queries.length;
         int[] res = new int[length];
+        // 记录当前有多少个相邻的相同颜色
+        int count = 0;
         for (int i = 0; i < length; i++) {
-            int key = queries[i][0];
-            int col = queries[i][1];
-            indexColorMap.put(key, col);
-            // 遍历 treemap 记录上一个的颜色和位置 连续的时候更新位置 和最大值
-            int len = 0;
-            for (int index : indexColorMap.keySet()) {
-                if (indexColorMap.get(index-1) == indexColorMap.get(index)) {
-                    len++;
+            int index = queries[i][0];
+            int currentColor = queries[i][1];
+            // 如果当前颜色和上一个颜色 一致那么就不增加 也不用修改
+            if (indexColorMap.containsKey(index)
+                    && indexColorMap.get(index) == currentColor) {
+                res[i] = count;
+                continue;
+            }
+            Integer lastColor = indexColorMap.get(index);
+            Integer leftColor = indexColorMap.get(index - 1);
+            Integer rightColor = indexColorMap.get(index + 1);
+            // 原来有着色 消除
+            if (lastColor != null) {
+                if (leftColor != null && leftColor.intValue() == lastColor.intValue()) {
+                    count--;
+                }
+                if (rightColor != null && rightColor.intValue() == lastColor.intValue()) {
+                    count--;
                 }
             }
-            res[i] = len;
+            // 修改当前
+            if (leftColor != null && leftColor.intValue() == currentColor) {
+                count++;
+            }
+            if (rightColor != null && rightColor.intValue() == currentColor) {
+                count++;
+            }
+            // 设置答案 记录 颜色
+            res[i] = count;
+            indexColorMap.put(index, currentColor);
         }
         return res;
     }
