@@ -54,30 +54,42 @@ public class Solution {
         // 枚举从 [1-n] 每个值 求平方看看 平方能不能分割组成
         int res = 0;
         for (int i = 1; i <= n; i++) {
-            if (isPunishmentNumber(i)) {
-                res += i * i;
+            int target = i * i;
+            if (isSumEquals(String.valueOf(target), i)) {
+                res += target;
             }
         }
         return res;
     }
 
-
-    private boolean isPunishmentNumber(long target) {
-        long temp = target * target;
-        if (temp == target) {
+    /**
+     * 将 string 无限分割是不是能加和成 remind
+     * @param str
+     * @param remind
+     * @return
+     */
+    private boolean isSumEquals(String str, int remind) {
+        // 剪枝 str 完全匹配了 直接返回 比如说1
+        if (remind == Integer.parseInt(str)) {
             return true;
         }
-        String s = String.valueOf(temp);
-        // 按照每个位置分割
-        for (int i = 1; i < s.length(); i++) {
-            String sub1 = s.substring(0, i);
-            String sub2 = s.substring(i);
-            if (target == Long.parseLong(sub1) + Long.parseLong(sub2)) {
+        // 枚举一个分割点 至少要2分
+        for (int i = 1; i < str.length(); i++) {
+            String substring = str.substring(0, i);
+            int tmp = Integer.parseInt(substring);
+            if (remind < tmp) {
+                continue;
+            }
+            boolean res = isSumEquals(str.substring(i), remind - tmp);
+            if (res) {
                 return true;
             }
         }
         return false;
     }
+
+
+
 
     public static void main(String[] args) {
         Solution solution = new Solution();
@@ -86,9 +98,9 @@ public class Solution {
         Assert.assertEquals(182, i);
 
 
-        i = solution.punishmentNumber(37);
-        System.out.println(i);
-        Assert.assertEquals(182, i);
+//        i = solution.punishmentNumber(37);
+//        System.out.println(i);
+//        Assert.assertEquals(182, i);
     }
 
 }

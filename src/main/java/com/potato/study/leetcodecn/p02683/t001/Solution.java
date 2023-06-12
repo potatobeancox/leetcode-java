@@ -57,8 +57,8 @@ public class Solution {
 
     // 2683
     public boolean doesValidArrayExist(int[] derived) {
-        if (derived.length <= 1) {
-            return true;
+        if (derived.length == 1) {
+            return derived[0] == 0;
         }
         int target = derived[0];
         for (int i = 1; i < derived.length; i++) {

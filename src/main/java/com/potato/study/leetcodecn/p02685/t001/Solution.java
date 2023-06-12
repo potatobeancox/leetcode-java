@@ -75,15 +75,14 @@ public class Solution {
         int[] pointCount = new int[n];
         // parent 对应的节点为1对应联通分量 中点的个数和边的个数
         int[] edgeCount = new int[n];
+        int count = 0;
         for (int i = 0; i < n; i++) {
             int p = unionFind.find(i);
             pointCount[p]++;
             edgeCount[p] += grid[i].size();
         }
-        int count = 0;
         for (int i = 0; i < n; i++) {
             if (pointCount[i] != 0
-                    && edgeCount[i] != 0
                     && pointCount[i] * (pointCount[i] -1) / 2 == edgeCount[i]) {
                 count++;
             }

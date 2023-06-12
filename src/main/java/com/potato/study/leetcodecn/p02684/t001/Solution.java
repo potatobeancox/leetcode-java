@@ -1,5 +1,8 @@
 package com.potato.study.leetcodecn.p02684.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,29 +63,41 @@ public class Solution {
         for (int i = 0; i < m; i++) {
             Arrays.fill(dp[i], -1);
         }
-        dp[0][0] = 0;
+        // 第一列都设置成 0
+        for (int i = 0; i < m; i++) {
+            dp[i][0] = 0;
+        }
         int maxStep = 0;
-        // 严格大于 dp[i][j] 走大 ij 位置的最大步伐数 -1为不可达
-        for (int i = 1; i < n; i++) {
+        // 遍历当前所在位置 往下一列计算
+        for (int i = 0; i < n-1; i++) {
+            // n 是列
             for (int j = 0; j < m; j++) {
-                // j-1 j 和 j+1 i-1 三个位置部位-1的最大的 + 1
-                int max = -1;
-                for (int k = Math.max(0, j-1); k < Math.min(m, j+1); k++) {
-                    if (dp[i-1][k] == -1) {
-                        continue;
-                    }
-                    // 如果 ij 位置不是严格递增也不行
-                    if (grid[i][j] <= grid[i-1][k]) {
-                        continue;
-                    }
-                    max = Math.max(max, dp[i-1][k]);
+                // 如果当前位置已经是不可达了 直接continue调吧
+                if (dp[j][i] == -1) {
+                    continue;
                 }
-                if (max != -1) {
-                    dp[i][j] = max + 1;
-                    maxStep = Math.max(maxStep, max + 1);
+                // 遍历下一列的 3个候选位置
+                // j-1 j 和 j+1 i-1 三个位置部位-1的最大的 + 1
+                for (int k = Math.max(0, j-1); k <= Math.min(m-1, j+1); k++) {
+                    if (grid[k][i+1] <= grid[j][i]) {
+                        continue;
+                    }
+                    // 严格大于
+                    dp[k][i+1] = Math.max(dp[k][i+1], dp[j][i] + 1);
+                    maxStep = Math.max(maxStep, dp[k][i+1]);
                 }
             }
         }
         return maxStep;
+    }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[][] grid =
+                LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[2,4,3,5],[5,4,9,3],[3,4,2,11],[10,9,13,15]]");
+        int i = solution.maxMoves(grid);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
     }
 }
