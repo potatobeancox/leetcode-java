@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p02731.t001;
 
 
+import org.junit.Assert;
+
+import java.util.Arrays;
+
 /**
  *
  * 2731. 移动机器人
@@ -65,9 +69,49 @@ package com.potato.study.leetcodecn.p02731.t001;
 public class Solution {
 
 
+    /**
+     * https://leetcode.cn/problems/movement-of-robots/solution/nao-jin-ji-zhuan-wan-pai-xu-tong-ji-pyth-we55/
+     * @param nums
+     * @param s
+     * @param d
+     * @return
+     */
     public int sumDistance(int[] nums, String s, int d) {
+        // 看了 题解 简单说就是 撞击了 是可以按照原来方向走的 所以 可以直接遍历数组计算 最终位置
+        long[] finalPosition = new long[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            if (s.charAt(i) == 'R') {
+                // x 轴正方向
+                finalPosition[i] = nums[i] + d;
+            } else {
+                finalPosition[i] = nums[i] - d;
+            }
+        }
+        // 计算之后进行排序 遍历每个位置 计算 当前点距离 之前点的距离和 就是之前点个数 * 当前位置 减去 之前的sum
+        Arrays.sort(finalPosition);
+        long sum = 0;
+        int mod = 1_000_000_000 + 7;
+        long prefixSum = finalPosition[0];
+        for (int i = 1; i < nums.length; i++) {
+            // 计算 当前点i 到之前每个点位置的距离和
+            long currentDistance = finalPosition[i] * i - prefixSum;
+            sum += currentDistance;
+            // 注意mod
+            sum %= mod;
 
-        return -1;
+            prefixSum += finalPosition[i];
+        }
+        return (int) sum;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = new int[] {1, 0};
+        String s = "RL";
+        int d = 2;
+        int i = solution.sumDistance(nums, s, d);
+        System.out.println(i);
+        Assert.assertEquals(5, i);
     }
 
 }
