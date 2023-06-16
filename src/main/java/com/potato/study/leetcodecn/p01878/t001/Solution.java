@@ -69,69 +69,99 @@ public class Solution {
      * @return
      */
     public int[] getBiggestThree(int[][] grid) {
-        // 0 计算 每个位置 ij 开始 想右上和 右下两个对角线的和
-        int[][] upSum = new int[grid.length][grid[0].length];
-        // 往
-        int[][] downSum = new int[grid.length][grid[0].length];
-        // 上边界和 右边界 是他自身
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = grid[0].length - 1; j >= 0; j--) {
-                if (i == 0 || j == grid[0].length - 1) {
-                    upSum[i][j] = grid[i][j];
-                } else {
-                    upSum[i][j] = grid[i][j] + upSum[i-1][j+1];
+        int n = grid.length;
+        int m = grid[0].length;
+        // upRightSum 表示从点 ij开始 一直到右上角边界的对角线的前缀和
+        int[][] upRightSum = new int[grid.length][grid[0].length];
+        // downRightSum 表示从点 ij开始 一直到右下角的前缀和
+        int[][] downRightSum = new int[grid.length][grid[0].length];
+        // 枚举每个点作为起始点计算 upRightSum 和 downRightSum
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                // 计算当前左上节点
+                int upRightI = i;
+                int upRightJ = m - 1 -j;
+                // 计算当前数组
+                upRightSum[upRightI][upRightJ] = grid[upRightI][upRightJ];
+                if (upRightI > 0 && upRightJ < m-1) {
+                    upRightSum[upRightI][upRightJ] += upRightSum[upRightI-1][upRightJ+1];
                 }
+
+                // 计算当前生成右下节点
+                int downRightI= n - 1 - i;
+                int downRightJ= m - 1 - j;
+                // 计算当前数组
+                downRightSum[downRightI][downRightJ] = grid[downRightI][downRightJ];
+                if (downRightI < n-1 && downRightJ < m-1) {
+                    downRightSum[downRightI][downRightJ] += downRightSum[downRightI+1][downRightJ+1];
+                }
+
             }
         }
-        // 下边界和 左边界 等于自身
-        for (int i = grid.length-1; i >= 0; i--) {
-            for (int j = grid[0].length - 1; j >= 0; j--) {
-                if (i == grid.length-1 || j == grid[0].length - 1) {
-                    upSum[i][j] = grid[i][j];
-                } else {
-                    upSum[i][j] = grid[i][j] + upSum[i+1][j+1];
-                }
-            }
-        }
-        // 1.枚举每个位置 以这个位置为中心 依次往外扩知道4个边某一个 达到边界
+        // TreeSet 维护 有序性 要最大的 所以 不能超过3个
         TreeSet<Integer> treeSet = new TreeSet<>();
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                // 2. 1的过程中 计算每个 半径对应的和 插入 treeSet中
-                treeSet.add(grid[i][j]);
-                // 依次往外扩知道4个边某一个 达到边界
-                for (int k = 1; k <= Math.min(i, j) ; k++) {
-                    // 当前半径已经超过了限制
-                    if (i - k < 0 || j - k < 0
-                            || i + k >= grid.length || j + k >= grid[0].length) {
+        // 枚举每一个位置作为开始位置 内部枚举长度
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                // 长度
+                for (int k = 0; k < Math.min(n, m); k++) {
+                    // 分别计算上线边界和右边界 任意超过限制就返回
+                    if (i - k < 0 || i + k >= n || j + k * 2 >= m) {
                         break;
                     }
-                    // 4个方向的和
-                    int sum = upSum[i][j-k] - upSum[i-k][j] + grid[i-k][j];
-                    sum += upSum[i+k][j] - upSum[i][j+k] + grid[i][j+k];
-                    sum += downSum[i][j-k] - downSum[i+k][j] + grid[i+k][j];
-                    sum += downSum[i-k][j] - downSum[i][j+k] + grid[i][j+k];
-
+                    // 节点自己
+                    if (k == 0) {
+                        treeSet.add(grid[i][j]);
+                        continue;
+                    }
+                    // 最上面的点
+                    int upPointI = i - k;
+                    int upPointJ = j + k;
+                    // 边长
+                    int edge1 = upRightSum[i][j];
+                    if (upPointI - 1 >= 0 && upPointJ + 1 < m) {
+                        edge1 -= upRightSum[upPointI - 1][upPointJ + 1];
+                    }
+                    // 最右边的点
+                    int rightPointI = i;
+                    int rightPointJ = j + k * 2;
+                    // 上面的点到右边点的边
+                    int edge2 = downRightSum[upPointI][upPointJ];
+                    if (rightPointI + 1 < n && rightPointJ + 1 < m) {
+                        edge2 -= downRightSum[rightPointI+1][rightPointJ+1];
+                    }
+                    // 最下面的点
+                    int downPointI = i + k;
+                    int downPointJ = j + k;
+                    // 左边的点到下面的点
+                    int edge3 = downRightSum[i][j];
+                    if (downPointI + 1 < n && downPointJ + 1 < m) {
+                        edge3 -= downRightSum[downPointI+1][downPointJ+1];
+                    }
+                    // 下面的点到右边的点
+                    int edge4 = upRightSum[downPointI][downPointJ];
+                    if (rightPointI-1 >= 0 && rightPointJ+1 < m) {
+                        edge4 -= upRightSum[rightPointI-1][rightPointJ+1];
+                    }
+                    // 求和 减去 4个点
+                    int sum = edge1 + edge2 + edge3 + edge4 - grid[i][j] - grid[upPointI][upPointJ]
+                            - grid[downPointI][downPointJ] - grid[rightPointI][rightPointJ];
                     treeSet.add(sum);
                 }
-
             }
         }
-        // 3.获取最大的3个
-        int[] result;
+        // set 转成 结果
+        int[] res;
         if (treeSet.size() >= 3) {
-            result = new int[3];
-            for (int i = 0; i < 3; i++) {
-                result[i] = treeSet.pollLast();
-            }
+            res = new int[3];
         } else {
-            result = new int[treeSet.size()];
-            int size = treeSet.size();
-            for (int i = 0; i < size; i++) {
-                result[i] = treeSet.pollLast();
-            }
+            res = new int[treeSet.size()];
         }
-        return result;
+
+        for (int i = 0; i < res.length; i++) {
+            res[i] = treeSet.pollLast();
+        }
+        return res;
     }
 
     public static void main(String[] args) {
