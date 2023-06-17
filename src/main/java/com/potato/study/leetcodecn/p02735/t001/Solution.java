@@ -43,9 +43,37 @@ package com.potato.study.leetcodecn.p02735.t001;
 public class Solution {
 
 
+    /**
+     *
+     * @param nums
+     * @param x
+     * @return
+     */
     public long minCost(int[] nums, int x) {
-
-        return -1;
+        int n = nums.length;
+        // 最多旋转n此 使用一个 sum数组记录 旋转i次 每次的最小花费
+        long[] sum = new long[n];
+        // init sum 每次旋转需要进行的花费
+        for (int i = 0; i < n; i++) {
+            sum[i] = (long)i * x;
+        }
+        // 遍历每种类型
+        for (int i = 0; i < n; i++) {
+            long thisTypeMinCost = Long.MAX_VALUE;
+            for (int j = 0; j < n; j++) {
+                // 内部枚举每次旋转 并比较记录最小花费 每次旋转相当于 往前移动的k个单位的花费
+                int index = (i - j + n) % n;
+                thisTypeMinCost = Math.min(thisTypeMinCost, nums[index]);
+                // 记录到每次移动的sum中
+                sum[j] += thisTypeMinCost;
+            }
+        }
+        // 遍历 sum 计算全局最小值
+        long min = Long.MAX_VALUE;
+        for (long res : sum) {
+            min = Math.min(min, res);
+        }
+        return min;
     }
 
 }
