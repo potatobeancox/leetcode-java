@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p02741.t001;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * 2741. 特别的排列
@@ -45,14 +48,23 @@ public class Solution {
     public int specialPerm(int[] nums) {
         // 使用一个 visit 记录当前排列用了哪些了 记录之前的位置
         boolean[] visit = new boolean[nums.length];
-        return (int) dfs(visit, nums, -1, 0);
+        // key 是 pre#状态 value是计算之后的结果
+        Map<String, Long> memo = new HashMap<>();
+        return (int) dfs(visit, nums, -1, 0, memo, 0);
     }
 
-    private long dfs(boolean[] visit, int[] nums, int preIndex, int len) {
+    private long dfs(boolean[] visit, int[] nums, int preIndex,
+                     int len, Map<String, Long> memo, int status) {
         // 如果已经找到len个了 直接返回 1
         if (nums.length == len) {
             return 1;
         }
+        // 生成key
+        String key = preIndex + "#" + status;
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+
         int mod = 1_000_000_000 + 7;
         long total = 0;
         // 否则 枚举当前位置
@@ -65,14 +77,15 @@ public class Solution {
                     || nums[i] % nums[preIndex] == 0) {
                 // 能整除往下找找看
                 visit[i] = true;
-
-                long res = dfs(visit, nums, i, len + 1);
+                long res = dfs(visit, nums, i, len + 1, memo, status | (1 << i));
                 total += res;
                 total %= mod;
-
                 visit[i] = false;
             }
         }
+        // 将结果 缓存起来
+        memo.put(key, total);
+
         return total;
     }
 
