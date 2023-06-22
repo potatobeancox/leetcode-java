@@ -1,5 +1,10 @@
 package com.potato.study.leetcodecn.p02714.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.*;
+
 /**
  *
  * 2714. 找到最短路径的 K 次跨越
@@ -57,8 +62,77 @@ public class Solution {
 
 
     public int shortestPathWithHops(int n, int[][] edges, int s, int d, int k) {
+        // 将 edges 转成临接 的grid
+        Map<Integer, Integer>[] grid = new Map[n];
+        for (int i = 0; i < n; i++) {
+            grid[i] = new HashMap<>();
+        }
+        for (int[] edge : edges) {
+            // 无向图
+            int from  = edge[0];
+            int to  = edge[1];
 
-        return -1;
+            int cost = edge[2];
+
+            grid[from].put(to, cost);
+            grid[to].put(from, cost);
+        }
+        // dist ij 从s开始 走到 i 使用j次忽略的最小值
+        int[][] dist = new int[n][k+1];
+        for (int[] arr : dist) {
+            Arrays.fill(arr, Integer.MAX_VALUE);
+        }
+        // 优先级队列 记录到达的点 话费的忽略次数 花费的距离 最开始是 0 先按照距离升序 再按照次数升序
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(
+                Comparator.comparingInt((int[] a) -> a[2]).thenComparingInt(a -> a[1])
+        );
+        dist[s][0] = 0;
+        // 第一维终点 第二唯 忽略了多少次 第三维 到达第一个点已经花了多少钱
+        priorityQueue.add(new int[] {s, 0, 0});
+        // 每次找到节点对应的next 生成两种 1忽略掉这个边 2不忽略
+        while (!priorityQueue.isEmpty()) {
+            int[] poll = priorityQueue.poll();
+            int current = poll[0];
+            int hopTime = poll[1];
+            int currentCost = poll[2];
+
+            // current 连接的点
+            for (int nextNode : grid[current].keySet()) {
+                int pathCost = grid[current].get(nextNode);
+                // 已经没有办法忽略了
+                if (currentCost + pathCost < dist[nextNode][hopTime]) {
+                    dist[nextNode][hopTime] = currentCost + pathCost;
+                    priorityQueue.add(new int[]{nextNode, hopTime, currentCost + pathCost});
+                }
+                // 如果还能忽略 忽略一下试试
+                if (hopTime < k) {
+                    if (currentCost < dist[nextNode][hopTime+1]) {
+                        dist[nextNode][hopTime+1] = currentCost;
+                        priorityQueue.add(new int[]{nextNode, hopTime+1, currentCost});
+                    }
+                }
+            }
+        }
+        // 遍历 d
+        int min = Integer.MAX_VALUE;
+        for (int path : dist[d]) {
+            min = Math.min(path, min);
+        }
+
+        return min;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int n = 4;
+        int[][] edges = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[0,1,4],[0,2,2],[2,3,6]]");
+        int s = 1;
+        int d = 3;
+        int k = 2;
+
+        int i = solution.shortestPathWithHops(n, edges, s, d, k);
+        System.out.println(i);
+        Assert.assertEquals(2, i);
     }
 
 }
