@@ -48,8 +48,40 @@ import org.junit.Assert;
 public class Solution {
 
     public int countShips(Sea sea, int[] topRight, int[] bottomLeft) {
+        // 终止条件
+        if (topRight[0] == bottomLeft[0] && topRight[1] == bottomLeft[1]) {
+            boolean b = sea.hasShips(topRight, bottomLeft);
+            if (b) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        boolean b = sea.hasShips(topRight, bottomLeft);
+        if (!b) {
+            return 0;
+        }
+        int[] bottomLeft1;
+        int[] topRight1;
 
-        return -1;
+        int[] bottomLeft2;
+        int[] topRight2;
+
+        if (bottomLeft[0] == topRight[0]) {
+            bottomLeft1 = new int[] {bottomLeft[0], bottomLeft[1]};
+            topRight1 = new int[] {topRight[0], (bottomLeft[1] + topRight[1]) / 2};
+
+            bottomLeft2 = new int[] {bottomLeft[0], (bottomLeft[1] + topRight[1]) / 2 + 1};
+            topRight2 = new int[] {topRight[0], topRight[1]};
+        } else {
+            // bottomLeft[1] == topRight[1]
+            bottomLeft1 = new int[] {bottomLeft[0], bottomLeft[1]};
+            topRight1 = new int[] {(bottomLeft[0] + topRight[0]) / 2, topRight[1]};
+
+            bottomLeft2 = new int[] {(bottomLeft[0] + topRight[0]) / 2 + 1, bottomLeft[1]};
+            topRight2 = new int[] {topRight[0], topRight[1]};
+        }
+        return countShips(sea, topRight1, bottomLeft1) + countShips(sea, topRight2, bottomLeft2);
     }
 }
 
