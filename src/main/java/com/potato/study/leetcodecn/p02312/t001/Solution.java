@@ -1,5 +1,6 @@
 package com.potato.study.leetcodecn.p02312.t001;
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 /**
@@ -63,63 +64,43 @@ import org.junit.Assert;
 public class Solution {
 
 
-
-
-    // 2312
+    /**
+     * https://leetcode.cn/problems/selling-pieces-of-wood/solution/by-endlesscheng-mrmd/
+     * @param m
+     * @param n
+     * @param prices
+     * @return
+     */
     public long sellingWood(int m, int n, int[][] prices) {
-        // 两位二维数组 一个记录 高 宽对应的碎片 卖多少前
+        // 两位二维数组 一个记录 高 宽对应的碎片 卖多少钱
         long[][] price = new long[m+1][n+1];
         for (int i = 0; i < prices.length; i++) {
             int[] eachPrice = prices[i];
+            // prices[i] = [hi, wi, pricei]
             int height = eachPrice[0];
             int width = eachPrice[1];
             int p = eachPrice[2];
             price[height][width] = Math.max(price[height][width], p);
         }
-        // 另一个记录 高块的 大块 最多卖多少钱
-        long[][] totalPrice = new long[m+1][n+1];
-        // 每次 从中间点开始 分割 找到 最大值 返回 dfs
-        long maxPrice = dfs(m, n, price, totalPrice);
-        return maxPrice;
+        long[][] dp = new long[m+1][n+1];
+        // 从小到大枚举高和宽
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = price[i][j];
+                // 高度进行分割
+                for (int k = 0; k < i; k++) {
+                    dp[i][j] = Math.max(dp[i][j], dp[k][j] + dp[i-k][j]);
+                }
+                // 宽度进行分割
+                for (int k = 1; k < j; k++) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i][k] + dp[i][j-k]);
+                }
+            }
+        }
+        return dp[m][n];
     }
 
-    /**
-     * m * n 的木头块 最多能获取的奖金
-     * @param m
-     * @param n
-     * @param price
-     * @param totalPrice
-     * @return
-     */
-    private long dfs(int m, int n, long[][] price, long[][] totalPrice) {
-        // 没有当然是 0
-        if (m == 0 || n == 0) {
-            return 0;
-        }
-        // 之前已经计算过这个结果了
-        if (totalPrice[m][n] > 0) {
-            return totalPrice[m][n];
-        }
-        if (price[m][n] > 0) {
-            return price[m][n];
-        }
-        long maxTotal = 0;
-        // 计算mn 水平分割 和竖直分割
-        for (int i = 1; i <= m / 2; i++) {
-            long total = dfs(i, n, price, totalPrice)
-                    + dfs(m-i, n, price, totalPrice);
-            maxTotal = Math.max(maxTotal, total);
-        }
 
-
-        for (int i = 1; i <= n / 2; i++) {
-            long total = dfs(m, i, price, totalPrice)
-                    + dfs(m, n-i, price, totalPrice);
-            maxTotal = Math.max(maxTotal, total);
-        }
-        totalPrice[m][n] = maxTotal;
-        return maxTotal;
-    }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
@@ -156,6 +137,14 @@ public class Solution {
         l = solution.sellingWood(m, n, prices);
         System.out.println(l);
         Assert.assertEquals(160, l);
+
+
+        m = 11;
+        n = 20;
+        prices = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[10,9,14]]");
+        l = solution.sellingWood(m, n, prices);
+        System.out.println(l);
+//        Assert.assertEquals(160, l);
     }
 
 }
