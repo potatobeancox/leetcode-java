@@ -3,6 +3,8 @@ package com.potato.study.leetcodecn.p02045.t001;
 import com.potato.study.leetcode.domain.ListNode;
 import com.potato.study.leetcode.util.ListNodeUtil;
 
+import java.util.*;
+
 /**
  * 2045. 到达目的地的第二短时间
  *
@@ -73,8 +75,65 @@ import com.potato.study.leetcode.util.ListNodeUtil;
 public class Solution {
 
     public int secondMinimum(int n, int[][] edges, int time, int change) {
+        // 将 edges 转换成 grid list 数组
+        List<Integer>[] grid = new List[n+1];
+        for (int i = 0; i < n + 1; i++) {
+            grid[i] = new ArrayList<>();
+        }
+        for (int[] edge : edges) {
+            int from = edge[0];
+            int to = edge[1];
 
-        return -1;
+            grid[from].add(to);
+            grid[to].add(from);
+        }
+        // 用一个 dist 记录 1 到 i 的距离 0是最短 1是次最短
+        int[][] dist = new int[n+1][2];
+        for (int[] d : dist) {
+            Arrays.fill(d, Integer.MAX_VALUE);
+        }
+        // 起点 最近的记录
+        dist[1][0] = 0;
+        // 用 队列 记录 当前 停止的点 和 目前目前的花费
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[] {
+                1, 0
+        });
+        while (!queue.isEmpty()) {
+            int[] poll = queue.poll();
+            int node = poll[0];
+            int cost = poll[1];
+
+            // 找到next
+            for (int nextNode : grid[node]) {
+                int thisCost = cost + 1;
+                if (thisCost < dist[nextNode][0]) {
+                    // 最小
+                    dist[nextNode][0] = thisCost;
+                    queue.add(new int[] {
+                            nextNode, thisCost
+                    });
+                } else if (dist[nextNode][0] < thisCost && thisCost < dist[nextNode][1]) {
+                    // 次小
+                    dist[nextNode][1] = thisCost;
+                    queue.add(new int[] {
+                            nextNode, thisCost
+                    });
+                }
+            }
+        }
+        // 计算 dist n,1 实际需要的时间
+        int totalTime = 0;
+        for (int i = 0; i < dist[n][1]; i++) {
+            // 当前是红灯还是绿等
+            if (totalTime % (2 * change) >= change) {
+                // 红灯等灯
+                totalTime += (2 * change - totalTime % (2 * change));
+            }
+            // 每条路都要用 time
+            totalTime += time;
+        }
+        return totalTime;
     }
 
 }
