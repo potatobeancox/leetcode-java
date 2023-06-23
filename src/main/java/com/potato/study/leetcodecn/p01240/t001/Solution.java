@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p01240.t001;
 
 
+import org.junit.Assert;
 
 /**
  * 1240. 铺瓷砖
@@ -50,8 +51,93 @@ package com.potato.study.leetcodecn.p01240.t001;
  */
 public class Solution {
 
-    public int tilingRectangle(int n, int m) {
+    private int res;
 
-        return -1;
+    /**
+     * https://leetcode.cn/problems/tiling-a-rectangle-with-the-fewest-squares/solution/java-dfsbao-li-di-gui-by-arglone-alau/
+     * @param n
+     * @param m
+     * @return
+     */
+    public int tilingRectangle(int n, int m) {
+        this.res = Integer.MAX_VALUE;
+        boolean[][] used = new boolean[n][m];
+        // dfs 用一个二维数组记录 被填充的情况
+        dfs(used, 0);
+        return this.res;
+    }
+
+    /**
+     *
+     * @param used
+     * @param tileCount 当前用了多少个瓷砖
+     */
+    private void dfs(boolean[][] used, int tileCount) {
+        if (tileCount >= res) {
+            return;
+        }
+        // 终止条件 当前 全用过 没有漏的
+        int[] startPosition = getStartPosition(used);
+        if (startPosition[0] == -1 || startPosition[1] == -1) {
+            res = Math.min(res, tileCount);
+            return;
+        }
+        // 从大到小枚举 正方形边长
+        int limit = Math.min(used.length - startPosition[0], used[0].length - startPosition[1]);
+        for (int i = limit; i >= 1; i--) {
+            // 检验并设置 true
+            boolean hasPass = checkAndSetUse(used, i, startPosition, true);
+
+            if (hasPass) {
+                dfs(used, tileCount + 1);
+                // 设置false
+                checkAndSetUse(used, i, startPosition, false);
+            }
+        }
+
+    }
+
+    /**
+     * 判断 从 startPosition开始能不能设置成status，不能返回false
+     * @param used
+     * @param limit
+     * @param startPosition
+     * @param status
+     * @return
+     */
+    private boolean checkAndSetUse(boolean[][] used, int limit, int[] startPosition, boolean status) {
+        for (int i = startPosition[0]; i < startPosition[0] + limit; i++) {
+            for (int j = startPosition[1]; j < startPosition[1] + limit; j++) {
+                if (status == used[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        for (int i = startPosition[0]; i < startPosition[0] + limit; i++) {
+            for (int j = startPosition[1]; j < startPosition[1] + limit; j++) {
+                used[i][j] = status;
+            }
+        }
+        return true;
+    }
+
+
+    private int[] getStartPosition(boolean[][] used) {
+        for (int i = 0; i < used.length; i++) {
+            for (int j = 0; j < used[0].length; j++) {
+                if (!used[i][j]) {
+                    return new int[] {i, j};
+                }
+            }
+        }
+        return new int[] {-1, -1};
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int i = solution.tilingRectangle(11, 13);
+        System.out.println(i);
+        Assert.assertEquals(6, i);
     }
 }
