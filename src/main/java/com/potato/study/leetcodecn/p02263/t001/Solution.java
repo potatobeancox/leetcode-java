@@ -55,31 +55,14 @@ public class Solution {
     public int convertArray(int[] nums) {
         // dp ij 遍历到 i 最终结果是 j
         int ascResult = getAscResult(nums);
-        int descResult = getDescResult(nums);
+        int[] clone = nums.clone();
+        for (int i = 0; i < nums.length / 2; i++) {
+            int tmp = clone[i];
+            clone[i] = clone[nums.length - 1 - i];
+            clone[nums.length - 1 - i] = tmp;
+        }
+        int descResult = getAscResult(clone);
         return Math.min(ascResult, descResult);
-    }
-
-    private int getDescResult(int[] nums) {
-        int n = nums.length;
-        long[][] dp = new long[n][1001];
-        // 处理 0
-        for (int i = 1000; i >= 0; i--) {
-            dp[0][i] = Math.abs(nums[0] - i);
-        }
-        long res = Long.MAX_VALUE;
-        for (int i = 1; i < n; i++) {
-            long min = dp[i-1][0];
-            for (int j = 1000; j >= 0; j--) {
-                // 维护一个小于等于 j的最小值
-                min = Math.min(min, dp[i-1][j]);
-                // 可以直接从 小于 j的变成j
-                dp[i][j] = min + Math.abs(nums[i] - j);
-                if (i == n-1) {
-                    res = Math.min(res, dp[i][j]);
-                }
-            }
-        }
-        return (int) res;
     }
 
     private int getAscResult(int[] nums) {
@@ -89,7 +72,6 @@ public class Solution {
         for (int i = 0; i < 1001; i++) {
             dp[0][i] = Math.abs(nums[0] - i);
         }
-        long res = Long.MAX_VALUE;
         for (int i = 1; i < n; i++) {
             long min = dp[i-1][0];
             for (int j = 0; j < 1001; j++) {
@@ -97,10 +79,12 @@ public class Solution {
                 min = Math.min(min, dp[i-1][j]);
                 // 可以直接从 小于 j的变成j
                 dp[i][j] = min + Math.abs(nums[i] - j);
-                if (i == n-1) {
-                    res = Math.min(res, dp[i][j]);
-                }
             }
+        }
+
+        long res = Long.MAX_VALUE;
+        for (long element : dp[n-1]) {
+            res = Math.min(res, element);
         }
         return (int) res;
     }
@@ -114,6 +98,13 @@ public class Solution {
         int i = solution.convertArray(nums);
         System.out.println(i);
         Assert.assertEquals(4, i);
+
+        nums = new int[] {
+                0
+        };
+        i = solution.convertArray(nums);
+        System.out.println(i);
+        Assert.assertEquals(0, i);
     }
 
 }
