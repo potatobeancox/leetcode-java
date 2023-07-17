@@ -60,7 +60,11 @@ public class Solution {
 
 
     public int sumImbalanceNumbers(int[] nums) {
+        // 1 <= nums[i] <= nums.length 有这个条件 使用一个 bool 形数组存是否在当前值是否存在与子数组之中
 
+        // 枚举 nums 的开始节点 端点 每次都清空 visit
+
+        // 从开始节点后面的点 开始枚举子数组的结束点 如果当前点对应num 前后都在 那需要+1 只有一个 不变 如果都不在需要-1
         return -1;
     }
 
