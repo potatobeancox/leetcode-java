@@ -1,6 +1,7 @@
 package com.potato.study.leetcodecn.p02747.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
 import org.junit.Assert;
 
 import java.util.Arrays;
@@ -69,16 +70,30 @@ public class Solution {
         Arrays.sort(indexes, Comparator.comparingInt(i -> queries[i]));
         // 遍历 query 计算两个端点的距离 中间维护 当前已经找到的窗口中 log的开始和结束位置
         int[] res = new int[queries.length];
-        int left = -1;
+        int left = 0;
         int right = -1;
         Map<Integer, Integer> countMap = new HashMap<>();
         for (int targetIndex : indexes) {
             // 闭区间
             int queryLeft = queries[targetIndex] - x;
             int queryRight = queries[targetIndex];
-            // 窗口内部使用一个 map计数 每次都修改 窗口区间的左右端点 index
-            // 当前左边 是否落在闭区间里边 落在外面
-            while (left != -1 && left <= right && logs[left][1] < queryLeft) {
+            // 先移动下右边让更多的数字进入区间里
+            while (right+1 < logs.length && logs[right+1][1] <= queryRight) {
+                // right+1 是否应该在区间里边
+                int serverId = logs[right+1][0];
+                int count = countMap.getOrDefault(serverId, 0);
+                count++;
+                countMap.put(serverId, count);
+                right++;
+            }
+            // 至此所有 小于 queryRight 的点都应该在区间里
+            if (left > right) {
+                // 说明区间是空 直接返回
+                res[targetIndex] = n;
+                continue;
+            }
+            // 如果当前存在非空的window 要看看 左边是不是需要弹出
+            while (left <= right && logs[left][1] < queryLeft) {
                 int serverId = logs[left][0];
                 int count = countMap.get(serverId);
                 count--;
@@ -89,20 +104,8 @@ public class Solution {
                 }
                 left++;
             }
-            // 当前右边是不是在闭区间里边
-            while (right+1 < logs.length && logs[right+1][1] <= queryRight) {
-                if (left == -1) {
-                    left = right+1;
-                }
-                int serverId = logs[right+1][0];
-                int count = countMap.getOrDefault(serverId, 0);
-                count++;
-                countMap.put(serverId, count);
-                right++;
-            }
             // 统计个数
             res[targetIndex] = n - countMap.size();
-
         }
         return res;
     }
@@ -125,19 +128,15 @@ public class Solution {
         }, ints);
 
 
-        n = 3;
+        n = 4;
         // logs[i] = [server_id, time]
-        logs = new int[][] {
-                {1,3}, {2, 6}, {1, 5}
-        };
-        x = 5;
-        queries = new int[] {
-                10,11
-        };
+        logs = LeetcodeInputUtils.inputString2IntArrayTwoDimensional("[[4,3],[2,16],[1,21],[3,22],[1,13],[3,10],[2,1],[1,12],[4,13],[2,18]]");
+        x = 8;
+        queries = LeetcodeInputUtils.inputString2IntArray("[14,28,29]");
         ints = solution.countServers(n, logs, x, queries);
         System.out.println(Arrays.toString(ints));
-//        Assert.assertArrayEquals(new int[] {
-//                5,6,5,5,6,5,6,5,6
-//        }, ints);
+        Assert.assertArrayEquals(new int[] {
+                1,2,2
+        }, ints);
     }
 }
