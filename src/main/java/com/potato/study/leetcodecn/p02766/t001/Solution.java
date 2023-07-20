@@ -3,7 +3,11 @@ package com.potato.study.leetcodecn.p02766.t001;
 
 import org.junit.Assert;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -61,8 +65,21 @@ public class Solution {
 
 
     public List<Integer> relocateMarbles(int[] nums, int[] moveFrom, int[] moveTo) {
+        Set<Integer> collectSet = Arrays.stream(nums)
+                .boxed()
+                .collect(Collectors.toSet());
 
-        return null;
+        for (int i = 0; i < moveFrom.length; i++) {
+            int from = moveFrom[i];
+            int to = moveTo[i];
+            if (collectSet.contains(from)) {
+                collectSet.remove(from);
+                collectSet.add(to);
+            }
+        }
+        return collectSet.stream()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
 }
