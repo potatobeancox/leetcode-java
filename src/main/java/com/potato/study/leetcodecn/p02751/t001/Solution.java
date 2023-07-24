@@ -1,8 +1,11 @@
 package com.potato.study.leetcodecn.p02751.t001;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -71,16 +74,43 @@ public class Solution {
             robotInfo.pos = positions[i];
             robotInfo.dir = directions.charAt(i);
             robotInfo.health = healths[i];
+            robotInfo.index = i;
 
             robotInfoList.add(robotInfo);
         }
         // 按照position进行排序
-
+        Collections.sort(robotInfoList, Comparator.comparingInt(r -> r.pos));
         // 从前往后遍历 RobotInfo 用一个 stack 记录目前还存在的 机器人
+        Deque<RobotInfo> robotInfoDeque = new ArrayDeque<>();
+        for (RobotInfo robotInfo : robotInfoList) {
+            // 对于当前机器人 要是其往右走 直接进栈 否则循环看看 栈内有没有 往右的
+            if (robotInfo.dir == 'R') {
+                robotInfoDeque.addLast(robotInfo);
+                continue;
+            }
+            // 如果当前 stack 是空的 直接 push
+            if (robotInfoDeque.isEmpty()) {
 
-        // 对于当前机器人 要是其往右走 直接进栈 否则循环看看 栈内有没有 往右的
-
-        return null;
+            }
+            // 往左走
+            while (!robotInfoDeque.isEmpty() && robotInfoDeque.peekLast().dir == 'R') {
+                RobotInfo rightRobot = robotInfoDeque.pollFirst();
+                if (rightRobot.health == robotInfo.health) {
+                    // 全都移除
+                    break;
+                }
+                if (rightRobot.health > robotInfo.health) {
+                    rightRobot.health--;
+                    robotInfoDeque.addLast(rightRobot);
+                } else {
+                    robotInfo.health--;
+                    robotInfoDeque.addLast(robotInfo);
+                }
+            }
+        }
+        List<RobotInfo> remindRootList = new ArrayList<>(robotInfoDeque);
+        Collections.sort(remindRootList, Comparator.comparingInt(r -> r.index));
+        return remindRootList.stream().map(robotInfo -> robotInfo.health).collect(Collectors.toList());
     }
 
     class RobotInfo {
@@ -88,16 +118,30 @@ public class Solution {
          * 方向 'L' 表示 向左 或 'R' 表示 向右
          */
         public char dir;
-
         /**
          * 位置 也就是坐标
          */
         public int pos;
-
         /**
          * 生命值
          */
         public int health;
+        /**
+         * 输入的顺序
+         */
+        public int index;
+    }
+
+    public static void main(String[] args) {
+        //        [3,5,2,6]
+        //[10,10,15,12]
+        //        "RLRL"
+        int[] positions = LeetcodeInputUtils.inputString2IntArray("[3,5,2,6]");
+        int[] healths = LeetcodeInputUtils.inputString2IntArray("[10,10,15,12]");
+        String directions = "RLRL";
+        Solution solution = new Solution();
+        List<Integer> res = solution.survivedRobotsHealths(positions, healths, directions);
+        System.out.println(res);
     }
 
 }
