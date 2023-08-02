@@ -55,6 +55,11 @@ public class Solution {
 
 
     public int minimumBeautifulSubstrings(String s) {
+        // 1 <= s.length <= 15 生成位于这中间的 5的倍数的二进制值，使用记忆优化 记录当前s 能最少分成多少个字符传
+        int length = s.length();
+        // dp ij  【i，j】 之间字符传可以组成 5的幂 的 最小个数 不能有前导入 0
+
+        // 最外层枚举 区间长度 从1 到length 内部计算开始终点位置
 
         return -1;
     }
