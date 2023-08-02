@@ -1,6 +1,9 @@
 package com.potato.study.leetcodecn.p02750.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
 import java.util.Arrays;
 
 /**
@@ -53,7 +56,44 @@ public class Solution {
      * @return
      */
     public int numberOfGoodSubarraySplits(int[] nums) {
-        return -1;
+        // 遍历 nums 对于没个位置 i 如果他是1的话 看看之前的1的位置
+        int mod = 1_000_000_000 + 7;
+        // 如果没有的话 按照1个处理 ，有的话 看看 中间有n个 0 就是 可能性 * （n+1）
+        long total = 1;
+        int preOneIndex = -1;
+        boolean isAllZero = true;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 0) {
+                continue;
+            }
+            isAllZero = false;
+            // i 位置就是 1
+            if (preOneIndex == -1) {
+                preOneIndex = i;
+                continue;
+            }
+            // 中间空档
+            int n = i - preOneIndex;
+            total *= n;
+            total %= mod;
+            preOneIndex = i;
+
+        }
+        if (isAllZero) {
+            return 0;
+        }
+        return (int) total;
+    }
+
+    // [1,0,0,0,0,0,1,0,1]
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = LeetcodeInputUtils.inputString2IntArray("[1,0,0,0,0,0,1,0,1]");
+        int i = solution.numberOfGoodSubarraySplits(nums);
+        System.out.println(i);
+        Assert.assertEquals(12, i);
+
     }
 
 }
