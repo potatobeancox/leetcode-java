@@ -1,6 +1,10 @@
 package com.potato.study.leetcodecn.p02770.t001;
 
 
+import com.potato.study.leetcode.util.LeetcodeInputUtils;
+import org.junit.Assert;
+
+import java.util.Arrays;
 
 /**
  *
@@ -62,7 +66,41 @@ public class Solution {
 
 
     public int maximumJumps(int[] nums, int target) {
-
-        return -1;
+        int n = nums.length;
+        // 跳到i位置 需要的最大次数
+        int[] dp = new int[n];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        // dp i 到达i结点 需要跳的max次数 dp i = max 「dp j」 + 1 如果 ij满足条件
+        for (int i = 1; i < nums.length; i++) {
+            // i 表示当前的终点 枚举终点前的位置
+            for (int j = 0 ; j < i; j++) {
+                int diff = nums[j] - nums[i];
+                if (-1 * target <= diff && diff <= target && dp[j] < Integer.MAX_VALUE) {
+                    if (dp[i] == Integer.MAX_VALUE) {
+                        dp[i] = dp[j] + 1;
+                    } else {
+                        dp[i] = Math.max(dp[i], dp[j] + 1);
+                    }
+                }
+            }
+        }
+        if (Integer.MAX_VALUE == dp[n-1]) {
+            return -1;
+        }
+        return dp[n-1];
     }
+
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+//        nums = [1,3,6,4,1,2], target = 2
+        int[] nums = LeetcodeInputUtils.inputString2IntArray("[1,3,6,4,1,2]");
+        int target = 2;
+        int i = solution.maximumJumps(nums, target);
+        System.out.println(i);
+        Assert.assertEquals(3, i);
+    }
+
+
 }
