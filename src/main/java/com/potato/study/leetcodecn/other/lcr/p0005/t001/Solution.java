@@ -3,7 +3,7 @@ package com.potato.study.leetcodecn.other.lcr.p0005.t001;
 /**
  * LCR 005. 最大单词长度乘积
  *
- * 定一个字符串数组 words，请计算当两个字符串 words[i] 和 words[j] 不包含相同字符时，它们长度的乘积的最大值。假设字符串中只包含英语的小写字母。如果没有不包含相同字符的一对字符串，返回 0。
+ * 给定一个字符串数组 words，请计算当两个字符串 words[i] 和 words[j] 不包含相同字符时，它们长度的乘积的最大值。假设字符串中只包含英语的小写字母。如果没有不包含相同字符的一对字符串，返回 0。
  *
  *  
  *
@@ -34,11 +34,17 @@ package com.potato.study.leetcodecn.other.lcr.p0005.t001;
  * 注意：本题与主站 318 题相同：https://leetcode-cn.com/problems/maximum-product-of-word-lengths/
  *
  * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/aseY1I
+ * 链接：https://leetcode.cn/problems/aseY1I
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
 public class Solution {
+
+    /**
+     *
+     * @param words
+     * @return
+     */
     public int maxProduct(String[] words) {
         // 转化成数字掩码
         int max = 0;

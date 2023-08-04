@@ -34,11 +34,17 @@ import java.util.Map;
  * 注意：本题与主站 137 题相同：https://leetcode-cn.com/problems/single-number-ii/
  *
  * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/WGki4K
+ * 链接：https://leetcode.cn/problems/WGki4K
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
 public class Solution {
+
+    /**
+     *
+     * @param nums
+     * @return
+     */
     public int singleNumber(int[] nums) {
         Map<Integer, Integer> countMap = new HashMap<>();
         for (int num : nums) {
