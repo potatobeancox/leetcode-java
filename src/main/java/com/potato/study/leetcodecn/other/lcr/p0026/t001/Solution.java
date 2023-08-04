@@ -4,7 +4,7 @@ import com.potato.study.leetcode.domain.ListNode;
 import com.potato.study.leetcode.util.ListNodeUtil;
 
 /**
- * 剑指 Offer II 026. 重排链表
+ * LCR 026. 重排链表
  *
  * 给定一个单链表 L 的头节点 head ，单链表 L 表示为：
  *
@@ -35,6 +35,11 @@ import com.potato.study.leetcode.util.ListNodeUtil;
  *
  * 链表的长度范围为 [1, 5 * 104]
  * 1 <= node.val <= 1000
+ *  
+ *
+ * 注意：本题与主站 143 题相同：https://leetcode-cn.com/problems/reorder-list/ 
+ *
+ *
  *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/LGjMqU
