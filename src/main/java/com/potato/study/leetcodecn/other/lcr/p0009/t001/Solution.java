@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.other.lcr.p0009.t001;
 
 /**
- * 剑指 Offer II 009. 乘积小于 K 的子数组
+ * LCR 009. 乘积小于 K 的子数组
  *
  * 给定一个正整数数组 nums和整数 k ，请找出该数组内乘积小于 k 的连续的子数组的个数。
  *
