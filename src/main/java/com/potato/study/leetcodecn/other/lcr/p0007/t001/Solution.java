@@ -6,15 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 剑指 Offer II 007. 数组中和为 0 的三个数
+ * LCR 007. 三数之和
  *
- * 给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请
- *
- * 你返回所有和为 0 且不重复的三元组。
- *
- * 注意：答案中不可以包含重复的三元组。
- *
- *  
+ * 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a ，b ，c ，使得 a + b + c = 0 ？请找出所有和为 0 且 不重复 的三元组。
  *
  *  
  *
@@ -22,30 +16,23 @@ import java.util.List;
  *
  * 输入：nums = [-1,0,1,2,-1,-4]
  * 输出：[[-1,-1,2],[-1,0,1]]
- * 解释：
- * nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。
- * nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。
- * nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
- * 不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。
- * 注意，输出的顺序和三元组的顺序并不重要。
  * 示例 2：
  *
- * 输入：nums = [0,1,1]
+ * 输入：nums = []
  * 输出：[]
- * 解释：唯一可能的三元组和不为 0 。
  * 示例 3：
  *
- * 输入：nums = [0,0,0]
- * 输出：[[0,0,0]]
- * 解释：唯一可能的三元组和为 0 。
+ * 输入：nums = [0]
+ * 输出：[]
  *  
  *
  * 提示：
  *
- * 3 <= nums.length <= 3000
+ * 0 <= nums.length <= 3000
  * -105 <= nums[i] <= 105
  *  
- * 注意：本题与主站 15 题相同：leetcode.cn/problems/3sum/
+ *
+ * 注意：本题与主站 15 题相同：https://leetcode-cn.com/problems/3sum/
  *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/1fGaJU
@@ -55,7 +42,11 @@ import java.util.List;
 public class Solution {
 
 
-    // ii 007
+    /**
+     *
+     * @param nums
+     * @return
+     */
     public List<List<Integer>> threeSum(int[] nums) {
         // 排序 定位开始位置 也就是 最小的位置
         Arrays.sort(nums);
