@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.other.lcr.p0014.t001;
 
 /**
- * 剑指 Offer II 014. 字符串中的变位词
+ * LCR 014. 字符串的排列
  *
  * 给定两个字符串 s1 和 s2，写一个函数来判断 s2 是否包含 s1 的某个变位词。
  *
@@ -36,7 +36,12 @@ package com.potato.study.leetcodecn.other.lcr.p0014.t001;
 public class Solution {
 
 
-    // ii 014
+    /**
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
     public boolean checkInclusion(String s1, String s2) {
         // 直接滑动窗口 比较窗口大小
         int[] baseCount = new int[26];
