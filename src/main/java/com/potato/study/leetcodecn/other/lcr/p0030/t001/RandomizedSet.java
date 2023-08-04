@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * 剑指 Offer II 030. 插入、删除和随机访问都是 O(1) 的容器
+ * LCR 030. O(1) 时间插入、删除和获取随机元素
  *
  * 设计一个支持在平均 时间复杂度 O(1) 下，执行以下操作的数据结构：
  *
@@ -44,8 +44,6 @@ import java.util.Random;
  *  
  *
  * 注意：本题与主站 380 题相同：https://leetcode-cn.com/problems/insert-delete-getrandom-o1/
- *
- *
  *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/FortPu
