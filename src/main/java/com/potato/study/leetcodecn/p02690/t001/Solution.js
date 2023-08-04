@@ -34,6 +34,14 @@
  著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 
+/**
+ * https://blog.csdn.net/sinat_17775997/article/details/84233822
+ */
 var createInfiniteObject = function() {
-
+    const proxyFunction = new Proxy(
+        {}, {
+            get : (_, prop) => () => prop
+        }
+    );
+    return proxyFunction;
 };
