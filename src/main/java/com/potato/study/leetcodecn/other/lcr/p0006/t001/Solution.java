@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.other.lcr.p0006.t001;
 
 /**
- * 剑指 Offer II 006. 排序数组中两个数字之和
+ * LCR 006. 两数之和 II - 输入有序数组
  *
  * 给定一个已按照 升序排列  的整数数组 numbers ，请你从数组中找出两个数满足相加之和等于目标数 target 。
 

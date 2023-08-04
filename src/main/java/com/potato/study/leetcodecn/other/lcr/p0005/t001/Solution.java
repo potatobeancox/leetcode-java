@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.other.lcr.p0005.t001;
 
 /**
- * 剑指 Offer II 005. 单词长度的最大乘积
+ * LCR 005. 最大单词长度乘积
  *
  * 定一个字符串数组 words，请计算当两个字符串 words[i] 和 words[j] 不包含相同字符时，它们长度的乘积的最大值。假设字符串中只包含英语的小写字母。如果没有不包含相同字符的一对字符串，返回 0。
  *
