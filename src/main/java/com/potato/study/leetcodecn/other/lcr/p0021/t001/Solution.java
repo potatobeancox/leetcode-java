@@ -3,7 +3,7 @@ package com.potato.study.leetcodecn.other.lcr.p0021.t001;
 import com.potato.study.leetcode.domain.ListNode;
 
 /**
- * 剑指 Offer II 021. 删除链表的倒数第 n 个结点
+ * LCR 021. 删除链表的倒数第 N 个结点
  *
  * 给定一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
  *
@@ -35,6 +35,12 @@ import com.potato.study.leetcode.domain.ListNode;
  *
  * 进阶：能尝试使用一趟扫描实现吗？
  *
+ *  
+ *
+ * 注意：本题与主站 19 题相同： https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
+ *
+ *
+ *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/SLwz0R
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
@@ -43,7 +49,12 @@ import com.potato.study.leetcode.domain.ListNode;
 public class Solution {
 
 
-    // jianzhi2 offer 021
+    /**
+     *
+     * @param head
+     * @param n
+     * @return
+     */
     public ListNode removeNthFromEnd(ListNode head, int n) {
         // fast 先往前走 n个点
         ListNode newHead = new ListNode(-1);
