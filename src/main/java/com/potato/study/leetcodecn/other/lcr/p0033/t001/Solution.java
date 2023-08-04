@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 剑指 Offer II 033. 变位词组
+ * LCR 033. 字母异位词分组
  *
  * 给定一个字符串数组 strs ，将 变位词 组合在一起。 可以按任意顺序返回结果列表。
  *
@@ -38,7 +38,7 @@ import java.util.Map;
  * 注意：本题与主站 49 题相同： https://leetcode-cn.com/problems/group-anagrams/
  *
  * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/sfvd7V
+ * 链接：https://leetcode.cn/problems/sfvd7V
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
