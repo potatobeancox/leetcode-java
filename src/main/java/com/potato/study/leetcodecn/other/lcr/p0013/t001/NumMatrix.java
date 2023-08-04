@@ -1,7 +1,7 @@
 package com.potato.study.leetcodecn.other.lcr.p0013.t001;
 
 /**
- * 剑指 Offer II 013. 二维子矩阵的和
+ * LCR 013. 二维区域和检索 - 矩阵不可变
  *
  * 给定一个二维矩阵 matrix，以下类型的多个请求：
  *
@@ -38,6 +38,9 @@ package com.potato.study.leetcodecn.other.lcr.p0013.t001;
  * 0 <= row1 <= row2 < m
  * 0 <= col1 <= col2 < n
  * 最多调用 104 次 sumRegion 方法
+ *  
+ *
+ * 注意：本题与主站 304 题相同： https://leetcode-cn.com/problems/range-sum-query-2d-immutable/
  *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/O4NDxx
