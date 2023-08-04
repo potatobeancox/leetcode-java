@@ -3,7 +3,7 @@ package com.potato.study.leetcodecn.other.lcr.p0024.t001;
 import com.potato.study.leetcode.domain.ListNode;
 
 /**
- * 剑指 Offer II 024. 反转链表
+ * LCR 024. 反转链表
  *
  * 给定单链表的头节点 head ，请反转链表，并返回反转后的链表的头节点。
  *
@@ -37,8 +37,10 @@ import com.potato.study.leetcode.domain.ListNode;
  *
  * 注意：本题与主站 206 题相同： https://leetcode-cn.com/problems/reverse-linked-list/
  *
+ *
+ *
  * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/UHnkqh
+ * 链接：https://leetcode.cn/problems/UHnkqh
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
