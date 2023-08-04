@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 剑指 Offer II 010. 和为 k 的子数组
+ * LCR 010. 和为 K 的子数组
  *
  * 给定一个整数数组和一个整数 k ，请找到该数组中和为 k 的连续子数组的个数。
  *
@@ -27,7 +27,9 @@ import java.util.Map;
  * -1000 <= nums[i] <= 1000
  * -107 <= k <= 107
  *
+ *  
  *
+ * 注意：本题与主站 560 题相同： https://leetcode-cn.com/problems/subarray-sum-equals-k/
  *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/QTMn0o
@@ -37,7 +39,12 @@ import java.util.Map;
 public class Solution {
 
 
-    // 010
+    /**
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
     public int subarraySum(int[] nums, int k) {
         // n1 + n2 == k =>  n2 == k - n1
         // 便利 nums 记录 当前 的和 和之前的前缀和 和前缀和的出现次数 然后从次数里边找一共有多少个
