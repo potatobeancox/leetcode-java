@@ -3,7 +3,7 @@ package com.potato.study.leetcodecn.other.lcr.p0022.t001;
 import com.potato.study.leetcode.domain.ListNode;
 
 /**
- * 剑指 Offer II 022. 链表中环的入口节点
+ * LCR 022. 环形链表 II
  *
  * 给定一个链表，返回链表开始入环的第一个节点。 从链表的头节点开始沿着 next 指针进入环的第一个节点为环的入口节点。如果链表无环，则返回 null。
  *
@@ -49,6 +49,8 @@ import com.potato.study.leetcode.domain.ListNode;
  *
  * 注意：本题与主站 142 题相同： https://leetcode-cn.com/problems/linked-list-cycle-ii/
  *
+ *
+ *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/c32eOV
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
@@ -57,7 +59,11 @@ import com.potato.study.leetcode.domain.ListNode;
 public class Solution {
 
 
-    // ii 022
+    /**
+     *
+     * @param head
+     * @return
+     */
     public ListNode detectCycle(ListNode head) {
         // 快慢指针 到相遇点
         ListNode fast = head;
