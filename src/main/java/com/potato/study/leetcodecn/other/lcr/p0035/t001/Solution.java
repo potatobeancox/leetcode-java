@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 剑指 Offer II 035. 最小时间差
+ * LCR 035. 最小时间差
  *
  * 给定一个 24 小时制（小时:分钟 "HH:MM"）的时间列表，找出列表中任意两个时间的最小时间差并以分钟数表示。
  *
@@ -35,6 +35,11 @@ import java.util.List;
  */
 public class Solution {
 
+    /**
+     *
+     * @param timePoints
+     * @return
+     */
     public int findMinDifference(List<String> timePoints) {
         if (timePoints.size() <= 1) {
             return 0;
