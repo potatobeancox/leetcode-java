@@ -3,7 +3,7 @@ package com.potato.study.leetcodecn.other.lcr.p0008.t001;
 import org.junit.Assert;
 
 /**
- * 剑指 Offer II 008. 和大于等于 target 的最短子数组
+ * LCR 008. 长度最小的子数组
  *
  * 给定一个含有 n 个正整数的数组和一个正整数 target 。
  *
@@ -36,6 +36,9 @@ import org.junit.Assert;
  * 进阶：
  *
  * 如果你已经实现 O(n) 时间复杂度的解法, 请尝试设计一个 O(n log(n)) 时间复杂度的解法。
+ *  
+ *
+ * 注意：本题与主站 209 题相同：https://leetcode-cn.com/problems/minimum-size-subarray-sum/
  *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/2VG8Kg
@@ -43,7 +46,13 @@ import org.junit.Assert;
  *
  */
 public class Solution {
-    // jianzhi2 offer 008
+
+    /**
+     *
+     * @param target
+     * @param nums
+     * @return
+     */
     public int minSubArrayLen(int target, int[] nums) {
         // 滑动窗口
         int left = 0;
