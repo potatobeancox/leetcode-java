@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 剑指 Offer II 015. 字符串中的所有变位词
+ * LCR 015. 找到字符串中所有字母异位词
  *
  * 给定两个字符串 s 和 p，找到 s 中所有 p 的 变位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
  *
@@ -45,7 +45,12 @@ import java.util.List;
 public class Solution {
 
 
-    // ii 015
+    /**
+     *
+     * @param s
+     * @param p
+     * @return
+     */
     public List<Integer> findAnagrams(String s, String p) {
         // 对 p计数 得到窗口要得到的数量
         int[] count = new int[26];
