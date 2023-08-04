@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 剑指 Offer II 031. 最近最少使用缓存
+ * LCR 031. LRU 缓存
  *
  * 运用所掌握的数据结构，设计和实现一个  LRU (Least Recently Used，最近最少使用) 缓存机制 。
  *
