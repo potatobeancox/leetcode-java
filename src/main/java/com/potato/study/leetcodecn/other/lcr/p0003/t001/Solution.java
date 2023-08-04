@@ -38,14 +38,17 @@ package com.potato.study.leetcodecn.other.lcr.p0003.t001;
  * 给出时间复杂度为 O(n*sizeof(integer)) 的解答非常容易。但你可以在线性时间 O(n) 内用一趟扫描做到吗？
  * 要求算法的空间复杂度为 O(n) 。
  * 你能进一步完善解法吗？要求在C++或任何其他语言中不使用任何内置函数（如 C++ 中的 __builtin_popcount ）来执行此操作。
+ *  
  *
+ * 注意：本题与主站 338 题相同：https://leetcode-cn.com/problems/counting-bits/
  *
  * 来源：力扣（LeetCode）
- * 链接：https://leetcode-cn.com/problems/w3tCBm
+ * 链接：https://leetcode.cn/problems/w3tCBm
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  *
  */
 public class Solution {
+
     /**
      *
      * @param n
@@ -75,4 +78,6 @@ public class Solution {
         }
         return count;
     }
+
+
 }
