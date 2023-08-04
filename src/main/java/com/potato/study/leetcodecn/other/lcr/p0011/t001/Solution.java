@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 剑指 Offer II 011. 0 和 1 个数相同的子数组
+ * LCR 011. 连续数组
  *
  * 给定一个二进制数组 nums , 找到含有相同数量的 0 和 1 的最长连续子数组，并返回该子数组的长度。
  *
@@ -30,8 +30,6 @@ import java.util.Map;
  *
  * 注意：本题与主站 525 题相同： https://leetcode-cn.com/problems/contiguous-array/
  *
- *
- *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/A1NYOS
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
@@ -40,7 +38,11 @@ import java.util.Map;
 public class Solution {
 
 
-    // ii 011
+    /**
+     *
+     * @param nums
+     * @return
+     */
     public int findMaxLength(int[] nums) {
         // 跟之前的那个一样 使用一个 state 记录 当前 0和1的数量 0++ 1-- 并记录第一个出现这个的位置
         Map<Integer, Integer> stateIndexMap = new HashMap<>();
