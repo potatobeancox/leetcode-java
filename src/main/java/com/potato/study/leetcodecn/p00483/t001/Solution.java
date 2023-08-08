@@ -88,6 +88,9 @@ public class Solution {
         long result = 0;
         for (int i = 0; i < bitLen; i++) {
             result = result * target + 1;
+            if (result > num) {
+                return 1;
+            }
         }
         return Long.compare(result, num);
     }
