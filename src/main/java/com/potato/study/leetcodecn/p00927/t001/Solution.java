@@ -52,72 +52,67 @@ public class Solution {
 
 
     public int[] threeEqualParts(int[] arr) {
-        // dfs 当前要比较的位置 当前的分段结果 当前段的值 每一段的值
-        int index = 0;
-        List<Integer> splitIndexList = new ArrayList<>();
-        int splitPartSum = 0;
-        return dfs(arr, index, 0, splitIndexList, splitPartSum);
+        // 遍历 arr 计算 1的个数 并看看能不能分成3份
+        int oneCount = 0;
+        for (int element : arr) {
+            if (element == 1) {
+                oneCount++;
+            }
+        }
+        if (oneCount % 3 != 0) {
+            return new int[] {-1, -1};
+        }
+        if (oneCount == 0) {
+            return new int[] {0, 2};
+        }
+        // 分割后部分的个数
+        int partOneCount = oneCount / 3;
+        // 找到 index1 = partOneCount index2 = partOneCount * 2的1的index index0 就是第0个1的index
+        int index0 = -1;
+        int index1 = -1;
+        int index2 = -1;
+        int currentOneCount = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == 1) {
+                if (currentOneCount == 0) {
+                    index0 = i;
+                }
+                if (currentOneCount == partOneCount) {
+                    index1 = i;
+                }
+                if (currentOneCount == partOneCount * 2) {
+                    index2 = i;
+                }
+                currentOneCount++;
+            }
+        }
+        // 分成之后 找到 最后一个  从每个位置的开始位置开始往后比较 先比较长度
+        int minLen = arr.length - index2;
+        // 判断从开始位置到最终是不是比这个大
+        if (index1 < minLen) {
+            return new int[] {-1, -1};
+        }
+        // 长度就是找到最后一段的最小长度 判断 第一个位置之前的长度是不是大于等于 最小长度 中间那短长度是不是大于等于最小长度
+        if (index2 - index1 + 1 < minLen) {
+            return new int[] {-1, -1};
+        }
+        // 后来比较各个位置是否相同
+        for (int i = 0; i < minLen; i++) {
+            int target3 = arr[index2+i];
+            int target1 = arr[index0+i];
+            int target2 = arr[index1+i];
+
+            if (target1 != target3 || target2 != target3) {
+                return new int[] {-1, -1};
+            }
+        }
+        // 找到了 推算一下 从index1开始推  minLen个长度
+        int res1 = minLen + index0 - 1;
+        int res2 = index1 + minLen;
+        return new int[] {res1, res2};
     }
 
-    private int[] dfs(int[] arr, int index, int currentSum, List<Integer> splitIndexList,
-                      int splitPartSum) {
-        // 如果当前已经走到最后一个节点结算
-        if (index == arr.length) {
-            // 没找到分割点
-            if (splitIndexList.size() != 2) {
-                return null;
-            }
-            // 当前的分割方法最后一个点不是 split
-            if (currentSum != splitPartSum) {
-                return null;
-            }
-            int[] res = new int[2];
-            res[0] = splitIndexList.get(0);
-            res[1] = splitIndexList.get(1);
-            return res;
-        }
-        // 第二个需要根据 splitPartSum 确定分割
-        if (splitIndexList.size() == 2) {
-            currentSum <<= 1;
-            if (currentSum > splitPartSum) {
-                return null;
-            }
-            // 搞下一个点
-            return dfs(arr, index + 1, currentSum, splitIndexList, splitPartSum);
-        }
-        // 之前已经有一个已经确定了
-        if (splitIndexList.size() == 1) {
-            currentSum <<= 1;
-            if (currentSum > splitPartSum) {
-                return null;
-            }
-            // 小于等于的时候 等于的时候 可以继续往下走 或者直接终结
-            if (currentSum < splitPartSum) {
-                return dfs(arr, index + 1, currentSum, splitIndexList, splitPartSum);
-            }
-            // 等于的时候可以先终结 再往下走
-            splitIndexList.add(index);
-            int[] dfs = dfs(arr, index + 1, 0, splitIndexList, splitPartSum);
-            splitIndexList.remove(splitIndexList.size() - 1);
-            if (dfs != null) {
-                return dfs;
-            }
-            return dfs(arr, index + 1, currentSum, splitIndexList, splitPartSum);
-        }
-        // 没走到最后一个节点 如果当前是第一个点 需要确定 splitPartSum
-        if (splitIndexList.size() == 0) {
-            currentSum <<= 1;
-            // 使用这个作为第一个点
-            splitIndexList.add(index);
-            int[] dfs = dfs(arr, index + 1, 0, splitIndexList, currentSum);
-            splitIndexList.remove(splitIndexList.size() - 1);
-            if (dfs != null) {
-                return dfs;
-            }
-            return dfs(arr, index + 1, currentSum, splitIndexList, splitPartSum);
-        }
-        return new int[0];
-    }
+
 
     public static void main(String[] args) {
         Solution solution = new Solution();
