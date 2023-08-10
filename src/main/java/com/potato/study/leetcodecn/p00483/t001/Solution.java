@@ -87,6 +87,9 @@ public class Solution {
     private int checkCompare(long target, long bitLen, long num) {
         long result = 0;
         for (int i = 0; i < bitLen; i++) {
+            if ((num -1) / target < result) {
+                return 1;
+            }
             result = result * target + 1;
             if (result > num) {
                 return 1;
