@@ -1,12 +1,9 @@
 package com.potato.study.leetcodecn.p01028.t001;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import com.potato.study.leetcode.domain.TreeNode;
 
-import sun.jvm.hotspot.debugger.Page;
 
 /**
  * 1028. 从先序遍历还原二叉树

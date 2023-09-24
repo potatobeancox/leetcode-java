@@ -1,9 +1,7 @@
 package com.potato.study.leetcodecn.p01005.t001;
 
-import javafx.scene.layout.Priority;
 import org.junit.Assert;
 
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**

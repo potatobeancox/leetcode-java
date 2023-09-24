@@ -1,14 +1,9 @@
 package com.potato.study.leetcodecn.p00253.t001;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.PriorityQueue;
 
-import com.potato.study.leetcode.domain.TreeNode;
-
-import jdk.nashorn.internal.ir.IdentNode;
 
 /**
  * 253. 会议室 II
