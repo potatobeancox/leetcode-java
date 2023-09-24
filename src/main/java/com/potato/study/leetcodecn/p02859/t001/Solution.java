@@ -61,10 +61,9 @@ public class Solution {
             return 0;
         }
         int res = 0;
-        for (int num : nums) {
-            int bitCount = Integer.bitCount(num);
-            if (bitCount == k) {
-                res += num;
+        for (int i = 0; i < nums.size(); i++) {
+            if (Integer.bitCount(i) == k) {
+                res += nums.get(i);
             }
         }
         return res;
