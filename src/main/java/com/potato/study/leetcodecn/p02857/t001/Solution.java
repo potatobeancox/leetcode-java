@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.p02857.t001.t001;
+package com.potato.study.leetcodecn.p02857.t001;
 
 
 import java.util.List;
