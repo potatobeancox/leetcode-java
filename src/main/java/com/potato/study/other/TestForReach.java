@@ -1,6 +1,15 @@
 package com.potato.study.other;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.ListUtils;
 import org.junit.Assert;
+
+import lombok.Data;
 
 /**
  * @author liuzhao03 <liuzhao03@kuaishou.com>
@@ -57,5 +66,22 @@ public class TestForReach {
         System.out.println(b);
         Assert.assertEquals(false, b);
 
+
+        List<User> userList = new ArrayList<>();
+        userList.add(new User());
+
+        Map<String, List<String>> map = ListUtils.emptyIfNull(userList).stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(user -> String.valueOf(user.getIndex()),
+                        User::getStrList, (a, c) -> a));
+
+        System.out.println("succees");
+
+    }
+
+    @Data
+    static class User {
+        private List<String> strList = new ArrayList<>();
+        private int index;
     }
 }
