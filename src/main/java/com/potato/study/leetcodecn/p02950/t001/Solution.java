@@ -1,4 +1,4 @@
-package com.potato.study.leetcodecn.p02950.t001.t001;
+package com.potato.study.leetcodecn.p02950.t001;
 
 
 /**
