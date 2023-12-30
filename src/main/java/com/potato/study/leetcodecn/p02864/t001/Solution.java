@@ -40,10 +40,40 @@ public class Solution {
 
 
     public String maximumOddBinaryNumber(String s) {
-        // s 降序 排序，交换第一个和最后一个
-        char[] charArray = s.toCharArray();
-        Arrays.sort(charArray);
-        return null;
+        // 直接计数生成吧
+        int oneCount = 0;
+        int zeroCount = 0;
+        for (char ch : s.toCharArray()) {
+            if (ch == '1') {
+                oneCount++;
+            } else {
+                // 0
+                zeroCount++;
+            }
+        }
+        // 生成
+        char[] target = new char[s.length()];
+        if (oneCount >= 1) {
+            oneCount--;
+            target[s.length() -1] = '1';
+        }
+        int index = 0;
+        for (int i = 0; i < oneCount; i++) {
+            target[index] = '1';
+            index++;
+        }
+        for (int i = 0; i < zeroCount; i++) {
+            target[index] = '0';
+            index++;
+        }
+        return new String(target);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String str = "0101";
+        String s = solution.maximumOddBinaryNumber(str);
+        System.out.println(s);
     }
 
 }
