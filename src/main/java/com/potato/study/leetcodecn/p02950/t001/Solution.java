@@ -61,4 +61,9 @@ public class Solution {
         return -1;
     }
 
+
+    private int getValue(char ch) {
+        return (ch - 'a' + 1) / 3 + 1;
+    }
+
 }
