@@ -1,12 +1,9 @@
 package com.potato.study.leetcodecn.p00573.t001;
 
 
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Assert;
 
-import com.sun.xml.internal.xsom.XSUnionSimpleType;
 
 /**
  * 573. 松鼠模拟

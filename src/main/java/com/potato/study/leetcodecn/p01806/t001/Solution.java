@@ -1,11 +1,8 @@
 package com.potato.study.leetcodecn.p01806.t001;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Assert;
 
-import sun.jvm.hotspot.debugger.Page;
 
 /**
  * 1806. 还原排列的最少操作步数

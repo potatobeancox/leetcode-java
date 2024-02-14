@@ -1,11 +1,9 @@
 package com.potato.study.leetcodecn.p00919.t001;
 
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import com.potato.study.leetcode.domain.TreeNode;
-import com.sun.jmx.snmp.SnmpNull;
 
 /**
  * 919. 完全二叉树插入器

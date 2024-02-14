@@ -4,7 +4,6 @@ package com.potato.study.leetcodecn.other.swordoffer.p0035.p1.t001;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.jmx.snmp.SnmpNull;
 
 /**
  * 剑指 Offer 35. 复杂链表的复制
